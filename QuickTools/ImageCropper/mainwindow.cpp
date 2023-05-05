@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "croprect.h"
+#include "imageitem.h"
 
 #include <QDebug>
 #include <QToolBox>
@@ -10,6 +11,8 @@
 #include <QToolBox>
 #include <QElapsedTimer>
 #include <QTime>
+#include <QGraphicsOpacityEffect>
+#include <QColor>
 
 #include <QtConcurrent/QtConcurrent>
 
@@ -51,6 +54,7 @@ void MainWindow::readImage(const QFileInfoList &filelist)
     int row = 0;
     int col = 0;
     QMutex mutex;
+    i = 0;
     for (const auto &file : filelist) // Loop through list of files
     {
         QtConcurrent::run(pool, [this, &mutex, &file, &row, &col, width, height, &current_row_height]() {
@@ -60,7 +64,7 @@ void MainWindow::readImage(const QFileInfoList &filelist)
             {
                 return;
             }
-            QGraphicsPixmapItem *item = new QGraphicsPixmapItem(pixmap); // Create QGraphicsPixmapItem object from QPixmap object
+            ImageItem *item = new ImageItem(pixmap); // Create QGraphicsPixmapItem object from QPixmap object
 
             mutex.lock();
             col += col == 0 ? 0 : 20;
@@ -107,8 +111,5 @@ void MainWindow::openFolder()
 
 void MainWindow::addImage(QGraphicsPixmapItem *item)
 {
-    auto rect = new CropRect(0, 0, 200, 200, item);
-    rect->setFlag(QGraphicsItem::ItemIsMovable, true);
-    rect->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     scene_.addItem(item); // Add QGraphicsPixmapItem object to scene_
 }

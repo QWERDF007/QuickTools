@@ -31,6 +31,8 @@ private:
 
     QThreadPool *pool{nullptr};
 
+    int i = 0;
+
 
 signals:
     void newImage(QGraphicsPixmapItem *);

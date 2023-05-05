@@ -7,6 +7,10 @@ set(PROJECT_SOURCES
         mainwindow.ui
         croprect.cpp
         croprect.h
+        imageitem.cpp
+        imageitem.h
+        imageview.cpp
+        imageview.h
         ${TS_FILES}
 )
 

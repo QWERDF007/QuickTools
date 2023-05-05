@@ -6,28 +6,29 @@
 CropRect::CropRect(QGraphicsItem *parent)
     : QGraphicsRectItem(parent)
 {
-
+    init();
 }
 
 CropRect::CropRect(const QRectF &rect, QGraphicsItem *parent)
     : QGraphicsRectItem(rect, parent)
 {
-
+    init();
 }
 
 CropRect::CropRect(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent)
     : QGraphicsRectItem(x, y, w, h, parent)
 {
-
+    init();
 }
 
 CropRect::~CropRect()
 {
-
+    qDebug() << "~CropRect";
 }
 
 QVariant CropRect::itemChange(GraphicsItemChange change, const QVariant &value)
 {
+    // 限制移动不超出 Pixmap
     QGraphicsPixmapItem *parent = qgraphicsitem_cast<QGraphicsPixmapItem *>(parentItem());
     if (parent && change == QGraphicsItem::ItemPositionChange) {
         QPointF new_pos = value.toPointF();
@@ -43,7 +44,12 @@ QVariant CropRect::itemChange(GraphicsItemChange change, const QVariant &value)
 
 void CropRect::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setPen(QColor(0,255,0,128));
-//    painter->setBrush(QColor(0,255,0,128));
     QGraphicsRectItem::paint(painter, option, widget);
+}
+
+void CropRect::init()
+{
+    setPen(Qt::NoPen);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }

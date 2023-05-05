@@ -24,6 +24,7 @@ protected:
     int type() const override { return Type; }
 
 private:
+    void init();
 
 };
 
