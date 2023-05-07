@@ -20,10 +20,17 @@ public:
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
+
 private:
     Q_DISABLE_COPY(ImageItem)
 
     CropRect *crop_rect_{nullptr};
+
+    qreal opacity_ = 0.3;
 
 private slots:
 

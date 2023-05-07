@@ -1,4 +1,7 @@
 #include <QPainter>
+#include <QGraphicsOpacityEffect>
+#include <QStyleOptionGraphicsItem>
+#include <QPushButton>
 
 #include "imageitem.h"
 
@@ -11,6 +14,7 @@ ImageItem::ImageItem(QGraphicsItem *parent)
 ImageItem::ImageItem(const QPixmap &pixmap, QGraphicsItem *parent)
     : QGraphicsPixmapItem(pixmap, parent)
 {
+    setAcceptHoverEvents(true);
     setCropRect(pixmap);
 }
 
@@ -44,13 +48,31 @@ void ImageItem::setPixmap(const QPixmap &pixmap)
 
 void ImageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-//    QRectF rect = boundingRect();
+
     QPixmap pixmap = this->pixmap();
-//    qDebug() << "draw pixmap";
-//    painter->drawPixmap(QGraphicsPixmapItem::offset(), pixmap);
-//QGraphicsOpacityEffect
+    // 半透明绘制pixmap
+    painter->setOpacity(opacity_);
+    painter->drawPixmap(QGraphicsPixmapItem::offset(), pixmap);
+
+    // 绘制矩形区域
+    // 防止矩形抖动和子像素渲染伪影
     QRectF r = mapRectFromItem(crop_rect_, crop_rect_->rect());
-    QPixmap centerPixmap = pixmap.copy(r.toRect());
-//    painter->fillRect(centerRect, QColor(0, 0, 0, 128));
-    painter->drawPixmap(r.topLeft(), centerPixmap);
+    QRectF roundedRect = QRectF(round(r.x()), round(r.y()), r.width(), r.height());
+    QPixmap centerPixmap = pixmap.copy(roundedRect.toRect());
+    painter->setOpacity(1);
+    painter->drawPixmap(roundedRect.topLeft(), centerPixmap);
+}
+
+void ImageItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    // 鼠标进入时修改透明度，突出显示
+    opacity_ = 0.5;
+    update();
+}
+
+void ImageItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    // 鼠标离开时修改透明度，突出显示
+    opacity_ = 0.3;
+    update();
 }

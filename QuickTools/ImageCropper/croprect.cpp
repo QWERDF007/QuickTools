@@ -1,7 +1,8 @@
 #include <QPainter>
+#include <QCursor>
+#include <QGraphicsPixmapItem>
 
 #include "croprect.h"
-#include <QGraphicsPixmapItem>
 
 CropRect::CropRect(QGraphicsItem *parent)
     : QGraphicsRectItem(parent)
@@ -47,9 +48,25 @@ void CropRect::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     QGraphicsRectItem::paint(painter, option, widget);
 }
 
+void CropRect::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    // 设置鼠标在矩形内悬浮时的样式
+    setCursor(Qt::SizeAllCursor);
+    QGraphicsRectItem::hoverEnterEvent(event);
+}
+
+void CropRect::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    // 设置鼠标悬浮在矩形外时的样式
+    setCursor(Qt::ArrowCursor);
+    QGraphicsRectItem::hoverLeaveEvent(event);
+}
+
 void CropRect::init()
 {
+    // 不绘制边框
     setPen(Qt::NoPen);
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+    setAcceptHoverEvents(true);
 }

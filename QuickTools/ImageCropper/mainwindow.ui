@@ -763,7 +763,7 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QGraphicsView" name="graphicsView">
+         <widget class="ImageView" name="graphicsView">
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
@@ -802,6 +802,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ImageView</class>
+   <extends>QGraphicsView</extends>
+   <header>imageview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

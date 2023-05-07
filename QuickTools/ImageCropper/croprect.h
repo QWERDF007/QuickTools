@@ -23,6 +23,10 @@ protected:
 
     int type() const override { return Type; }
 
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
 private:
     void init();
 
