@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "croprect.h"
 #include "imageitem.h"
 
 #include <QDebug>
@@ -90,9 +89,8 @@ void MainWindow::readImage(const QFileInfoList &filelist)
         });
     }
     pool->waitForDone(); // Wait for all threads to finish
+
 }
-
-
 
 
 void MainWindow::openFolder()

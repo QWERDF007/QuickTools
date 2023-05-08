@@ -5,12 +5,11 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        croprect.cpp
-        croprect.h
         imageitem.cpp
         imageitem.h
         imageview.cpp
         imageview.h
+        macro.h
         ${TS_FILES}
 )
 
