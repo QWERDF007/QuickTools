@@ -24,12 +24,20 @@ protected:
 
     int type() const override { return Type; }
 
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
 
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
     void init();
+
+    int nearestEdge(QPointF point, qreal epsilon = 10.0);
+
+    int nearestVertex(QPointF point, qreal epsilon = 10.0);
+
+    qreal distanceToLine(QPointF point, QPointF p1, QPointF p2);
 
 };
 

@@ -25,10 +25,8 @@ void ImageView::wheelEvent(QWheelEvent *event)
 {
     if (event->modifiers() == Qt::ControlModifier)
     {
-//        qreal new_scale =  1.0 + event->angleDelta().y() * 0.00125;
-
-//        scale(new_scale, new_scale);
-        scaleImageItem(event->angleDelta().y() * 0.00125);
+        qreal new_scale =  1.0 + event->angleDelta().y() * 0.00125;
+        scale(new_scale, new_scale);
         updateImageItemPos();
     } else {
         QGraphicsView::wheelEvent(event);
@@ -48,63 +46,43 @@ void ImageView::init()
     setResizeAnchor(QGraphicsView::AnchorViewCenter);
 }
 
-void ImageView::scaleImageItem(qreal delta)
-{
-    qreal col = 0;
-    qreal row = 0;
-    qreal current_row_height = 0;
-    for (auto item : scene()->items(Qt::AscendingOrder))
-    {
-        auto image_item = dynamic_cast<ImageItem*>(item);
-        if (image_item != nullptr)
-        {
-            qreal new_scale = item->scale() + delta;
-            if (new_scale < 0.2 || new_scale > 5)
-            {
-                continue;
-            }
-            image_item->setScale(item->scale() + delta);
-            setImagePos(image_item, row, col, current_row_height);
-        }
-    }
-}
 
 void ImageView::updateImageItemPos()
 {
+    // 根据viewport重新调整位置
     qreal col = 0;
     qreal row = 0;
     qreal current_row_height = 0;
+    qreal viewport_width = mapToScene(viewport()->rect()).boundingRect().width();
     for (auto item : scene()->items(Qt::AscendingOrder))
     {
         auto image_item = dynamic_cast<ImageItem*>(item);
         if (image_item != nullptr)
         {
-            setImagePos(image_item, row, col, current_row_height);
+            setImagePos(image_item, row, col, current_row_height, viewport_width);
         }
     }
 }
 
-void ImageView::setImagePos(ImageItem *item, qreal &row, qreal &col, qreal &current_row_height)
+void ImageView::setImagePos(ImageItem *item, qreal &row, qreal &col, qreal &current_row_height, qreal viewport_width)
 {
-    auto factor = item->scale();
-    auto scaled_width = item->pixmap().width() * factor;
-    auto scaled_height = item->pixmap().height() * factor;
+    qreal item_width = item->pixmap().width();
+    qreal item_height = item->pixmap().height();
     col += col == 0 ? 0 : 20;
-    int new_col = col + scaled_width;
+    int new_col = col + item_width;
     int new_row = row;
-    if (col && new_col > width())
+    if (col && new_col > viewport_width)
     {
+        new_row = row + current_row_height + 20;
+        new_col = item_width;
+        row = new_row;
         col = 0;
-        row += current_row_height + 20;
-        new_col = scaled_width;
-        new_row = row;
-        current_row_height = scaled_height;
+        current_row_height = item_height;
     }
     else
     {
-        current_row_height = qMax(scaled_height, current_row_height);
+        current_row_height = qMax(item_height, current_row_height);
     }
-
     item->setPos(col, row); // Set position of item
     col = new_col;
     row = new_row;

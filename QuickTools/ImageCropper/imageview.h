@@ -26,7 +26,7 @@ private:
 
     void updateImageItemPos();
 
-    void setImagePos(ImageItem *item, qreal &row, qreal &col, qreal &current_row_height);
+    void setImagePos(ImageItem *item, qreal &row, qreal &col, qreal &current_row_height, qreal current_viewport_width);
 };
 
 #endif // IMAGEVIEW_H

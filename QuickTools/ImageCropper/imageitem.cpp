@@ -1,6 +1,7 @@
 #include <QPainter>
 #include <QGraphicsOpacityEffect>
 #include <QStyleOptionGraphicsItem>
+#include <numeric>
 
 #include "imageitem.h"
 
@@ -49,6 +50,10 @@ void CropRect::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     QGraphicsRectItem::paint(painter, option, widget);
 }
 
+void CropRect::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+}
+
 void CropRect::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     // 设置鼠标在矩形内悬浮时的样式
@@ -70,6 +75,34 @@ void CropRect::init()
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     setAcceptHoverEvents(true);
+}
+
+int CropRect::nearestEdge(QPointF point, qreal epsilon)
+{
+    int index = -1;
+    qreal min_distance = std::numeric_limits<qreal>::max();
+    QVector<QPointF> points{rect().topLeft(), rect().topRight(), rect().bottomRight(), rect().bottomLeft()};
+    for (int i = 0; i < points.size(); ++i)
+    {
+        int p1 = i - 1;
+        int p2 = i;
+        p1 = p1  < 0 ? points.size() - 1 : p1;
+        qreal distance = distanceToLine(point, points[p1], points[p2]);
+        if (distance < epsilon && distance < min_distance)
+        {
+            min_distance = distance;
+            index = i;
+        }
+    }
+    return index;
+}
+
+qreal CropRect::distanceToLine(QPointF point, QPointF p1, QPointF p2)
+{
+    qreal A = p2.y() - p1.y();
+    qreal B = p1.x() - p2.x();
+    qreal C = p2.x() * p1.y() - p1.x() * p2.y();
+    return qAbs(A * point.x() + B * point.y() + C) / qSqrt(qPow(A, 2) + qPow(B, 2));
 }
 
 
