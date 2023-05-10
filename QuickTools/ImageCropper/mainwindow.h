@@ -2,15 +2,18 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QGraphicsScene>
-#include <QGraphicsPixmapItem>
-#include <QThreadPool>
 #include <QFileDialog>
-
+#include <QGraphicsPixmapItem>
+#include <QGraphicsScene>
+#include <QMainWindow>
+#include <QThreadPool>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+
+namespace Ui {
+class MainWindow;
+}
+
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -32,7 +35,6 @@ private:
     QThreadPool *pool{nullptr};
 
     int i = 0;
-
 
 signals:
     void newImage(QGraphicsPixmapItem *);

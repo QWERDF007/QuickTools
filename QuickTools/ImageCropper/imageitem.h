@@ -14,22 +14,6 @@ public:
         Type = UserType + ItemType::CropRectType
     };
 
-    enum Edge
-    {
-        TOP = 0,
-        RIGHT,
-        BOTTOM,
-        LEFT,
-    };
-
-    enum Vertex
-    {
-        TOP_LEFT = 0,
-        TOP_RIGHT,
-        BOTTOM_RIGHT,
-        BOTTOM_LEFT,
-    };
-
     explicit CropRect(QGraphicsItem *parent = nullptr);
     explicit CropRect(const QRectF &rect, QGraphicsItem *parent = nullptr);
     explicit CropRect(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent = nullptr);
@@ -68,9 +52,15 @@ private:
 
     void adjustRect(QPointF point);
 
+    QRectF adjustByEdge(QPointF point);
+
+    QRectF adjustByVertex(QPointF point);
+
     int selected_edge_{-1};
 
     int selected_vertex_{-1};
+
+    QRectF prect_;
 };
 
 class ImageItem : public QGraphicsPixmapItem

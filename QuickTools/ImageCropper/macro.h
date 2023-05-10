@@ -3,7 +3,8 @@
 
 #include <cstdint>
 
-enum ItemType : int32_t {
+enum ItemType : int32_t
+{
     ImageItemType = 1,
     CropRectType,
 };

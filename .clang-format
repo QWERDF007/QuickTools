@@ -24,7 +24,7 @@ AccessModifierOffset: -4
 
 AlignArrayOfStructures: Right
 AlignConsecutiveMacros: AcrossComments
-# AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveBitFields: AcrossComments
 AlignConsecutiveDeclarations: AcrossComments
 AlignEscapedNewlines: Left
