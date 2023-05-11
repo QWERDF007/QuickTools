@@ -5,9 +5,13 @@
 
 #include <QGraphicsPixmapItem>
 #include <QGraphicsRectItem>
+#include <QObject>
 
-class CropRect : public QGraphicsRectItem
+class CropRect
+    : public QObject
+    , public QGraphicsRectItem
 {
+    Q_OBJECT
 public:
     enum
     {
@@ -42,6 +46,8 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
+    Q_DISABLE_COPY(CropRect)
+
     void init();
 
     int nearestEdge(QPointF point, qreal epsilon = 5.0);
@@ -49,6 +55,8 @@ private:
     int nearestVertex(QPointF point, qreal epsilon = 5.0);
 
     qreal distanceToLine(QPointF point, QPointF p1, QPointF p2);
+
+    qreal distanceToPoint(QPointF p1, QPointF p2);
 
     void adjustRect(QPointF point);
 
@@ -61,10 +69,18 @@ private:
     int selected_vertex_{-1};
 
     QRectF prect_;
+
+signals:
+    void rectChanged(QRectF);
+
+    void rectClicked(CropRect *, QRectF);
 };
 
-class ImageItem : public QGraphicsPixmapItem
+class ImageItem
+    : public QObject
+    , public QGraphicsPixmapItem
 {
+    Q_OBJECT
 public:
     enum
     {
@@ -75,7 +91,7 @@ public:
     explicit ImageItem(const QPixmap &pixmap, QGraphicsItem *parent = nullptr);
     ~ImageItem();
 
-    void setCropRect(QRectF &rect);
+    void setCropRect(CropRect *crop_rect);
 
     void setCropRect(const QPixmap &pixmap);
 
@@ -99,8 +115,6 @@ private:
     CropRect *crop_rect_{nullptr};
 
     qreal opacity_ = 0.3;
-
-private slots:
 };
 
 #endif // IMAGEITEM_H

@@ -4,6 +4,7 @@
 #include <QGraphicsOpacityEffect>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QPushButton>
 #include <QStyleOptionGraphicsItem>
 #include <numeric>
 
@@ -58,8 +59,10 @@ QVariant CropRect::itemChange(GraphicsItemChange change, const QVariant &value)
         {
             new_pos.setX(qMin(prect.right() - rect().width(), qMax(new_pos.x(), prect.left())));
             new_pos.setY(qMin(prect.bottom() - rect().height(), qMax(new_pos.y(), prect.top())));
+            emit rectChanged(mapRectToParent(rect()));
             return new_pos;
         }
+        emit rectChanged(mapRectToParent(rect()));
     }
     return QGraphicsItem::itemChange(change, value);
 }
@@ -73,6 +76,7 @@ void CropRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     int index      = nearestEdge(event->pos(), 10);
     selected_edge_ = index;
+    emit rectClicked(this, mapRectToParent(rect()));
     QGraphicsRectItem::mousePressEvent(event);
 }
 
@@ -81,6 +85,7 @@ void CropRect::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     if (selected_edge_ > -1 && event->buttons() == Qt::LeftButton)
     {
         adjustRect(event->pos());
+        emit rectChanged(mapRectToParent(rect()));
     }
     else
     {
@@ -167,6 +172,11 @@ qreal CropRect::distanceToLine(QPointF point, QPointF p1, QPointF p2)
     return abs(A * point.x() + B * point.y() + C) / sqrt(pow(A, 2) + pow(B, 2));
 }
 
+qreal CropRect::distanceToPoint(QPointF p1, QPointF p2)
+{
+    return 0;
+}
+
 void CropRect::adjustRect(QPointF point)
 {
     QGraphicsPixmapItem *parent = qgraphicsitem_cast<ImageItem *>(parentItem());
@@ -211,8 +221,8 @@ QRectF CropRect::adjustByEdge(QPointF point)
     }
     case Edge::RIGHT:
     {
-        x1           = top_left.x();
-        y1           = top_left.y();
+        x1          = top_left.x();
+        y1          = top_left.y();
         qreal right = qMax(point.x(), top_left.x() + min_edge);
         if (!prect_.contains(QPointF(right, y1)))
         {
@@ -224,8 +234,8 @@ QRectF CropRect::adjustByEdge(QPointF point)
     }
     case Edge::BOTTOM:
     {
-        x1            = top_left.x();
-        y1            = top_left.y();
+        x1           = top_left.x();
+        y1           = top_left.y();
         qreal bottom = qMax(point.y(), top_left.y() + min_edge);
         if (!prect_.contains(QPointF(x1, bottom)))
         {
@@ -265,7 +275,6 @@ ImageItem::ImageItem(const QPixmap &pixmap, QGraphicsItem *parent)
     : QGraphicsPixmapItem(pixmap, parent)
 {
     setAcceptHoverEvents(true);
-    setCropRect(pixmap);
 }
 
 ImageItem::~ImageItem()
@@ -273,26 +282,15 @@ ImageItem::~ImageItem()
     qDebug() << "~ImageItem";
 }
 
-void ImageItem::setCropRect(QRectF &rect)
+void ImageItem::setCropRect(CropRect *crop_rect)
 {
-    //    CropRect *old_rect = crop_rect_;
-    crop_rect_ = new CropRect(0, 0, rect.width(), rect.height(), this);
-    crop_rect_->setPos(rect.x(), rect.y());
+    crop_rect_ = crop_rect;
 }
 
-void ImageItem::setCropRect(const QPixmap &pixmap)
-{
-    if (crop_rect_ == nullptr)
-    {
-        int    min_edge = qMin(pixmap.width(), pixmap.height());
-        QRectF rect(0, 0, min_edge, min_edge);
-        crop_rect_ = new CropRect(rect, this);
-    }
-}
+void ImageItem::setCropRect(const QPixmap &pixmap) {}
 
 void ImageItem::setPixmap(const QPixmap &pixmap)
 {
-    setCropRect(pixmap);
     QGraphicsPixmapItem::setPixmap(pixmap);
 }
 
@@ -307,11 +305,16 @@ void ImageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     // 绘制矩形区域
     // fixme: 放大后非矩形区域有残留， FullViewPortUpdate 可以解决，但是不知道能不能通过其他解决
-    QRectF  r            = mapRectFromItem(crop_rect_, crop_rect_->rect());
-    QRect roundedRect = r.toRect();
-    QPixmap centerPixmap = pixmap.copy(roundedRect);
-    painter->setOpacity(1);
-    painter->drawPixmap(roundedRect.topLeft(), centerPixmap);
+    // fixme: toRect 方法会在不同 x, y 产生不同的 width, height
+    if (crop_rect_)
+    {
+        QRectF  r            = mapRectFromItem(crop_rect_, crop_rect_->rect());
+        QRect   roundedRect  = r.toRect();
+        QPixmap centerPixmap = pixmap.copy(roundedRect);
+
+        painter->setOpacity(1);
+        painter->drawPixmap(roundedRect.topLeft(), centerPixmap);
+    }
 }
 
 void ImageItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)

@@ -16,6 +16,9 @@ class MainWindow;
 
 QT_END_NAMESPACE
 
+class CropRect;
+class ImageItem;
+
 class MainWindow : public QMainWindow
 
 {
@@ -37,11 +40,13 @@ private:
     int i = 0;
 
 signals:
-    void newImage(QGraphicsPixmapItem *);
+    void newImage(ImageItem *);
 
 private slots:
     void openFolder();
-    void addImage(QGraphicsPixmapItem *item);
+    void addImage(ImageItem *item);
+    void cropRectSelected(CropRect *, QRectF);
+    void cropRectChanged(QRectF);
 };
 
 #endif // MAINWINDOW_H

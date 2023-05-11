@@ -112,7 +112,36 @@ void MainWindow::openFolder()
     readImage(filelist);
 }
 
-void MainWindow::addImage(QGraphicsPixmapItem *item)
+void MainWindow::addImage(ImageItem *item)
 {
+    int       min_edge  = qMin(item->pixmap().width(), item->pixmap().height());
+    CropRect *crop_rect = new CropRect(0, 0, min_edge, min_edge, item);
+    item->setCropRect(crop_rect);
     scene_.addItem(item); // Add QGraphicsPixmapItem object to scene_
+    connect(crop_rect, &CropRect::rectClicked, this, &MainWindow::cropRectSelected);
+    connect(crop_rect, &CropRect::rectChanged, this, &MainWindow::cropRectChanged);
+}
+
+void MainWindow::cropRectSelected(CropRect *crop_rect, QRectF rect)
+{
+    if (crop_rect)
+    {
+        QRect r = rect.toRect();
+        ui->crop_rect_x->setValue(r.x());
+        ui->crop_rect_y->setValue(r.y());
+        ui->crop_rect_width->setValue(r.width());
+        ui->crop_rect_height->setValue(r.height());
+    }
+}
+
+void MainWindow::cropRectChanged(QRectF rect)
+{
+    if (!rect.isEmpty())
+    {
+        QRect r = rect.toRect();
+        ui->crop_rect_x->setValue(r.x());
+        ui->crop_rect_y->setValue(r.y());
+        ui->crop_rect_width->setValue(r.width());
+        ui->crop_rect_height->setValue(r.height());
+    }
 }

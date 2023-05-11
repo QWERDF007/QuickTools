@@ -2,6 +2,7 @@
 
 #include "imageitem.h"
 
+#include <QDebug>
 #include <QWheelEvent>
 
 ImageView::ImageView(QWidget *parent)
@@ -30,6 +31,16 @@ void ImageView::wheelEvent(QWheelEvent *event)
     {
         QGraphicsView::wheelEvent(event);
     }
+}
+
+void ImageView::mousePressEvent(QMouseEvent *event)
+{
+    QGraphicsView::mousePressEvent(event);
+}
+
+void ImageView::mouseMoveEvent(QMouseEvent *event)
+{
+    QGraphicsView::mouseMoveEvent(event);
 }
 
 void ImageView::resizeEvent(QResizeEvent *event)

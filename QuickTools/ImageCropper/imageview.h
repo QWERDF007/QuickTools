@@ -4,16 +4,23 @@
 #include <QGraphicsView>
 
 class ImageItem;
+class CropRect;
 
 class ImageView : public QGraphicsView
 {
 public:
     ImageView(QWidget *parent = nullptr);
+
     ImageView(QGraphicsScene *scene, QWidget *parent = nullptr);
+
     ~ImageView();
 
 protected:
     void wheelEvent(QWheelEvent *event) override;
+
+    void mousePressEvent(QMouseEvent *event) override;
+
+    void mouseMoveEvent(QMouseEvent *event) override;
 
     void resizeEvent(QResizeEvent *event) override;
 
