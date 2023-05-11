@@ -189,72 +189,71 @@ void CropRect::adjustRect(QPointF point)
 
 QRectF CropRect::adjustByEdge(QPointF point)
 {
-    qreal x, y;
-    qreal width, height;
+    qreal x1, y1;
+    qreal x2, y2;
     point                = mapToParent(point);
     QPointF top_left     = mapToParent(rect().topLeft());
     QPointF bottom_right = mapToParent(rect().bottomRight());
     qreal   min_edge     = 10 * scale();
-
     switch (selected_edge_)
     {
     case Edge::TOP:
     {
-        x = top_left.x();
-        y = qMin(point.y(), bottom_right.y() - min_edge);
-        if (!prect_.contains(QPointF(x, y)))
+        x1 = top_left.x();
+        y1 = qMin(point.y(), bottom_right.y() - min_edge);
+        if (!prect_.contains(QPointF(x1, y1)))
         {
-            y = 0;
+            y1 = 0;
         }
-        width  = rect().width();
-        height = bottom_right.y() - y;
+        x2 = bottom_right.x();
+        y2 = bottom_right.y();
         break;
     }
     case Edge::RIGHT:
     {
-        x           = top_left.x();
-        y           = top_left.y();
+        x1           = top_left.x();
+        y1           = top_left.y();
         qreal right = qMax(point.x(), top_left.x() + min_edge);
-        if (!prect_.contains(QPointF(right, y)))
+        if (!prect_.contains(QPointF(right, y1)))
         {
             right = prect_.width();
         }
-        width  = right - x;
-        height = rect().height();
+        x2 = right;
+        y2 = bottom_right.y();
         break;
     }
     case Edge::BOTTOM:
     {
-        x            = top_left.x();
-        y            = top_left.y();
+        x1            = top_left.x();
+        y1            = top_left.y();
         qreal bottom = qMax(point.y(), top_left.y() + min_edge);
-        if (!prect_.contains(QPointF(x, bottom)))
+        if (!prect_.contains(QPointF(x1, bottom)))
         {
             bottom = prect_.height();
         }
-        width  = rect().width();
-        height = bottom - y;
+        x2 = bottom_right.x();
+        y2 = bottom;
         break;
     }
     case Edge::LEFT:
     {
-        x = qMin(point.x(), bottom_right.x() - min_edge);
-        y = top_left.y();
-        if (!prect_.contains(QPointF(x, y)))
+        x1 = qMin(point.x(), bottom_right.x() - min_edge);
+        y1 = top_left.y();
+        if (!prect_.contains(QPointF(x1, y1)))
         {
-            x = 0;
+            x1 = 0;
         }
-        width  = bottom_right.x() - x;
-        height = rect().height();
+        x2 = bottom_right.x();
+        y2 = bottom_right.y();
         break;
     }
     default:
     {
-        x = y = width = height = 0;
+        x1 = y1 = x2 = y2 = 0;
         break;
     }
     }
-    return QRectF(x, y, width, height);
+    return QRectF(QPointF(x1, y1), QPointF(x2, y2));
 }
 
 ImageItem::ImageItem(QGraphicsItem *parent)
@@ -307,10 +306,10 @@ void ImageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->drawPixmap(QGraphicsPixmapItem::offset(), pixmap);
 
     // 绘制矩形区域
-    // 防止矩形抖动和子像素渲染伪影
+    // fixme: 放大后非矩形区域有残留， FullViewPortUpdate 可以解决，但是不知道能不能通过其他解决
     QRectF  r            = mapRectFromItem(crop_rect_, crop_rect_->rect());
-    QRectF  roundedRect  = QRectF(round(r.x()), round(r.y()), round(r.width()), round(r.height()));
-    QPixmap centerPixmap = pixmap.copy(roundedRect.toRect());
+    QRect roundedRect = r.toRect();
+    QPixmap centerPixmap = pixmap.copy(roundedRect);
     painter->setOpacity(1);
     painter->drawPixmap(roundedRect.topLeft(), centerPixmap);
 }
