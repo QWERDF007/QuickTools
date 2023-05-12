@@ -93,10 +93,6 @@ public:
 
     void setCropRect(CropRect *crop_rect);
 
-    void setCropRect(const QPixmap &pixmap);
-
-    void setPixmap(const QPixmap &pixmap);
-
 protected:
     int type() const override
     {

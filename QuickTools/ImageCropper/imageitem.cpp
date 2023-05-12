@@ -49,16 +49,17 @@ CropRect::~CropRect()
 
 QVariant CropRect::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    // 限制移动不超出 Pixmap
+    // 限制移动不超出 parentItem 的 Pixmap
     QGraphicsPixmapItem *parent = qgraphicsitem_cast<ImageItem *>(parentItem());
     if (parent && change == QGraphicsItem::ItemPositionChange)
     {
         QPointF new_pos = value.toPointF();
+        QPointF pos_on_pixmap = new_pos + rect().topLeft(); // 加上 topLeft 才是在 pixmap 上的位置
         QRectF  prect   = parent->pixmap().rect();
-        if (!prect.contains(new_pos) || !prect.contains(new_pos + QPointF(rect().width(), rect().height())))
+        if (!prect.contains(pos_on_pixmap) || !prect.contains(pos_on_pixmap + QPointF(rect().width(), rect().height())))
         {
-            new_pos.setX(qMin(prect.right() - rect().width(), qMax(new_pos.x(), prect.left())));
-            new_pos.setY(qMin(prect.bottom() - rect().height(), qMax(new_pos.y(), prect.top())));
+            new_pos.setX(qMin(prect.right() - rect().left() - rect().width(), qMax(new_pos.x(), prect.left() - rect().left())));
+            new_pos.setY(qMin(prect.bottom() - rect().top() - rect().height(), qMax(new_pos.y(), prect.top() - rect().top())));
             emit rectChanged(mapRectToParent(rect()));
             return new_pos;
         }
@@ -141,6 +142,9 @@ void CropRect::init()
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     setAcceptHoverEvents(true);
+
+    QGraphicsPixmapItem *parent = qgraphicsitem_cast<ImageItem *>(parentItem());
+    prect_                      = parent->pixmap().rect();
 }
 
 int CropRect::nearestEdge(QPointF point, qreal epsilon)
@@ -179,17 +183,14 @@ qreal CropRect::distanceToPoint(QPointF p1, QPointF p2)
 
 void CropRect::adjustRect(QPointF point)
 {
-    QGraphicsPixmapItem *parent = qgraphicsitem_cast<ImageItem *>(parentItem());
-    prect_                      = parent->pixmap().rect();
     if (selected_vertex_ > -1)
     {
     }
     else if (selected_edge_ > -1)
     {
+        // 在内部调用 setRect 需要 item 坐标
         QRectF r = adjustByEdge(point);
-        // 这样后续移动才不会有问题
-        setRect(QRectF(0, 0, r.width(), r.height()));
-        setPos(r.topLeft());
+        setRect(mapRectFromParent(r));
     }
     else
     {
@@ -201,6 +202,7 @@ QRectF CropRect::adjustByEdge(QPointF point)
 {
     qreal x1, y1;
     qreal x2, y2;
+    // 编辑矩形，不超出 parentItem 的 Pixmap
     point                = mapToParent(point);
     QPointF top_left     = mapToParent(rect().topLeft());
     QPointF bottom_right = mapToParent(rect().bottomRight());
@@ -263,7 +265,7 @@ QRectF CropRect::adjustByEdge(QPointF point)
         break;
     }
     }
-    return QRectF(QPointF(x1, y1), QPointF(x2, y2));
+    return QRectF(QPointF(x1, y1), QPointF(x2, y2)) & prect_;
 }
 
 ImageItem::ImageItem(QGraphicsItem *parent)
@@ -284,14 +286,10 @@ ImageItem::~ImageItem()
 
 void ImageItem::setCropRect(CropRect *crop_rect)
 {
-    crop_rect_ = crop_rect;
-}
-
-void ImageItem::setCropRect(const QPixmap &pixmap) {}
-
-void ImageItem::setPixmap(const QPixmap &pixmap)
-{
-    QGraphicsPixmapItem::setPixmap(pixmap);
+    if (crop_rect)
+    {
+        crop_rect_ = crop_rect;
+    }
 }
 
 void ImageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
