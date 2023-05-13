@@ -28,25 +28,39 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void newImage(ImageItem *);
+
 private:
     void readImage(const QFileInfoList &filelist);
+
+    void setCropRectInfo(QRectF rect);
+
+    void setCropRect(QRect rect);
+
+    void enableSpinBox();
+
+    void disableSpinBox();
+
+    void rectEditingFinished();
 
     Ui::MainWindow *ui;
 
     QGraphicsScene scene_;
 
-    QThreadPool *pool{nullptr};
+    QThreadPool *pool_{nullptr};
 
-    int i = 0;
+    CropRect *selected_crop_rect_{nullptr};
 
-signals:
-    void newImage(ImageItem *);
+    QMap<ImageItem *, QString> image_fpaths_;
 
 private slots:
     void openFolder();
     void addImage(ImageItem *item);
+    void removeImage(ImageItem *item);
     void cropRectSelected(CropRect *, QRectF);
     void cropRectChanged(QRectF);
+    void saveCrop();
 };
 
 #endif // MAINWINDOW_H

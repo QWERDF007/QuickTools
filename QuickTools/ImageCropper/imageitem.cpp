@@ -14,6 +14,7 @@ enum Edge
     TOP,
     RIGHT,
     BOTTOM,
+    NO_EDGE_SELECTED = -1,
 };
 
 enum Vertex
@@ -22,7 +23,29 @@ enum Vertex
     TOP_RIGHT,
     BOTTOM_RIGHT,
     BOTTOM_LEFT,
+    NO_VERTEX_SELECTED = -1,
 };
+
+static QPainterPath qt_graphicsItem_shapeFromPath(const QPainterPath &path, const QPen &pen)
+{
+    // We unfortunately need this hack as QPainterPathStroker will set a width of 1.0
+    // if we pass a value of 0.0 to QPainterPathStroker::setWidth()
+    const qreal penWidthZero = qreal(0.00000001);
+
+    if (path == QPainterPath() || pen == Qt::NoPen)
+        return path;
+    QPainterPathStroker ps;
+    ps.setCapStyle(pen.capStyle());
+    if (pen.widthF() <= 0.0)
+        ps.setWidth(penWidthZero);
+    else
+        ps.setWidth(pen.widthF());
+    ps.setJoinStyle(pen.joinStyle());
+    ps.setMiterLimit(pen.miterLimit());
+    QPainterPath p = ps.createStroke(path);
+    p.addPath(path);
+    return p;
+}
 
 CropRect::CropRect(QGraphicsItem *parent)
     : QGraphicsRectItem(parent)
@@ -47,6 +70,12 @@ CropRect::~CropRect()
     qDebug() << "~CropRect";
 }
 
+void CropRect::setRectFromParent(const QRectF &r)
+{
+    setRect(mapRectFromParent(r & prect_));
+    emit rectChanged(mapRectToParent(rect()));
+}
+
 QVariant CropRect::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     // 限制移动不超出 parentItem 的 Pixmap
@@ -68,6 +97,20 @@ QVariant CropRect::itemChange(GraphicsItemChange change, const QVariant &value)
     return QGraphicsItem::itemChange(change, value);
 }
 
+QRectF CropRect::boundingRect() const
+{
+    // 在原有基础上向外扩充 5 个单位
+    return rect().adjusted(-5,-5, 5, 5);
+}
+
+QPainterPath CropRect::shape() const
+{
+    // 重写以扩充鼠标事件响应范围和碰撞检测范围
+    QPainterPath path;
+    path.addRect(boundingRect());
+    return qt_graphicsItem_shapeFromPath(path, pen());
+}
+
 void CropRect::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     QGraphicsRectItem::paint(painter, option, widget);
@@ -75,15 +118,25 @@ void CropRect::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 void CropRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    int index      = nearestEdge(event->pos(), 10);
-    selected_edge_ = index;
+    int index      = nearestVertex(event->pos(), 10);
+    if (index > -1)
+    {
+        selected_vertex_ = index;
+        selected_edge_ = NO_EDGE_SELECTED;
+    }
+    else
+    {
+        index      = nearestEdge(event->pos(), 10);
+        selected_vertex_ = NO_VERTEX_SELECTED;
+        selected_edge_ = index;
+    }
     emit rectClicked(this, mapRectToParent(rect()));
     QGraphicsRectItem::mousePressEvent(event);
 }
 
 void CropRect::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (selected_edge_ > -1 && event->buttons() == Qt::LeftButton)
+    if ((selected_vertex_ > -1 || selected_edge_ > -1) && event->buttons() == Qt::LeftButton)
     {
         adjustRect(event->pos());
         emit rectChanged(mapRectToParent(rect()));
@@ -103,19 +156,19 @@ void CropRect::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void CropRect::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    int index = nearestEdge(event->pos(), 10);
+    int index = nearestVertex(event->pos(), 10);
     // 设置鼠标在矩形内悬浮时的样式
     if (index > -1)
     {
         switch (index)
         {
-        case Edge::LEFT:
-        case Edge::RIGHT:
-            setCursor(Qt::SizeHorCursor);
+        case Vertex::TOP_LEFT:
+        case Vertex::BOTTOM_RIGHT:
+            setCursor(Qt::SizeFDiagCursor);
             break;
-        case Edge::TOP:
-        case Edge::BOTTOM:
-            setCursor(Qt::SizeVerCursor);
+        case Vertex::TOP_RIGHT:
+        case Vertex::BOTTOM_LEFT:
+            setCursor(Qt::SizeBDiagCursor);
             break;
         default:
             break;
@@ -123,7 +176,27 @@ void CropRect::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
     }
     else
     {
-        setCursor(Qt::SizeAllCursor);
+        index = nearestEdge(event->pos(), 10);
+        if (index > -1)
+        {
+            switch (index)
+            {
+            case Edge::LEFT:
+            case Edge::RIGHT:
+                setCursor(Qt::SizeHorCursor);
+                break;
+            case Edge::TOP:
+            case Edge::BOTTOM:
+                setCursor(Qt::SizeVerCursor);
+                break;
+            default:
+                break;
+            }
+        }
+        else
+        {
+            setCursor(Qt::SizeAllCursor);
+        }
     }
     QGraphicsRectItem::hoverMoveEvent(event);
 }
@@ -144,7 +217,13 @@ void CropRect::init()
     setAcceptHoverEvents(true);
 
     QGraphicsPixmapItem *parent = qgraphicsitem_cast<ImageItem *>(parentItem());
-    prect_                      = parent->pixmap().rect();
+    if (parent)
+    {
+        prect_ = parent->pixmap().rect();
+    }
+
+    selected_vertex_ = NO_VERTEX_SELECTED;
+    selected_edge_ = NO_EDGE_SELECTED;
 }
 
 int CropRect::nearestEdge(QPointF point, qreal epsilon)
@@ -168,6 +247,23 @@ int CropRect::nearestEdge(QPointF point, qreal epsilon)
     return index;
 }
 
+int CropRect::nearestVertex(QPointF point, qreal epsilon)
+{
+    int   index        = -1;
+    qreal min_distance = std::numeric_limits<qreal>::max();
+    QVector<QPointF> points{rect().topLeft(), rect().topRight(), rect().bottomRight(), rect().bottomLeft()};
+    for (int i = 0; i < points.size(); ++i)
+    {
+        qreal distance = distanceToPoint(point, points[i]);
+        if (distance < epsilon && distance < min_distance)
+        {
+            min_distance = distance;
+            index = i;
+        }
+    }
+    return index;
+}
+
 qreal CropRect::distanceToLine(QPointF point, QPointF p1, QPointF p2)
 {
     qreal A = p2.y() - p1.y();
@@ -178,19 +274,20 @@ qreal CropRect::distanceToLine(QPointF point, QPointF p1, QPointF p2)
 
 qreal CropRect::distanceToPoint(QPointF p1, QPointF p2)
 {
-    return 0;
+    qreal dx = p1.x() - p2.x();
+    qreal dy = p1.y() - p2.y();
+    return sqrt(dx * dx + dy * dy);
 }
 
 void CropRect::adjustRect(QPointF point)
 {
     if (selected_vertex_ > -1)
     {
+        setRectFromParent(adjustByVertex(point));
     }
     else if (selected_edge_ > -1)
     {
-        // 在内部调用 setRect 需要 item 坐标
-        QRectF r = adjustByEdge(point);
-        setRect(mapRectFromParent(r));
+        setRectFromParent(adjustByEdge(point));
     }
     else
     {
@@ -268,6 +365,121 @@ QRectF CropRect::adjustByEdge(QPointF point)
     return QRectF(QPointF(x1, y1), QPointF(x2, y2)) & prect_;
 }
 
+QRectF CropRect::adjustByVertex(QPointF point)
+{
+    qreal x1, y1;
+    qreal x2, y2;
+    // 编辑矩形，不超出 parentItem 的 Pixmap
+    point                = mapToParent(point);
+    QPointF top_left     = mapToParent(rect().topLeft());
+    QPointF bottom_right = mapToParent(rect().bottomRight());
+    qreal   min_edge     = 10 * scale();
+
+    switch (selected_vertex_) {
+    case Vertex::TOP_LEFT:
+    {
+        x1 = qMin(point.x(), bottom_right.x() - min_edge);
+        y1 = qMin(point.y(), bottom_right.y() - min_edge);
+        x2 = bottom_right.x();
+        y2 = bottom_right.y();
+        if (!prect_.contains(QPointF(x1, y1)))
+        {
+            x1 = x1 < 0 ? 0 : x1;
+            y1 = y1 < 0 ? 0 : y1;
+        }
+        break;
+    }
+    case Vertex::TOP_RIGHT:
+    {
+        x1 = top_left.x();
+        y1 = qMin(point.y(), bottom_right.y() - min_edge);
+        x2 = qMax(point.x(), x1 + min_edge);
+        y2 = bottom_right.y();
+        if (!prect_.contains(QPointF(x2, y1)))
+        {
+            x2 = x2 > prect_.width() ? prect_.width() : x2;
+            y1 = y1 < 0 ? 0 : y1;
+        }
+        break;
+    }
+    case Vertex::BOTTOM_RIGHT:
+    {
+        x1 = top_left.x();
+        y1 = top_left.y();
+        x2 = qMax(point.x(), x1 + min_edge);
+        y2 = qMax(point.y(), y1 + min_edge);
+        if (!prect_.contains(QPointF(x2, y2)))
+        {
+            x2 = x2 > prect_.width() ? prect_.width() : x2;
+            y2 = y2 > prect_.height() ? prect_.height() : y2;
+        }
+        break;
+    }
+    case Vertex::BOTTOM_LEFT:
+    {
+        x1 = qMin(point.x(), bottom_right.x() - min_edge);
+        y1 = top_left.y();
+        x2 = bottom_right.x();
+        y2 = qMax(point.y(), y1 + min_edge);
+        if (!prect_.contains(QPointF(x1, y2)))
+        {
+            x1 = x1 < 0 ? 0 : x1;
+            y2 = y2 > prect_.height() ? prect_.height() : y2;
+        }
+        break;
+    }
+    default:
+    {
+        x1 = y1 = x2 = y2 = 0;
+        break;
+    }
+    }
+    return QRectF(QPointF(x1, y1), QPointF(x2, y2)) & prect_;
+}
+
+CloseButtonItem::CloseButtonItem(QGraphicsItem *parent)
+    : QGraphicsItem(parent)
+{
+    setAcceptHoverEvents(true);
+    setFlag(ItemIgnoresParentOpacity, true);
+//    setFlag(ItemIgnoresTransformations, true);
+    setZValue(100); // 设置在最上面
+}
+
+CloseButtonItem::~CloseButtonItem()
+{
+    qDebug() << "~CloseButtonItem";
+}
+
+QRectF CloseButtonItem::boundingRect() const
+{
+    return QRectF(0, 0, 20, 20);
+}
+
+void CloseButtonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
+    QRectF rect(0, 0, 20, 20);
+    painter->fillRect(rect, QColor(140, 220, 220, 128));
+    QPen pen;
+    pen.setColor(QColor(255, 255, 255, 128));
+    pen.setWidth(3);
+    painter->setPen(pen);
+    painter->drawLine(3, 3, 17, 17);
+    painter->drawLine(17, 3, 3, 17);
+}
+
+void CloseButtonItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    setCursor(Qt::PointingHandCursor);
+}
+
+void CloseButtonItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    setCursor(Qt::ArrowCursor);
+}
+
 ImageItem::ImageItem(QGraphicsItem *parent)
     : QGraphicsPixmapItem(parent)
 {
@@ -289,6 +501,21 @@ void ImageItem::setCropRect(CropRect *crop_rect)
     if (crop_rect)
     {
         crop_rect_ = crop_rect;
+    }
+}
+
+QPixmap ImageItem::cropped() const
+{
+    if (crop_rect_)
+    {
+        QRectF  r            = mapRectFromItem(crop_rect_, crop_rect_->rect());
+        QRect   roundedRect  = r.toRect();
+        QPixmap centerPixmap = this->pixmap().copy(roundedRect);
+        return centerPixmap;
+    }
+    else
+    {
+        return QPixmap();
     }
 }
 
@@ -330,3 +557,4 @@ void ImageItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     update();
     QGraphicsPixmapItem::hoverLeaveEvent(event);
 }
+

@@ -17,13 +17,21 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , pool(QThreadPool::globalInstance())
+    , pool_(QThreadPool::globalInstance())
 {
     ui->setupUi(this);
     ui->toolBox->setStyleSheet("QToolBoxButton { height: 48px; /*font-size: 16px;*/}");
 
+    disableSpinBox();
+
     connect(ui->actionOpenFolder, &QAction::triggered, this, &MainWindow::openFolder);
     connect(this, &MainWindow::newImage, this, &MainWindow::addImage);
+    connect(ui->image_view, &ImageView::removeImage, this, &MainWindow::removeImage);
+    connect(ui->crop_rect_x, &QAbstractSpinBox::editingFinished, this, &MainWindow::rectEditingFinished);
+    connect(ui->crop_rect_y, &QAbstractSpinBox::editingFinished, this, &MainWindow::rectEditingFinished);
+    connect(ui->crop_rect_width, &QAbstractSpinBox::editingFinished, this, &MainWindow::rectEditingFinished);
+    connect(ui->crop_rect_height, &QAbstractSpinBox::editingFinished, this, &MainWindow::rectEditingFinished);
+    connect(ui->save_btn, &QAbstractButton::clicked, this, &MainWindow::saveCrop);
 
     for (auto child : ui->tabWidget->findChildren<QTabBar *>())
     {
@@ -34,8 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         qDebug() << child << child->metaObject()->className();
     }
-    ui->graphicsView->setScene(&scene_);
-    qDebug() << pool->maxThreadCount();
+    ui->image_view->setScene(&scene_);
 }
 
 MainWindow::~MainWindow()
@@ -45,28 +52,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::readImage(const QFileInfoList &filelist)
 {
-    int    width              = ui->graphicsView->width();
-    int    height             = ui->graphicsView->height();
+    int    width              = ui->image_view->width();
     int    current_row_height = 0;
     int    row                = 0;
     int    col                = 0;
     QMutex mutex;
-    i = 0;
-    for (const auto &file : filelist) // Loop through list of files
+    for (const auto &file : filelist)
     {
-        QtConcurrent::run(pool,
-                          [this, &mutex, &file, &row, &col, width, height, &current_row_height]()
+        QtConcurrent::run(pool_,
+                          [this, &mutex, &file, &row, &col, width, &current_row_height]()
                           {
-                              qDebug() << file.fileName();
                               QPixmap pixmap(file.absoluteFilePath());
                               if (pixmap.isNull())
                               {
                                   return;
                               }
-                              ImageItem *item
-                                  = new ImageItem(pixmap); // Create QGraphicsPixmapItem object from QPixmap object
-
+                              ImageItem *item = new ImageItem(pixmap);
                               mutex.lock();
+                              image_fpaths_[item] = file.absoluteFilePath();
                               col += col == 0 ? 0 : 20;
                               int new_col = col + pixmap.width();
                               int new_row = row;
@@ -89,26 +92,75 @@ void MainWindow::readImage(const QFileInfoList &filelist)
                               emit newImage(item);
                           });
     }
-    pool->waitForDone(); // Wait for all threads to finish
+    pool_->waitForDone();
+}
+
+void MainWindow::setCropRectInfo(QRectF rect)
+{
+    QRect r = rect.toRect();
+    ui->crop_rect_x->setValue(r.x());
+    ui->crop_rect_y->setValue(r.y());
+    ui->crop_rect_width->setValue(r.width());
+    ui->crop_rect_height->setValue(r.height());
+    int hcf = std::gcd(r.width(), r.height());
+    ui->crop_rect_w_ratio->setValue(r.width() / hcf);
+    ui->crop_rect_h_ratio->setValue(r.height() / hcf);
+}
+
+void MainWindow::setCropRect(QRect rect)
+{
+    if (selected_crop_rect_)
+    {
+        selected_crop_rect_->setRectFromParent(rect);
+    }
+}
+
+void MainWindow::enableSpinBox()
+{
+    ui->crop_rect_x->setEnabled(true);
+    ui->crop_rect_y->setEnabled(true);
+    ui->crop_rect_width->setEnabled(true);
+    ui->crop_rect_height->setEnabled(true);
+    ui->crop_rect_w_ratio->setEnabled(true);
+    ui->crop_rect_h_ratio->setEnabled(true);
+}
+
+void MainWindow::disableSpinBox()
+{
+    ui->crop_rect_x->setDisabled(true);
+    ui->crop_rect_y->setDisabled(true);
+    ui->crop_rect_width->setDisabled(true);
+    ui->crop_rect_height->setDisabled(true);
+    ui->crop_rect_w_ratio->setDisabled(true);
+    ui->crop_rect_h_ratio->setDisabled(true);
+}
+
+void MainWindow::rectEditingFinished()
+{
+    int x      = ui->crop_rect_x->value();
+    int y      = ui->crop_rect_y->value();
+    int width  = ui->crop_rect_width->value();
+    int height = ui->crop_rect_height->value();
+    setCropRect(QRect(x, y, width, height));
 }
 
 void MainWindow::openFolder()
 {
+    // Open directory dialog
     QString folderPath = QFileDialog::getExistingDirectory(
-        this, tr("Open Directory"), "/home",
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks); // Open directory dialog
+        this, tr("Open Directory"), "/home", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (folderPath.isEmpty())
     {
         return;
     }
     QDir        folder(folderPath);
-    QStringList filters; // Create list of file filters
+    QStringList filters;
     filters << "*.png"
             << "*.jpg"
             << "*.jpeg"
-            << "*.bmp"; // Add file filters to list
-    QFileInfoList filelist
-        = folder.entryInfoList(filters, QDir::Files); // Get list of files in directory matching filters
+            << "*.bmp";
+    // Get list of files in directory matching filters
+    QFileInfoList filelist = folder.entryInfoList(filters, QDir::Files);
     readImage(filelist);
 }
 
@@ -117,20 +169,29 @@ void MainWindow::addImage(ImageItem *item)
     int       min_edge  = qMin(item->pixmap().width(), item->pixmap().height());
     CropRect *crop_rect = new CropRect(0, 0, min_edge, min_edge, item);
     item->setCropRect(crop_rect);
-    scene_.addItem(item); // Add QGraphicsPixmapItem object to scene_
+    CloseButtonItem *btn = new CloseButtonItem(item);
+    btn->setPos(item->pixmap().width() - 22, 2);
+    scene_.addItem(item);
     connect(crop_rect, &CropRect::rectClicked, this, &MainWindow::cropRectSelected);
     connect(crop_rect, &CropRect::rectChanged, this, &MainWindow::cropRectChanged);
+}
+
+void MainWindow::removeImage(ImageItem *item)
+{
+    auto found = image_fpaths_.find(item);
+    if (found != image_fpaths_.end())
+    {
+        image_fpaths_.remove(item);
+    }
 }
 
 void MainWindow::cropRectSelected(CropRect *crop_rect, QRectF rect)
 {
     if (crop_rect)
     {
-        QRect r = rect.toRect();
-        ui->crop_rect_x->setValue(r.x());
-        ui->crop_rect_y->setValue(r.y());
-        ui->crop_rect_width->setValue(r.width());
-        ui->crop_rect_height->setValue(r.height());
+        selected_crop_rect_ = crop_rect;
+        setCropRectInfo(rect);
+        enableSpinBox();
     }
 }
 
@@ -138,10 +199,29 @@ void MainWindow::cropRectChanged(QRectF rect)
 {
     if (!rect.isEmpty())
     {
-        QRect r = rect.toRect();
-        ui->crop_rect_x->setValue(r.x());
-        ui->crop_rect_y->setValue(r.y());
-        ui->crop_rect_width->setValue(r.width());
-        ui->crop_rect_height->setValue(r.height());
+        setCropRectInfo(rect);
+    }
+}
+
+void MainWindow::saveCrop()
+{
+    QString folder_path = QFileDialog::getExistingDirectory(
+        this, tr("Save"), "/home", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (folder_path.isEmpty())
+    {
+        return;
+    }
+    QDir folder(folder_path);
+    for (auto iter = image_fpaths_.cbegin(); iter != image_fpaths_.cend(); ++iter)
+    {
+        const ImageItem *item      = iter.key();
+        QString          save_path = folder.absoluteFilePath(QFileInfo(iter.value()).fileName());
+
+        QtConcurrent::run(pool_,
+                          [item, save_path]()
+                          {
+                              QPixmap pm = item->cropped();
+                              pm.save(save_path);
+                          });
     }
 }

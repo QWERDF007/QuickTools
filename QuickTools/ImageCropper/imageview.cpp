@@ -35,6 +35,18 @@ void ImageView::wheelEvent(QWheelEvent *event)
 
 void ImageView::mousePressEvent(QMouseEvent *event)
 {
+    auto item = qgraphicsitem_cast<CloseButtonItem *>(itemAt(event->pos()));
+    if (item != nullptr)
+    {
+        ImageItem *image_item = qgraphicsitem_cast<ImageItem *>(item->parentItem());
+        if (image_item != nullptr)
+        {
+            scene()->removeItem(item->parentItem());
+            emit removeImage(image_item);
+            delete item->parentItem();
+            updateImageItemPos();
+        }
+    }
     QGraphicsView::mousePressEvent(event);
 }
 
@@ -65,7 +77,7 @@ void ImageView::updateImageItemPos()
     qreal viewport_width     = mapToScene(viewport()->rect()).boundingRect().width();
     for (auto item : scene()->items(Qt::AscendingOrder))
     {
-        auto image_item = dynamic_cast<ImageItem *>(item);
+        ImageItem *image_item = dynamic_cast<ImageItem *>(item);
         if (image_item != nullptr)
         {
             setImagePos(image_item, row, col, current_row_height, viewport_width);

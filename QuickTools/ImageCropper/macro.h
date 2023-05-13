@@ -7,6 +7,7 @@ enum ItemType : int32_t
 {
     ImageItemType = 1,
     CropRectType,
+    CloseButtonType,
 };
 
 #endif // MACRO_H

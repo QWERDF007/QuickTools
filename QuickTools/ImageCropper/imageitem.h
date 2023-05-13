@@ -23,8 +23,13 @@ public:
     explicit CropRect(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent = nullptr);
     ~CropRect();
 
+    void setRectFromParent(const QRectF &r);
+
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
+    QRectF boundingRect() const override;
+    QPainterPath shape() const override;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
@@ -76,6 +81,29 @@ signals:
     void rectClicked(CropRect *, QRectF);
 };
 
+class CloseButtonItem : public QGraphicsItem
+{
+public:
+    enum { Type = UserType + ItemType::CloseButtonType };
+    explicit CloseButtonItem(QGraphicsItem *parent = nullptr);
+    ~CloseButtonItem();
+
+protected:
+    int type() const override
+    {
+        return Type;
+    }
+
+    QRectF boundingRect() const override;
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
+};
+
 class ImageItem
     : public QObject
     , public QGraphicsPixmapItem
@@ -92,6 +120,8 @@ public:
     ~ImageItem();
 
     void setCropRect(CropRect *crop_rect);
+
+    QPixmap cropped() const;
 
 protected:
     int type() const override
