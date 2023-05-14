@@ -33,10 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->crop_rect_height, &QAbstractSpinBox::editingFinished, this, &MainWindow::rectEditingFinished);
     connect(ui->save_btn, &QAbstractButton::clicked, this, &MainWindow::saveCrop);
 
-    for (auto child : ui->tabWidget->findChildren<QTabBar *>())
-    {
-        child->hide();
-    }
+    ui->tabWidget->tabBar()->hide();
 
     for (auto child : ui->toolBox->children())
     {
