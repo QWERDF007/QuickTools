@@ -1,10 +1,15 @@
 
 # 获取所有QML文件的相对路径
-file(GLOB_RECURSE QML_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} qml/*.qml)
+file(GLOB_RECURSE QML_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml)
 # 将 qml 文件组织到一起
 source_group("QML Files" FILES ${QML_SOURCES} "qtquickcontrols2.conf")
 
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
+
+qt_add_big_resources(QRC_SOURCES ${PROJECT_SOURCE_DIR}/assets/assets.qrc)
+# Have big_resource.qrc treated as a source file by Qt Creator
+set_property(SOURCE ${PROJECT_SOURCE_DIR}/assets/assets.qrc PROPERTY SKIP_AUTORCC ON)
+
 
 # 添加可执行文件
 qt_add_executable(${PROJECT_NAME}
@@ -36,12 +41,7 @@ PRIVATE
 target_link_libraries(${PROJECT_NAME}
 PRIVATE 
     Qt6::Quick
-)
-
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
+    QuickTools_types
+    QuickTools_imgproc
+    QuickTools_ui
 )

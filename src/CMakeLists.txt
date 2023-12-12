@@ -1,1 +1,4 @@
-add_subdirectory(MainWindow)
+add_subdirectory(mainwindow)
+add_subdirectory(quickui)
+add_subdirectory(toolstypes)
+add_subdirectory(imgproc)

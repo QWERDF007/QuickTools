@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import QuickTools.ui
+
 ApplicationWindow {
     id: root
     visible: true
@@ -17,8 +19,9 @@ ApplicationWindow {
         implicitHeight: 24
     }
 
-    footer: TabBar {
-
+    footer: Rectangle {
+        color: "lightgray"
+        implicitHeight: 24
     }
 
     Item {
@@ -27,8 +30,19 @@ ApplicationWindow {
         RowLayout {
             anchors.fill: parent
             ListView {
-                Layout.preferredWidth: 240
+                Layout.preferredWidth: 320
                 Layout.fillHeight: true
+
+                model: ListModel {
+                    ListElement { text: "图像处理" }
+                    ListElement { text: "深度学习" }
+                    ListElement { text: "图像检索" }
+                }
+
+                delegate: QuickExpander {
+                    headerText: model.text
+                    headerHeight: 24
+                }
             }
             Rectangle {
                 Layout.fillHeight: true
