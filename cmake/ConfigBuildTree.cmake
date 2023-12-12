@@ -1,5 +1,5 @@
 # 设置 Debug 生成的可执行文件和库文件的名称后缀
-set(CMAKE_DEBUG_POSTFIX "_d")
+set(CMAKE_DEBUG_POSTFIX "d")
 
 # CMAKE_BUILD_TYPE 不存在或为空, 则设置为 Release
 if(NOT CMAKE_BUILD_TYPE)
