@@ -46,7 +46,7 @@ foreach(def ${dir_defs_})
 endforeach()
 get_directory_property(dir_opt COMPILE_OPTIONS)
 
-message(STATUS "编译器/链接器配置")
+message(STATUS "Compiler/linker config")
 message(STATUS "    C++ Compiler : ${CMAKE_CXX_COMPILER} (${CMAKE_CXX_COMPILER_VERSION})")
 message(STATUS "    C++ Standard : ${CMAKE_CXX_STANDARD}")
 message(STATUS "    C++ Flags    : ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_${BUILD_TYPE}}")
