@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="collaps">icons/collaps.svg</file>
+        <file alias="expand">icons/expand.svg</file>
+    </qresource>
+</RCC>
