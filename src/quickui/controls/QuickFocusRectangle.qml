@@ -1,6 +1,6 @@
-import QtQuick
+﻿import QtQuick
 import QtQuick.Controls
-import FluentUI
+
 Item {
     property int radius: 4
     id:control

@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Controls.Basic
@@ -59,7 +59,7 @@ Item {
 
     // 分割线
     Component{
-        id:com_panel_item_separatorr
+        id:com_panel_item_separator
         QuickDivider{
             width: layout_list.width
             spacing: {
@@ -86,6 +86,10 @@ Item {
         Item{
             height: control.cellHeight
             width: layout_list.width
+            Component.onCompleted: {
+                console.log("com_panel_item_expander", width, height)
+            }
+
             QuickControl{
                 id:item_control
                 enabled: !model.disabled
@@ -354,6 +358,7 @@ Item {
                     }
                 }
             }
+
         }
     }
 
@@ -368,6 +373,7 @@ Item {
         }
 
         color: "transparent"
+//        color: "red"
 
         Item{
             id:layout_header
@@ -375,7 +381,7 @@ Item {
             clip: true
         }
 
-        Flickable{
+        Flickable {
             id:layout_flickable
             anchors{
                 top: layout_header.bottom
@@ -383,8 +389,12 @@ Item {
                 left: parent.left
                 right: parent.right
 //                bottom: layout_footer.top
-                bottom: parent.top
+                bottom: parent.bottom
             }
+            Component.onCompleted: {
+                console.log("Flickable", width, height)
+            }
+
             boundsBehavior: ListView.StopAtBounds
             clip: true
             contentHeight: nav_list.contentHeight
@@ -403,7 +413,7 @@ Item {
                 }
                 anchors.fill: parent
                 interactive: false
-                model:d.handleItems()
+                model: d.handleItems()
                 boundsBehavior: ListView.StopAtBounds
                 highlightMoveDuration: 167
                 highlight: Item{
@@ -411,7 +421,7 @@ Item {
                     Rectangle{
                         height: 18
                         radius: 1.5
-                        color: FluTheme.primaryColor
+                        color: "blue"
                         width: 3
                         anchors{
                             verticalCenter: parent.verticalCenter
@@ -426,21 +436,25 @@ Item {
                     property var _idx: index
                     property int type: 0
                     sourceComponent: {
-                        if(model === null || !model)
+                        if (model === null || !model) {
                             return undefined
-                        if(modelData instanceof QuickPaneItem){
+                        }
+                        if (modelData instanceof QuickPaneItem) {
                             return com_panel_item
                         }
-                        if(modelData instanceof QuickPaneItemHeader){
+                        if (modelData instanceof QuickPaneItemHeader) {
+                            console.log("header")
                             return com_panel_item_header
                         }
-                        if(modelData instanceof QuickPaneItemSeparator){
-                            return com_panel_item_separatorr
+                        if (modelData instanceof QuickPaneItemSeparator) {
+                            console.log("separator")
+                            return com_panel_item_separator
                         }
-                        if(modelData instanceof QuickPaneItemExpander){
+                        if (modelData instanceof QuickPaneItemExpander) {
+                            console.log("expander")
                             return com_panel_item_expander
                         }
-                        if(modelData instanceof QuickPaneItemEmpty){
+                        if (modelData instanceof QuickPaneItemEmpty) {
                             return com_panel_item_empty
                         }
                         return undefined
