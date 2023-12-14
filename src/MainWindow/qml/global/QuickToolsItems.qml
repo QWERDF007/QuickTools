@@ -33,11 +33,13 @@ QuickObject {
 
     QuickPaneItemExpander {
         title: "图像处理"
-        iconVisible: false
+        iconVisible: true
+        icon: QuickFontIcon.QRCode
     }
 
     QuickPaneItemExpander {
         title: "深度学习"
-        iconVisible: false
+        iconVisible: true
+        icon: QuickFontIcon.CheckboxComposite
     }
 }

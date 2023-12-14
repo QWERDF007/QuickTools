@@ -4,6 +4,8 @@ import QtQuick.Controls
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 
+import QuickTools.ui
+
 Item {
     id: control
     property QuickObject items
@@ -172,6 +174,7 @@ Item {
                         height: 18
                         radius: 1.5
 //                        color: FluTheme.primaryColor
+                        color: "#0066b4"
                         visible: {
                             if(!model){
                                 return false
@@ -191,10 +194,10 @@ Item {
                             verticalCenter: parent.verticalCenter
                         }
                     }
-                    QuickIcon {
-                        id:item_icon_expand
+                    QuickIcon { // 箭头图标
+                        id: item_icon_expand
                         rotation: model&&model.isExpand?0:180
-//                        iconSource: FluentIcons.ChevronUp
+                        iconSource: QuickFontIcon.ChevronUp
                         iconSize: 15
                         anchors{
                             verticalCenter: parent.verticalCenter
@@ -203,7 +206,6 @@ Item {
                         }
                         visible: true
                         Behavior on rotation {
-//                            enabled: FluTheme.enableAnimation && d.animDisabled
                             NumberAnimation{
                                 duration: 167
                                 easing.type: Easing.OutCubic
@@ -218,15 +220,16 @@ Item {
                     }
                     color: {
                         if(!item_control.enabled){
-                            return Qt.rgba(0,0,0,0)
+                            return "#00000000"
                         }
                         if(nav_list.currentIndex === _idx&&type===0){
-                            return Qt.rgba(0,0,0,255*0.09)
+                            return "#16000000"
                         }
                         if(item_control.hovered){
-                            return Qt.rgba(0,0,0,255*0.03)
+//                            return Qt.rgba(0,0,0,255*0.03)
+                            return "#07000000"
                         }
-                        return Qt.rgba(0,0,0,0)
+                        return "#00000000"
                     }
                     Component{
                         id:com_icon
