@@ -4,50 +4,46 @@ import QtQuick.Layouts
 
 import QuickTools.ui
 
-ApplicationWindow {
+import "../global"
+
+Window {
     id: root
     visible: true
     width: 1920
     height: 1080
-//    color: "red"
 
-    menuBar: MenuBar {
-        implicitHeight: 12
-    }
-
-    header: ToolBar {
-        implicitHeight: 24
-    }
-
-    footer: Rectangle {
-        color: "lightgray"
-        implicitHeight: 24
-    }
-
-    Item {
-
+    Flipable {
+        id:flipable
         anchors.fill: parent
-        RowLayout {
-            anchors.fill: parent
-            ListView {
-                Layout.preferredWidth: 320
-                Layout.fillHeight: true
+        property bool flipped: false
+        property real flipAngle: 0
+        transform: Rotation {
+            id: rotation
+            origin.x: flipable.width/2
+            origin.y: flipable.height/2
+            axis { x: 0; y: 1; z: 0 }
+            angle: flipable.flipAngle
 
-                model: ListModel {
-                    ListElement { text: "图像处理" }
-                    ListElement { text: "深度学习" }
-                    ListElement { text: "图像检索" }
-                }
+        }
+        states: State {
+            PropertyChanges { target: flipable; flipAngle: 180 }
+            when: flipable.flipped
+        }
+        transitions: Transition {
+            NumberAnimation { target: flipable; property: "flipAngle"; duration: 1000 ; easing.type: Easing.OutCubic}
+        }
 
-                delegate: QuickExpander {
-                    headerText: model.text
-                    headerHeight: 24
-                }
-            }
-            Rectangle {
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-                color: "gray"
+        back: Item {
+            anchors.fill: flipable
+            visible: flipable.flipAngle !== 0
+        }
+        front: Item {
+            visible: flipable.flipAngle !== 180
+            anchors.fill: flipable
+
+            QuickNavigationView {
+                anchors.fill: parent
+                items: QuickToolsItems
             }
         }
     }
