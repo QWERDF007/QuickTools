@@ -4,6 +4,9 @@ set(TARGET_NAME "${PROJECT_NAME}_${PLUGIN_NAME}")
 # 获取所有源文件的相对路径
 file(GLOB SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp) 
 
+# 获取所有头文件的相对路径
+file(GLOB HEADERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h *.hpp) 
+
 # 获取所有QML文件的相对路径
 file(GLOB_RECURSE QML_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml)
 # 将 qml 文件组织到一起
@@ -28,6 +31,7 @@ set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
 # 添加qml模块
 qt_add_library(${TARGET_NAME} SHARED
     ${SOURCES}
+    ${HEADERS}
     ${QML_SOURCES}
 )
 qt_add_qml_module(${TARGET_NAME}

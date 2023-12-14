@@ -7,6 +7,9 @@ source_group("QML Files" FILES ${QML_SOURCES})
 # 获取所有CPP文件的相对路径
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
+# 获取所有头文件的相对路径
+file(GLOB HEADERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h *.hpp) 
+
 # 获取所有资源文件的相对路径
 file(GLOB_RECURSE RES_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} */qmldir)
 # 将 qmldir 组织到一起
@@ -20,6 +23,7 @@ set_property(SOURCE ${PROJECT_SOURCE_DIR}/assets/assets.qrc PROPERTY SKIP_AUTORC
 # 添加可执行文件
 qt_add_executable(${PROJECT_NAME}
     ${SOURCES}
+    ${HEADERS}
     ${QRC_SOURCES}
 )
 
