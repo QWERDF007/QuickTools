@@ -1,8 +1,7 @@
 #pragma once
 
-#include <QtQml/qqml.h>
-
 #include <QObject>
+#include <QtQml>
 
 namespace QuickTools {
 

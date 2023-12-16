@@ -166,15 +166,15 @@ Item {
                         return false
                     }
                 }
-                Rectangle {
+
+                Rectangle { // item 显示内容 (高亮+背景+图标+标题文字)
                     radius: 4
                     anchors.fill: parent
-                    Rectangle{
+                    Rectangle { // 选中高亮竖线
                         width: 3
                         height: 18
                         radius: 1.5
-//                        color: FluTheme.primaryColor
-                        color: "#0066b4"
+                        color: QuickColor.Primary
                         visible: {
                             if(!model){
                                 return false
@@ -218,20 +218,19 @@ Item {
                             return "#000000"
                         }
                     }
-                    color: {
-                        if(!item_control.enabled){
+                    color: { // item 不同状态下的背景色
+                        if(!item_control.enabled) { // 禁用状态下的颜色
                             return "#00000000"
                         }
                         if(nav_list.currentIndex === _idx&&type===0){
                             return "#16000000"
                         }
-                        if(item_control.hovered){
-//                            return Qt.rgba(0,0,0,255*0.03)
+                        if(item_control.hovered) { // 鼠标悬浮时的颜色
                             return "#07000000"
                         }
                         return "#00000000"
                     }
-                    Component{
+                    Component{ // 图标组件
                         id:com_icon
                         QuickIcon{
                             iconSource: {
@@ -249,7 +248,7 @@ Item {
                             }
                         }
                     }
-                    Item{
+                    Item{ // 图标容器
                         id:item_icon
                         width: visible ? 30 : 8
                         height: 30
@@ -366,7 +365,7 @@ Item {
     }
 
 
-    Rectangle{
+    Rectangle {
         id:layout_list
         width: control.cellWidth
         anchors {
@@ -378,7 +377,7 @@ Item {
         color: "transparent"
 //        color: "red"
 
-        Item{
+        Item { // header 组件
             id:layout_header
             width: layout_list.width
             clip: true
@@ -391,13 +390,8 @@ Item {
                 topMargin: 6
                 left: parent.left
                 right: parent.right
-//                bottom: layout_footer.top
                 bottom: parent.bottom
             }
-            Component.onCompleted: {
-                console.log("Flickable", width, height)
-            }
-
             boundsBehavior: ListView.StopAtBounds
             clip: true
             contentHeight: nav_list.contentHeight
@@ -424,7 +418,7 @@ Item {
                     Rectangle{
                         height: 18
                         radius: 1.5
-                        color: "blue"
+                        color: QuickColor.Primary
                         width: 3
                         anchors{
                             verticalCenter: parent.verticalCenter

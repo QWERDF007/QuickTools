@@ -50,6 +50,8 @@ target_compile_definitions(${TARGET_NAME}
     PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>
 )
 
+target_link_libraries(${TARGET_NAME} PRIVATE  Qt6::Gui)
+
 
 # 下面这部分用于复制 dll 和 qmldir, 需要将 dll 和 qmldir 添加到 QQmlEngine::importPathList 中
 # 否则无法使用插件, 默认会将可执行文件所在目录添加到列表中, 所以将插件拷贝到该目录下

@@ -45,6 +45,7 @@ PRIVATE
 target_link_libraries(${PROJECT_NAME}
 PRIVATE 
     Qt6::Quick
+    Qt6::Gui
     QuickTools_types
     QuickTools_imgproc
     QuickTools_ui
