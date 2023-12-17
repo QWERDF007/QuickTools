@@ -2,6 +2,8 @@
 
 #include "quickcolor.h"
 
+namespace QuickTools::ui {
+
 QuickColor *QuickColor::instance_ = nullptr;
 
 /**
@@ -19,11 +21,20 @@ QuickColor *QuickColor::getInstance()
 QuickColor::QuickColor(QObject *parent)
     : QObject(parent)
 {
-    Primary("#0066b4");
+    //    Primary("#0066b4");
+    Primary(QColor(0, 102, 180, 255));
     HighLight("#009688");
+    FontPrimary(QColor(7, 7, 7, 255));
+
+    ItemNormal(QColor(0, 0, 0, 0));
+    ItemHover(QColor(0, 0, 0, 255 * 0.03));
+    ItemPress(QColor(0, 0, 0, 255 * 0.06));
+    ItemCheck(QColor(0, 0, 0, 255 * 0.09));
+
+    Grey120("#797775");
+    Grey220("#11100f");
 }
 
-QuickColor::~QuickColor()
-{
-    qDebug() << __FUNCTION__ << "deconstructor";
-}
+QuickColor::~QuickColor() {}
+
+} // namespace QuickTools::ui
