@@ -12,14 +12,14 @@ Item {
     property Component autoSuggestBox
 
     property int navTopMargin: 0
+    property int navCompactWidth: 50
     property int cellHeight: 38
     property int cellWidth: 300
 
     Item {
         id:d
-        property bool isCompact: false
-        property bool isMinimal: false
 
+        property bool enableNavigationPanel: false
         property color itemDisableColor: Qt.rgba(160/255,160/255,160/255,1)
 
         function handleItems(){
@@ -82,18 +82,14 @@ Item {
         }
     }
 
-    // 展开列表
+    // 导航展开列表 expander
     Component{
         id:com_panel_item_expander
         Item{
             height: control.cellHeight
             width: layout_list.width
-            Component.onCompleted: {
-                console.log("com_panel_item_expander", width, height)
-            }
-
-            QuickControl{
-                id:item_control
+            QuickControl {
+                id: item_control
                 enabled: !model.disabled
                 anchors{
                     top: parent.top
@@ -110,7 +106,7 @@ Item {
 //                    visible: item_control.hovered && model.title && d.isCompact
 //                    delay: 800
 //                }
-                MouseArea{
+                MouseArea { // 右键菜单
                     anchors.fill: parent
                     acceptedButtons: Qt.RightButton
                     onClicked:
@@ -126,19 +122,10 @@ Item {
                         }
                     z:-100
                 }
-                onClicked: {
-                    if(d.isCompactAndNotPanel && model.children.length > 0){
-                        let h = 38*Math.min(Math.max(model.children.length,1),8)
-                        let y = mapToItem(control,0,0).y
-                        if(h+y>control.height){
-                            y = control.height - h
-                        }
-                        control_popup.showPopup(Qt.point(control.navCompactWidth,y),h,model.children)
-                        return
-                    }
+                onClicked: { // 点击展开列表
                     model.isExpand = !model.isExpand
                 }
-                Rectangle{
+                Rectangle { // 右上角提示圆点
                     color: Qt.rgba(255/255,77/255,79/255,1)
                     width: 10
                     height: 10
@@ -166,7 +153,6 @@ Item {
                         return false
                     }
                 }
-
                 Rectangle { // item 显示内容 (高亮+背景+图标+标题文字)
                     radius: 4
                     anchors.fill: parent
@@ -220,15 +206,15 @@ Item {
                     }
                     color: { // item 不同状态下的背景色
                         if(!item_control.enabled) { // 禁用状态下的颜色
-                            return "#00000000"
+                            return QuickColor.ItemNormal
                         }
-                        if(nav_list.currentIndex === _idx&&type===0){
-                            return "#16000000"
+                        if(nav_list.currentIndex === _idx && type === 0){
+                            return QuickColor.ItemCheck
                         }
                         if(item_control.hovered) { // 鼠标悬浮时的颜色
-                            return "#07000000"
+                            return QuickColor.ItemHover
                         }
-                        return "#00000000"
+                        return QuickColor.ItemNormal
                     }
                     Component{ // 图标组件
                         id:com_icon
@@ -273,58 +259,36 @@ Item {
                             }
                         }
                     }
-//                    FluText{
-//                        id:item_title
-//                        text:{
-//                            if(model){
-//                                if(!item_icon.visible && d.isCompactAndNotPanel){
-//                                    return model.title[0]
-//                                }
-//                                return model.title
-//                            }
-//                            return ""
-//                        }
-//                        visible: {
-//                            if(d.isCompactAndNotPanel){
-//                                if(item_icon.visible){
-//                                    return false
-//                                }
-//                                return true
-//                            }
-//                            return true
-//                        }
-//                        elide: Text.ElideRight
-//                        anchors{
-//                            verticalCenter: parent.verticalCenter
-//                            left:item_icon.right
-//                            right: item_icon_expand.left
-//                        }
-//                        color:{
-//                            if(!item_control.enabled){
-//                                return d.itemDisableColor
-//                            }
-//                            if(item_control.pressed){
-//                                return FluTheme.dark ? FluColors.Grey80 : FluColors.Grey120
-//                            }
-//                            return FluTheme.dark ? FluColors.White : FluColors.Grey220
-//                        }
-//                    }
-
-                    Text {
+                    QuickText{ // 标题文字
                         id:item_title
-                        text: model.title
+                        text:{
+                            if(model){
+                                if(!item_icon.visible) {
+                                    return model.title[0]
+                                }
+                                return model.title
+                            }
+                            return ""
+                        }
+                        visible: true
+                        elide: Text.ElideRight
                         anchors{
                             verticalCenter: parent.verticalCenter
                             left:item_icon.right
                             right: item_icon_expand.left
                         }
-                        Component.onCompleted: {
-                            console.log("text", text, width, height)
+                        color:{
+                            if(!item_control.enabled){
+                                return d.itemDisableColor
+                            }
+                            if(item_control.pressed){
+                                return QuickColor.Grey120
+                            }
+                            return QuickColor.Grey220
                         }
                     }
-
-                    QuickLoader{
-                        id:item_edit_loader
+                    QuickLoader {
+                        id: item_edit_loader
                         anchors{
                             top: parent.top
                             bottom: parent.bottom
@@ -363,6 +327,334 @@ Item {
 
         }
     }
+
+    // 导航项 item
+    Component{
+        id:com_panel_item
+        Item{
+            Behavior on height {
+                NumberAnimation{
+                    duration: 167
+                    easing.type: Easing.OutCubic
+                }
+            }
+            height: {
+                if(model&&model._parent){
+                    return model._parent.isExpand ? control.cellHeight : 0
+                }
+                return control.cellHeight
+            }
+            visible: control.cellHeight === Number(height)
+            opacity: visible
+            Behavior on opacity {
+                NumberAnimation { duration: 83 }
+            }
+            width: layout_list.width
+            QuickControl{
+                property var modelData: model
+                id:item_control
+                enabled: !model.disabled
+                anchors{
+                    top: parent.top
+                    bottom: parent.bottom
+                    left: parent.left
+                    right: parent.right
+                    topMargin: 2
+                    bottomMargin: 2
+                    leftMargin: 6
+                    rightMargin: 6
+                }
+//                FluTooltip {
+//                    text: model.title
+//                    visible: item_control.hovered && model.title && d.isCompact
+//                    delay: 800
+//                }
+                onClicked: {
+                    if(type === 0){
+                        if(model.onTapListener){
+                            model.onTapListener()
+                        }else{
+                            nav_list.currentIndex = _idx
+//                            layout_footer.currentIndex = -1 // 取消底部组件选中
+                            model.tap()
+                        }
+                    }else{
+                        if(model.onTapListener){
+                            model.onTapListener()
+                        }else{
+//                            nav_list.currentIndex = nav_list.count-layout_footer.count+_idx
+                            nav_list.currentIndex = nav_list.count + _idx
+//                            layout_footer.currentIndex = _idx
+                            model.tap()
+                        }
+                    }
+                }
+                MouseArea{
+                    id:item_mouse
+                    anchors.fill: parent
+                    acceptedButtons: Qt.RightButton | Qt.LeftButton
+                    onClicked:
+                        (mouse)=>{
+                            if (mouse.button === Qt.RightButton) {
+                                if(model.menuDelegate){
+                                    loader_item_menu.sourceComponent = model.menuDelegate
+                                    connection_item_menu.target = loader_item_menu.item
+                                    loader_item_menu.modelData = model
+                                    loader_item_menu.item.popup();
+                                }
+                            }else{
+                                item_control.clicked()
+                            }
+                        }
+                }
+                Rectangle { // item 显示内容 (背景+图标+标题文字)
+                    radius: 4
+                    anchors.fill: parent
+                    color: {
+                        if (!item_control.enabled) { // 禁用状态下的颜色
+                            return QuickColor.ItemNormal
+                        }
+                        if(type===0){
+                            if(nav_list.currentIndex === _idx) { // 选中颜色
+                                return QuickColor.ItemCheck
+                            }
+                        }else{
+                            if(nav_list.currentIndex === (nav_list.count-layout_footer.count+_idx)){
+                                return QuickColor.ItemCheck
+                            }
+                        }
+                        if(item_control.hovered) { // 鼠标悬浮时的颜色
+                            return QuickColor.ItemHover
+                        }
+                        return QuickColor.ItemNormal
+                    }
+                    Component { // 图标组件
+                        id:com_icon
+                        QuickIcon {
+                            iconSource: {
+                                if(model&&model.icon){
+                                    return model.icon
+                                }
+                                return 0
+                            }
+                            color: {
+                                if(!item_control.enabled){
+                                    return d.itemDisableColor
+                                }
+                                return "#000000"
+                            }
+                            iconSize: 15
+                        }
+                    }
+                    Item { // 图标容器
+                        id:item_icon
+                        height: 30
+                        width: visible ? 30 : 8
+                        visible: {
+                            if(model){
+                                return model.iconVisible
+                            }
+                            return true
+                        }
+                        anchors{
+                            left:parent.left
+                            verticalCenter: parent.verticalCenter
+                            leftMargin: 3
+                        }
+                        QuickLoader{
+                            anchors.centerIn: parent
+                            sourceComponent: {
+                                if(model&&model.iconDelegate){
+                                    return model.iconDelegate
+                                }
+                                return com_icon
+                            }
+                        }
+                    }
+                    QuickText { // 标题文字
+                        id:item_title
+                        text:{
+                            if(model){
+                                if(!item_icon.visible){
+                                    return model.title[0]
+                                }
+                                return model.title
+                            }
+                            return ""
+                        }
+                        visible: true
+                        elide: Text.ElideRight
+                        color:{
+                            if(!item_control.enabled){
+                                return d.itemDisableColor
+                            }
+                            if(item_mouse.pressed){
+                                return QuickColor.Grey120
+                            }
+                            return QuickColor.Grey220
+                        }
+                        anchors{
+                            verticalCenter: parent.verticalCenter
+                            left:item_icon.right
+                            right: item_dot_loader.left
+                        }
+                    }
+                    QuickLoader {
+                        id:item_edit_loader
+                        anchors{
+                            top: parent.top
+                            bottom: parent.bottom
+                            left: item_title.left
+                            right: item_title.right
+                            rightMargin: 8
+                        }
+                        sourceComponent: {
+                            if(d.isCompact){
+                                return undefined
+                            }
+                            if(!model){
+                                return undefined
+                            }
+                            return model.showEdit ? model.editDelegate : undefined
+                        }
+                        onStatusChanged: {
+                            if(status === QuickLoader.Ready){
+                                item.forceActiveFocus()
+                                item_connection_edit_focus.target = item
+                            }
+                        }
+                        Connections{
+                            id:item_connection_edit_focus
+                            ignoreUnknownSignals:true
+                            function onActiveFocusChanged(focus){
+                                if(focus === false){
+                                    model.showEdit = false
+                                }
+                            }
+                            function onCommit(text){
+                                model.title = text
+                                model.showEdit = false
+                            }
+                        }
+                    }
+                    QuickLoader {
+                        id:item_dot_loader
+                        property bool isDot: (item_dot_loader.item&&item_dot_loader.item.isDot)
+                        anchors{
+                            right: parent.right
+                            verticalCenter: parent.verticalCenter
+                            rightMargin: isDot ? 3 : 10
+                            verticalCenterOffset: isDot ? -8 : 0
+                        }
+                        sourceComponent: {
+                            if(model&&model.infoBadge) {
+                                return model.infoBadge
+                            }
+                            return undefined
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 展开列表的子项显示
+    Popup{
+        property var childModel
+        id: control_popup
+        enter: Transition {
+            NumberAnimation {
+                property: "opacity"
+                from:0
+                to:1
+                duration: 83
+            }
+        }
+
+        padding: 0
+        focus: true
+        contentItem: Item{
+            ListView{
+                id:list_view
+                anchors.fill: parent
+                clip: true
+                currentIndex: -1
+                model: control_popup.childModel
+                boundsBehavior: ListView.StopAtBounds
+//                ScrollBar.vertical: FluScrollBar {}
+                delegate:Button{
+                    id:item_button
+                    width: 180
+                    height: 38
+                    focusPolicy:Qt.TabFocus
+                    background: Rectangle{
+                        color:  {
+                            if(item_button.hovered){
+                                return QuickColor.ItemHover
+                            }
+                            return QuickColor.ItemNormal
+                        }
+                        QuickFocusRectangle{
+                            visible: item_button.activeFocus
+                            radius:4
+                        }
+
+                        QuickLoader{
+                            id:item_dot_loader
+                            anchors{
+                                right: parent.right
+                                verticalCenter: parent.verticalCenter
+                                rightMargin: 10
+                            }
+                            sourceComponent: {
+                                if(model.infoBadge){
+                                    return model.infoBadge
+                                }
+                                return undefined
+                            }
+                        }
+
+                    }
+                    contentItem: QuickText{
+                        text:modelData.title
+                        elide: Text.ElideRight
+                        rightPadding: item_dot_loader.width
+                        verticalAlignment: Qt.AlignVCenter
+                        anchors{
+                            verticalCenter: parent.verticalCenter
+                        }
+                    }
+                    onClicked: {
+                        if(modelData.onTapListener){
+                            modelData.onTapListener()
+                        }else{
+                            modelData.tap()
+                            nav_list.currentIndex = _idx
+//                            layout_footer.currentIndex = -1
+                        }
+                        control_popup.close()
+                    }
+                }
+            }
+        }
+        background: Rectangle{
+            implicitWidth: 180
+            radius: [4,4,4,4]
+//            FluShadow{
+//                radius: 4
+//            }
+            color: Qt.rgba(248/255,250/255,253/255,1)
+        }
+        function showPopup(pos,height,model){
+            background.implicitHeight = height
+            control_popup.x = pos.x
+            control_popup.y = pos.y
+            control_popup.childModel = model
+            control_popup.open()
+        }
+    }
+
+
 
 
     Rectangle {
