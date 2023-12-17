@@ -11,15 +11,15 @@ QuickObject {
     property var paneItemMenu
 
 
-//    QuickPaneItem{
-//        id:item_home
-//        count: 9
-//        title:Lang.home
+    QuickPaneItem {
+        id:item_home
+        count: 9
+        title: "Home"
 //        menuDelegate: paneItemMenu
-//        infoBadge:FluBadge{
-//            count: item_home.count
-//        }
-//        icon:FluentIcons.Home
+        infoBadge: QuickBadge {
+            count: item_home.count
+        }
+        icon: QuickFontIcon.Home
 //        url:"qrc:/example/qml/page/T_Home.qml"
 //        onTap:{
 //            if(navigationView.getCurrentUrl()){
@@ -27,19 +27,34 @@ QuickObject {
 //            }
 //            navigationView.push(url)
 //        }
-//    }
-
+    }
 
 
     QuickPaneItemExpander {
         title: "图像处理"
         iconVisible: true
         icon: QuickFontIcon.QRCode
+        QuickPaneItem {
+            id: item_111
+            title: "AAA"
+        }
+        QuickPaneItem {
+            id: item_112
+            title: "BBB"
+        }
     }
 
     QuickPaneItemExpander {
         title: "深度学习"
         iconVisible: true
         icon: QuickFontIcon.CheckboxComposite
+        QuickPaneItem {
+            id: item_221
+            title: "AAA"
+        }
+        QuickPaneItem {
+            id: item_222
+            title: "BBB"
+        }
     }
 }
