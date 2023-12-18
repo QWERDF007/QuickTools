@@ -9,6 +9,7 @@ import QuickTools.ui
 Item {
     id: control
     property QuickObject items
+    property QuickObject footerItems
     property Component autoSuggestBox
 
     property int navTopMargin: 0
@@ -41,18 +42,18 @@ Item {
                         }
                     }
                 }
-//                if(footerItems){
-//                    var comEmpty = Qt.createComponent("FluPaneItemEmpty.qml");
-//                    for(var k=0;k<footerItems.children.length;k++){
-//                        var itemFooter = footerItems.children[k]
-//                        if (comEmpty.status === Component.Ready) {
-//                            var objEmpty = comEmpty.createObject(items,{_idx:_idx});
-//                            itemFooter._idx = _idx;
-//                            data.push(objEmpty)
-//                            _idx++
-//                        }
-//                    }
-//                }
+                if(footerItems){
+                    var comEmpty = Qt.createComponent("QuickPaneItemEmpty.qml");
+                    for(var k=0;k<footerItems.children.length;k++){
+                        var itemFooter = footerItems.children[k]
+                        if (comEmpty.status === Component.Ready) {
+                            var objEmpty = comEmpty.createObject(items,{_idx:_idx});
+                            itemFooter._idx = _idx;
+                            data.push(objEmpty)
+                            _idx++
+                        }
+                    }
+                }
             }
             return data
         }
@@ -350,7 +351,7 @@ Item {
                 NumberAnimation { duration: 83 }
             }
             width: layout_list.width
-            QuickControl{
+            QuickControl {
                 property var modelData: model
                 id:item_control
                 enabled: !model.disabled
@@ -375,22 +376,21 @@ Item {
                             model.onTapListener()
                         }else{
                             nav_list.currentIndex = _idx
-//                            layout_footer.currentIndex = -1 // 取消底部组件选中
+                            layout_footer.currentIndex = -1 // 取消底部组件选中
                             model.tap()
                         }
                     }else{
                         if(model.onTapListener){
                             model.onTapListener()
                         }else{
-//                            nav_list.currentIndex = nav_list.count-layout_footer.count+_idx
-                            nav_list.currentIndex = nav_list.count + _idx
-//                            layout_footer.currentIndex = _idx
+                            nav_list.currentIndex = nav_list.count-layout_footer.count+_idx
+                            layout_footer.currentIndex = _idx
                             model.tap()
                         }
                     }
                 }
-                MouseArea{
-                    id:item_mouse
+                MouseArea {
+                    id: item_mouse
                     anchors.fill: parent
                     acceptedButtons: Qt.RightButton | Qt.LeftButton
                     onClicked:
@@ -558,6 +558,172 @@ Item {
         }
     }
 
+    QuickLoader {
+        id:loader_content
+        anchors{
+            left: parent.left
+            top: nav_app_bar.bottom
+            right: parent.right
+            bottom: parent.bottom
+            leftMargin: {
+                if(d.isMinimal){
+                    return 0
+                }
+                if(d.isCompact){
+                    return control.navCompactWidth
+                }
+                return control.cellWidth
+            }
+        }
+        Behavior on anchors.leftMargin {
+            enabled: FluTheme.enableAnimation && d.animDisabled
+            NumberAnimation{
+                duration: 167
+                easing.type: Easing.OutCubic
+            }
+        }
+        sourceComponent: com_stack_content
+    }
+
+    Rectangle {
+        id:layout_list
+        width: control.cellWidth
+        anchors {
+            top: parent.top
+            topMargin: control.navTopMargin
+            bottom: parent.bottom
+        }
+        color: "transparent"
+
+        Item { // header 组件 (搜索栏)
+            id:layout_header
+            width: layout_list.width
+            clip: true
+        }
+
+        Flickable { // content
+            id:layout_flickable
+            anchors{
+                top: layout_header.bottom
+                topMargin: 6
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            boundsBehavior: ListView.StopAtBounds
+            clip: true
+            contentHeight: nav_list.contentHeight
+//            ScrollBar.vertical: FluScrollBar {}
+            ListView{
+                id:nav_list
+                Component.onCompleted: {
+                    console.log("lv", width, height)
+                }
+
+                displaced: Transition {
+                    NumberAnimation {
+                        properties: "x,y"
+                        easing.type: Easing.OutQuad
+                    }
+                }
+                anchors.fill: parent
+                interactive: false
+                model: d.handleItems()
+                boundsBehavior: ListView.StopAtBounds
+                highlightMoveDuration: 167
+                highlight: Item{
+                    clip: true
+                    Rectangle{
+                        height: 18
+                        radius: 1.5
+                        color: QuickColor.Primary
+                        width: 3
+                        anchors{
+                            verticalCenter: parent.verticalCenter
+                            left: parent.left
+                            leftMargin: 6
+                        }
+                    }
+                }
+                currentIndex: -1
+                delegate: QuickLoader{
+                    property var model: modelData
+                    property var _idx: index
+                    property int type: 0
+                    sourceComponent: {
+                        if (model === null || !model) {
+                            return undefined
+                        }
+                        if (modelData instanceof QuickPaneItem) {
+                            return com_panel_item
+                        }
+                        if (modelData instanceof QuickPaneItemHeader) {
+                            return com_panel_item_header
+                        }
+                        if (modelData instanceof QuickPaneItemSeparator) {
+                            return com_panel_item_separator
+                        }
+                        if (modelData instanceof QuickPaneItemExpander) {
+                            return com_panel_item_expander
+                        }
+                        if (modelData instanceof QuickPaneItemEmpty) {
+                            return com_panel_item_empty
+                        }
+                        return undefined
+                    }
+                }
+            }
+        }
+
+        ListView { // footer
+            id: layout_footer
+            clip: true
+            width: layout_list.width
+            height: childrenRect.height
+            anchors.bottom: parent.bottom
+            interactive: false
+            boundsBehavior: ListView.StopAtBounds
+            currentIndex: -1
+            model: {
+                if(footerItems){
+                    return footerItems.children
+                }
+            }
+            highlightMoveDuration: 150
+            highlight: Item{
+                clip: true
+                Rectangle{
+                    height: 18
+                    radius: 1.5
+                    color: QuickColor.Primary
+                    width: 3
+                    anchors{
+                        verticalCenter: parent.verticalCenter
+                        left: parent.left
+                        leftMargin: 6
+                    }
+                }
+            }
+            delegate: QuickLoader {
+                property var model: modelData
+                property var _idx: index
+                property int type: 1
+                sourceComponent: {
+                    if(modelData instanceof QuickPaneItem){
+                        return com_panel_item
+                    }
+                    if(modelData instanceof QuickPaneItemHeader){
+                        return com_panel_item_header
+                    }
+                    if(modelData instanceof QuickPaneItemSeparator){
+                        return com_panel_item_separatorr
+                    }
+                }
+            }
+        }
+
+    }
+
     // 展开列表的子项显示
     Popup{
         property var childModel
@@ -630,7 +796,7 @@ Item {
                         }else{
                             modelData.tap()
                             nav_list.currentIndex = _idx
-//                            layout_footer.currentIndex = -1
+                            layout_footer.currentIndex = -1
                         }
                         control_popup.close()
                     }
@@ -654,103 +820,30 @@ Item {
         }
     }
 
-
-
-
-    Rectangle {
-        id:layout_list
-        width: control.cellWidth
-        anchors {
-            top: parent.top
-            topMargin: control.navTopMargin
-            bottom: parent.bottom
-        }
-
-        color: "transparent"
-//        color: "red"
-
-        Item { // header 组件
-            id:layout_header
-            width: layout_list.width
-            clip: true
-        }
-
-        Flickable {
-            id:layout_flickable
-            anchors{
-                top: layout_header.bottom
-                topMargin: 6
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-            }
-            boundsBehavior: ListView.StopAtBounds
-            clip: true
-            contentHeight: nav_list.contentHeight
-//            ScrollBar.vertical: FluScrollBar {}
-            ListView{
-                id:nav_list
-                Component.onCompleted: {
-                    console.log("lv", width, height)
-                }
-
-                displaced: Transition {
-                    NumberAnimation {
-                        properties: "x,y"
-                        easing.type: Easing.OutQuad
-                    }
-                }
-                anchors.fill: parent
-                interactive: false
-                model: d.handleItems()
-                boundsBehavior: ListView.StopAtBounds
-                highlightMoveDuration: 167
-                highlight: Item{
-                    clip: true
-                    Rectangle{
-                        height: 18
-                        radius: 1.5
-                        color: QuickColor.Primary
-                        width: 3
-                        anchors{
-                            verticalCenter: parent.verticalCenter
-                            left: parent.left
-                            leftMargin: 6
-                        }
-                    }
-                }
-                currentIndex: -1
-                delegate: QuickLoader{
-                    property var model: modelData
-                    property var _idx: index
-                    property int type: 0
-                    sourceComponent: {
-                        if (model === null || !model) {
-                            return undefined
-                        }
-                        if (modelData instanceof QuickPaneItem) {
-                            return com_panel_item
-                        }
-                        if (modelData instanceof QuickPaneItemHeader) {
-                            console.log("header")
-                            return com_panel_item_header
-                        }
-                        if (modelData instanceof QuickPaneItemSeparator) {
-                            console.log("separator")
-                            return com_panel_item_separator
-                        }
-                        if (modelData instanceof QuickPaneItemExpander) {
-                            console.log("expander")
-                            return com_panel_item_expander
-                        }
-                        if (modelData instanceof QuickPaneItemEmpty) {
-                            return com_panel_item_empty
-                        }
-                        return undefined
-                    }
-                }
-            }
-        }
-
+    function getCurrentUrl(){
+//        if(pageMode === FluNavigationViewType.Stack){
+//            var nav_stack = loader_content.item.navStack()
+//            if(nav_stack.currentItem){
+//                return nav_stack.currentItem.url
+//            }
+//        }else if(pageMode === FluNavigationViewType.NoStack){
+//            return loader_content.source.toString()
+//        }
+//        return undefined
+        return loader_content.source.toString()
     }
+
+    function push(url,argument={}){
+        function noStackPush(){
+            if(loader_content.source.toString() === url){
+                return
+            }
+            loader_content.setSource(url,argument)
+            var obj = nav_list.model[nav_list.currentIndex]
+            obj._ext = {url:url,argument:argument}
+            d.stackItems = d.stackItems.concat(obj)
+        }
+        noStackPush()
+    }
+
 }
