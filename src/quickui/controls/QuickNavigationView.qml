@@ -19,7 +19,6 @@ Item {
 
     Item {
         id:d
-
         property bool enableNavigationPanel: false
         property color itemDisableColor: Qt.rgba(160/255,160/255,160/255,1)
 
@@ -558,31 +557,24 @@ Item {
         }
     }
 
-    QuickLoader {
+
+    QuickLoader { // 导航项具体页面内容加载
         id:loader_content
         anchors{
             left: parent.left
-            top: nav_app_bar.bottom
+//            top: nav_app_bar.bottom
+            top: parent.top
             right: parent.right
             bottom: parent.bottom
-            leftMargin: {
-                if(d.isMinimal){
-                    return 0
-                }
-                if(d.isCompact){
-                    return control.navCompactWidth
-                }
-                return control.cellWidth
-            }
+            leftMargin: control.cellWidth
         }
         Behavior on anchors.leftMargin {
-            enabled: FluTheme.enableAnimation && d.animDisabled
             NumberAnimation{
                 duration: 167
                 easing.type: Easing.OutCubic
             }
         }
-        sourceComponent: com_stack_content
+//        sourceComponent: com_stack_content
     }
 
     Rectangle {
@@ -820,16 +812,23 @@ Item {
         }
     }
 
+    function setCurrentIndex(index){
+        nav_list.currentIndex = index
+        var item = nav_list.model[index]
+        if(item instanceof QuickPaneItem){
+            item.tap()
+        }
+    }
+
+    function getItems(){
+        return nav_list.model
+    }
+
+    function getCurrentIndex(){
+        return nav_list.currentIndex
+    }
+
     function getCurrentUrl(){
-//        if(pageMode === FluNavigationViewType.Stack){
-//            var nav_stack = loader_content.item.navStack()
-//            if(nav_stack.currentItem){
-//                return nav_stack.currentItem.url
-//            }
-//        }else if(pageMode === FluNavigationViewType.NoStack){
-//            return loader_content.source.toString()
-//        }
-//        return undefined
         return loader_content.source.toString()
     }
 
@@ -841,7 +840,6 @@ Item {
             loader_content.setSource(url,argument)
             var obj = nav_list.model[nav_list.currentIndex]
             obj._ext = {url:url,argument:argument}
-            d.stackItems = d.stackItems.concat(obj)
         }
         noStackPush()
     }

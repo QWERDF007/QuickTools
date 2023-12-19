@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
@@ -42,8 +42,13 @@ Window {
             anchors.fill: flipable
 
             QuickNavigationView {
+                id: nav_view
                 anchors.fill: parent
                 items: QuickToolsItems
+                Component.onCompleted: {
+                    QuickToolsItems.navigationView = nav_view
+                    setCurrentIndex(0)
+                }
             }
         }
     }

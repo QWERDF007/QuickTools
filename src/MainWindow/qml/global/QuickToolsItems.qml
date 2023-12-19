@@ -1,4 +1,4 @@
-pragma Singleton
+﻿pragma Singleton
 
 import QtQuick
 import QtQuick.Controls
@@ -20,7 +20,7 @@ QuickObject {
             count: item_home.count
         }
         icon: QuickFontIcon.Home
-        url:"qrc:/mainwindow/qml/page/ImageProcess.qml"
+        url:"qrc:/qt/qml/QuickTools/qml/page/ImageProcess.qml"
         onTap: {
             if(navigationView.getCurrentUrl()){
                 item_home.count = 0
