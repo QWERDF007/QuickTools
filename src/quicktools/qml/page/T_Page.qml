@@ -91,7 +91,10 @@ QuickScrollablePage {
                         console.log("单击", modelData.title)
                     }
                     onDoubleClicked: {
-                        console.log("打开对话框", modelData.title)
+                        console.log("打开对话框", modelData.title, modelData.url)
+                        var component =  Qt.createComponent(modelData.url)
+                        var window = component.createObject()
+                        window.show()
                     }
                 }
             }
