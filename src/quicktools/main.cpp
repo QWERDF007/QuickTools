@@ -13,7 +13,5 @@ int main(int argc, char *argv[])
         Qt::QueuedConnection);
     qDebug() << "qml import path list" << engine.importPathList();
     engine.loadFromModule("QuickTools", "MainWindow");
-
-    qDebug() << "123";
     return app.exec();
 }
