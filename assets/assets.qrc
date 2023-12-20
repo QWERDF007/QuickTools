@@ -2,6 +2,7 @@
     <qresource prefix="/icons">
         <file alias="collaps">icons/collaps.svg</file>
         <file alias="expand">icons/expand.svg</file>
+        <file alias="stats">icons/stats.svg</file>
     </qresource>
     <qresource prefix="/Font">
         <file alias="Icons.ttf">Font/Segoe_Fluent_Icons.ttf</file>
