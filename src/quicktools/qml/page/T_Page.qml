@@ -4,15 +4,33 @@ import QtQuick.Layouts
 
 import QuickTools.ui
 
+import "../component"
+
 QuickScrollablePage {
+    id: page
+    property ToolsListItem items
+
+    Item {
+        id: d
+        function handleItems() {
+            var data = []
+            if (items) {
+                for (var i=0;i<items.children.length;i++) {
+                    var item = items.children[i]
+                    data.push(item)
+                }
+            }
+            return data
+        }
+    }
 
     Component {
         id:com_item
         Item{
-            property string desc: model.desc
+            property string desc: modelData.desc
             width: 320
             height: 120
-            QuickArea{
+            QuickArea {
                 radius: 8
                 width: 300
                 height: 100
@@ -31,7 +49,7 @@ QuickScrollablePage {
                     id:item_icon
                     height: 40
                     width: 40
-                    source: model.image
+                    source: modelData.image
                     anchors{
                         left: parent.left
                         leftMargin: 20
@@ -40,9 +58,8 @@ QuickScrollablePage {
                 }
                 QuickText{
                     id:item_title
-                    text:model.title
-//                    font: FluTextStyle.BodyStrong
-                    font: QuickFont.Body
+                    text:modelData.title
+                    font: QuickFont.BodyStrong
                     anchors{
                         left: item_icon.right
                         leftMargin: 20
@@ -55,8 +72,7 @@ QuickScrollablePage {
                     color: QuickColor.Grey120
                     wrapMode: Text.WrapAnywhere
                     elide: Text.ElideRight
-//                    font: FluTextStyle.Caption
-                    font: QuickFont.Body
+                    font: QuickFont.Caption
                     maximumLineCount: 2
                     anchors{
                         left: item_title.left
@@ -67,25 +83,15 @@ QuickScrollablePage {
                     }
                 }
 
-                Rectangle{
-                    height: 12
-                    width: 12
-                    radius:  6
-                    color: QuickColor.Primary
-                    anchors{
-                        right: parent.right
-                        top: parent.top
-                        rightMargin: 14
-                        topMargin: 14
-                    }
-                }
-
                 MouseArea{
                     id:item_mouse
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: {
-//                        ItemsOriginal.startPageByItem(modelData)
+                        console.log("单击", modelData.title)
+                    }
+                    onDoubleClicked: {
+                        console.log("打开对话框", modelData.title)
                     }
                 }
             }
@@ -95,21 +101,17 @@ QuickScrollablePage {
 
 
     GridView {
+        id: gridview
         Layout.fillWidth: true
         Layout.preferredHeight: contentHeight
 //        anchors.fill: parent
+        model: d.handleItems()
         cellHeight: 120
         cellWidth: 320
         interactive: false
-        model: ListModel {
-            id: testModel
-            ListElement {
-                desc: "abababa"
-                title: "aaaa"
-                image: ""
-            }
-        }
         delegate: com_item
     }
 
+
 }
+

@@ -1,1 +1,2 @@
 singleton QuickToolsItems 1.0 QuickToolsItems.qml
+singleton ImageProcessItems 1.0 ImageProcessItems.qml

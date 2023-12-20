@@ -20,7 +20,7 @@ QuickObject {
             count: item_home.count
         }
         icon: QuickFontIcon.Home
-        url:"qrc:/qt/qml/QuickTools/qml/page/T_Page.qml"
+        url:"qrc:/qt/qml/QuickTools/qml/page/T_Home.qml"
         onTap: {
             if(navigationView.getCurrentUrl()){
                 item_home.count = 0
@@ -29,31 +29,36 @@ QuickObject {
         }
     }
 
-
-    QuickPaneItemExpander {
+    QuickPaneItem {
         title: "图像处理"
         iconVisible: true
         icon: QuickFontIcon.QRCode
-        QuickPaneItem {
-            id: item_111
-            title: "AAA"
-        }
-        QuickPaneItem {
-            id: item_112
-            title: "BBB"
-        }
+        url:"qrc:/qt/qml/QuickTools/qml/page/ImageProcessPage.qml"
+        onTap: { navigationView.push(url) }
     }
 
     QuickPaneItemExpander {
         title: "深度学习"
         iconVisible: true
+        icon: QuickFontIcon.ReportHacked
+        QuickPaneItem {
+            title: "图像分类"
+            onTap: { console.log("未设置触发页面") }
+        }
+        QuickPaneItem {
+            title: "语义分割"
+            onTap: { console.log("未设置触发页面") }
+        }
+    }
+
+    QuickPaneItemExpander {
+        title: "未知"
+        iconVisible: true
         icon: QuickFontIcon.CheckboxComposite
         QuickPaneItem {
-            id: item_221
             title: "AAA"
         }
         QuickPaneItem {
-            id: item_222
             title: "BBB"
         }
     }
