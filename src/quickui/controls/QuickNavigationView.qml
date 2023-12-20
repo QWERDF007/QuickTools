@@ -608,10 +608,6 @@ Item {
 //            ScrollBar.vertical: FluScrollBar {}
             ListView{
                 id:nav_list
-                Component.onCompleted: {
-                    console.log("lv", width, height)
-                }
-
                 displaced: Transition {
                     NumberAnimation {
                         properties: "x,y"
