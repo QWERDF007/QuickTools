@@ -115,6 +115,14 @@ QuickScrollablePage {
         delegate: com_item
     }
 
-
+    QuickText {
+        visible: items == null
+        Layout.fillHeight: true
+        Layout.fillWidth: true
+        text: qsTr("这个人很懒, 啥也没做")
+        font.pixelSize: 32
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+    }
 }
 
