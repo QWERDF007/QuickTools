@@ -11,6 +11,7 @@ Window {
     visible: true
     width: 1920
     height: 1080
+    color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
     Flipable {
         id:flipable
