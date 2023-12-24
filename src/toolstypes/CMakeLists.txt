@@ -50,6 +50,13 @@ target_compile_definitions(${TARGET_NAME}
     PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>
 )
 
+# 添加接口头文件，链接目标后可以include, 无需另外包含头文件目录
+set(PLUGIN_HEADER "${PROJECT_NAME}_${PLUGIN_NAME}_headers")
+add_library(${PROJECT_NAME}_${PLUGIN_NAME}_headers INTERFACE)
+target_include_directories(${PLUGIN_HEADER}
+    INTERFACE .
+)
+
 
 # 下面这部分用于复制 dll 和 qmldir, 需要将 dll 和 qmldir 添加到 QQmlEngine::importPathList 中
 # 否则无法使用插件, 默认会将可执行文件所在目录添加到列表中, 所以将插件拷贝到该目录下
