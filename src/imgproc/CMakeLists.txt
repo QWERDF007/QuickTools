@@ -53,6 +53,7 @@ target_compile_definitions(${TARGET_NAME}
 target_link_libraries(${TARGET_NAME}
     PRIVATE
         QuickTools_types
+        QuickTools_types_headers
 )
 
 
