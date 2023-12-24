@@ -7,7 +7,7 @@ namespace quicktools::ui {
 
 // Windows Segoe Fluent 图标字体
 // https://learn.microsoft.com/zh-cn/windows/apps/design/style/segoe-fluent-icons-font
-namespace FontIcon {
+namespace icon {
 Q_NAMESPACE
 enum class FontIconType
 {
@@ -26,6 +26,6 @@ enum class FontIconType
 };
 Q_ENUM_NS(FontIconType) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
 QML_NAMED_ELEMENT(QuickFontIcon) // 声明封闭类型或命名空间在 QML 中可用，以 name 进行访问
-} // namespace FontIcon
+} // namespace icon
 
 } // namespace quicktools::ui
