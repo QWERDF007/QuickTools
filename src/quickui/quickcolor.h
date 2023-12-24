@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QtQml>
 
-namespace QuickTools::ui {
+namespace quicktools::ui {
 
 class QuickColor : public QObject
 {
@@ -69,4 +69,4 @@ private:
     Q_DISABLE_COPY_MOVE(QuickColor)
 };
 
-} // namespace QuickTools::ui
+} // namespace quicktools::ui

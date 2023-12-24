@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QtQml>
 
-namespace QuickTools::ui {
+namespace quicktools::ui {
 
 class QuickFont : public QObject
 {
@@ -63,4 +63,4 @@ private:
     Q_DISABLE_COPY_MOVE(QuickFont)
 };
 
-} // namespace QuickTools::ui
+} // namespace quicktools::ui

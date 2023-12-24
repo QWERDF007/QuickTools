@@ -1,6 +1,6 @@
 #include "quickfont.h"
 
-namespace QuickTools::ui {
+namespace quicktools::ui {
 
 QuickFont *QuickFont::instance_ = nullptr;
 
@@ -52,4 +52,4 @@ QuickFont *QuickFont::getInstance()
     return instance_;
 }
 
-} // namespace QuickTools::ui
+} // namespace quicktools::ui

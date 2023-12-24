@@ -2,7 +2,7 @@
 
 #include "quickcolor.h"
 
-namespace QuickTools::ui {
+namespace quicktools::ui {
 
 QuickColor *QuickColor::instance_ = nullptr;
 
@@ -39,4 +39,4 @@ QuickColor::QuickColor(QObject *parent)
 
 QuickColor::~QuickColor() {}
 
-} // namespace QuickTools::ui
+} // namespace quicktools::ui

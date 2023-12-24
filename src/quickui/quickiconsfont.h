@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QtQml>
 
-namespace QuickTools::ui {
+namespace quicktools::ui {
 
 // Windows Segoe Fluent 图标字体
 // https://learn.microsoft.com/zh-cn/windows/apps/design/style/segoe-fluent-icons-font
@@ -28,4 +28,4 @@ Q_ENUM_NS(FontIconType) // 向元对象系统注册枚举类型，必须在 Q_NA
 QML_NAMED_ELEMENT(QuickFontIcon) // 声明封闭类型或命名空间在 QML 中可用，以 name 进行访问
 } // namespace FontIcon
 
-} // namespace QuickTools::ui
+} // namespace quicktools::ui
