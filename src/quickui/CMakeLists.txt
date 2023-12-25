@@ -1,6 +1,12 @@
 set(PLUGIN_NAME "ui")
 set(TARGET_NAME "${PROJECT_NAME}_${PLUGIN_NAME}")
 
+# 将名称转换为大写
+string(TOUPPER ${TARGET_NAME} TARGET_NAME_UPPER)
+# 设置额外编译定义
+set(TARGET_EXPORTS "${TARGET_NAME_UPPER}_LIBRARY")
+
+
 # 获取所有源文件的相对路径
 file(GLOB SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp) 
 
@@ -50,26 +56,44 @@ target_compile_definitions(${TARGET_NAME}
     PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>
 )
 
-target_link_libraries(${TARGET_NAME} PRIVATE  Qt6::Gui)
+target_link_libraries(${TARGET_NAME} 
+    PRIVATE  
+        Qt6::Core Qt6::Gui Qt6::Quick
+)
 
+# 添加一个宏定义, 配合动态库导出函数、类
+# https://stackoverflow.com/a/67923443
+add_compile_definitions(${TARGET_NAME} PRIVATE ${TARGET_EXPORTS})
+
+# 添加接口头文件，链接目标后可以include, 无需另外包含头文件目录
+set(PLUGIN_HEADER "${PROJECT_NAME}_${PLUGIN_NAME}_headers")
+add_library(${PROJECT_NAME}_${PLUGIN_NAME}_headers INTERFACE)
+target_include_directories(${PLUGIN_HEADER}
+    INTERFACE .
+)
 
 # 下面这部分用于复制 dll 和 qmldir, 需要将 dll 和 qmldir 添加到 QQmlEngine::importPathList 中
 # 否则无法使用插件, 默认会将可执行文件所在目录添加到列表中, 所以将插件拷贝到该目录下
+# 注意 win 是在使用 vscode 进行 cmake 后构建, 使用 qtcreator 可能生成目录不同, 需进行修改
 
+# vscode
+# 设置将要复制的目标目录, 稍后创建该目录。如果是windows则根据配置在目录添加Debug/Release前缀
 set(DLL_COPY_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<$<BOOL:${WIN32}>:$<CONFIG>>/${PROJECT_NAME}/${PLUGIN_NAME}")
+# 设置目标 dll 文件路径。如果是windows则根据配置在目录添加Debug/Release前缀，且如果是Debug则添加后缀
 set(DLL_FILE "${QML_PLUGIN_DIRECTORY}/$<$<BOOL:${WIN32}>:$<CONFIG>>/${TARGET_NAME}$<$<CONFIG:DEBUG>:${CMAKE_DEBUG_POSTFIX}>.dll")
-# # 设置将要复制的目标目录, 稍后创建该目录。如果是windows则根据配置在目录添加Debug/Release前缀
-# set(DLL_COPY_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<$<BOOL:${WIN32}>:$<CONFIG>>/${PROJECT_NAME}/${PLUGIN_NAME}")
-# # 设置目标 dll 文件路径。如果是windows则根据配置在目录添加Debug/Release前缀，且如果是Debug则添加后缀
-# set(DLL_FILE "${QML_PLUGIN_DIRECTORY}/$<$<BOOL:${WIN32}>:$<CONFIG>>/${TARGET_NAME}$<$<CONFIG:DEBUG>:${CMAKE_DEBUG_POSTFIX}>.dll")
+
+# qtcreator
+#set(DLL_COPY_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<$<BOOL:${WIN32}>:$<CONFIG>>/${PROJECT_NAME}/${PLUGIN_NAME}")
+#set(DLL_FILE "${QML_PLUGIN_DIRECTORY}/$<$<BOOL:${WIN32}>:$<CONFIG>>/${TARGET_NAME}$<$<CONFIG:DEBUG>:${CMAKE_DEBUG_POSTFIX}>.dll")
+
 # 设置 qmldir 文件路径
 set(QMLDIR_FILE ${QML_PLUGIN_DIRECTORY}/qmldir)
 
 # 添加自定义命令, POST_BUILD: 指定目标其他规则执行完后执行, copy: 复制, copy_if_different: 输入有变则复制
 add_custom_command(TARGET ${TARGET_NAME}
 POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${DLL_COPY_DIR}
     COMMAND ${CMAKE_COMMAND} -E echo "Creating directory '${DLL_COPY_DIR}'"
-    COMMAND ${CMAKE_COMMAND} -E copy ${DLL_FILE} ${QMLDIR_FILE} ${DLL_COPY_DIR}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DLL_COPY_DIR}
     COMMAND ${CMAKE_COMMAND} -E echo "Copying '${DLL_FILE}' and '${QMLDIR_FILE}' to '${DLL_COPY_DIR}'"
+    COMMAND ${CMAKE_COMMAND} -E copy ${DLL_FILE} ${QMLDIR_FILE} ${DLL_COPY_DIR}
 )
