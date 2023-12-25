@@ -1,6 +1,10 @@
 set(PLUGIN_NAME "types")
 set(TARGET_NAME "${PROJECT_NAME}_${PLUGIN_NAME}")
 
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
 # 获取所有源文件的相对路径
 file(GLOB SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp) 
 
@@ -50,6 +54,11 @@ target_compile_definitions(${TARGET_NAME}
     PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>
 )
 
+target_link_libraries(${TARGET_NAME}
+    PUBLIC
+        Qt6::Core Qt6::Gui
+)
+
 # 添加接口头文件，链接目标后可以include, 无需另外包含头文件目录
 set(PLUGIN_HEADER "${PROJECT_NAME}_${PLUGIN_NAME}_headers")
 add_library(${PROJECT_NAME}_${PLUGIN_NAME}_headers INTERFACE)
@@ -61,10 +70,13 @@ target_include_directories(${PLUGIN_HEADER}
 # 下面这部分用于复制 dll 和 qmldir, 需要将 dll 和 qmldir 添加到 QQmlEngine::importPathList 中
 # 否则无法使用插件, 默认会将可执行文件所在目录添加到列表中, 所以将插件拷贝到该目录下
 
-# 设置将要复制的目标目录, 稍后创建该目录。如果是windows则根据配置在目录添加Debug/Release前缀
+
 set(DLL_COPY_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<$<BOOL:${WIN32}>:$<CONFIG>>/${PROJECT_NAME}/${PLUGIN_NAME}")
-# 设置目标 dll 文件路径。如果是windows则根据配置在目录添加Debug/Release前缀，且如果是Debug则添加后缀
 set(DLL_FILE "${QML_PLUGIN_DIRECTORY}/$<$<BOOL:${WIN32}>:$<CONFIG>>/${TARGET_NAME}$<$<CONFIG:DEBUG>:${CMAKE_DEBUG_POSTFIX}>.dll")
+# # 设置将要复制的目标目录, 稍后创建该目录。如果是windows则根据配置在目录添加Debug/Release前缀
+# set(DLL_COPY_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}/${PLUGIN_NAME}")
+# # 设置目标 dll 文件路径。如果是windows则根据配置在目录添加Debug/Release前缀，且如果是Debug则添加后缀
+# set(DLL_FILE "${QML_PLUGIN_DIRECTORY}/${TARGET_NAME}$<$<CONFIG:DEBUG>:${CMAKE_DEBUG_POSTFIX}>.dll")
 # 设置 qmldir 文件路径
 set(QMLDIR_FILE ${QML_PLUGIN_DIRECTORY}/qmldir)
 

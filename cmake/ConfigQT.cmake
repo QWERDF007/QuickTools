@@ -10,3 +10,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS QuickTest)
 
 # 设置Qt6项目
 qt_standard_project_setup(REQUIRES 6.5)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
