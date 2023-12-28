@@ -62,7 +62,7 @@ target_compile_definitions(${TARGET_NAME}
 target_link_libraries(${TARGET_NAME}
     PRIVATE
         Qt6::Core Qt6::Gui Qt6::Quick
-        QuickTools_types QuickTools_types_headers
+        QuickTools_types QuickTools_types_headers QuickTools_ui
 )
 
 # 添加一个宏定义, 配合动态库导出函数、类
