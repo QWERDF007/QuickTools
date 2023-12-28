@@ -2,7 +2,7 @@
 
 namespace quicktools {
 
-
+QuickToolFactor *QuickToolFactor::instance_ = nullptr;
 
 QVariant AbstractToolParams::data(const QModelIndex &index, int role) const
 {
@@ -25,8 +25,6 @@ bool AbstractToolParams::setData(const QModelIndex &index, const QVariant &value
     return false;
 }
 
-
-
 bool AbstractQuickTool::setInputParams(AbstractToolInputParams *input_params)
 {
     if (input_params_ != input_params)
@@ -38,8 +36,6 @@ bool AbstractQuickTool::setInputParams(AbstractToolInputParams *input_params)
     return false;
 }
 
-
-
 bool AbstractQuickTool::setOutputParams(AbstractToolOutputParams *output_params)
 {
     if (output_params_ != output_params)
@@ -49,6 +45,15 @@ bool AbstractQuickTool::setOutputParams(AbstractToolOutputParams *output_params)
         return true;
     }
     return false;
+}
+
+QuickToolFactor *QuickToolFactor::getInstance()
+{
+    if (instance_ == nullptr)
+    {
+        instance_ = new QuickToolFactor;
+    }
+    return instance_;
 }
 
 } // namespace quicktools

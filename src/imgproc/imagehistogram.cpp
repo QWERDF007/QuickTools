@@ -1,5 +1,8 @@
 #include "imagehistogram.h"
 
+#include <QtQml>
+
+
 namespace quicktools {
 
 namespace {
@@ -14,7 +17,6 @@ ImageHistogram::ImageHistogram(QObject *parent)
     : AbstractQuickTool(parent)
 {
 }
-
 
 int ImageHistogram::run()
 {

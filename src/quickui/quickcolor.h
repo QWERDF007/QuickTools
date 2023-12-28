@@ -51,6 +51,8 @@ public:
      */
     static QuickColor *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
     {
+        Q_UNUSED(qmlEngine)
+        Q_UNUSED(jsEngine)
         return getInstance();
     }
 

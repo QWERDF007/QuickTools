@@ -14,11 +14,9 @@ public:
 
     ~ImageHistogram() = default;
 
-
     int run() override;
 
 private:
-
 };
 
 } // namespace quicktools
