@@ -1,6 +1,6 @@
 #pragma once
 
-#include "quicktoolstypes_global.h"
+#include "core_global.h"
 
 #include <QAbstractListModel>
 #include <QObject>
@@ -9,7 +9,7 @@
 
 namespace quicktools {
 
-class QUICKTOOLS_TYPES_EXPORT AbstractToolParams : public QAbstractListModel
+class QUICKTOOLS_CORE_EXPORT AbstractToolParams : public QAbstractListModel
 {
     Q_OBJECT
 public:
@@ -55,7 +55,7 @@ protected:
     QVector<QMap<int, QVariant>> params_;
 };
 
-class QUICKTOOLS_TYPES_EXPORT AbstractToolInputParams : public AbstractToolParams
+class QUICKTOOLS_CORE_EXPORT AbstractToolInputParams : public AbstractToolParams
 {
     Q_OBJECT
 public:
@@ -67,7 +67,7 @@ public:
     virtual ~AbstractToolInputParams() {}
 };
 
-class QUICKTOOLS_TYPES_EXPORT AbstractToolOutputParams : public AbstractToolParams
+class QUICKTOOLS_CORE_EXPORT AbstractToolOutputParams : public AbstractToolParams
 {
     Q_OBJECT
 public:
@@ -79,7 +79,7 @@ public:
     virtual ~AbstractToolOutputParams() {}
 };
 
-class QUICKTOOLS_TYPES_EXPORT AbstractQuickTool : public QObject
+class QUICKTOOLS_CORE_EXPORT AbstractQuickTool : public QObject
 {
     Q_OBJECT
 
@@ -124,7 +124,7 @@ signals:
     void outputParamsChanged();
 };
 
-class QUICKTOOLS_TYPES_EXPORT QuickToolFactor : public QObject
+class QUICKTOOLS_CORE_EXPORT QuickToolFactor : public QObject
 {
     Q_OBJECT
 

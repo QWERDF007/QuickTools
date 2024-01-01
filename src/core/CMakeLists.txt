@@ -1,4 +1,4 @@
-set(PLUGIN_NAME "types")
+set(PLUGIN_NAME "core")
 set(TARGET_NAME "${PROJECT_NAME}_${PLUGIN_NAME}")
 
 # 将名称转换为大写
@@ -60,7 +60,7 @@ target_compile_definitions(${TARGET_NAME}
 )
 
 target_link_libraries(${TARGET_NAME}
-    PUBLIC
+    PRIVATE
         Qt6::Core Qt6::Gui
 )
 

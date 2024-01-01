@@ -47,7 +47,7 @@ PRIVATE
 
     Qt6::Quick
     Qt6::Gui
-    QuickTools_types
+    QuickTools_core
     QuickTools_imgproc
     QuickTools_ui
 )
