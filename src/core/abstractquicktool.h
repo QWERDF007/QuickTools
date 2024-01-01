@@ -6,8 +6,18 @@
 #include <QObject>
 #include <QtQml>
 
-
 namespace quicktools {
+
+namespace quicktooltypes {
+Q_NAMESPACE
+
+enum QuickToolType
+{
+    ImageHistogram = 1, //!< 图像直方图
+};
+Q_ENUM_NS(QuickToolType) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
+QML_NAMED_ELEMENT(QuickToolType) // 声明封闭类型或命名空间在 QML 中可用，以 name 进行访问
+} // namespace quicktooltypes
 
 class QUICKTOOLS_CORE_EXPORT AbstractToolParams : public QAbstractListModel
 {
@@ -139,6 +149,8 @@ class QUICKTOOLS_CORE_EXPORT QuickToolFactor : public QObject
     QML_SINGLETON
 
 public:
+    using ClassCreator = std::function<AbstractQuickTool *(void)>;
+
     /**
      * @brief 获取单例实例的指针
      * @return
@@ -158,9 +170,22 @@ public:
         return getInstance();
     }
 
-    Q_INVOKABLE AbstractQuickTool *createQuickTool() const
+    Q_INVOKABLE AbstractQuickTool *createQuickTool(int type) const
     {
+        auto found = tool_creators_.find(type);
+        if (found != tool_creators_.end())
+        {
+            auto callable = found->second;
+            return callable();
+        }
         return nullptr;
+    }
+
+    void registerQuickTool(int type, ClassCreator creator)
+    {
+        auto found = tool_creators_.find(type);
+        assert(found == tool_creators_.end() && "This type is already registerd");
+        tool_creators_.emplace(type, creator);
     }
 
 private:
@@ -174,10 +199,22 @@ private:
      */
     static QuickToolFactor *instance_;
 
+    std::map<int, ClassCreator> tool_creators_;
+
     /**
      * 禁用拷贝和移动构造和运算符
      */
     Q_DISABLE_COPY_MOVE(QuickToolFactor)
 };
+
+#define REGISTER_CLASS(tool_type, ClassName)                                             \
+    inline ClassName *create##ClassName()                                                \
+    {                                                                                    \
+        return new ClassName;                                                            \
+    }                                                                                    \
+    inline void register##ClassName()                                                    \
+    {                                                                                    \
+        QuickToolFactor::getInstance()->registerQuickTool(tool_type, create##ClassName); \
+    }
 
 } // namespace quicktools

@@ -4,7 +4,7 @@
 
 #include <QObject>
 
-namespace quicktools {
+namespace quicktools::imgproc {
 
 class ImageHistogram : public AbstractQuickTool
 {
@@ -19,4 +19,6 @@ public:
 private:
 };
 
-} // namespace quicktools
+REGISTER_CLASS(quicktooltypes::ImageHistogram, ImageHistogram)
+
+} // namespace quicktools::imgproc

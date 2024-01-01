@@ -3,7 +3,7 @@
 #include <QtQml>
 
 
-namespace quicktools {
+namespace quicktools::imgproc {
 
 namespace {
 
@@ -23,4 +23,4 @@ int ImageHistogram::run()
     return 0;
 }
 
-} // namespace quicktools
+} // namespace quicktools::imgproc
