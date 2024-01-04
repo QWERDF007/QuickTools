@@ -107,7 +107,7 @@ Window {
                             text: "- OR -"
                         }
 
-                        Button {
+                        QuickButton {
                             id: browseBtn
                             anchors {
                                 top: seperator.bottom
@@ -115,11 +115,6 @@ Window {
                                 horizontalCenter: parent.horizontalCenter
                             }
                             text: "BROWSE FROM YOUR COMPUTER"
-                            palette {
-                                button: "#007BFF"
-//                                highlight: Qt.darker("#007BFF", 1.2)
-                                buttonText: "white"
-                            }
                         }
                 }
 
