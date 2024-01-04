@@ -29,9 +29,9 @@ QuickColor::QuickColor(QObject *parent)
     WindowActiveBackground(QColor(243, 243, 243, 255));
 
     ItemNormal(QColor(0, 0, 0, 0));
-    ItemHover(QColor(0, 0, 0, 255 * 0.03));
-    ItemPress(QColor(0, 0, 0, 255 * 0.06));
-    ItemCheck(QColor(0, 0, 0, 255 * 0.09));
+    ItemHover(QColor(0, 0, 0, 7)); // 255 * 0.03
+    ItemPress(QColor(0, 0, 0, 15)); // 255 * 0.06
+    ItemCheck(QColor(0, 0, 0, 22)); // 255 * 0.09
 
     Grey120("#797775");
     Grey220("#11100f");
