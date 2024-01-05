@@ -16,6 +16,11 @@ public:
 
     int run() override;
 
+    QString name() const override
+    {
+        return QString("图像直方图");
+    }
+
 private:
 };
 

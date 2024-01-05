@@ -4,6 +4,7 @@
 
 #include <QAbstractListModel>
 #include <QObject>
+#include <QString>
 #include <QtQml>
 
 namespace quicktools {
@@ -93,15 +94,19 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool : public QObject
 {
     Q_OBJECT
 
+    // 声明 QML 中可用
+    QML_ELEMENT
+    // 声明对象不能在 QML 中创建
+    QML_UNCREATABLE("Can't not create a AbstractQuickTool directly")
+
     Q_PROPERTY(QAbstractListModel *inputParams READ inputParams NOTIFY inputParamsChanged FINAL)
     Q_PROPERTY(QAbstractListModel *outputParams READ outputParams NOTIFY outputParamsChanged FINAL)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
 public:
-    AbstractQuickTool(QObject *parent = nullptr)
-        : QObject(parent)
-    {
-    }
+    AbstractQuickTool(QObject *parent = nullptr);
+    virtual ~AbstractQuickTool();
 
-    virtual ~AbstractQuickTool() {}
+    virtual QString name() const = 0;
 
     int operator()()
     {
@@ -132,6 +137,7 @@ private:
 signals:
     void inputParamsChanged();
     void outputParamsChanged();
+    void nameChanged();
 };
 
 class QUICKTOOLS_CORE_EXPORT QuickToolFactor : public QObject

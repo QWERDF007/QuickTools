@@ -25,6 +25,16 @@ bool AbstractToolParams::setData(const QModelIndex &index, const QVariant &value
     return false;
 }
 
+AbstractQuickTool::AbstractQuickTool(QObject *parent)
+    : QObject(parent)
+{
+}
+
+AbstractQuickTool::~AbstractQuickTool()
+{
+    qDebug() << __FUNCTION__ << this;
+}
+
 bool AbstractQuickTool::setInputParams(AbstractToolInputParams *input_params)
 {
     if (input_params_ != input_params)

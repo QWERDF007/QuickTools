@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import QuickTools.core
 import QuickTools.ui
 
 Window {
@@ -9,6 +10,16 @@ Window {
     height: 720
     visible: true
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
+
+    property AbstractQuickTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
+
+    Component.onCompleted: {
+        console.log(quicktool.name)
+    }
+
+    Component.onDestruction: {
+        console.log("onDestruction")
+    }
 
     Item {
         anchors.fill: parent
@@ -18,11 +29,7 @@ Window {
             implicitHeight: 32
             orientation: Qt.Horizontal
             spacing: 5
-            model: ListModel {
-                ListElement { text: "param1"; type: 1; visible: true }
-                ListElement { text: "param2"; type: 1; visible: false }
-                ListElement { text: "param3"; type: 1; visible: true }
-            }
+            model: quicktool.inputParams
 
             delegate: Item {
                 width: model.visible ? 40 : 0
