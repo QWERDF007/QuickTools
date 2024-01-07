@@ -15,27 +15,27 @@ public:
     Singleton<T> &operator=(const Singleton &other) = delete;
 
 private:
-    static std::mutex mutex;
-    static T         *instance;
+    static std::mutex mutex_;
+    static T         *instance_;
 };
 
 template<typename T>
-std::mutex Singleton<T>::mutex;
+std::mutex Singleton<T>::mutex_;
 template<typename T>
-T *Singleton<T>::instance;
+T *Singleton<T>::instance_;
 
 template<typename T>
 T *Singleton<T>::getInstance()
 {
-    if (instance == nullptr)
+    if (instance_ == nullptr)
     {
-        std::lock_guard<std::mutex> locker(mutex);
-        if (instance == nullptr)
+        std::lock_guard<std::mutex> locker(mutex_);
+        if (instance_ == nullptr)
         {
-            instance = new T();
+            instance_ = new T();
         }
     }
-    return instance;
+    return instance_;
 }
 
 #define SINGLETONG(Class)                       \
