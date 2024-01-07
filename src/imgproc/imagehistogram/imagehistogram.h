@@ -22,8 +22,10 @@ public:
     }
 
 private:
+    void initInputParams();
+    void updateImageSourceParam();
 };
 
-REGISTER_CLASS(quicktooltypes::ImageHistogram, ImageHistogram)
+REGISTER_CLASS(quicktooltypes::QuickToolType::ImageHistogram, ImageHistogram)
 
 } // namespace quicktools::imgproc

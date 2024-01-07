@@ -6,6 +6,7 @@ import QuickTools.core
 import QuickTools.ui
 
 Window {
+    id: imageHistogramWin
     width: 1080
     height: 720
     visible: true
@@ -13,12 +14,14 @@ Window {
 
     property AbstractQuickTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
 
+    signal start
+
     Component.onCompleted: {
         console.log(quicktool.name)
     }
 
-    Component.onDestruction: {
-        console.log("onDestruction")
+    onStart: function() {
+        quicktool.run()
     }
 
     Item {
@@ -78,6 +81,10 @@ Window {
                     id: image
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
+                    onSourceChanged: {
+                        quicktool.imageSource = image.source
+                        imageHistogramWin.start()
+                    }
                 }
 
                 Item {
