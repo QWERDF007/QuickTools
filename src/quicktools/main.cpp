@@ -1,9 +1,10 @@
 
+#include "imgprocregister.h"
+
 #include <QGuiApplication>
 #include <QPalette>
 #include <QQmlApplicationEngine>
 
-#include "imgprocregister.h"
 
 int main(int argc, char *argv[])
 {

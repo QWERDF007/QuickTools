@@ -2,7 +2,6 @@
 
 #include <QtCore/QtGlobal>
 
-
 // clang-format off
 
 #if defined(QUICKTOOLS_IMGPROC_LIBRARY)
@@ -12,4 +11,3 @@
 #endif
 
 // clang-format on
-
