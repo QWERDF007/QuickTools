@@ -8,6 +8,7 @@
 
 namespace quicktools::imgproc {
 
+using quicktooltypes::QuickToolParamRole;
 using quicktooltypes::QuickToolParamType;
 
 ImageHistogram::ImageHistogram(QObject *parent)
@@ -19,13 +20,12 @@ ImageHistogram::ImageHistogram(QObject *parent)
 int ImageHistogram::run()
 {
     qInfo() << __FUNCTION__;
-    qInfo() << __FUNCTION__ << image_source_;
     auto        param_size = input_params_->rowCount();
     std::string image_path;
     for (int i = 0; i < param_size; ++i)
     {
-        auto name = input_params_->data(input_params_->index(i), AbstractToolParams::ParamNameRole).toString();
-        auto data = input_params_->data(input_params_->index(i), AbstractToolParams::ParamValueRole);
+        auto     name = input_params_->data(input_params_->index(i), QuickToolParamRole::ParamNameRole).toString();
+        QVariant data = input_params_->data(input_params_->index(i), QuickToolParamRole::ParamValueRole);
         if (name == "Image")
         {
             image_path = data.toString().toStdString();
@@ -43,28 +43,6 @@ void ImageHistogram::initInputParams()
 {
     input_params_ = new AbstractToolInputParams(this);
     input_params_->addParam("Image", QuickToolParamType::Text, "");
-
-    connect(this, &AbstractQuickTool::imageSourceChanged, this, &ImageHistogram::updateImageSourceParam);
-}
-
-void ImageHistogram::updateImageSourceParam()
-{
-    int param_size = input_params_->rowCount();
-    for (int i = 0; i < param_size; ++i)
-    {
-        auto index = input_params_->index(i);
-        if (input_params_->data(index, AbstractToolParams::ParamNameRole) != "Image")
-        {
-            continue;
-        }
-        QString image_source = image_source_.toString();
-        if (image_source.startsWith("file:///"))
-        {
-            image_source = image_source.remove("file:///");
-        }
-        input_params_->setData(index, image_source, AbstractToolParams::ParamValueRole);
-        break;
-    }
 }
 
 } // namespace quicktools::imgproc

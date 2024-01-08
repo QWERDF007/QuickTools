@@ -23,7 +23,6 @@ public:
 
 private:
     void initInputParams();
-    void updateImageSourceParam();
 };
 
 REGISTER_CLASS(quicktooltypes::QuickToolType::ImageHistogram, ImageHistogram)
