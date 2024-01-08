@@ -12,7 +12,14 @@ Window {
     visible: true
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
-    property AbstractQuickTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
+    property QuickTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
+    property QuickInputParam inputParam: quicktool.inputParams
+    property string imagePath: {
+        if (quicktool == null || inputParam == null) {
+            return null
+        }
+        console.log(objToString(inputParam))
+    }
 
     signal start
 
@@ -24,6 +31,20 @@ Window {
         quicktool.run()
     }
 
+    /**
+     * @brief 获取 obj 的属性并转换为字符串, 包括 function 和 property
+     * @param obj
+     */
+    function objToString (obj) {
+        var str = '';
+        for (var p in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, p)) {
+                str += p + '::' + obj[p] + '\n';
+            }
+        }
+        return str;
+    }
+
     Item {
         anchors.fill: parent
         ListView {
@@ -32,7 +53,7 @@ Window {
             implicitHeight: 32
             orientation: Qt.Horizontal
             spacing: 5
-            model: quicktool.inputParams
+            model: inputParam
 
             delegate: Item {
                 width: model.visible ? 40 : 0
@@ -82,7 +103,6 @@ Window {
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
                     onSourceChanged: {
-                        quicktool.imageSource = image.source
                         imageHistogramWin.start()
                     }
                 }
