@@ -6,6 +6,8 @@ namespace quicktools {
 
 QuickToolFactor *QuickToolFactor::instance_ = nullptr;
 
+using quicktooltypes::QuickToolParamRole;
+
 AbstractToolParams::~AbstractToolParams()
 {
     qInfo() << __FUNCTION__ << this;
@@ -18,8 +20,21 @@ int AbstractToolParams::rowCount(const QModelIndex &parent) const
     return params_.size();
 }
 
+QHash<int, QByteArray> AbstractToolParams::roleNames() const
+{
+    return {
+        {   QuickToolParamRole::ParamNameRole,    "name"},
+        {   QuickToolParamRole::ParamTypeRole,    "type"},
+        {QuickToolParamRole::ParamVisibleRole, "visible"},
+        {  QuickToolParamRole::ParamValueRole,   "value"},
+        {  QuickToolParamRole::ParamRangeRole,   "range"},
+    };
+}
+
 QVariant AbstractToolParams::data(const QModelIndex &index, int role) const
 {
+    if (!index.isValid())
+        return QVariant();
     if (index.row() < 0 || index.row() >= params_.size())
         return QVariant();
     return params_.at(index.row()).value(role, QVariant());
@@ -27,12 +42,14 @@ QVariant AbstractToolParams::data(const QModelIndex &index, int role) const
 
 bool AbstractToolParams::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    if (!index.isValid())
+        return false;
     if (index.row() < 0 || index.row() >= params_.size())
         return false;
     switch (role)
     {
-    case ParamVisibleRole:
-    case ParamValueRole:
+    case QuickToolParamRole::ParamVisibleRole:
+    case QuickToolParamRole::ParamValueRole:
         params_[index.row()][role] = value;
         return true;
         break;
@@ -46,11 +63,11 @@ bool AbstractToolParams::addParam(const QString &name, const int type, const QVa
                                   const QVariant &visible)
 {
     QMap<int, QVariant> param{
-        {   ParamNameRole,    name},
-        {   ParamTypeRole,    type},
-        {ParamVisibleRole, visible},
-        {  ParamValueRole,   value},
-        {  ParamRangeRole,   range},
+        {   QuickToolParamRole::ParamNameRole,    name},
+        {   QuickToolParamRole::ParamTypeRole,    type},
+        {QuickToolParamRole::ParamVisibleRole, visible},
+        {  QuickToolParamRole::ParamValueRole,   value},
+        {  QuickToolParamRole::ParamRangeRole,   range},
     };
     params_.emplace_back(param);
     return true;
@@ -86,17 +103,6 @@ bool AbstractQuickTool::setOutputParams(AbstractToolOutputParams *output_params)
         return true;
     }
     return false;
-}
-
-bool AbstractQuickTool::setImageSource(const QUrl &url)
-{
-    if (url == image_source_)
-    {
-        return false;
-    }
-    image_source_ = url;
-    emit imageSourceChanged();
-    return true;
 }
 
 AbstractQuickTool *QuickToolFactor::createQuickTool(int type) const

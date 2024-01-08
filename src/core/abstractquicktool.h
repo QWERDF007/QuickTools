@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include <QObject>
 #include <QString>
+#include <QVariant>
 #include <QtQml>
 
 namespace quicktools {
@@ -27,6 +28,16 @@ enum QuickToolParamType
 };
 Q_ENUM_NS(QuickToolParamType) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
 
+enum QuickToolParamRole
+{
+    ParamNameRole = Qt::UserRole + 1,
+    ParamTypeRole,
+    ParamVisibleRole,
+    ParamValueRole,
+    ParamRangeRole,
+};
+Q_ENUM_NS(QuickToolParamRole) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
+
 QML_NAMED_ELEMENT(QuickToolType) // 声明封闭类型或命名空间在 QML 中可用，以 name 进行访问
 } // namespace quicktooltypes
 
@@ -41,27 +52,9 @@ public:
 
     virtual ~AbstractToolParams();
 
-    enum ToolParamRole
-    {
-        ParamNameRole = Qt::UserRole + 1,
-        ParamTypeRole,
-        ParamVisibleRole,
-        ParamValueRole,
-        ParamRangeRole,
-    };
-
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QHash<int, QByteArray> roleNames() const override
-    {
-        return {
-            {   ParamNameRole,    "name"},
-            {   ParamTypeRole,    "type"},
-            {ParamVisibleRole, "visible"},
-            {  ParamValueRole,   "value"},
-            {  ParamRangeRole,   "range"},
-        };
-    }
+    QHash<int, QByteArray> roleNames() const override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
@@ -79,6 +72,10 @@ protected:
 class QUICKTOOLS_CORE_EXPORT AbstractToolInputParams : public AbstractToolParams
 {
     Q_OBJECT
+    // 声明 QML 中可用
+    QML_NAMED_ELEMENT(QuickInputParam)
+    // 声明对象不能在 QML 中创建
+    QML_UNCREATABLE("Can't not create a AbstractToolInputParams directly")
 public:
     AbstractToolInputParams(QObject *parent = nullptr)
         : AbstractToolParams(parent)
@@ -91,6 +88,10 @@ public:
 class QUICKTOOLS_CORE_EXPORT AbstractToolOutputParams : public AbstractToolParams
 {
     Q_OBJECT
+    // 声明 QML 中可用
+    QML_NAMED_ELEMENT(QuickOutputParam)
+    // 声明对象不能在 QML 中创建
+    QML_UNCREATABLE("Can't not create a AbstractToolOutputParams directly")
 public:
     AbstractToolOutputParams(QObject *parent = nullptr)
         : AbstractToolParams(parent)
@@ -105,14 +106,14 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool : public QObject
     Q_OBJECT
 
     // 声明 QML 中可用
-    QML_ELEMENT
+    QML_NAMED_ELEMENT(QuickTool)
     // 声明对象不能在 QML 中创建
     QML_UNCREATABLE("Can't not create a AbstractQuickTool directly")
 
-    Q_PROPERTY(QAbstractListModel *inputParams READ inputParams NOTIFY inputParamsChanged FINAL)
-    Q_PROPERTY(QAbstractListModel *outputParams READ outputParams NOTIFY outputParamsChanged FINAL)
+    Q_PROPERTY(AbstractToolInputParams *inputParams READ inputParams NOTIFY inputParamsChanged FINAL)
+    Q_PROPERTY(AbstractToolOutputParams *outputParams READ outputParams NOTIFY outputParamsChanged FINAL)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
-    Q_PROPERTY(QUrl imageSource READ imageSource WRITE setImageSource NOTIFY imageSourceChanged FINAL)
+
 public:
     AbstractQuickTool(QObject *parent = nullptr);
     virtual ~AbstractQuickTool();
@@ -126,32 +127,23 @@ public:
 
     Q_INVOKABLE virtual int run() = 0;
 
-    QAbstractListModel *inputParams() const
+    AbstractToolInputParams *inputParams() const
     {
         return input_params_;
     }
 
     bool setInputParams(AbstractToolInputParams *input_params);
 
-    QAbstractListModel *outputParams() const
+    AbstractToolOutputParams *outputParams() const
     {
         return output_params_;
     }
 
     bool setOutputParams(AbstractToolOutputParams *output_params);
 
-    const QUrl &imageSource() const
-    {
-        return image_source_;
-    }
-
-    bool setImageSource(const QUrl &url);
-
 protected:
     AbstractToolInputParams  *input_params_{nullptr};
     AbstractToolOutputParams *output_params_{nullptr};
-
-    QUrl image_source_;
 
 private:
     Q_DISABLE_COPY(AbstractQuickTool)
