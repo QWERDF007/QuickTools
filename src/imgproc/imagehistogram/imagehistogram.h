@@ -1,12 +1,12 @@
 #pragma once
 
-#include "abstractquicktool.h"
+#include "abstractcvtool.h"
 
 #include <QObject>
 
 namespace quicktools::imgproc {
 
-class ImageHistogram : public AbstractQuickTool
+class ImageHistogram : public core::AbstractCVTool
 {
     Q_OBJECT
 public:
@@ -25,6 +25,6 @@ private:
     void initInputParams();
 };
 
-REGISTER_CLASS(quicktooltypes::QuickToolType::ImageHistogram, ImageHistogram)
+REGISTER_CLASS(core::tooltypes::ImageHistogram, ImageHistogram)
 
 } // namespace quicktools::imgproc

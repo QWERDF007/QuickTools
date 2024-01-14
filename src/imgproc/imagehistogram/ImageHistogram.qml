@@ -12,19 +12,15 @@ Window {
     visible: true
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
-    property QuickTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
-    property QuickInputParam inputParam: quicktool.inputParams
-    property string imagePath: {
-        if (quicktool == null || inputParam == null) {
-            return null
-        }
-        console.log(objToString(inputParam))
-    }
+    property CVTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
+    property CVInputParams inputParam: quicktool.inputParams
 
     signal start
 
     Component.onCompleted: {
-        console.log(quicktool.name)
+        console.log("quick tool", quicktool.name)
+        console.log("input params", inputParam.name)
+        console.log("input params", inputParam.inputImages)
     }
 
     onStart: function() {

@@ -1,18 +1,21 @@
 #include "imagehistogram.h"
 
+#include "abstractcvtoolparam.h"
+
 #include <opencv2/highgui.hpp>
 
 #include <QString>
 #include <QtQml>
 #include <vector>
 
+
 namespace quicktools::imgproc {
 
-using quicktooltypes::QuickToolParamRole;
-using quicktooltypes::QuickToolParamType;
+using core::paramtypes::QuickToolParamRole;
+using core::paramtypes::QuickToolParamType;
 
 ImageHistogram::ImageHistogram(QObject *parent)
-    : AbstractQuickTool(parent)
+    : core::AbstractCVTool(parent)
 {
     initInputParams();
 }
@@ -41,7 +44,7 @@ int ImageHistogram::run()
 
 void ImageHistogram::initInputParams()
 {
-    input_params_ = new AbstractToolInputParams(this);
+    input_params_ = new core::AbstractCVInputParams(this);
     input_params_->addParam("Image", QuickToolParamType::Text, "");
 }
 
