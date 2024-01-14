@@ -1,16 +1,16 @@
 #pragma once
 
+#include "abstractquicktoolparam.h"
 #include "core_global.h"
 
-#include <QAbstractListModel>
 #include <QObject>
 #include <QString>
-#include <QVariant>
 #include <QtQml>
+#include <map>
 
-namespace quicktools {
+namespace quicktools::core {
 
-namespace quicktooltypes {
+namespace tooltypes {
 Q_NAMESPACE
 
 enum QuickToolType
@@ -19,131 +19,46 @@ enum QuickToolType
 };
 Q_ENUM_NS(QuickToolType) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
 
-enum QuickToolParamType
-{
-    Text = 1,      //!< 文本参数
-    IntSpinBox,    //!< 整型旋钮
-    DoubleSpinBox, //!< 浮点旋钮
-    ComboBox,      //!< 下拉列表
-};
-Q_ENUM_NS(QuickToolParamType) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
-
-enum QuickToolParamRole
-{
-    ParamNameRole = Qt::UserRole + 1,
-    ParamTypeRole,
-    ParamVisibleRole,
-    ParamValueRole,
-    ParamRangeRole,
-};
-Q_ENUM_NS(QuickToolParamRole) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
-
 QML_NAMED_ELEMENT(QuickToolType) // 声明封闭类型或命名空间在 QML 中可用，以 name 进行访问
-} // namespace quicktooltypes
-
-class QUICKTOOLS_CORE_EXPORT AbstractToolParams : public QAbstractListModel
-{
-    Q_OBJECT
-public:
-    AbstractToolParams(QObject *parent = nullptr)
-        : QAbstractListModel(parent)
-    {
-    }
-
-    virtual ~AbstractToolParams();
-
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-
-    QHash<int, QByteArray> roleNames() const override;
-
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
-
-    bool addParam(const QString &name, const int type, const QVariant &value,
-                  const QVariant &range = QVariant::fromValue(nullptr), const QVariant &visible = true);
-
-protected:
-    QVector<QMap<int, QVariant>> params_;
-    //    QSet<QString> names_;
-    //    QMap<QString, QMap<int, QVariant>> params_;
-};
-
-class QUICKTOOLS_CORE_EXPORT AbstractToolInputParams : public AbstractToolParams
-{
-    Q_OBJECT
-    // 声明 QML 中可用
-    QML_NAMED_ELEMENT(QuickInputParam)
-    // 声明对象不能在 QML 中创建
-    QML_UNCREATABLE("Can't not create a AbstractToolInputParams directly")
-public:
-    AbstractToolInputParams(QObject *parent = nullptr)
-        : AbstractToolParams(parent)
-    {
-    }
-
-    virtual ~AbstractToolInputParams() {}
-};
-
-class QUICKTOOLS_CORE_EXPORT AbstractToolOutputParams : public AbstractToolParams
-{
-    Q_OBJECT
-    // 声明 QML 中可用
-    QML_NAMED_ELEMENT(QuickOutputParam)
-    // 声明对象不能在 QML 中创建
-    QML_UNCREATABLE("Can't not create a AbstractToolOutputParams directly")
-public:
-    AbstractToolOutputParams(QObject *parent = nullptr)
-        : AbstractToolParams(parent)
-    {
-    }
-
-    virtual ~AbstractToolOutputParams() {}
-};
+} // namespace tooltypes
 
 class QUICKTOOLS_CORE_EXPORT AbstractQuickTool : public QObject
 {
     Q_OBJECT
 
-    // 声明 QML 中可用
-    QML_NAMED_ELEMENT(QuickTool)
-    // 声明对象不能在 QML 中创建
-    QML_UNCREATABLE("Can't not create a AbstractQuickTool directly")
-
-    Q_PROPERTY(AbstractToolInputParams *inputParams READ inputParams NOTIFY inputParamsChanged FINAL)
-    Q_PROPERTY(AbstractToolOutputParams *outputParams READ outputParams NOTIFY outputParamsChanged FINAL)
+    Q_PROPERTY(AbstractInputParams *inputParams READ inputParams NOTIFY inputParamsChanged FINAL)
+    Q_PROPERTY(AbstractOutputParams *outputParams READ outputParams NOTIFY outputParamsChanged FINAL)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
-
 public:
     AbstractQuickTool(QObject *parent = nullptr);
     virtual ~AbstractQuickTool();
 
     virtual QString name() const = 0;
 
-    int operator()()
+    Q_INVOKABLE int operator()()
     {
         return run();
     }
 
     Q_INVOKABLE virtual int run() = 0;
 
-    AbstractToolInputParams *inputParams() const
+    AbstractInputParams *inputParams() const
     {
         return input_params_;
     }
 
-    bool setInputParams(AbstractToolInputParams *input_params);
+    bool setInputParams(AbstractInputParams *input_params);
 
-    AbstractToolOutputParams *outputParams() const
+    AbstractOutputParams *outputParams() const
     {
         return output_params_;
     }
 
-    bool setOutputParams(AbstractToolOutputParams *output_params);
+    bool setOutputParams(AbstractOutputParams *output_params);
 
 protected:
-    AbstractToolInputParams  *input_params_{nullptr};
-    AbstractToolOutputParams *output_params_{nullptr};
+    AbstractInputParams  *input_params_{nullptr};
+    AbstractOutputParams *output_params_{nullptr};
 
 private:
     Q_DISABLE_COPY(AbstractQuickTool)
@@ -221,14 +136,14 @@ private:
     Q_DISABLE_COPY_MOVE(QuickToolFactor)
 };
 
-#define REGISTER_CLASS(tool_type, ClassName)                                             \
-    inline ClassName *create##ClassName()                                                \
-    {                                                                                    \
-        return new ClassName;                                                            \
-    }                                                                                    \
-    inline void register##ClassName()                                                    \
-    {                                                                                    \
-        QuickToolFactor::getInstance()->registerQuickTool(tool_type, create##ClassName); \
-    }
+} // namespace quicktools::core
 
-} // namespace quicktools
+#define REGISTER_CLASS(tool_type, ClassName)                                                               \
+    inline ClassName *create##ClassName()                                                                  \
+    {                                                                                                      \
+        return new ClassName;                                                                              \
+    }                                                                                                      \
+    inline void register##ClassName()                                                                      \
+    {                                                                                                      \
+        quicktools::core::QuickToolFactor::getInstance()->registerQuickTool(tool_type, create##ClassName); \
+    }
