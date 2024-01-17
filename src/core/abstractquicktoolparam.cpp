@@ -13,7 +13,7 @@ int AbstractToolParams::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    return params_.size();
+    return std::min(params_names_.size(), params_data_.size());
 }
 
 QHash<int, QByteArray> AbstractToolParams::roleNames() const
@@ -29,28 +29,49 @@ QHash<int, QByteArray> AbstractToolParams::roleNames() const
 
 QVariant AbstractToolParams::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
+    if (index.row() < 0 || index.row() >= rowCount())
         return QVariant();
-    if (index.row() < 0 || index.row() >= params_.size())
-        return QVariant();
-    return params_.at(index.row()).value(role, QVariant());
+    const QString             &param_name = params_names_[index.row()];
+    const QMap<int, QVariant> &param_data = params_data_[param_name];
+    return param_data.value(role, QVariant());
 }
 
 bool AbstractToolParams::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!index.isValid())
         return false;
-    if (index.row() < 0 || index.row() >= params_.size())
+    if (index.row() < 0 || index.row() >= rowCount())
         return false;
     switch (role)
     {
     case QuickToolParamRole::ParamVisibleRole:
     case QuickToolParamRole::ParamValueRole:
-        params_[index.row()][role] = value;
+    {
+        const QString &param_name      = params_names_[index.row()];
+        params_data_[param_name][role] = value;
         return true;
         break;
+    }
     default:
         break;
+    }
+    return false;
+}
+
+bool AbstractToolParams::setData(const QString &name, const QVariant &value)
+{
+    int row{-1};
+    for (int i = 0; i < params_names_.size(); ++i)
+    {
+        if (name == params_names_[i])
+        {
+            row = i;
+            break;
+        }
+    }
+    if (row != -1)
+    {
+        return setData(createIndex(row, 0), value, QuickToolParamRole::ParamValueRole);
     }
     return false;
 }
@@ -58,6 +79,11 @@ bool AbstractToolParams::setData(const QModelIndex &index, const QVariant &value
 bool AbstractToolParams::addParam(const QString &name, const int type, const QVariant &value, const QVariant &range,
                                   const QVariant &visible)
 {
+    if (params_names_.contains(name))
+    {
+        return false;
+    }
+    params_names_.append(name);
     QMap<int, QVariant> param{
         {   QuickToolParamRole::ParamNameRole,    name},
         {   QuickToolParamRole::ParamTypeRole,    type},
@@ -65,7 +91,7 @@ bool AbstractToolParams::addParam(const QString &name, const int type, const QVa
         {  QuickToolParamRole::ParamValueRole,   value},
         {  QuickToolParamRole::ParamRangeRole,   range},
     };
-    params_.emplace_back(param);
+    params_data_.insert(name, param);
     return true;
 }
 

@@ -54,11 +54,14 @@ public:
 
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
+    bool setData(const QString &name, const QVariant &value);
+
     bool addParam(const QString &name, const int type, const QVariant &value,
                   const QVariant &range = QVariant::fromValue(nullptr), const QVariant &visible = true);
 
 protected:
-    QVector<QMap<int, QVariant>> params_;
+    QVector<QString>                   params_names_;
+    QMap<QString, QMap<int, QVariant>> params_data_;
 
 signals:
     void nameChanged();

@@ -14,6 +14,16 @@ AbstractQuickTool::~AbstractQuickTool()
     qDebug() << __FUNCTION__ << this;
 }
 
+int AbstractQuickTool::exec()
+{
+    int ret = checkParams();
+    if (ret != 0)
+    {
+        return ret;
+    }
+    return run();
+}
+
 bool AbstractQuickTool::setInputParams(AbstractInputParams *input_params)
 {
     if (input_params_ != input_params)
@@ -34,6 +44,19 @@ bool AbstractQuickTool::setOutputParams(AbstractOutputParams *output_params)
         return true;
     }
     return false;
+}
+
+int AbstractQuickTool::checkParams() const
+{
+    if (input_params_ == nullptr)
+    {
+        return -1;
+    }
+    if (output_params_ == nullptr)
+    {
+        return -1;
+    }
+    return 0;
 }
 
 AbstractQuickTool *QuickToolFactor::createQuickTool(int type) const

@@ -35,12 +35,9 @@ public:
 
     virtual QString name() const = 0;
 
-    Q_INVOKABLE int operator()()
-    {
-        return run();
-    }
+    Q_INVOKABLE int exec();
 
-    Q_INVOKABLE virtual int run() = 0;
+    virtual int run() = 0;
 
     AbstractInputParams *inputParams() const
     {
@@ -55,6 +52,8 @@ public:
     }
 
     bool setOutputParams(AbstractOutputParams *output_params);
+
+    int checkParams() const;
 
 protected:
     AbstractInputParams  *input_params_{nullptr};
