@@ -23,6 +23,7 @@ public:
 
 private:
     void initInputParams();
+    void initOutputParams();
 };
 
 REGISTER_CLASS(core::tooltypes::ImageHistogram, ImageHistogram)

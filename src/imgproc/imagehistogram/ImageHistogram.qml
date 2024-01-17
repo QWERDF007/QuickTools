@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtCharts
 
 import QuickTools.core
 import QuickTools.ui
@@ -14,6 +15,7 @@ Window {
 
     property CVTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
     property CVInputParams inputParam: quicktool.inputParams
+    property CVOutputParams outputParam: quicktool.outputParams
 
     signal start
 
@@ -21,10 +23,12 @@ Window {
         console.log("quick tool", quicktool.name)
         console.log("input params", inputParam.name)
         console.log("input params", inputParam.inputImages)
+        console.log("output params", outputParam.name)
+        console.log("output params", outputParam.outputImages)
     }
 
     onStart: function() {
-        quicktool.run()
+        quicktool.exec()
     }
 
     /**
@@ -99,6 +103,7 @@ Window {
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
                     onSourceChanged: {
+                        inputParam.inputImages = source
                         imageHistogramWin.start()
                     }
                 }
@@ -166,6 +171,45 @@ Window {
             Item {
                 id: histogramContainer
                 implicitWidth: 200
+
+                ChartView {
+                    title: "Bar series"
+                    anchors.fill: parent
+                    legend.visible: false
+                    antialiasing: true
+
+
+
+
+                    BarSeries {
+                        id: mySeries
+                        axisX: ValuesAxis {
+                            min: 0
+                            max: 255
+                        }
+                        axisY: ValuesAxis {
+                            min: 0
+                            max: 1
+                        }
+                        BarSet {
+                            values: {
+                                if (outputParam.outputImages === undefined || outputParam.outputImages === null)
+                                {
+                                    return [0]
+                                }
+                                else
+                                {
+                                    console.log("outputParam.outputImages[0]", outputParam.outputImages[0])
+                                    return outputParam.outputImages[0]
+                                }
+                            }
+
+                            onValueChanged: {
+                                console.log("values", values)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
