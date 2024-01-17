@@ -6,10 +6,6 @@ string(TOUPPER ${TARGET_NAME} TARGET_NAME_UPPER)
 # 设置额外编译定义
 set(TARGET_EXPORTS "${TARGET_NAME_UPPER}_LIBRARY")
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
-
 # 获取所有源文件的相对路径
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp) 
 
@@ -23,19 +19,6 @@ source_group("QML Files" FILES ${QML_SOURCES})
 
 # 设置插件输出目录
 set(QML_PLUGIN_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PLUGIN_NAME}")
-
-# 添加 qml 导入目录
-# QML_IMPORT_PATH 用于支持语法高亮
-list(APPEND QML_IMPORT_PATH ${CMAKE_BINARY_DIR})
-
-# 去除重复
-list(REMOVE_DUPLICATES QML_IMPORT_PATH)
-
-# 将导入目录添加到 cache, 强制更新
-set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
-    CACHE STRING "qml import paths"
-    FORCE
-)
 
 # 添加qml模块
 qt_add_library(${TARGET_NAME} SHARED
@@ -61,7 +44,7 @@ target_compile_definitions(${TARGET_NAME}
 
 target_link_libraries(${TARGET_NAME}
     PRIVATE
-        Qt6::Core Qt6::Gui Qt6::Quick
+        Qt6::Core Qt6::Gui Qt6::Quick Qt6::Widgets Qt6::Charts
         QuickTools_core QuickTools_core_headers QuickTools_ui
         opencv_core
 )

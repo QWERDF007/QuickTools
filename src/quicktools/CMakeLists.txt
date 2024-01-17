@@ -44,8 +44,7 @@ PRIVATE
 # 链接库
 target_link_libraries(${PROJECT_NAME}
 PRIVATE 
-    Qt6::Quick
-    Qt6::Gui
+    Qt6::Quick Qt6::Gui Qt6::Widgets
     QuickTools_core QuickTools_core_headers
     QuickTools_imgproc QuickTools_imgproc_headers
     QuickTools_ui

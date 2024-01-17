@@ -1,14 +1,15 @@
 
 #include "imgprocregister.h"
 
-#include <QGuiApplication>
+#include <QApplication>
+
 #include <QPalette>
 #include <QQmlApplicationEngine>
 
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication       app(argc, argv);
+    QApplication        app(argc, argv);
     QQmlApplicationEngine engine;
 
     quicktools::imgproc::registerTools();
