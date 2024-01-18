@@ -171,7 +171,7 @@ Window {
             Item {
                 id: histogramContainer
                 visible: {
-                    if (outputParam.outputImages === undefined || outputParam.outputImages == null) {
+                    if (outputParam.outputImages === undefined || outputParam.outputImages === null) {
                         return false
                     } else {
                         return true
@@ -193,7 +193,7 @@ Window {
                             tickCount: 11
                             min: 0
                             max: {
-                                if (outputParam.outputImages === undefined || outputParam.outputImages == null) {
+                                if (outputParam.outputImages === undefined || outputParam.outputImages === null) {
                                     return 255
                                 } else {
                                     return outputParam.outputImages[0].length
@@ -207,7 +207,7 @@ Window {
                         }
                         BarSet {
                             values: {
-                                if (outputParam.outputImages === undefined || outputParam.outputImages == null) {
+                                if (outputParam.outputImages === undefined || outputParam.outputImages === null) {
                                     return [0]
                                 } else {
                                     console.log("outputParam.outputImages[0]", outputParam.outputImages[0])
