@@ -170,7 +170,15 @@ Window {
             }
             Item {
                 id: histogramContainer
-                implicitWidth: 200
+                visible: {
+                    if (outputParam.outputImages === undefined || outputParam.outputImages == null) {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+
+                implicitWidth: sv1.width / 2
 
                 ChartView {
                     title: "Bar series"
@@ -178,34 +186,33 @@ Window {
                     legend.visible: false
                     antialiasing: true
 
-
-
-
                     BarSeries {
                         id: mySeries
+                        barWidth: 1
                         axisX: ValuesAxis {
+                            tickCount: 11
                             min: 0
-                            max: 255
+                            max: {
+                                if (outputParam.outputImages === undefined || outputParam.outputImages == null) {
+                                    return 255
+                                } else {
+                                    return outputParam.outputImages[0].length
+                                }
+                            }
                         }
                         axisY: ValuesAxis {
+                            tickCount: 11
                             min: 0
                             max: 1
                         }
                         BarSet {
                             values: {
-                                if (outputParam.outputImages === undefined || outputParam.outputImages === null)
-                                {
+                                if (outputParam.outputImages === undefined || outputParam.outputImages == null) {
                                     return [0]
-                                }
-                                else
-                                {
+                                } else {
                                     console.log("outputParam.outputImages[0]", outputParam.outputImages[0])
                                     return outputParam.outputImages[0]
                                 }
-                            }
-
-                            onValueChanged: {
-                                console.log("values", values)
                             }
                         }
                     }

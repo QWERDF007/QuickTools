@@ -42,7 +42,7 @@ int ImageHistogram::run()
     qInfo() << __FUNCTION__ << "image size" << image.rows << image.cols << image.channels();
     std::vector<cv::Mat> chs;
     cv::split(image, chs);
-    int                    hist_size[] = {32};
+    int                    hist_size[] = {255};
     float                  range[]     = {0, 255};
     const float           *ranges[]    = {range};
     QList<QList<QVariant>> hists_data;
@@ -50,6 +50,7 @@ int ImageHistogram::run()
     {
         cv::Mat hist;
         cv::calcHist(&ch, 1, 0, cv::noArray(), hist, 1, hist_size, ranges, true, false);
+        cv::normalize(hist, hist, 0, 1, cv::NORM_MINMAX);
         QList<QVariant> hist_data;
         float          *data_ptr = reinterpret_cast<float *>(hist.data);
         for (int i = 0; i < hist_size[0]; ++i)
@@ -68,7 +69,6 @@ int ImageHistogram::run()
         auto     name = output_params->data(output_params->index(i), QuickToolParamRole::ParamNameRole).toString();
         QVariant data = output_params->data(output_params->index(i), QuickToolParamRole::ParamValueRole);
         qInfo() << __FUNCTION__ << name;
-        qInfo() << __FUNCTION__ << data;
     }
     return 0;
 }
