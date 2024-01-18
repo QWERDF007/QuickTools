@@ -36,6 +36,24 @@ QVariant AbstractToolParams::data(const QModelIndex &index, int role) const
     return param_data.value(role, QVariant());
 }
 
+QVariant AbstractToolParams::data(const QString &name, int role) const
+{
+    int row{-1};
+    for (int i = 0; i < params_names_.size(); ++i)
+    {
+        if (name == params_names_[i])
+        {
+            row = i;
+            break;
+        }
+    }
+    if (row != -1)
+    {
+        return data(createIndex(row, 0), role);
+    }
+    return QVariant();
+}
+
 bool AbstractToolParams::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!index.isValid())
