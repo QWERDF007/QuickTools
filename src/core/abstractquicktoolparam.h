@@ -53,6 +53,8 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
+    QVariant data(const QString &name, int role) const;
+
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
     bool setData(const QString &name, const QVariant &value);
