@@ -49,6 +49,7 @@ bool AbstractToolParams::setData(const QModelIndex &index, const QVariant &value
     {
         const QString &param_name      = params_names_[index.row()];
         params_data_[param_name][role] = value;
+        emit dataChanged(index, index, {role});
         return true;
         break;
     }

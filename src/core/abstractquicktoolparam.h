@@ -3,6 +3,7 @@
 #include "core_global.h"
 
 #include <QAbstractListModel>
+#include <QQmlPropertyMap>
 #include <QtQml>
 
 namespace quicktools::core {
