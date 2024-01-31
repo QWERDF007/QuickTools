@@ -27,6 +27,8 @@ enum QuickToolParamRole
     ParamVisibleRole,
     ParamValueRole,
     ParamRangeRole,
+    ParamIsPropertyRole,
+    RunAfterParamChangedRole,
 };
 Q_ENUM_NS(QuickToolParamRole) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
 
@@ -37,11 +39,9 @@ class QUICKTOOLS_CORE_EXPORT AbstractToolParams : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
+    Q_PROPERTY(QQmlPropertyMap *pdata READ pdata CONSTANT FINAL)
 public:
-    AbstractToolParams(QObject *parent = nullptr)
-        : QAbstractListModel(parent)
-    {
-    }
+    AbstractToolParams(QObject *parent = nullptr);
 
     virtual ~AbstractToolParams();
 
@@ -59,15 +59,26 @@ public:
 
     bool setData(const QString &name, const QVariant &value);
 
-    bool addParam(const QString &name, const int type, const QVariant &value,
-                  const QVariant &range = QVariant::fromValue(nullptr), const QVariant &visible = true);
+    bool addParam(const QString &name, const int type, const bool is_property = false,
+                  const bool run_after_changed = false, const QVariant &visible = true,
+                  const QVariant &value = QVariant(), const QVariant &range = QVariant::fromValue(nullptr));
+
+    QQmlPropertyMap *pdata()
+    {
+        return &property_data_;
+    }
 
 protected:
     QVector<QString>                   params_names_;
     QMap<QString, QMap<int, QVariant>> params_data_;
+    QQmlPropertyMap                    property_data_; // QML 中可直接访问和修改对应 key 的属性
+
+private slots:
+    void onPropertyValueChanged(const QString &key, const QVariant &value);
 
 signals:
     void nameChanged();
+    void quicktoolRun();
 };
 
 class QUICKTOOLS_CORE_EXPORT AbstractInputParams : public AbstractToolParams

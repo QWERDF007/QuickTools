@@ -7,6 +7,7 @@ QuickToolFactor *QuickToolFactor::instance_ = nullptr;
 AbstractQuickTool::AbstractQuickTool(QObject *parent)
     : QObject(parent)
 {
+    // connect(input_params_, &AbstractInputParams::quicktoolRun, this, &AbstractQuickTool::run);
 }
 
 AbstractQuickTool::~AbstractQuickTool()

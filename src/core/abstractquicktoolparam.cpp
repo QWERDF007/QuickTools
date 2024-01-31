@@ -4,6 +4,12 @@ namespace quicktools::core {
 
 using paramtypes::QuickToolParamRole;
 
+AbstractToolParams::AbstractToolParams(QObject *parent)
+    : QAbstractListModel(parent)
+{
+    connect(&property_data_, &QQmlPropertyMap::valueChanged, this, &AbstractToolParams::onPropertyValueChanged);
+}
+
 AbstractToolParams::~AbstractToolParams()
 {
     qInfo() << __FUNCTION__ << this;
@@ -67,7 +73,17 @@ bool AbstractToolParams::setData(const QModelIndex &index, const QVariant &value
     {
         const QString &param_name      = params_names_[index.row()];
         params_data_[param_name][role] = value;
-        emit dataChanged(index, index, {role});
+        const bool is_property         = params_data_[param_name][QuickToolParamRole::ParamIsPropertyRole].toBool();
+        if (is_property)
+        {
+            property_data_.insert(param_name, value);
+        }
+        emit       dataChanged(index, index, {role});
+        const bool run_after_changed = params_data_[param_name][QuickToolParamRole::RunAfterParamChangedRole].toBool();
+        if (run_after_changed)
+        {
+            emit quicktoolRun();
+        }
         return true;
         break;
     }
@@ -95,8 +111,9 @@ bool AbstractToolParams::setData(const QString &name, const QVariant &value)
     return false;
 }
 
-bool AbstractToolParams::addParam(const QString &name, const int type, const QVariant &value, const QVariant &range,
-                                  const QVariant &visible)
+bool AbstractToolParams::addParam(const QString &name, const int type, const bool run_after_changed,
+                                  const bool is_property, const QVariant &visible, const QVariant &value,
+                                  const QVariant &range)
 {
     if (params_names_.contains(name))
     {
@@ -104,14 +121,26 @@ bool AbstractToolParams::addParam(const QString &name, const int type, const QVa
     }
     params_names_.append(name);
     QMap<int, QVariant> param{
-        {   QuickToolParamRole::ParamNameRole,    name},
-        {   QuickToolParamRole::ParamTypeRole,    type},
-        {QuickToolParamRole::ParamVisibleRole, visible},
-        {  QuickToolParamRole::ParamValueRole,   value},
-        {  QuickToolParamRole::ParamRangeRole,   range},
+        {           QuickToolParamRole::ParamNameRole,              name},
+        {           QuickToolParamRole::ParamTypeRole,              type},
+        {        QuickToolParamRole::ParamVisibleRole,           visible},
+        {          QuickToolParamRole::ParamValueRole,             value},
+        {          QuickToolParamRole::ParamRangeRole,             range},
+        {     QuickToolParamRole::ParamIsPropertyRole,       is_property},
+        {QuickToolParamRole::RunAfterParamChangedRole, run_after_changed},
     };
     params_data_.insert(name, param);
+    if (is_property)
+    {
+        property_data_.insert(name, value);
+    }
     return true;
+}
+
+void AbstractToolParams::onPropertyValueChanged(const QString &key, const QVariant &value)
+{
+    qInfo() << __FUNCTION__ << key << value;
+    setData(key, value);
 }
 
 } // namespace quicktools::core
