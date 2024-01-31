@@ -22,9 +22,9 @@ Window {
     Component.onCompleted: {
         console.log("quick tool", quicktool.name)
         console.log("input params", inputParam.name)
-        console.log("input params", inputParam.inputImages)
         console.log("output params", outputParam.name)
-        console.log("output params", outputParam.outputImages)
+        console.log("Image", inputParam.pdata.Image)
+        console.log("Hist", outputParam.pdata.Hist)
     }
 
     onStart: function() {
@@ -102,10 +102,6 @@ Window {
                     id: image
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
-                    onSourceChanged: {
-                        inputParam.inputImages = source
-                        imageHistogramWin.start()
-                    }
                 }
 
                 Item {
@@ -160,8 +156,17 @@ Window {
                         var url = drop.urls[0]
                         if (isImageFile(url) && image.source !== url) {
                             image.source = url
+                            var path = getImagePath(url)
+                            inputParam.pdata.Image = path
+                            imageHistogramWin.start()
                         }
                     }
+
+                    function getImagePath(url) {
+                        var path = url.toString().toLowerCase()
+                        return path.slice(8)
+                    }
+
                     function isImageFile(url) {
                         var path = url.toString().toLowerCase()
                         return path.startsWith("file:") && (path.endsWith(".jpg") || path.endsWith(".png") || path.endWith(".jpeg"))
@@ -171,7 +176,7 @@ Window {
             Item {
                 id: histogramContainer
                 visible: {
-                    if (outputParam.outputImages === undefined || outputParam.outputImages === null) {
+                    if (outputParam.pdata.Hist === undefined || outputParam.pdata.Hist === null) {
                         return false
                     } else {
                         return true
@@ -193,10 +198,10 @@ Window {
                             tickCount: 11
                             min: 0
                             max: {
-                                if (outputParam.outputImages === undefined || outputParam.outputImages === null) {
+                                if (outputParam.pdata.Hist === undefined || outputParam.pdata.Hist === null) {
                                     return 255
                                 } else {
-                                    return outputParam.outputImages[0].length
+                                    return outputParam.pdata.Hist[0].length
                                 }
                             }
                         }
@@ -207,11 +212,10 @@ Window {
                         }
                         BarSet {
                             values: {
-                                if (outputParam.outputImages === undefined || outputParam.outputImages === null) {
+                                if (outputParam.pdata.Hist === undefined || outputParam.pdata.Hist === null) {
                                     return [0]
                                 } else {
-                                    console.log("outputParam.outputImages[0]", outputParam.outputImages[0])
-                                    return outputParam.outputImages[0]
+                                    return outputParam.pdata.Hist[0]
                                 }
                             }
                         }

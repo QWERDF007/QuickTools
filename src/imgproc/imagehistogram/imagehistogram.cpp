@@ -30,7 +30,7 @@ int ImageHistogram::run()
         return -1;
     }
     auto        param_size = input_params->rowCount();
-    std::string image_path = input_params->inputImages().toString().toStdString();
+    std::string image_path;
     for (int i = 0; i < param_size; ++i)
     {
         auto     name = input_params->data(input_params->index(i), QuickToolParamRole::ParamNameRole).toString();
@@ -38,6 +38,7 @@ int ImageHistogram::run()
         qInfo() << __FUNCTION__ << name;
         qInfo() << __FUNCTION__ << data;
     }
+    image_path    = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString().toStdString();
     cv::Mat image = cv::imread(image_path, cv::IMREAD_UNCHANGED);
     qInfo() << __FUNCTION__ << "image size" << image.rows << image.cols << image.channels();
     std::vector<cv::Mat> chs;
@@ -62,7 +63,6 @@ int ImageHistogram::run()
     auto     output_params = dynamic_cast<core::AbstractCVOutputParams *>(output_params_);
     QVariant output_data   = QVariant::fromValue(hists_data);
     output_params->setData("Hist", output_data);
-    output_params->setOutputImages(output_data);
     param_size = output_params->rowCount();
     for (int i = 0; i < param_size; ++i)
     {
@@ -76,13 +76,13 @@ int ImageHistogram::run()
 void ImageHistogram::initInputParams()
 {
     input_params_ = new core::AbstractCVInputParams(this);
-    input_params_->addParam("Image", QuickToolParamType::Text, "");
+    input_params_->addParam("Image", QuickToolParamType::Text, true, true);
 }
 
 void ImageHistogram::initOutputParams()
 {
     output_params_ = new core::AbstractCVOutputParams(this);
-    output_params_->addParam("Hist", QuickToolParamType::Text, "");
+    output_params_->addParam("Hist", QuickToolParamType::Text, true, true);
 }
 
 } // namespace quicktools::imgproc
