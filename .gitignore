@@ -37,3 +37,6 @@ CMakeLists.txt.user
 
 # vscode
 .vscode/
+
+# python
+__pycache__/
