@@ -22,6 +22,54 @@ Q_ENUM_NS(QuickToolType) // 向元对象系统注册枚举类型，必须在 Q_N
 QML_NAMED_ELEMENT(QuickToolType) // 声明封闭类型或命名空间在 QML 中可用，以 name 进行访问
 } // namespace tooltypes
 
+
+// Template classes not supported by Q_OBJECT
+template<class InputParam, class OutputParam>
+class QUICKTOOLS_CORE_EXPORT AbstractQuickToolInterface
+{
+public:
+    virtual int type() const = 0;
+};
+
+class QUICKTOOLS_CORE_EXPORT AbstractQuickToolQInterface : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
+public:
+    virtual QString name() const = 0;
+
+signals:
+    void nameChanged();
+};
+
+class QUICKTOOLS_CORE_EXPORT AbstractQuickToolABCInterface : public AbstractQuickToolInterface<AbstractInputParams, AbstractOutputParams>, public AbstractQuickToolQInterface
+{
+public:
+    QString name() const
+    {
+        return "AbstractQuickToolABCInterface";
+    }
+
+    int type() const
+    {
+        return 1;
+    }
+};
+
+class QUICKTOOLS_CORE_EXPORT AbstractQuickToolAInterface : public AbstractQuickToolABCInterface
+{
+    Q_OBJECT
+    // 声明 QML 中可用
+    QML_NAMED_ELEMENT(ABCTool)
+public:
+    QString name() const
+    {
+        return "AbstractQuickToolAInterface";
+    }
+};
+
+
 class QUICKTOOLS_CORE_EXPORT AbstractQuickTool : public QObject
 {
     Q_OBJECT
