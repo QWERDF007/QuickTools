@@ -13,11 +13,9 @@ Window {
     visible: true
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
-    property CVTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
-    property CVInputParams inputParam: quicktool.inputParams
-    property CVOutputParams outputParam: quicktool.outputParams
-
-    signal start
+    property QuickTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
+    property InputParams inputParam: quicktool.inputParams
+    property OutputParams outputParam: quicktool.outputParams
 
     Component.onCompleted: {
         console.log("quick tool", quicktool.name)
@@ -25,10 +23,6 @@ Window {
         console.log("output params", outputParam.name)
         console.log("Image", inputParam.pdata.Image)
         console.log("Hist", outputParam.pdata.Hist)
-    }
-
-    onStart: function() {
-        quicktool.exec()
     }
 
     /**
@@ -158,7 +152,6 @@ Window {
                             image.source = url
                             var path = getImagePath(url)
                             inputParam.pdata.Image = path
-                            imageHistogramWin.start()
                         }
                     }
 

@@ -59,8 +59,8 @@ public:
 
     bool setData(const QString &name, const QVariant &value);
 
-    bool addParam(const QString &name, const int type, const bool is_property = false,
-                  const bool run_after_changed = false, const QVariant &visible = true,
+    bool addParam(const QString &name, const int type, const bool is_property,
+                  const bool run_after_changed, const QVariant &visible = true,
                   const QVariant &value = QVariant(), const QVariant &range = QVariant::fromValue(nullptr));
 
     QQmlPropertyMap *pdata()
@@ -78,12 +78,16 @@ private slots:
 
 signals:
     void nameChanged();
-    void quicktoolRun();
+    void quicktoolStart();
 };
 
 class QUICKTOOLS_CORE_EXPORT AbstractInputParams : public AbstractToolParams
 {
     Q_OBJECT
+    // 声明 QML 中可用
+    QML_NAMED_ELEMENT(InputParams)
+    // 声明对象不能在 QML 中创建
+    QML_UNCREATABLE("Can't not create a AbstractInputParams directly")
 public:
     AbstractInputParams(QObject *parent = nullptr)
         : AbstractToolParams(parent)
@@ -91,16 +95,15 @@ public:
     }
 
     virtual ~AbstractInputParams() {}
-
-    QString name() const override
-    {
-        return "AbstractInputParams";
-    }
 };
 
 class QUICKTOOLS_CORE_EXPORT AbstractOutputParams : public AbstractToolParams
 {
     Q_OBJECT
+    // 声明 QML 中可用
+    QML_NAMED_ELEMENT(OutputParams)
+    // 声明对象不能在 QML 中创建
+    QML_UNCREATABLE("Can't not create a AbstractOutputParams directly")
 public:
     AbstractOutputParams(QObject *parent = nullptr)
         : AbstractToolParams(parent)
@@ -108,11 +111,6 @@ public:
     }
 
     virtual ~AbstractOutputParams() {}
-
-    QString name() const override
-    {
-        return "AbstractOutputParams";
-    }
 };
 
 } // namespace quicktools::core

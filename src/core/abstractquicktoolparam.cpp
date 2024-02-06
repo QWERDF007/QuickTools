@@ -82,7 +82,7 @@ bool AbstractToolParams::setData(const QModelIndex &index, const QVariant &value
         const bool run_after_changed = params_data_[param_name][QuickToolParamRole::RunAfterParamChangedRole].toBool();
         if (run_after_changed)
         {
-            emit quicktoolRun();
+            emit quicktoolStart();
         }
         return true;
         break;
@@ -111,8 +111,8 @@ bool AbstractToolParams::setData(const QString &name, const QVariant &value)
     return false;
 }
 
-bool AbstractToolParams::addParam(const QString &name, const int type, const bool run_after_changed,
-                                  const bool is_property, const QVariant &visible, const QVariant &value,
+bool AbstractToolParams::addParam(const QString &name, const int type, const bool is_property,
+                                  const bool run_after_changed, const QVariant &visible, const QVariant &value,
                                   const QVariant &range)
 {
     if (params_names_.contains(name))

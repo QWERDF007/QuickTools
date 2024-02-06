@@ -29,6 +29,10 @@ bool AbstractQuickTool::setInputParams(AbstractInputParams *input_params)
 {
     if (input_params_ != input_params)
     {
+        if (input_params_ != nullptr)
+        {
+            delete input_params_;
+        }
         input_params_ = input_params;
         emit inputParamsChanged();
         return true;
@@ -40,6 +44,10 @@ bool AbstractQuickTool::setOutputParams(AbstractOutputParams *output_params)
 {
     if (output_params_ != output_params)
     {
+        if (output_params_ != nullptr)
+        {
+            delete output_params_;
+        }
         output_params_ = output_params;
         emit outputParamsChanged();
         return true;

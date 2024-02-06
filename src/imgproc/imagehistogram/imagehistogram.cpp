@@ -24,7 +24,8 @@ ImageHistogram::ImageHistogram(QObject *parent)
 int ImageHistogram::run()
 {
     qInfo() << __FUNCTION__;
-    auto input_params = dynamic_cast<core::AbstractCVInputParams *>(input_params_);
+//    auto input_params = dynamic_cast<core::AbstractCVInputParams *>(input_params_);
+    auto input_params = inputParams();
     if (input_params == nullptr)
     {
         return -1;
@@ -60,7 +61,7 @@ int ImageHistogram::run()
         }
         hists_data.append(hist_data);
     }
-    auto     output_params = dynamic_cast<core::AbstractCVOutputParams *>(output_params_);
+    auto     output_params = outputParams();
     QVariant output_data   = QVariant::fromValue(hists_data);
     output_params->setData("Hist", output_data);
     param_size = output_params->rowCount();
@@ -75,14 +76,18 @@ int ImageHistogram::run()
 
 void ImageHistogram::initInputParams()
 {
-    input_params_ = new core::AbstractCVInputParams(this);
-    input_params_->addParam("Image", QuickToolParamType::Text, true, true);
+    if (input_params_)
+    {
+        input_params_->addParam("Image", QuickToolParamType::Text, true, true);
+    }
 }
 
 void ImageHistogram::initOutputParams()
 {
-    output_params_ = new core::AbstractCVOutputParams(this);
-    output_params_->addParam("Hist", QuickToolParamType::Text, true, true);
+    if (output_params_)
+    {
+        output_params_->addParam("Hist", QuickToolParamType::Text, true, false);
+    }
 }
 
 } // namespace quicktools::imgproc
