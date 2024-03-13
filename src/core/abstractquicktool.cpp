@@ -25,6 +25,11 @@ int AbstractQuickTool::exec()
     return run();
 }
 
+int AbstractQuickTool::init()
+{
+    return checkParams();
+}
+
 bool AbstractQuickTool::setInputParams(AbstractInputParams *input_params)
 {
     if (input_params_ != input_params)
@@ -55,15 +60,39 @@ bool AbstractQuickTool::setOutputParams(AbstractOutputParams *output_params)
     return false;
 }
 
-int AbstractQuickTool::checkParams() const
+int AbstractQuickTool::checkParams()
+{
+    int ret = checkInputParams();
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ret = checkOutputParams();
+    return ret;
+}
+
+int AbstractQuickTool::checkInputParams()
 {
     if (input_params_ == nullptr)
     {
         return -1;
     }
+    if (input_params_->empty())
+    {
+        return initInputParams();
+    }
+    return 0;
+}
+
+int AbstractQuickTool::checkOutputParams()
+{
     if (output_params_ == nullptr)
     {
         return -1;
+    }
+    if (output_params_->empty())
+    {
+        return initOutputParams();
     }
     return 0;
 }
@@ -74,7 +103,12 @@ AbstractQuickTool *QuickToolFactor::createQuickTool(int type) const
     if (found != tool_creators_.end())
     {
         auto callable = found->second;
-        return callable();
+        AbstractQuickTool * quick_tool = callable();
+        if (quick_tool)
+        {
+            quick_tool->init();
+        }
+        return quick_tool;
     }
     return nullptr;
 }

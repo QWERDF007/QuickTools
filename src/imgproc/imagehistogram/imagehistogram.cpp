@@ -17,8 +17,6 @@ using core::paramtypes::QuickToolParamType;
 ImageHistogram::ImageHistogram(QObject *parent)
     : core::AbstractCVTool(parent)
 {
-    initInputParams();
-    initOutputParams();
 }
 
 int ImageHistogram::run()
@@ -74,20 +72,22 @@ int ImageHistogram::run()
     return 0;
 }
 
-void ImageHistogram::initInputParams()
+int ImageHistogram::initInputParams()
 {
     if (input_params_)
     {
         input_params_->addParam("Image", QuickToolParamType::Text, true, true);
     }
+    return 0;
 }
 
-void ImageHistogram::initOutputParams()
+int ImageHistogram::initOutputParams()
 {
     if (output_params_)
     {
         output_params_->addParam("Hist", QuickToolParamType::Text, true, false);
     }
+    return 0;
 }
 
 } // namespace quicktools::imgproc

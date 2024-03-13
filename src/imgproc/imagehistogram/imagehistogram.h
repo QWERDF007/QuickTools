@@ -22,8 +22,8 @@ public:
     }
 
 private:
-    void initInputParams();
-    void initOutputParams();
+    int initInputParams() override;
+    int initOutputParams() override;
 };
 
 REGISTER_CLASS(core::tooltypes::ImageHistogram, ImageHistogram)

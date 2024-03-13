@@ -68,6 +68,16 @@ public:
         return &property_data_;
     }
 
+    int size() const
+    {
+        return rowCount();
+    }
+
+    bool empty() const
+    {
+        return size() <= 0;
+    }
+
 protected:
     QVector<QString>                   params_names_;
     QMap<QString, QMap<int, QVariant>> params_data_;

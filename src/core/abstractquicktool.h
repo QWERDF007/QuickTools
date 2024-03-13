@@ -44,6 +44,8 @@ public:
 
     Q_INVOKABLE int exec();
 
+    int init();
+
     virtual int run() = 0;
 
     AbstractInputParams *inputParams() const
@@ -60,9 +62,14 @@ public:
 
     bool setOutputParams(AbstractOutputParams *output_params);
 
-    int checkParams() const;
-
 protected:
+    virtual int initInputParams() = 0;
+    virtual int initOutputParams() = 0;
+
+    int checkParams();
+    int checkInputParams();
+    int checkOutputParams();
+
     AbstractInputParams  *input_params_{nullptr};
     AbstractOutputParams *output_params_{nullptr};
 
