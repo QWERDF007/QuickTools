@@ -116,9 +116,64 @@ Rectangle {
 
     Rectangle {
         id: content
+        color: "transparent"
         anchors.top: header.bottom
         anchors.bottom: footer.top
         width: parent.width
+
+        Rectangle {
+            width: 64
+            height: parent.height
+            ListView {
+                id: lv
+                anchors.fill: parent
+                boundsBehavior: Flickable.StopAtBounds
+                // spacing: 0
+                model: 3
+                delegate: Rectangle {
+                    width: 64
+                    height: 64
+                    color: {
+                        if (mouseArea.containsMouse) {
+                            console.log("hoverd", model.index)
+                            return Qt.lighter("#EDEDED", 0.8)
+                        } else if (lv.currentIndex === model.index) {
+                            return "#EDEDED"
+                        }
+
+                        return "white"
+                    }
+
+                    radius: 3
+                    Column {
+                        anchors.fill: parent
+                        anchors.topMargin: 5
+                        anchors.bottomMargin: 5
+                        spacing: 4
+                        IconLabel {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            icon.source: "file:///F:/workspace/QuickTools/assets/icons/zoomout.svg"
+                            icon.width: 32
+                            icon.height: 32
+                        }
+                        Label {
+                            text: "输入参数"
+                            width: parent.width
+                            font.pixelSize: 14
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                    }
+                    MouseArea {
+                        id: mouseArea
+                        hoverEnabled: true
+                        anchors.fill: parent
+                        onClicked: {
+                            lv.currentIndex = index
+                        }
+                    }
+                }
+            }
+        }
     }
 
     Rectangle {
