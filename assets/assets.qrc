@@ -12,8 +12,9 @@
         <file alias="zoomin">icons/zoomin.svg</file>
         <file alias="zoomout">icons/zoomout.svg</file>
         <file alias="circle">icons/drawcircle.svg</file>
-        <file alias="input">icons/login.svg</file>
-        <file alias="output">icons/logout.svg</file>
+        <file alias="help">icons/question.svg</file>
+        <file alias="input">icons/input.svg</file>
+        <file alias="output">icons/output.svg</file>
     </qresource>
     <qresource prefix="/Font">
         <file alias="Icons.ttf">Font/Segoe_Fluent_Icons.ttf</file>
