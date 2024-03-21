@@ -4,6 +4,16 @@
         <file alias="expand">icons/expand.svg</file>
         <file alias="stats">icons/stats.svg</file>
         <file alias="dropimage">icons/dropimage.svg</file>
+        <file alias="aspectratio">icons/aspectratio.svg</file>
+        <file alias="polygon">icons/drawpolygon.svg</file>
+        <file alias="square">icons/drawsquare.svg</file>
+        <file alias="pause">icons/roundedpause.svg</file>
+        <file alias="play">icons/roundedplay.svg</file>
+        <file alias="zoomin">icons/zoomin.svg</file>
+        <file alias="zoomout">icons/zoomout.svg</file>
+        <file alias="circle">icons/drawcircle.svg</file>
+        <file alias="input">icons/login.svg</file>
+        <file alias="output">icons/logout.svg</file>
     </qresource>
     <qresource prefix="/Font">
         <file alias="Icons.ttf">Font/Segoe_Fluent_Icons.ttf</file>
