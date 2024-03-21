@@ -21,7 +21,8 @@ QuickObject {
         }
         icon: QuickFontIcon.Home
         // url:"qrc:/qt/qml/QuickTools/qml/page/Home.qml"
-        url: "qrc:/qt/qml/QuickTools/imgproc/imagehistogram/ImageHistogram.qml"
+//        url: "qrc:/qt/qml/QuickTools/imgproc/imagehistogram/ImageHistogram.qml"
+        url: "qrc:/qt/qml/QuickTools/ui/window/T_CVWindow.qml"
         onTap: {
             if(navigationView.getCurrentUrl()){
                 item_home.count = 0
