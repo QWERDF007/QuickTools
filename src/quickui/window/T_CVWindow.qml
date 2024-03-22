@@ -3,7 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import QuickTools.ui
-import "../components"
+
+import "../components/header"
+import "../components/sidebar"
+import "../components/footer"
 
 
 ApplicationWindow {
@@ -13,53 +16,54 @@ ApplicationWindow {
     visible: true
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
+    default property alias content: container.data
+
     header: T_CVHeader {
         width: parent.width
         height: 40
     }
 
-    Rectangle {
-        id: content
-        color: "transparent"
+    SplitView {
+        id: splitView
         anchors.fill: parent
-
-        Rectangle {
-            border.width: 1
-            border.color: "#EDEDED"
-            width: 64 + 1 + 256
-            height: parent.height
-            Row {
-                anchors.fill: parent
-                T_CVLToolBar {
-                    id: ltoolbar
-                    width: 64
-                    height: parent.height
-                }
-                Rectangle {
-                    width: 1
-                    height: parent.height
-                    color: window.color
-                }
-
-                T_CVLToolPanel {
-                    currentIndex: ltoolbar.currentIndex
-                    width: 256
-                    height: parent.height
-
-                    inputParamsModel: ListModel {
-                        ListElement { text: "1"}
-                        ListElement { text: "2"}
-                        ListElement { text: "3"}
-                    }
-
-                    outputParamsModel: ListModel {
-                        ListElement { text: "1"}
-                        ListElement { text: "2"}
-                        ListElement { text: "3"}
-                        ListElement { text: "4"}
-                    }
-                }
+        handle: Rectangle {
+            id: handleDelegate
+            implicitWidth: 4
+            implicitHeight: splitView.height
+            color: SplitHandle.pressed ?  Qt.darker(Qt.rgba(226/255,229/255,234/255,1), 1.2)
+                                       : (SplitHandle.hovered ?  Qt.darker(Qt.rgba(226/255,229/255,234/255,1), 1.1) : Qt.rgba(226/255,229/255,234/255,1))
+            Rectangle {
+                implicitWidth: 2
+                implicitHeight: 12
+                anchors.centerIn: parent
             }
+            containmentMask: Item {
+                x: (handleDelegate.width - width) / 2
+                width: 64
+                height: splitView.height
+            }
+        }
+        T_CVLSidebar {
+            border.color: window.color
+            SplitView.minimumWidth: 256
+            SplitView.preferredWidth: 321
+            SplitView.fillHeight: true
+            inputParamsModel: ListModel {
+                ListElement { text: "1"}
+                ListElement { text: "2"}
+                ListElement { text: "3"}
+            }
+            outputParamsModel: ListModel {
+                ListElement { text: "1"}
+                ListElement { text: "2"}
+                ListElement { text: "3"}
+                ListElement { text: "4"}
+            }
+        }
+        Item {
+            id: container
+            SplitView.fillHeight: true
+            SplitView.fillWidth: true
         }
     }
 

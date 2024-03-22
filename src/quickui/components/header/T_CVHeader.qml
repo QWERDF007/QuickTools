@@ -37,9 +37,7 @@ Rectangle {
                 implicitWidth: 32
                 implicitHeight: 32
                 icon.source: "/icons/play"
-                palette{
-                    button: "white"
-                }
+
             }
             Rectangle {
                 color: "#EDEDED"
@@ -52,25 +50,16 @@ Rectangle {
                     implicitWidth: 32
                     implicitHeight: 32
                     icon.source: "/icons/square"
-                    palette{
-                        button: "white"
-                    }
                 }
                 ToolButton {
                     implicitWidth: 32
                     implicitHeight: 32
                     icon.source: "/icons/circle"
-                    palette{
-                        button: "white"
-                    }
                 }
                 ToolButton {
                     implicitWidth: 32
                     implicitHeight: 32
                     icon.source: "/icons/polygon"
-                    palette{
-                        button: "white"
-                    }
                 }
             }
         }

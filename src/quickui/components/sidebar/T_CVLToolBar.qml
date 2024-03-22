@@ -23,7 +23,7 @@ ListView {
         color: {
             if (mouseArea.pressed) {
                 return QuickColor.ItemPress
-            }  else if (mouseArea.hoverd) {
+            }  else if (mouseArea.hovered) {
                 return QuickColor.ItemHover
             } else if (ltoolListView.currentIndex === model.index) {
                 return QuickColor.ItemCheck
@@ -60,7 +60,7 @@ ListView {
         MouseArea {
             id: mouseArea
             acceptedButtons: Qt.LeftButton
-            property bool hoverd: mouseArea.containsMouse
+            property bool hovered: mouseArea.containsMouse
             hoverEnabled: true
             anchors.fill: parent
             onClicked: {

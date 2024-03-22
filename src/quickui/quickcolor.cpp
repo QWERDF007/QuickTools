@@ -23,18 +23,21 @@ QuickColor::QuickColor(QObject *parent)
 {
     //    Primary("#0066b4");
     Primary(QColor(0, 102, 180, 255));
-    HighLight("#009688");
+//    HighLight("#009688");
     FontPrimary(QColor(7, 7, 7, 255));
     WindowBackground(QColor(237, 237, 237, 255));
     WindowActiveBackground(QColor(243, 243, 243, 255));
 
-    ItemNormal(QColor(0, 0, 0, 0));
+    ItemNormal(QColor(0, 0, 0, 0)); // 透明
     ItemHover(QColor(0, 0, 0, 7));  // 255 * 0.03
     ItemPress(QColor(0, 0, 0, 15)); // 255 * 0.06
     ItemCheck(QColor(0, 0, 0, 22)); // 255 * 0.09
 
-    Grey120("#797775");
-    Grey220("#11100f");
+    Transparent(QColor(0, 0, 0, 0));
+    Black(QColor(0, 0, 0));
+    White(QColor(255, 255, 255));
+    Grey120(QColor(121, 119, 117));
+    Grey220(QColor(17, 16, 15));
 }
 
 QuickColor::~QuickColor() {}

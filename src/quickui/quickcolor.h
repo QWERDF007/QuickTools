@@ -13,7 +13,7 @@ class QuickColor : public QObject
     Q_OBJECT
 
     Q_PROPERTY_AUTO(QColor, Primary)
-    Q_PROPERTY_AUTO(QColor, HighLight)
+//    Q_PROPERTY_AUTO(QColor, HighLight)
     Q_PROPERTY_AUTO(QColor, FontPrimary)
     Q_PROPERTY_AUTO(QColor, WindowBackground)
     Q_PROPERTY_AUTO(QColor, WindowActiveBackground)
@@ -22,6 +22,10 @@ class QuickColor : public QObject
     Q_PROPERTY_AUTO(QColor, ItemHover)
     Q_PROPERTY_AUTO(QColor, ItemPress)
     Q_PROPERTY_AUTO(QColor, ItemCheck)
+
+    Q_PROPERTY_AUTO(QColor,Transparent)
+    Q_PROPERTY_AUTO(QColor,Black)
+    Q_PROPERTY_AUTO(QColor,White)
 
     Q_PROPERTY_AUTO(QColor, Grey120)
     Q_PROPERTY_AUTO(QColor, Grey220)
