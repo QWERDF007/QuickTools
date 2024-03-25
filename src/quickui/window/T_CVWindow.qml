@@ -17,7 +17,8 @@ ApplicationWindow {
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
     default property alias content: container.data
-    property color splitViewHandleColor: Qt.rgba(226/255,229/255,234/255,1)
+    property alias inputParamsModel: lsidebar.inputParamsModel
+    property alias outputParamsModel: lsidebar.outputParamsModel
 
     header: T_CVHeader {
         width: parent.width
@@ -28,6 +29,7 @@ ApplicationWindow {
         id: splitView
         anchors.fill: parent
         T_CVLSidebar {
+            id: lsidebar
             border.color: window.color
             SplitView.minimumWidth: 256
             SplitView.preferredWidth: 321
