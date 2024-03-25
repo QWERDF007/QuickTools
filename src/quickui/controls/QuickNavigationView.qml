@@ -180,7 +180,7 @@ Item {
                             verticalCenter: parent.verticalCenter
                         }
                     }
-                    QuickIcon { // 箭头图标
+                    QuickTextIcon { // 箭头图标
                         id: item_icon_expand
                         rotation: model&&model.isExpand?0:180
                         iconSource: QuickFontIcon.ChevronUp
@@ -218,7 +218,7 @@ Item {
                     }
                     Component{ // 图标组件
                         id:com_icon
-                        QuickIcon{
+                        QuickTextIcon{
                             iconSource: {
                                 if(model&&model.icon){
                                     return model.icon
@@ -429,7 +429,7 @@ Item {
                     }
                     Component { // 图标组件
                         id:com_icon
-                        QuickIcon {
+                        QuickTextIcon {
                             iconSource: {
                                 if(model&&model.icon){
                                     return model.icon
