@@ -17,32 +17,16 @@ ApplicationWindow {
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
     default property alias content: container.data
+    property color splitViewHandleColor: Qt.rgba(226/255,229/255,234/255,1)
 
     header: T_CVHeader {
         width: parent.width
         height: 40
     }
 
-    SplitView {
+    QuickSplitView {
         id: splitView
         anchors.fill: parent
-        handle: Rectangle {
-            id: handleDelegate
-            implicitWidth: 4
-            implicitHeight: splitView.height
-            color: SplitHandle.pressed ?  Qt.darker(Qt.rgba(226/255,229/255,234/255,1), 1.2)
-                                       : (SplitHandle.hovered ?  Qt.darker(Qt.rgba(226/255,229/255,234/255,1), 1.1) : Qt.rgba(226/255,229/255,234/255,1))
-            Rectangle {
-                implicitWidth: 2
-                implicitHeight: 12
-                anchors.centerIn: parent
-            }
-            containmentMask: Item {
-                x: (handleDelegate.width - width) / 2
-                width: 64
-                height: splitView.height
-            }
-        }
         T_CVLSidebar {
             border.color: window.color
             SplitView.minimumWidth: 256
