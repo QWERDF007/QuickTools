@@ -30,22 +30,18 @@ QuickScrollablePage {
             property string desc: modelData.desc
             width: 320
             height: 120
-            QuickArea {
+            QuickArea { // 带颜色的卡片区域
                 radius: 8
                 width: 300
                 height: 100
                 anchors.centerIn: parent
-                Rectangle{
+                Rectangle{ // 背景区域, 控制悬浮时的颜色变化
                     anchors.fill: parent
                     radius: 8
-                    color:{
-                        if(item_mouse.containsMouse){
-                            return QuickColor.ItemHover
-                        }
-                        return QuickColor.ItemNormal
-                    }
+                    color: item_mouse.containsMouse ? QuickColor.ItemHover : QuickColor.ItemNormal
                 }
-                Image{
+
+                Image{ // 图标
                     id:item_icon
                     height: 40
                     width: 40
@@ -56,7 +52,8 @@ QuickScrollablePage {
                         verticalCenter: parent.verticalCenter
                     }
                 }
-                QuickText{
+
+                QuickText{ // 标题
                     id:item_title
                     text:modelData.title
                     font: QuickFont.BodyStrong
@@ -66,7 +63,8 @@ QuickScrollablePage {
                         top: item_icon.top
                     }
                 }
-                QuickText{
+
+                QuickText{ // 工具描述
                     id:item_desc
                     text:desc
                     color: QuickColor.Grey120
