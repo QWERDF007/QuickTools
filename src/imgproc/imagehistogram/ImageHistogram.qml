@@ -41,22 +41,10 @@ T_CVWindow {
         return str;
     }
 
-    SplitView {
+    QuickSplitView {
         id: sv1
         anchors.fill: parent
 
-        orientation: Qt.Horizontal
-        handle:  Rectangle {
-            implicitWidth: 4
-            implicitHeight: sv1.height
-            color: Qt.darker(Qt.rgba(226/255,229/255,234/255,1), 1.1)
-
-            Rectangle {
-                implicitWidth: 2
-                implicitHeight: 12
-                anchors.centerIn: parent
-            }
-        }
         QuickArea {
             id: imageContainer
             SplitView.fillHeight: true
@@ -71,6 +59,7 @@ T_CVWindow {
             }
 
             Item {
+                id: dropBtnArea
                 visible: image.status === Image.Null
                 implicitHeight: childrenRect.height
                 anchors.centerIn: parent
