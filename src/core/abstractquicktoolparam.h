@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core_global.h"
+#include "CoreGlobal.h"
 
 #include <QAbstractListModel>
 #include <QQmlPropertyMap>
@@ -13,26 +13,39 @@ Q_NAMESPACE
 
 enum QuickToolParamType
 {
-    Text = 1,      //!< 文本参数
-    IntSpinBox,    //!< 整型旋钮
-    DoubleSpinBox, //!< 浮点旋钮
-    ComboBox,      //!< 下拉列表
+    ParamStatusType = 0,
+    ParamTextType = 1,      //!< 文本参数
+    ParamIntSpinBoxType,    //!< 整型旋钮
+    ParamDoubleSpinBoxType, //!< 浮点旋钮
+    ParamComboBoxType,      //!< 下拉列表
+    ParamIntType = 2000,
+    ParamDoubleType,
+    ParamInt1DArrayType,
+    ParamDouble1DArrayType,
+    ParamText1DArrayType,
+    ParamInt2DArrayType,
+    ParamDouble2DArrayType,
+    ParamText2DArrayType,
+    ParamImageType = 4000, //!< 图像
+    ParamAudioType = 6000, //!< 音频
 };
-Q_ENUM_NS(QuickToolParamType) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
+Q_ENUM_NS(QuickToolParamType) // 向元对象系统注册枚举类型 QuickToolParamType，必须在 Q_NAMESPACE 宏声明的命名空间中
 
 enum QuickToolParamRole
 {
     ParamNameRole = Qt::UserRole + 1,
     ParamTypeRole,
+    ParamTypeNameRole,
     ParamVisibleRole,
     ParamValueRole,
     ParamRangeRole,
     ParamIsPropertyRole,
+    ParamEditableRole,
     RunAfterParamChangedRole,
 };
-Q_ENUM_NS(QuickToolParamRole) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
+Q_ENUM_NS(QuickToolParamRole) // 向元对象系统注册枚举类型 QuickToolParamRole，必须在 Q_NAMESPACE 宏声明的命名空间中
 
-QML_NAMED_ELEMENT(QuickToolParam) // 声明封闭类型或命名空间在 QML 中可用，以 name 进行访问
+QML_NAMED_ELEMENT(QuickToolParam) // 声明命名空间在 QML 中可用，以 QuickToolParam 进行访问
 } // namespace paramtypes
 
 class QUICKTOOLS_CORE_EXPORT AbstractToolParams : public QAbstractListModel
@@ -59,9 +72,9 @@ public:
 
     bool setData(const QString &name, const QVariant &value);
 
-    bool addParam(const QString &name, const int type, const bool is_property,
-                  const bool run_after_changed, const QVariant &visible = true,
-                  const QVariant &value = QVariant(), const QVariant &range = QVariant::fromValue(nullptr));
+    bool addParam(const QString &en_name, const QString& zh_name, const int type, const bool is_property, const bool run_after_changed,
+                  const bool editable = true, const QVariant &visible = true, const QVariant &value = QVariant(),
+                  const QVariant &range = QVariant());
 
     QQmlPropertyMap *pdata()
     {
@@ -77,6 +90,8 @@ public:
     {
         return size() <= 0;
     }
+
+    static QString getTypeName(const int type);
 
 protected:
     QVector<QString>                   params_names_;
@@ -115,12 +130,15 @@ class QUICKTOOLS_CORE_EXPORT AbstractOutputParams : public AbstractToolParams
     // 声明对象不能在 QML 中创建
     QML_UNCREATABLE("Can't not create a AbstractOutputParams directly")
 public:
-    AbstractOutputParams(QObject *parent = nullptr)
-        : AbstractToolParams(parent)
-    {
-    }
+    AbstractOutputParams(QObject *parent = nullptr);
 
     virtual ~AbstractOutputParams() {}
+
+    bool addParam(const QString &en_name, const QString &zh_name, const int type, const bool is_property, const QVariant &visible = true,
+                  const QVariant &value = QVariant(), const QVariant &range = QVariant());
+
+    bool setToolTime(const double wall_clock_time, const double algorithm_time);
+    bool setStatus(const int status, const QString& msg);
 };
 
 } // namespace quicktools::core

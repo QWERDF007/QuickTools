@@ -1,4 +1,6 @@
-#include "abstractquicktool.h"
+#include "AbstractQuickTool.h"
+
+#include <chrono>
 
 namespace quicktools::core {
 
@@ -22,7 +24,12 @@ int AbstractQuickTool::exec()
     {
         return ret;
     }
-    return run();
+    auto start_time           = std::chrono::high_resolution_clock::now();
+    const auto &[status, msg] = run();
+    auto end_time             = std::chrono::high_resolution_clock::now();
+    wall_clock_time_          = std::chrono::duration<double, std::milli>(end_time - start_time).count();
+    output_params_->setToolTime(wall_clock_time_, algorithm_time_);
+    return status;
 }
 
 int AbstractQuickTool::init()
@@ -102,8 +109,8 @@ AbstractQuickTool *QuickToolFactor::createQuickTool(int type) const
     auto found = tool_creators_.find(type);
     if (found != tool_creators_.end())
     {
-        auto callable = found->second;
-        AbstractQuickTool * quick_tool = callable();
+        auto               callable   = found->second;
+        AbstractQuickTool *quick_tool = callable();
         if (quick_tool)
         {
             quick_tool->init();

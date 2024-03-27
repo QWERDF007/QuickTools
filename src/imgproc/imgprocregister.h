@@ -1,6 +1,6 @@
 #pragma once
 
-#include "imgproc_global.h"
+#include "ImgprocGlobal.h"
 
 namespace quicktools::imgproc {
 

@@ -18,6 +18,7 @@ Rectangle {
 
     RowLayout {
         anchors.fill: parent
+        spacing: 0
         T_CVLToolBar {
             id: ltoolbar
             width: 64

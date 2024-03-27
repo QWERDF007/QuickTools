@@ -1,6 +1,6 @@
 #pragma once
 
-#include "abstractcvtool.h"
+#include "AbstractCVTool.h"
 
 #include <QObject>
 
@@ -14,7 +14,7 @@ public:
 
     ~ImageHistogram() = default;
 
-    int run() override;
+    std::tuple<int, QString> run() override;
 
     QString name() const override
     {

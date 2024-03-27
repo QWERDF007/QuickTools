@@ -1,7 +1,7 @@
 #pragma once
 
-#include "abstractquicktoolparam.h"
-#include "core_global.h"
+#include "AbstractQuickToolParam.h"
+#include "CoreGlobal.h"
 
 #include <QObject>
 #include <QString>
@@ -46,7 +46,7 @@ public:
 
     int init();
 
-    virtual int run() = 0;
+    virtual std::tuple<int, QString> run() = 0;
 
     AbstractInputParams *inputParams() const
     {
@@ -62,8 +62,13 @@ public:
 
     bool setOutputParams(AbstractOutputParams *output_params);
 
+    void setAlgorithmTime(const double algorithm_time)
+    {
+        algorithm_time_ = algorithm_time;
+    }
+
 protected:
-    virtual int initInputParams() = 0;
+    virtual int initInputParams()  = 0;
     virtual int initOutputParams() = 0;
 
     int checkParams();
@@ -72,6 +77,11 @@ protected:
 
     AbstractInputParams  *input_params_{nullptr};
     AbstractOutputParams *output_params_{nullptr};
+
+    double  wall_clock_time_{0.};
+    double  algorithm_time_{0.};
+    int     status_{0};
+    QString msg_;
 
 private:
     Q_DISABLE_COPY(AbstractQuickTool)

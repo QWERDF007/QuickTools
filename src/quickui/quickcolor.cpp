@@ -1,6 +1,6 @@
 
 
-#include "quickcolor.h"
+#include "QuickColor.h"
 
 namespace quicktools::ui {
 
@@ -23,7 +23,7 @@ QuickColor::QuickColor(QObject *parent)
 {
     //    Primary("#0066b4");
     Primary(QColor(0, 102, 180, 255));
-//    HighLight("#009688");
+    //    HighLight("#009688");
     FontPrimary(QColor(7, 7, 7, 255));
     WindowBackground(QColor(237, 237, 237, 255));
     WindowActiveBackground(QColor(243, 243, 243, 255));

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "abstractcvtoolparam.h"
-#include "abstractquicktool.h"
+#include "AbstractCVToolParam.h"
+#include "AbstractQuickTool.h"
 
 namespace quicktools::core {
 

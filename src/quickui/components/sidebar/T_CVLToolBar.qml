@@ -35,7 +35,7 @@ ListView {
             anchors.topMargin: 5
             anchors.bottomMargin: 5
             spacing: 4
-            IconLabel {
+            IconLabel { // 工具图标
                 implicitHeight: 32
                 implicitWidth: 32
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -44,16 +44,11 @@ ListView {
                 icon.height: 32
                 rotation: model.rotation
             }
-            QuickText{ // 标题文字
+            QuickText{ // 工具标题
                 text: model.text
                 visible: true
                 width: parent.width
-                color: {
-                    if (mouseArea.pressed){
-                        return QuickColor.Grey120
-                    }
-                    return QuickColor.Grey220
-                }
+                color: mouseArea.pressed ? QuickColor.Grey120 : QuickColor.Grey220
                 horizontalAlignment: Text.AlignHCenter
             }
         }

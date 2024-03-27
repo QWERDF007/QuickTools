@@ -4,7 +4,6 @@
 #include <QtQml>
 
 namespace quicktools::ui {
-
 // Windows Segoe Fluent 图标字体
 // https://learn.microsoft.com/zh-cn/windows/apps/design/style/segoe-fluent-icons-font
 namespace icon {

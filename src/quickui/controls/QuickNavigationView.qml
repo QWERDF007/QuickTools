@@ -577,7 +577,7 @@ Item {
 //        sourceComponent: com_stack_content
     }
 
-    Rectangle {
+    Rectangle { // 导航页面布局
         id:layout_list
         width: control.cellWidth
         anchors {

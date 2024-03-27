@@ -9,8 +9,8 @@ SplitView {
     property int handleWidth: splitView.orientation === Qt.Horizontal ? 2 : 12
     property int handleHeight: splitView.orientation === Qt.Horizontal ? 12 : 2
     property color handleColor: "white"
-    property int maskWidth: splitView.orientation === Qt.Horizontal ? 64 : splitView.width
-    property int maskHeight: splitView.orientation === Qt.Horizontal ? splitView.height : 64
+    property int maskWidth: splitView.orientation === Qt.Horizontal ? 12 : splitView.width
+    property int maskHeight: splitView.orientation === Qt.Horizontal ? splitView.height : 12
 
     handle: Rectangle {
         id: handleDelegate

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <QMutex>
-#include <QScopedPointer>
-#include <memory>
 #include <mutex>
 
 template<typename T>
