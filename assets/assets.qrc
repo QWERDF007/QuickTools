@@ -15,6 +15,7 @@
         <file alias="help">icons/question.svg</file>
         <file alias="input">icons/input.svg</file>
         <file alias="output">icons/output.svg</file>
+        <file alias="image">icons/image.svg</file>
     </qresource>
     <qresource prefix="/Font">
         <file alias="Icons.ttf">Font/Segoe_Fluent_Icons.ttf</file>
