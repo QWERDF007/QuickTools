@@ -8,18 +8,18 @@ Item {
     id: paramHeader
     width: 200
     height: 24
-    property string paramName: ""
+    property string paramDisplayName: ""
     property string paramTypeName: ""
     QuickText {
         anchors.fill: parent
-        text: paramHeader.paramName
+        text: paramDisplayName
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }
     ToolTip {
-        visible: paramHeader.paramTypeName !== null && paramHeader.paramTypeName != undefined && paramHeader.paramTypeName !== "" && mouseArea.containsMouse
+        visible: paramTypeName !== "" && mouseArea.containsMouse
         delay: 200
-        text: "参数类型: " + paramHeader.paramTypeName
+        text: "参数类型: " + paramTypeName
     }
     MouseArea {
         id: mouseArea

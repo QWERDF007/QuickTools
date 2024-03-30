@@ -3,26 +3,29 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import QuickTools.ui
+import QuickTools.core
 
 StackLayout {
     width: 256
     height: 200
 
-    property alias inputParamsModel: inputParamsListView.model
-    property alias outputParamsModel: outputParamsListView.model
     property color itemBackgroundColor: QuickColor.White
     property color itemBorderColor: QuickColor.WindowBackground
+    property InputParams inputParams
+    property OutputParams outputParams
 
-    T_CVParamsListView {
+    ParamsListView {
         id: inputParamsListView
         Layout.fillHeight: true
         Layout.fillWidth: true
+        toolParams: inputParams
     }
 
-    T_CVParamsListView {
+    ParamsListView {
         id: outputParamsListView
         Layout.fillHeight: true
         Layout.fillWidth: true
+        toolParams: outputParams
     }
 
     Item {

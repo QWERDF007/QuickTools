@@ -90,6 +90,7 @@ signals:
     void inputParamsChanged();
     void outputParamsChanged();
     void nameChanged();
+    void finished();
 };
 
 template<class InputParams, class OutputParams>

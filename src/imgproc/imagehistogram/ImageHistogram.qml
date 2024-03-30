@@ -13,18 +13,25 @@ T_CVWindow {
     visible: true
 
     property QuickTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
-    property InputParams inputParam: quicktool.inputParams
-    property OutputParams outputParam: quicktool.outputParams
-
-    inputParamsModel: inputParam
-    outputParamsModel: outputParam
+    inputParams: quicktool.inputParams
+    outputParams: quicktool.outputParams
 
     Component.onCompleted: {
         console.log("quick tool", quicktool.name)
-        console.log("input params", inputParam.name)
-        console.log("output params", outputParam.name)
-        console.log("Image", inputParam.pdata.Image)
-        console.log("Hist", outputParam.pdata.Hist)
+        console.log("input params", inputParams.name)
+        console.log("output params", outputParams.name)
+        console.log("Image", inputParams.pdata.Image)
+        console.log("Hist", outputParams.pdata.Hist)
+    }
+
+    Connections {
+        target: quicktool
+        function onFinished() {
+            console.log("finished!!!")
+            console.log("Image", inputParams.pdata.Image)
+            console.log("Hist", outputParams.pdata.Hist.length)
+            console.log("Hist", outputParams.pdata.Hist[0].length)
+        }
     }
 
     /**
@@ -56,6 +63,12 @@ T_CVWindow {
                 id: image
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectFit
+                source: {
+                    if (inputParams.pdata.Image === null || inputParams.pdata.Image === undefined) {
+                        return ""
+                    }
+                    return "file:///" + inputParams.pdata.Image
+                }
             }
 
             Item {
@@ -110,9 +123,8 @@ T_CVWindow {
                     console.log("drop", drop.urls)
                     var url = drop.urls[0]
                     if (isImageFile(url) && image.source !== url) {
-                        image.source = url
                         var path = getImagePath(url)
-                        inputParam.pdata.Image = path
+                        inputParams.pdata.Image = path
                     }
                 }
 
@@ -130,7 +142,7 @@ T_CVWindow {
         Item {
             id: histogramContainer
             visible: {
-                if (outputParam.pdata.Hist === undefined || outputParam.pdata.Hist === null) {
+                if (outputParams.pdata.Hist === undefined || outputParams.pdata.Hist === null) {
                     return false
                 } else {
                     return true
@@ -152,10 +164,10 @@ T_CVWindow {
                         tickCount: 11
                         min: 0
                         max: {
-                            if (outputParam.pdata.Hist === undefined || outputParam.pdata.Hist === null) {
+                            if (outputParams.pdata.Hist === undefined || outputParams.pdata.Hist === null) {
                                 return 255
                             } else {
-                                return outputParam.pdata.Hist[0].length
+                                return outputParams.pdata.Hist[0].length
                             }
                         }
                     }
@@ -166,10 +178,10 @@ T_CVWindow {
                     }
                     BarSet {
                         values: {
-                            if (outputParam.pdata.Hist === undefined || outputParam.pdata.Hist === null) {
+                            if (outputParams.pdata.Hist === undefined || outputParams.pdata.Hist === null) {
                                 return [0]
                             } else {
-                                return outputParam.pdata.Hist[0]
+                                return outputParams.pdata.Hist[0]
                             }
                         }
                     }

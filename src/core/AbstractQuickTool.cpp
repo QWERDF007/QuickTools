@@ -29,6 +29,8 @@ int AbstractQuickTool::exec()
     auto end_time             = std::chrono::high_resolution_clock::now();
     wall_clock_time_          = std::chrono::duration<double, std::milli>(end_time - start_time).count();
     output_params_->setToolTime(wall_clock_time_, algorithm_time_);
+    output_params_->setStatus(status, msg);
+    emit finished();
     return status;
 }
 
@@ -84,7 +86,7 @@ int AbstractQuickTool::checkInputParams()
     {
         return -1;
     }
-    if (input_params_->empty())
+    if (input_params_->empty() || !input_params_->isInit())
     {
         return initInputParams();
     }
@@ -97,7 +99,7 @@ int AbstractQuickTool::checkOutputParams()
     {
         return -1;
     }
-    if (output_params_->empty())
+    if (output_params_->empty() || !output_params_->isInit())
     {
         return initOutputParams();
     }

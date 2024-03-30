@@ -27,7 +27,7 @@ std::tuple<int, QString> ImageHistogram::run()
         return {-1, "输入/输出参数为空指针"};
     }
 
-    std::string image_path = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString().toStdString();
+    std::string image_path = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString().toLocal8Bit().toStdString();
     auto        algorithm_start_time = std::chrono::high_resolution_clock::now();
 
     cv::Mat image = cv::imread(image_path, cv::IMREAD_UNCHANGED);
@@ -63,7 +63,8 @@ int ImageHistogram::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addParam("Image", "图像", QuickToolParamType::ParamTextType, true, true);
+        input_params_->addParam("Image", "图像", QuickToolParamType::ParamImageType, QVariant(), QVariant(), true, true, true, true);
+        input_params_->setIsInit(true);
     }
     return 0;
 }
@@ -72,7 +73,8 @@ int ImageHistogram::initOutputParams()
 {
     if (output_params_)
     {
-        output_params_->addParam("Hist", "直方图", QuickToolParamType::ParamTextType, true, false);
+        output_params_->addParam("Hist", "直方图", QuickToolParamType::ParamDouble2DArrayType, QVariant(), QVariant(), true, true);
+        output_params_->setIsInit(true);
     }
     return 0;
 }

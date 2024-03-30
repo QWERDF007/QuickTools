@@ -14,7 +14,7 @@ Q_NAMESPACE
 enum QuickToolParamType
 {
     ParamStatusType = 0,
-    ParamTextType = 1,      //!< 文本参数
+    ParamTextType   = 1,    //!< 文本参数
     ParamIntSpinBoxType,    //!< 整型旋钮
     ParamDoubleSpinBoxType, //!< 浮点旋钮
     ParamComboBoxType,      //!< 下拉列表
@@ -33,7 +33,9 @@ Q_ENUM_NS(QuickToolParamType) // 向元对象系统注册枚举类型 QuickToolP
 
 enum QuickToolParamRole
 {
-    ParamNameRole = Qt::UserRole + 1,
+    ParamIndexRole = Qt::UserRole + 1,
+    ParamNameRole,
+    ParamDisplayNameRole,
     ParamTypeRole,
     ParamTypeNameRole,
     ParamVisibleRole,
@@ -51,6 +53,10 @@ QML_NAMED_ELEMENT(QuickToolParam) // 声明命名空间在 QML 中可用，以 Q
 class QUICKTOOLS_CORE_EXPORT AbstractToolParams : public QAbstractListModel
 {
     Q_OBJECT
+    // 声明 QML 中可用
+    QML_NAMED_ELEMENT(ToolParams)
+    // 声明对象不能在 QML 中创建
+    QML_UNCREATABLE("Can't not create a AbstractToolParams directly")
     Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
     Q_PROPERTY(QQmlPropertyMap *pdata READ pdata CONSTANT FINAL)
 public:
@@ -72,9 +78,9 @@ public:
 
     bool setData(const QString &name, const QVariant &value);
 
-    bool addParam(const QString &en_name, const QString& zh_name, const int type, const bool is_property, const bool run_after_changed,
-                  const bool editable = true, const QVariant &visible = true, const QVariant &value = QVariant(),
-                  const QVariant &range = QVariant());
+    bool addParam(const QString &en_name, const QString &zh_name, const int type, const QVariant &value,
+                  const QVariant &range = QVariant(), const bool editable = false, const bool is_property = false,
+                  const bool run_after_changed = true, const bool &visible = true);
 
     QQmlPropertyMap *pdata()
     {
@@ -93,10 +99,23 @@ public:
 
     static QString getTypeName(const int type);
 
+    bool isInit() const
+    {
+        return is_init_;
+    }
+
+    void setIsInit(const bool is_init)
+    {
+        is_init_ = is_init;
+    }
+
 protected:
     QVector<QString>                   params_names_;
     QMap<QString, QMap<int, QVariant>> params_data_;
     QQmlPropertyMap                    property_data_; // QML 中可直接访问和修改对应 key 的属性
+
+private:
+    bool is_init_{false};
 
 private slots:
     void onPropertyValueChanged(const QString &key, const QVariant &value);
@@ -134,11 +153,11 @@ public:
 
     virtual ~AbstractOutputParams() {}
 
-    bool addParam(const QString &en_name, const QString &zh_name, const int type, const bool is_property, const QVariant &visible = true,
-                  const QVariant &value = QVariant(), const QVariant &range = QVariant());
+    bool addParam(const QString &en_name, const QString &zh_name, const int type, const QVariant &value,
+                  const QVariant &range = QVariant(), const bool is_property = false, const bool &visible = true);
 
     bool setToolTime(const double wall_clock_time, const double algorithm_time);
-    bool setStatus(const int status, const QString& msg);
+    bool setStatus(const int status, const QString &msg);
 };
 
 } // namespace quicktools::core

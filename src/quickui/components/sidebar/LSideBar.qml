@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import QuickTools.ui
+import QuickTools.core
 
 
 Rectangle {
@@ -13,13 +14,13 @@ Rectangle {
     height: parent.height
 
     property alias backgroundColor: lsidebar.border.color
-    property alias inputParamsModel: ltoolview.inputParamsModel
-    property alias outputParamsModel: ltoolview.outputParamsModel
+    property InputParams inputParams
+    property OutputParams outputParams
 
     RowLayout {
         anchors.fill: parent
         spacing: 0
-        T_CVLToolBar {
+        LToolBar {
             id: ltoolbar
             width: 64
             Layout.fillHeight: true
@@ -29,11 +30,13 @@ Rectangle {
             Layout.fillHeight: true
             color: lsidebar.backgroundColor
         }
-        T_CVLToolView {
+        LToolView {
             id: ltoolview
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: ltoolbar.currentIndex
+            inputParams: lsidebar.inputParams
+            outputParams: lsidebar.outputParams
         }
     }
 }
