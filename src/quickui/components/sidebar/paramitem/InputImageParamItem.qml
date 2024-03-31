@@ -39,6 +39,7 @@ T_ParamItem {
             console.log("FileDialog onAccepted", path, toolParams)
             if (toolParams !== null && toolParams !== undefined) {
                 toolParams.setData(toolParams.index(paramIndex, 0), path, QuickToolParam.ParamValueRole)
+                valueChanged(path)
             }
         }
     }

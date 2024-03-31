@@ -22,6 +22,9 @@ Item {
     property var mouseObj: mouseArea
     default property alias content: container.data
     signal clicked
+
+    signal valueChanged(var value)
+
     MouseArea {
         id: mouseArea
         anchors.fill: parent
