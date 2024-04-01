@@ -14,8 +14,8 @@ Rectangle {
     height: parent.height
 
     property alias backgroundColor: lsidebar.border.color
-    property InputParams inputParams
-    property OutputParams outputParams
+    property alias inputParams: ltoolview.inputParams
+    property alias outputParams: ltoolview.outputParams
 
     RowLayout {
         anchors.fill: parent
@@ -35,8 +35,6 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: ltoolbar.currentIndex
-            inputParams: lsidebar.inputParams
-            outputParams: lsidebar.outputParams
         }
     }
 }

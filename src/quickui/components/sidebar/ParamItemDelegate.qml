@@ -17,8 +17,7 @@ Rectangle {
     property var paramValue
     property int paramType: -1
     property string paramTypeName: ""
-    property ToolParams toolParams
-    signal valueChanged(var value)
+    signal paramChanged(var value)
 
     Column {
         anchors.fill: parent
@@ -88,11 +87,11 @@ Rectangle {
                 }
                 var component = Qt.createComponent(itemUrl)
                 if (component.status === Component.Ready) {
-                    var imageItem = component.createObject(loader, { paramIndex: paramItemDelegate.paramIndex, paramName: paramItemDelegate.paramName, paramValue: paramItemDelegate.paramValue, toolParams: paramItemDelegate.toolParams })
+                    var imageItem = component.createObject(loader, { paramIndex: paramItemDelegate.paramIndex, paramName: paramItemDelegate.paramName, paramValue: paramItemDelegate.paramValue })
                     if (imageItem === null)  {
                          console.log("Error creating object")
                     } else {
-                        imageItem.valueChanged.connect(paramItemDelegate.valueChanged)
+                        imageItem.valueChanged.connect(forwardValueChanged)
                     }
                 } else if (component.status === Component.Error) {
                     console.log("Error loading component:", component.errorString())
@@ -100,5 +99,8 @@ Rectangle {
                 return undefined
             }
         }
+    }
+    function forwardValueChanged(value) {
+        paramChanged(value)
     }
 }

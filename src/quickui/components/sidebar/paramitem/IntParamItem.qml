@@ -6,7 +6,6 @@ import QuickTools.ui
 
 T_ParamItem {
     id: intItem
-    anchors.fill: parent
     displayText: _content.text
     QuickText {
         id: _content

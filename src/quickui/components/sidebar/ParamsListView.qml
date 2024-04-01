@@ -12,7 +12,7 @@ Item {
     property color delegateBackgroundColor: QuickColor.White
     property color delegateBorderColor: QuickColor.WindowBackground
 
-    property ToolParams toolParams
+    property alias model: _paramsListView.model
 
     ListView {
         id: _paramsListView
@@ -23,14 +23,12 @@ Item {
         anchors.rightMargin: 5
         boundsBehavior: Flickable.StopAtBounds
         spacing: 10
-        model: toolParams
         delegate: ParamItemDelegate {
             width: _paramsListView.width
             height: 48
             color: delegateBackgroundColor
             border.width: 1
             border.color: delegateBorderColor
-            toolParams: paramsListView.toolParams
             paramIndex: model.paramIndex
             paramName: model.paramName
             paramType: model.paramType
@@ -38,7 +36,11 @@ Item {
             paramValue: model.paramValue
             paramDisplayName: model.paramDisplayName
             Component.onCompleted: {
-                console.log(model.paramIndex, model.paramName, model.paramDisplayName, model.paramType, model.paramTypeName, model.paramValue)
+                console.log("ParamItemDelegate onCompleted", model.paramIndex, model.paramName, model.paramDisplayName, model.paramType, model.paramTypeName, model.paramValue)
+            }
+            onParamChanged: function(value) {
+                console.log("ParamItemDelegate onParamChanged", model.paramName, model.paramValue, value)
+                model.paramValue = value
             }
         }
     }

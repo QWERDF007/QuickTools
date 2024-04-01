@@ -7,6 +7,8 @@ import QuickTools.ui
 T_ParamItem {
     id: int2DArrayItem
     displayText: _content.text
+    tooltipVisible: _content.truncated
+    tooltipText: _content.text
     QuickText {
         id: _content
         anchors.fill: parent

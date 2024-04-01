@@ -8,11 +8,8 @@ import QuickTools.core
 
 Item {
     id: paramItem
-    width: 200
-    height: 24
+    anchors.fill: parent
     clip: true
-
-    property ToolParams toolParams
 
     property int paramIndex
     property int paramType
@@ -21,8 +18,10 @@ Item {
     property alias displayText: textEdit.text
     property var mouseObj: mouseArea
     default property alias content: container.data
-    signal clicked
 
+    property bool tooltipVisible: false
+    property alias tooltipText: tooltip.text
+    signal clicked
     signal valueChanged(var value)
 
     MouseArea {
@@ -36,6 +35,12 @@ Item {
             console.log("Click")
         }
     }
+    ToolTip {
+        id: tooltip
+        visible: mouseArea.containsMouse && tooltipVisible
+        delay: 500
+    }
+
     TextEdit { // 用来当作剪贴板
         id: textEdit
         visible: false

@@ -11,21 +11,19 @@ StackLayout {
 
     property color itemBackgroundColor: QuickColor.White
     property color itemBorderColor: QuickColor.WindowBackground
-    property InputParams inputParams
-    property OutputParams outputParams
+    property alias inputParams: inputParamsListView.model
+    property alias outputParams: outputParamsListView.model
 
     ParamsListView {
         id: inputParamsListView
         Layout.fillHeight: true
         Layout.fillWidth: true
-        toolParams: inputParams
     }
 
     ParamsListView {
         id: outputParamsListView
         Layout.fillHeight: true
         Layout.fillWidth: true
-        toolParams: outputParams
     }
 
     Item {

@@ -19,8 +19,8 @@ ApplicationWindow {
 
     default property alias content: container.data
 
-    property InputParams inputParams
-    property OutputParams outputParams
+    property alias inputParams: lsidebar.inputParams
+    property alias outputParams: lsidebar.outputParams
 
     header: T_CVHeader {
         width: parent.width
@@ -36,8 +36,6 @@ ApplicationWindow {
             SplitView.minimumWidth: 256
             SplitView.preferredWidth: 321
             SplitView.fillHeight: true
-            inputParams: window.inputParams
-            outputParams: window.outputParams
         }
         Item {
             id: container

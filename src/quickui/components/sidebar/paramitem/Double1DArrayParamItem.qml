@@ -8,6 +8,8 @@ T_ParamItem {
     id: double1DArrayItem
     displayText: _content.text
     property int decimals: 4
+    tooltipVisible: _content.truncated
+    tooltipText: _content.text
 
     QuickText {
         id: _content

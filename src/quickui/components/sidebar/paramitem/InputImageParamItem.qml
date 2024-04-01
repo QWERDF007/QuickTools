@@ -9,11 +9,14 @@ import QuickTools.core
 
 T_ParamItem {
     id: inputImageItem
-    anchors.fill: parent
+    displayText: _content.text
+    tooltipVisible: _content.truncated
+    tooltipText: _content.text
     RowLayout {
         anchors.fill: parent
         spacing: 2
         QuickText {
+            id: _content
             Layout.fillHeight: true
             Layout.fillWidth: true
             text: paramValue === null || paramValue === undefined ? "" : paramValue
@@ -36,13 +39,7 @@ T_ParamItem {
         folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
         onAccepted: {
             var path = fileDialog.file.toString().toLowerCase().slice(8)
-            console.log("FileDialog onAccepted", path, toolParams)
-            if (toolParams !== null && toolParams !== undefined) {
-                toolParams.setData(toolParams.index(paramIndex, 0), path, QuickToolParam.ParamValueRole)
-                valueChanged(path)
-            }
+            valueChanged(path)
         }
     }
-
-
 }
