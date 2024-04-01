@@ -35,11 +35,7 @@ Item {
             paramTypeName: model.paramTypeName
             paramValue: model.paramValue
             paramDisplayName: model.paramDisplayName
-            Component.onCompleted: {
-                console.log("ParamItemDelegate onCompleted", model.paramIndex, model.paramName, model.paramDisplayName, model.paramType, model.paramTypeName, model.paramValue)
-            }
             onParamChanged: function(value) {
-                console.log("ParamItemDelegate onParamChanged", model.paramName, model.paramValue, value)
                 model.paramValue = value
             }
         }
