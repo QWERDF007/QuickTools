@@ -179,8 +179,8 @@ void AbstractToolParams::onPropertyValueChanged(const QString &key, const QVaria
 AbstractOutputParams::AbstractOutputParams(QObject *parent)
     : AbstractToolParams(parent)
 {
-    addParam("Status", "状态", QuickToolParamType::ParamStatusType, QVariant(), QVariant(), false, true);
-    addParam("Time", "时间", QuickToolParamType::ParamDouble1DArrayType, QVariant(), QVariant(), false, true);
+    addParam("Status", "运行状态", QuickToolParamType::ParamStatusType, QVariant(), QVariant(), false, true);
+    addParam("Time", "运行时间", QuickToolParamType::ParamDouble1DArrayType, QVariant(), QVariant(), false, true);
 }
 
 bool AbstractOutputParams::addParam(const QString &en_name, const QString &zh_name, const int type,
