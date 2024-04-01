@@ -12,7 +12,7 @@ T_CVWindow {
     height: 720
     visible: true
 
-    property QuickTool quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
+    quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
     inputParams: quicktool.inputParams
     outputParams: quicktool.outputParams
 
@@ -135,7 +135,7 @@ T_CVWindow {
 
                 function isImageFile(url) {
                     var path = url.toString().toLowerCase()
-                    return path.startsWith("file:") && (path.endsWith(".jpg") || path.endsWith(".png") || path.endWith(".jpeg"))
+                    return path.startsWith("file:") && (path.endsWith(".jpg") || path.endsWith(".png") || path.endsWith(".jpeg"))
                 }
             }
         }

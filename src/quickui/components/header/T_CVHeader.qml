@@ -10,6 +10,7 @@ Rectangle {
     height: 40
 
     property string toolTitle: qsTr("工具名称")
+    signal startBtnClicked
 
     QuickText {
         text: toolTitle
@@ -37,7 +38,9 @@ Rectangle {
                 implicitWidth: 32
                 implicitHeight: 32
                 icon.source: "/icons/play"
-
+                onClicked: {
+                    startBtnClicked()
+                }
             }
             Rectangle {
                 color: "#EDEDED"

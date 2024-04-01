@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt.labs.platform
 
 import QuickTools.ui
 import QuickTools.core
@@ -30,7 +31,7 @@ Item {
         acceptedButtons: Qt.RightButton
         hoverEnabled: true
         onClicked: {
-            mouseMenu.popup()
+            mouseMenu.open()
             paramItem.clicked()
             console.log("Click")
         }
@@ -56,6 +57,7 @@ Item {
         id: mouseMenu
         MenuItem {
             text: "复制"
+            // shortcut: StandardKey.Copy
             onTriggered: {
                 textEdit.selectAll()
                 textEdit.copy()

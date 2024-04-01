@@ -21,10 +21,17 @@ ApplicationWindow {
 
     property alias inputParams: lsidebar.inputParams
     property alias outputParams: lsidebar.outputParams
+    property QuickTool quicktool
 
     header: T_CVHeader {
         width: parent.width
         height: 40
+        onStartBtnClicked: {
+            if (quicktool === null || quicktool === undefined) {
+                return
+            }
+            quicktool.exec()
+        }
     }
 
     QuickSplitView {
