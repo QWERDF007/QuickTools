@@ -22,6 +22,7 @@ ApplicationWindow {
     property alias inputParams: lsidebar.inputParams
     property alias outputParams: lsidebar.outputParams
     property QuickTool quicktool
+    property alias activateItem: _footer.activateItem
 
     header: T_CVHeader {
         width: parent.width
@@ -52,6 +53,7 @@ ApplicationWindow {
     }
 
     footer: T_CVFooter {
+        id: _footer
         width: parent.width
         height: 40
     }

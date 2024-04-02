@@ -6,16 +6,20 @@ import QuickTools.ui
 
 Rectangle {
     id: footer
-    color: "white"
+    color: QuickColor.White
     width: 200
     height: 40
 
+    property var activateItem
+    property color toolbarColor: QuickColor.White
+    property color toolbarBorderColor: QuickColor.WindowBackground
+
     Rectangle {
         id: toolbar
-        color: "white"
+        color: toolbarColor
         radius: 3
         border.width: 2
-        border.color: "#EDEDED"
+        border.color: toolbarBorderColor
         height: 36
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
@@ -24,11 +28,28 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 1
             Label {
+                id: imageSize
                 Layout.leftMargin: 5
                 Layout.preferredWidth: 64
-                text: "1024x640"
+                text: {
+                    if (activateItem instanceof Image && activateItem.status === Image.Ready) {
+                        var size = activateItem.sourceSize
+                        return size.width + "x" + size.height
+                    }
+                    return ""
+                }
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
+                MouseArea {
+                    id: imageSizeMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                }
+                ToolTip{
+                    text: qsTr("图像大小 (宽x高)")
+                    delay: 500
+                    visible: imageSizeMouseArea.containsMouse
+                }
             }
             ToolButton {
                 implicitWidth: 32

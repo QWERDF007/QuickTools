@@ -36,7 +36,8 @@ T_ParamItem {
 
     FileDialog {
         id: fileDialog
-        folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+        folder: StandardPaths.writableLocation(StandardPaths.PicturesLocation)
+        nameFilters: ["Image files (*.jpg *.jpeg *.png *.bmp)"]
         onAccepted: {
             var path = fileDialog.file.toString().toLowerCase().slice(8)
             valueChanged(path)

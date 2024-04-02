@@ -10,6 +10,11 @@ Rectangle {
     height: 40
 
     property string toolTitle: qsTr("工具名称")
+    property alias squareBtnChecked: squareBtn.checked
+    property alias circleBtnChecked: circleBtn.checked
+    property alias polygonBtnChecked: polygonBtn.checked
+    property color toolbarColor: QuickColor.White
+    property color toolbarBorderColor: QuickColor.WindowBackground
     signal startBtnClicked
 
     QuickText {
@@ -23,10 +28,10 @@ Rectangle {
 
     Rectangle {
         id: toolbar
-        color: "white"
+        color: toolbarColor
         radius: 3
         border.width: 2
-        border.color: "#EDEDED"
+        border.color: toolbarBorderColor
         height: 36
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
@@ -43,26 +48,45 @@ Rectangle {
                 }
             }
             Rectangle {
-                color: "#EDEDED"
+                color: toolbarBorderColor
                 width: 3
                 Layout.fillHeight: true
             }
 
             RowLayout {
+                id: btnRowLayout
                 ToolButton {
+                    id: squareBtn
+                    checkable: true
                     implicitWidth: 32
                     implicitHeight: 32
                     icon.source: "/icons/square"
+                    onToggled: {
+                        circleBtn.checked = false
+                        polygonBtn.checked = false
+                    }
                 }
                 ToolButton {
+                    id: circleBtn
+                    checkable: true
                     implicitWidth: 32
                     implicitHeight: 32
                     icon.source: "/icons/circle"
+                    onToggled: {
+                        squareBtn.checked = false
+                        polygonBtn.checked = false
+                    }
                 }
                 ToolButton {
+                    id: polygonBtn
+                    checkable: true
                     implicitWidth: 32
                     implicitHeight: 32
                     icon.source: "/icons/polygon"
+                    onToggled: {
+                        squareBtn.checked = false
+                        circleBtn.checked = false
+                    }
                 }
             }
         }

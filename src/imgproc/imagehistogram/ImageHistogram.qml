@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtCharts
+import Qt.labs.platform
 
 import QuickTools.core
 import QuickTools.ui
@@ -15,6 +16,7 @@ T_CVWindow {
     quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
     inputParams: quicktool.inputParams
     outputParams: quicktool.outputParams
+    activateItem: image
 
     Component.onCompleted: {
         console.log("quick tool", quicktool.name)
@@ -52,7 +54,7 @@ T_CVWindow {
         id: sv1
         anchors.fill: parent
 
-        QuickArea {
+        Item {
             id: imageContainer
             SplitView.fillHeight: true
             SplitView.fillWidth: true
@@ -114,28 +116,34 @@ T_CVWindow {
                         horizontalCenter: parent.horizontalCenter
                     }
                     text: "BROWSE FROM YOUR COMPUTER"
+                    onClicked: {
+                        fileDialog.open()
+                    }
+                }
+
+                FileDialog {
+                    id: fileDialog
+                    folder: StandardPaths.writableLocation(StandardPaths.PicturesLocation)
+                    nameFilters: ["Image files (*.jpg *.jpeg *.png *.bmp)"]
+                    onAccepted: {
+                        var url = fileDialog.file
+                        if (isImageFile(url) && image.source !== url) {
+                            var path = getImagePath(url)
+                            inputParams.pdata.Image = path
+                        }
+                    }
                 }
             }
 
             DropArea {
                 anchors.fill: parent
                 onDropped: function(drop) {
-                    console.log("drop", drop.urls)
+//                    console.log("drop", drop.urls)
                     var url = drop.urls[0]
                     if (isImageFile(url) && image.source !== url) {
                         var path = getImagePath(url)
                         inputParams.pdata.Image = path
                     }
-                }
-
-                function getImagePath(url) {
-                    var path = url.toString().toLowerCase()
-                    return path.slice(8)
-                }
-
-                function isImageFile(url) {
-                    var path = url.toString().toLowerCase()
-                    return path.startsWith("file:") && (path.endsWith(".jpg") || path.endsWith(".png") || path.endsWith(".jpeg"))
                 }
             }
         }
@@ -188,5 +196,15 @@ T_CVWindow {
                 }
             }
         }
+    }
+
+    function getImagePath(url) {
+        var path = url.toString().toLowerCase()
+        return path.slice(8)
+    }
+
+    function isImageFile(url) {
+        var path = url.toString().toLowerCase()
+        return path.startsWith("file:") && (path.endsWith(".jpg") || path.endsWith(".png") || path.endsWith(".jpeg"))
     }
 }
