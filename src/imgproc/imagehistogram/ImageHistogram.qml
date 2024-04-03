@@ -7,6 +7,8 @@ import Qt.labs.platform
 import QuickTools.core
 import QuickTools.ui
 
+import "./components"
+
 T_CVWindow {
     id: imageHistogramWin
     width: 1080
@@ -73,138 +75,22 @@ T_CVWindow {
                 }
             }
 
-            Item {
-                id: dropBtnArea
-                visible: image.status === Image.Null
-                implicitHeight: childrenRect.height
-                anchors.centerIn: parent
-                Image {
-                    id: dropimage
-                    width: 80
-                    height: 80
-                    anchors {
-                        top: parent.top
-                        horizontalCenter: parent.horizontalCenter
-                    }
-                    source: "/icons/dropimage"
-                }
-                QuickText {
-                    id: droptip
-                    anchors {
-                        top: dropimage.bottom
-                        topMargin: 5
-                        horizontalCenter: parent.horizontalCenter
-                    }
-
-                    text: "DROP YOUR IMAGES HERE"
-                }
-                QuickText {
-                    id: seperator
-                    anchors {
-                        top: droptip.bottom
-                        topMargin: 5
-                        horizontalCenter: parent.horizontalCenter
-                    }
-                    text: "- OR -"
-                }
-
-                QuickButton {
-                    id: browseBtn
-                    anchors {
-                        top: seperator.bottom
-                        topMargin: 5
-                        horizontalCenter: parent.horizontalCenter
-                    }
-                    text: "BROWSE FROM YOUR COMPUTER"
-                    onClicked: {
-                        fileDialog.open()
-                    }
-                }
-
-                FileDialog {
-                    id: fileDialog
-                    folder: StandardPaths.writableLocation(StandardPaths.PicturesLocation)
-                    nameFilters: ["Image files (*.jpg *.jpeg *.png *.bmp)"]
-                    onAccepted: {
-                        var url = fileDialog.file
-                        if (isImageFile(url) && image.source !== url) {
-                            var path = getImagePath(url)
-                            inputParams.pdata.Image = path
-                        }
-                    }
-                }
-            }
-
-            DropArea {
+            DropImageArea {
                 anchors.fill: parent
-                onDropped: function(drop) {
-//                    console.log("drop", drop.urls)
-                    var url = drop.urls[0]
-                    if (isImageFile(url) && image.source !== url) {
-                        var path = getImagePath(url)
-                        inputParams.pdata.Image = path
-                    }
+                dropBtnAreaVisible: image.status === Image.Null
+                onPathChanged: function(path) {
+                    inputParams.pdata.Image = path
                 }
             }
         }
-        Item {
-            id: histogramContainer
-            visible: {
-                if (outputParams.pdata.Hist === undefined || outputParams.pdata.Hist === null) {
-                    return false
-                } else {
-                    return true
-                }
-            }
 
+        HistogramView {
+            visible: outputParams.pdata.Hist === null || outputParams.pdata.Hist === undefined ? false : true
+            SplitView.fillHeight: true
             implicitWidth: sv1.width / 2
-
-            ChartView {
-                title: "Bar series"
-                anchors.fill: parent
-                legend.visible: false
-                antialiasing: true
-
-                BarSeries {
-                    id: mySeries
-                    barWidth: 1
-                    axisX: ValuesAxis {
-                        tickCount: 11
-                        min: 0
-                        max: {
-                            if (outputParams.pdata.Hist === undefined || outputParams.pdata.Hist === null) {
-                                return 255
-                            } else {
-                                return outputParams.pdata.Hist[0].length
-                            }
-                        }
-                    }
-                    axisY: ValuesAxis {
-                        tickCount: 11
-                        min: 0
-                        max: 1
-                    }
-                    BarSet {
-                        values: {
-                            if (outputParams.pdata.Hist === undefined || outputParams.pdata.Hist === null) {
-                                return [0]
-                            } else {
-                                return outputParams.pdata.Hist[0]
-                            }
-                        }
-                    }
-                }
-            }
+            histogramsData: outputParams.pdata.Hist
+            histogramsMin: outputParams.pdata.HistMin
+            histogramsMax: outputParams.pdata.HistMax
         }
-    }
-
-    function getImagePath(url) {
-        var path = url.toString().toLowerCase()
-        return path.slice(8)
-    }
-
-    function isImageFile(url) {
-        var path = url.toString().toLowerCase()
-        return path.startsWith("file:") && (path.endsWith(".jpg") || path.endsWith(".png") || path.endsWith(".jpeg"))
     }
 }
