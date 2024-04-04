@@ -19,9 +19,9 @@ ApplicationWindow {
 
     default property alias content: container.data
 
-    property alias inputParams: lsidebar.inputParams
-    property alias outputParams: lsidebar.outputParams
     property QuickTool quicktool
+    property InputParams inputParams
+    property OutputParams outputParams
     property alias activateItem: _footer.activateItem
 
     header: T_CVHeader {
@@ -44,6 +44,8 @@ ApplicationWindow {
             SplitView.minimumWidth: 256
             SplitView.preferredWidth: 321
             SplitView.fillHeight: true
+            inputParams: window.inputParams
+            outputParams: window.outputParams
         }
         Item {
             id: container

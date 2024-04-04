@@ -19,7 +19,7 @@ T_ParamItem {
             id: _content
             Layout.fillHeight: true
             Layout.fillWidth: true
-            text: paramValue === null || paramValue === undefined ? "" : paramValue
+            text: paramDisplay
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight

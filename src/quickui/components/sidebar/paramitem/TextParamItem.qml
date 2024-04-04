@@ -12,7 +12,7 @@ T_ParamItem {
     QuickText {
         id: _content
         anchors.fill: parent
-        text: paramValue === null || paramValue === undefined ? "" : paramValue
+        text: paramDisplay
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight

@@ -14,22 +14,7 @@ T_ParamItem {
     QuickText {
         id: _content
         anchors.fill: parent
-        text: {
-            if (paramValue === null || paramValue === undefined) {
-                return ""
-            }
-            var array_last_index = paramValue.length - 1
-            var array_text = "["
-            for (var i in paramValue) {
-                if (i < array_last_index) {
-                    array_text += paramValue[i].toFixed(decimals) + ", "
-                } else {
-                    array_text += paramValue[i].toFixed(decimals)
-                }
-            }
-            array_text += "]"
-            return array_text
-        }
+        text: paramDisplay
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight

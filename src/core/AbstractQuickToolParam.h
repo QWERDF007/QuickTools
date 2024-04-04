@@ -40,6 +40,7 @@ enum QuickToolParamRole
     ParamTypeNameRole,
     ParamVisibleRole,
     ParamValueRole,
+    ParamDisplayRole,
     ParamRangeRole,
     ParamIsPropertyRole,
     ParamEditableRole,
@@ -110,8 +111,8 @@ public:
     }
 
 protected:
-    QVector<QString>                   params_names_;
-    QMap<QString, QMap<int, QVariant>> params_data_;
+    QVector<QString>                   params_names_;  // [name]
+    QMap<QString, QMap<int, QVariant>> params_data_;   // [name, [key, value]]
     QQmlPropertyMap                    property_data_; // QML 中可直接访问和修改对应 key 的属性
 
 private:

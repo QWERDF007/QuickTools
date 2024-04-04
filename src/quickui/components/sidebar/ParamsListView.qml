@@ -27,15 +27,15 @@ Item {
             width: _paramsListView.width
             height: 48
             color: delegateBackgroundColor
-            border.width: 1
+            border.width: 2
             border.color: delegateBorderColor
             paramIndex: model.paramIndex
             paramName: model.paramName
             paramType: model.paramType
             paramTypeName: model.paramTypeName
-            paramValue: model.paramValue
             paramDisplayName: model.paramDisplayName
-            onParamChanged: function(value) {
+            paramDisplay: model.paramDisplay
+            onValueChanged: function(value) {
                 model.paramValue = value
             }
         }

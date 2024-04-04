@@ -15,17 +15,19 @@ Rectangle {
     property string paramName: ""
     property string paramDisplayName: ""
     property var paramValue
+    property var paramDisplay
     property int paramType: -1
     property string paramTypeName: ""
-    signal paramChanged(var value)
+    signal valueChanged(var value)
 
     Component {
         id: statusParamItem
         StatusParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -34,8 +36,9 @@ Rectangle {
         IntParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -44,8 +47,9 @@ Rectangle {
         DoubleParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -54,8 +58,9 @@ Rectangle {
         TextParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -64,8 +69,9 @@ Rectangle {
         Int1DArrayParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -74,8 +80,9 @@ Rectangle {
         Double1DArrayParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -84,8 +91,9 @@ Rectangle {
         Text1DArrayParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -94,8 +102,9 @@ Rectangle {
         Int2DArrayParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -104,8 +113,9 @@ Rectangle {
         Double2DArrayParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -114,8 +124,9 @@ Rectangle {
         Text2DArrayParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -124,8 +135,8 @@ Rectangle {
         InputImageParamItem {
             paramIndex: paramItemDelegate.paramIndex
             paramName: paramItemDelegate.paramName
-            paramValue: paramItemDelegate.paramValue
-            onValueChanged: function(value) { paramItemDelegate.paramChanged(value) }
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
         }
     }
 
@@ -159,7 +170,7 @@ Rectangle {
 
         Rectangle {
             width: parent.width
-            height: 1
+            height: 2
             color: paramItemDelegate.border.color
         }
 
