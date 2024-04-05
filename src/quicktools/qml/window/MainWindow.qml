@@ -53,4 +53,23 @@ Window {
             }
         }
     }
+    onClosing: function (close){
+        close.accepted = false
+        exitDialog.open()
+    }
+
+    QuickContentDialog {
+        id: exitDialog
+        title: qsTr("退出")
+        message: qsTr("确定要退出程序吗?")
+        positiveText: qsTr("退出")
+        negativeText: qsTr("取消")
+        buttonFlags: QuickDialogButtonFlag.NegativeButton | QuickDialogButtonFlag.PositiveButton
+        onNegativeClicked: {
+        }
+
+        onPositiveClicked:{
+            QuickApp.exit(0)
+        }
+    }
 }

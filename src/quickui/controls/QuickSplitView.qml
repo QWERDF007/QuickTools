@@ -6,8 +6,8 @@ SplitView {
     property int backgroundWidth: splitView.orientation === Qt.Horizontal ? 4 : splitView.width
     property int backgroundHeight: splitView.orientation === Qt.Horizontal ? splitView.height : 4
     property color backgroundColor: Qt.rgba(226/255,229/255,234/255,1)
-    property int handleWidth: splitView.orientation === Qt.Horizontal ? 2 : 12
-    property int handleHeight: splitView.orientation === Qt.Horizontal ? 12 : 2
+    property int handleWidth: splitView.orientation === Qt.Horizontal ? 2 : 24
+    property int handleHeight: splitView.orientation === Qt.Horizontal ? 24 : 2
     property color handleColor: "white"
     property int maskWidth: splitView.orientation === Qt.Horizontal ? 12 : splitView.width
     property int maskHeight: splitView.orientation === Qt.Horizontal ? splitView.height : 12
