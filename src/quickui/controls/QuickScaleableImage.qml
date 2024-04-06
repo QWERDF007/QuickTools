@@ -10,6 +10,7 @@ Item {
 
     property alias image: _image
     property alias status: _image.status
+    property alias sourceSize: _image.sourceSize
     property bool imageDragEnable: false
     property real stepSize: {
         if (_image.scale < 2) {
@@ -47,12 +48,12 @@ Item {
 
     onWidthChanged: {
         if (isFitInView) {
-            imageFitInView()
+            fitInView()
         }
     }
     onHeightChanged: {
         if (isFitInView) {
-            imageFitInView()
+            fitInView()
         }
     }
 
@@ -98,7 +99,6 @@ Item {
     }
 
     Keys.onPressed: function(event) {
-        console.log("key onPressed", event.key, mouseArea.containsPress)
         if (event.key === Qt.Key_Control) {
             if (mouseArea.containsPress) {
                 setCursorShape(Qt.ClosedHandCursor)
@@ -106,25 +106,28 @@ Item {
                 setCursorShape(Qt.OpenHandCursor)
             }
         } else if (event.key === Qt.Key_Space) {
-            imageFitInView()
+            fitInView()
         }
     }
 
     Keys.onReleased: function(event) {
-        console.log("key onReleased", event.key, mouseArea.containsPress)
         if (event.key === Qt.Key_Control && !mouseArea.containsPress) {
             setCursorShape(Qt.ArrowCursor)
         }
     }
 
     /**
-     * @brief 设置图片拖拽
+     * @brief 设置图片是否可拖拽
      * @param enable
      */
     function setImageDragEnable(enable) {
         scaleableImage.imageDragEnable = enable
     }
 
+    /**
+     * @brief 在中心缩放图像
+     * @param scale
+     */
     function scaleInCenter(scale) {
         var x = scaleableImage.width / 2
         var y = scaleableImage.height / 2
@@ -177,7 +180,7 @@ Item {
     /**
      * @brief 图像适应窗口
      */
-    function imageFitInView() {
+    function fitInView() {
         if (_image.sourceSize.height === 0 || _image.sourceSize.width === 0)
             return
         scaleableImage.imageSourceScale = Math.min(scaleableImage.height / _image.sourceSize.height, scaleableImage.width / _image.sourceSize.width)

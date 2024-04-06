@@ -35,7 +35,7 @@ Rectangle {
                 Layout.leftMargin: 5
                 Layout.preferredWidth: 64
                 text: {
-                    if (activateItem instanceof Image && activateItem.status === Image.Ready) {
+                    if ((activateItem instanceof Image || activateItem instanceof QuickScaleableImage) && activateItem.status === Image.Ready) {
                         var size = activateItem.sourceSize
                         return size.width + "x" + size.height
                     }
@@ -60,6 +60,9 @@ Rectangle {
                 icon.source: "/icons/zoomout"
                 onClicked: {
                     slider.decrease()
+                    if (activateItem instanceof QuickScaleableImage) {
+                        activateItem.scaleInCenter(slider.value)
+                    }
                     footer.sliderMoved(slider.value)
                 }
             }
@@ -71,8 +74,12 @@ Rectangle {
                 value: {
                     if (activateItem === null || activateItem === undefined) {
                         return 0
+                    } else if (activateItem instanceof QuickScaleableImage) {
+                        return activateItem.image.scale
+                    } else if (activateItem instanceof Image) {
+                        return activateItem.scale
                     }
-                    return activateItem.scale
+                    return 1
                 }
                 stepSize: {
                     if (value < 2) {
@@ -86,6 +93,9 @@ Rectangle {
 
                 to: 32
                 onMoved: {
+                    if (activateItem instanceof QuickScaleableImage) {
+                        activateItem.scaleInCenter(slider.value)
+                    }
                     footer.sliderMoved(slider.value)
                 }
             }
@@ -96,6 +106,9 @@ Rectangle {
                 icon.source: "/icons/zoomin"
                 onClicked: {
                     slider.increase()
+                    if (activateItem instanceof QuickScaleableImage) {
+                        activateItem.scaleInCenter(slider.value)
+                    }
                     footer.sliderMoved(slider.value)
                 }
             }
@@ -104,7 +117,13 @@ Rectangle {
                 implicitWidth: 32
                 implicitHeight: 32
                 icon.source: "/icons/aspectratio"
-                onClicked: footer.fitInWindow()
+                onClicked: {
+                    if (activateItem instanceof QuickScaleableImage) {
+                        activateItem.fitInView()
+                    }
+                    footer.fitInWindow()
+                }
+
                 ToolTip {
                     text: qsTr("适应窗口大小")
                     visible: fitBtn.hovered

@@ -15,14 +15,14 @@ QuickObject {
         id:item_home
         count: 9
         title: "Home"
-//        menuDelegate: paneItemMenu
+        //        menuDelegate: paneItemMenu
         infoBadge: QuickBadge {
             count: item_home.count
         }
         icon: QuickFontIcon.Home
-        // url:"qrc:/qt/qml/QuickTools/qml/page/Home.qml"
-        url: "qrc:/qt/qml/QuickTools/imgproc/imagehistogram/ImageHistogram.qml"
-//        url: "qrc:/qt/qml/QuickTools/ui/window/T_CVWindow.qml"
+        url:"qrc:/qt/qml/QuickTools/qml/page/Home.qml"
+        // url: "qrc:/qt/qml/QuickTools/imgproc/imagehistogram/ImageHistogram.qml"
+        // url: "qrc:/qt/qml/QuickTools/ui/window/T_CVWindow.qml"
         onTap: {
             if(navigationView.getCurrentUrl()){
                 item_home.count = 0

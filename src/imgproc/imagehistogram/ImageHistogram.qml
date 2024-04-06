@@ -7,7 +7,6 @@ import Qt.labs.platform
 import QuickTools.core
 import QuickTools.ui
 
-import "./components"
 
 T_CVWindow {
     id: imageHistogramWin
@@ -18,7 +17,7 @@ T_CVWindow {
     quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram, imageHistogramWin)
     inputParams: quicktool.inputParams
     outputParams: quicktool.outputParams
-    activateItem: image.image
+    activateItem: image
 
     Component.onCompleted: {
         console.log("quick tool", quicktool.name)
@@ -26,20 +25,6 @@ T_CVWindow {
         console.log("output params", outputParams.name)
         console.log("Image", inputParams.pdata.Image)
         console.log("Hist", outputParams.pdata.Hist)
-    }
-
-    /**
-     * @brief 获取 obj 的属性并转换为字符串, 包括 function 和 property
-     * @param obj
-     */
-    function objToString (obj) {
-        var str = '';
-        for (var p in obj) {
-            if (Object.prototype.hasOwnProperty.call(obj, p)) {
-                str += p + '::' + obj[p] + '\n';
-            }
-        }
-        return str;
     }
 
     QuickSplitView {
@@ -94,9 +79,4 @@ T_CVWindow {
             histogramsMax: outputParams.pdata.HistMax
         }
     }
-
-    onSliderMoved: function(value) {
-        image.scaleInCenter(value)
-    }
-    onFitInWindow: image.imageFitInView()
 }
