@@ -13,93 +13,73 @@ Item {
     property var histogramsData
     property var histogramsMin
     property var histogramsMax
-    ColumnLayout {
-        anchors.fill: parent
-        Rectangle {
-            implicitWidth: childrenRect.width
-            height: 24
-            border.width: 1
-            border.color: QuickColor.WindowBackground
-            color: QuickColor.White
-            ListView {
-                id: tabbar
-                orientation: ListView.Horizontal
-                implicitWidth: childrenRect.width
-                height: 24
-                boundsBehavior: Flickable.StopAtBounds
-                model: histogramsData === undefined || histogramsData === null ? 0 : histogramsData.length
-                delegate: Rectangle {
-                    width: 24
-                    height: 24
-                    color: {
-                        if (mouseArea.pressed) {
-                            return QuickColor.ItemPress
-                        }  else if (mouseArea.hovered) {
-                            return QuickColor.ItemHover
-                        } else if (tabbar.currentIndex === model.index) {
-                            return QuickColor.ItemCheck
-                        }
-                        return QuickColor.ItemNormal
-                    }
 
-                    QuickText {
-                        anchors.fill: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        text: index
-                    }
-                    MouseArea {
-                        id: mouseArea
-                        anchors.fill: parent
-                        onClicked: {
-                            tabbar.currentIndex = index
-                        }
-                    }
+    QuickSplitView {
+        anchors.fill: parent
+        orientation: Qt.Vertical
+        Repeater {
+            model: {
+                if (histogramsData === undefined || histogramsData === null) {
+                    return 0
+                } else if (histogramsData.length >= 3) {
+                    return 3
+                } else {
+                    return histogramsData.length
                 }
             }
-        }
 
-        StackLayout {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            currentIndex: tabbar.currentIndex
-            Repeater {
-                model: histogramsData === undefined || histogramsData === null ? 0 : histogramsData.length
-                ChartView {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    legend.visible: false
-                    antialiasing: true
+            ChartView {
+                id: chartview
+                SplitView.fillWidth: true
+                SplitView.minimumHeight: 200
+                implicitHeight: parent.height / 3
+                legend.visible: false
+                antialiasing: true
 
-                    ToolTip {
-                        id: tooltip
-                        delay: 200
-                        visible: false
+                ToolTip {
+                    id: tooltip
+                    delay: 200
+                    visible: false
+                }
+
+                MouseArea {
+                    id: mouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                }
+
+                BarSeries {
+                    barWidth: 1
+                    //                        labelsAngle: 270
+                    //                        labelsVisible: true
+                    //                        labelsPosition: AbstractBarSeries.LabelsInsideEnd
+                    axisX: ValuesAxis {
+                        tickCount: 11
+                        min: 0
+                        max: histogramsData === null || histogramsData === undefined ? 255 : histogramsData[index].length
+                    }
+                    onHovered: function(status, i, barset) {
+                        if (mouseArea.mouseX + tooltip.contentWidth + 20 > chartview.width) {
+                            tooltip.x = mouseArea.mouseX - tooltip.contentWidth - 20
+                        } else {
+                            tooltip.x = mouseArea.mouseX
+                        }
+                        if (mouseArea.mouseY + tooltip.contentHeight + 20 > chartview.height) {
+                            tooltip.y = mouseArea.mouseY - tooltip.contentHeight - 20
+                        } else {
+                            tooltip.y = mouseArea.mouseY + 20
+                        }
+                        tooltip.visible = status
+                        tooltip.text = "x: " + i + " y: " + barset.values[i]
                     }
 
-                    BarSeries {
-                        barWidth: 1
-                        //                        labelsAngle: 270
-                        //                        labelsVisible: true
-                        //                        labelsPosition: AbstractBarSeries.LabelsInsideEnd
-                        axisX: ValuesAxis {
-                            tickCount: 11
-                            min: 0
-                            max: histogramsData === null || histogramsData === undefined ? 255 : histogramsData[index].length
-                        }
-                        onHovered: function(status, i, barset) {
-                            tooltip.visible = status
-                            tooltip.text = "x: " + i + " y: " + barset.values[i]
-                        }
-
-                        axisY: ValuesAxis {
-                            tickCount: 11
-                            min: 0
-                            max: histogramsMax === null || histogramsMax === undefined || histogramsMax[index] === undefined ? 1 : histogramsMax[index]
-                        }
-                        BarSet {
-                            values: histogramsData === null || histogramsData === undefined ? [0] : histogramsData[index]
-                        }
+                    axisY: ValuesAxis {
+                        tickCount: 11
+                        min: 0
+                        max: histogramsMax === null || histogramsMax === undefined || histogramsMax[index] === undefined ? 1 : histogramsMax[index]
+                    }
+                    BarSet {
+                        values: histogramsData === null || histogramsData === undefined ? [0] : histogramsData[index]
                     }
                 }
             }
