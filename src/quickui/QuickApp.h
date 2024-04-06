@@ -32,7 +32,8 @@ public:
 
     Q_INVOKABLE void navigate(const QString &route, const QJsonObject &argument = {});
     Q_INVOKABLE void init(QObject *target, QLocale locale = QLocale::system());
-    Q_INVOKABLE void exit(int ret_code = 0);
+    Q_INVOKABLE void exit(int exit_code = 0);
+    Q_INVOKABLE void closeWindow(QObject *target);
 
     void addWindow(QQuickWindow *window);
     void removeWindow(QQuickWindow *window);

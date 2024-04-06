@@ -47,14 +47,21 @@ void QuickApp::init(QObject *target, QLocale locale)
     engine_ = qmlEngine(target);
 }
 
-void QuickApp::exit(int ret_code)
+void QuickApp::exit(int exit_code)
 {
     for (const auto &[id, window] : windows_.toStdMap())
     {
         window->close();
         removeWindow(window);
     }
-    qApp->exit(ret_code);
+    qApp->exit(exit_code);
+}
+
+void QuickApp::closeWindow(QObject *target)
+{
+    QQuickWindow *window{nullptr};
+    window = qobject_cast<QQuickWindow *>(target);
+    removeWindow(window);
 }
 
 void QuickApp::addWindow(QQuickWindow *window)
