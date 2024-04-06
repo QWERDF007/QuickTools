@@ -3,6 +3,7 @@
 #include "AbstractCVTool.h"
 
 #include <QObject>
+#include <opencv2/core.hpp>
 
 namespace quicktools::imgproc {
 
@@ -20,6 +21,8 @@ public:
     {
         return QString("图像直方图");
     }
+
+    int cvtColor(const cv::Mat& src, cv::Mat& dst, const QString& color_space);
 
 private:
     int initInputParams() override;

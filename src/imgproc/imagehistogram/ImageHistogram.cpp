@@ -17,6 +17,7 @@ const QVariantList COLOR_SPACES
     "UNCHANGED",
     "RGB",
     "HSV",
+    "Gray",
 };
 
 ImageHistogram::ImageHistogram(QObject *parent)
@@ -29,12 +30,11 @@ std::tuple<int, QString> ImageHistogram::run()
     auto input_params  = inputParams();
     auto output_params = outputParams();
     if (input_params == nullptr || output_params == nullptr)
-    {
         return {-1, "输入/输出参数为空指针"};
-    }
 
     std::string image_path
         = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString().toLocal8Bit().toStdString();
+    QString color_space = input_params->data("ColorSpace", QuickToolParamRole::ParamValueRole).toString();
     auto algorithm_start_time = std::chrono::high_resolution_clock::now();
 
     auto    temp_start_time = std::chrono::high_resolution_clock::now();
@@ -44,9 +44,13 @@ std::tuple<int, QString> ImageHistogram::run()
             << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
     qInfo() << __FUNCTION__ << "image size" << image.rows << image.cols << image.channels();
 
+    cv::Mat dst;
+    if (cvtColor(image, dst, color_space) != 0)
+        return {-1, QString("转换到色彩空间 %1 失败").arg(color_space)};
+
     temp_start_time = std::chrono::high_resolution_clock::now();
     std::vector<cv::Mat> chs;
-    cv::split(image, chs);
+    cv::split(dst, chs);
     temp_end_time = std::chrono::high_resolution_clock::now();
     qInfo() << __FUNCTION__ << "split channels time"
             << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
@@ -97,6 +101,55 @@ std::tuple<int, QString> ImageHistogram::run()
                                                          - algorithm_start_time)
                    .count();
     return {0, "运行成功"};
+}
+
+int ImageHistogram::cvtColor(const cv::Mat& src, cv::Mat& dst, const QString &color_space)
+{
+    if (src.empty())
+        return -1;
+    const int channels = src.channels();
+    if (color_space == "RGB")
+    {
+        if (channels == 1)
+            cv::cvtColor(src, dst, cv::COLOR_GRAY2RGB);
+        else if (channels == 3)
+            cv::cvtColor(src, dst, cv::COLOR_BGR2RGB);
+        else if (channels == 4)
+            cv::cvtColor(src, dst, cv::COLOR_BGRA2RGB);
+        else
+            return -1;
+    }
+    else if (color_space == "HSV")
+    {
+        if (channels == 1)
+        {
+            cv::cvtColor(src, dst, cv::COLOR_GRAY2BGR);
+            cv::cvtColor(dst, dst, cv::COLOR_BGR2HSV);
+        }
+        else if (channels == 3)
+            cv::cvtColor(src, dst, cv::COLOR_BGR2HSV);
+        else if (channels == 4)
+        {
+            cv::cvtColor(src, dst, cv::COLOR_BGRA2BGR);
+            cv::cvtColor(dst, dst, cv::COLOR_BGR2HSV);
+        }
+        else
+            return -1;
+    }
+    else if (color_space == "Gray")
+    {
+        if (channels == 1)
+            dst = src;
+        else if (channels == 3)
+            cv::cvtColor(src, dst, cv::COLOR_BGR2GRAY);
+        else if (channels == 4)
+            cv::cvtColor(src, dst, cv::COLOR_BGRA2GRAY);
+        else
+            return -1;
+    }
+    else
+        dst = src;
+    return 0;
 }
 
 int ImageHistogram::initInputParams()
