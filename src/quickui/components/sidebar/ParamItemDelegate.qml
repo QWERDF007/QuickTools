@@ -15,6 +15,7 @@ Rectangle {
     property string paramName: ""
     property string paramDisplayName: ""
     property var paramValue
+    property var paramRange
     property var paramDisplay
     property int paramType: -1
     property string paramTypeName: ""
@@ -140,6 +141,18 @@ Rectangle {
         }
     }
 
+    Component {
+        id: comboBoxParamItem
+        ComboBoxParamItem {
+            paramIndex: paramItemDelegate.paramIndex
+            paramName: paramItemDelegate.paramName
+            paramValue: paramItemDelegate.paramValue
+            paramRange: paramItemDelegate.paramRange
+            paramDisplay: paramItemDelegate.paramDisplay
+            onValueChanged: function(value) { paramItemDelegate.valueChanged(value) }
+        }
+    }
+
     Column {
         anchors.fill: parent
         anchors.topMargin: 2
@@ -201,7 +214,10 @@ Rectangle {
                     return text2DArrayParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamImageType) {
                     return inputImageParamItem
+                } else if (paramItemDelegate.paramType === QuickToolParam.ParamComboBoxType) {
+                    return comboBoxParamItem
                 }
+
                 return undefined
             }
         }

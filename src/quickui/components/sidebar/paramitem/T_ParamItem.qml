@@ -16,6 +16,7 @@ Item {
     property int paramType
     property var paramValue
     property var paramDisplay
+    property var paramRange
     property string paramName: ""
     property alias displayText: textEdit.text
     property var mouseObj: mouseArea

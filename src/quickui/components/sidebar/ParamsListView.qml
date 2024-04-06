@@ -35,6 +35,7 @@ Item {
             paramTypeName: model.paramTypeName
             paramDisplayName: model.paramDisplayName
             paramDisplay: model.paramDisplay
+            paramRange: model.paramRange
             onValueChanged: function(value) {
                 model.paramValue = value
             }
