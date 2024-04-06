@@ -16,15 +16,35 @@ ApplicationWindow {
     height: 720
     visible: true
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
+    property int winId
 
     default property alias content: container.data
 
     property QuickTool quicktool
     property InputParams inputParams
     property OutputParams outputParams
-    property alias activateItem: _footer.activateItem
+    property var activateItem
+    property bool enable: true
+    property alias squareChecked: _header.squareChecked
+    property alias circleChecked: _header.circleChecked
+    property alias polygonChecked: _header.polygonChecked
+    signal sliderMoved(real value)
+    signal fitInWindow
+
+    Connections {
+        target: quicktool
+        function onStarted() {
+            window.enable = false
+        }
+
+        function onFinished() {
+            window.enable = true
+        }
+    }
 
     header: T_CVHeader {
+        id: _header
+        enabled: window.enable
         width: parent.width
         height: 40
         onStartBtnClicked: {
@@ -37,6 +57,7 @@ ApplicationWindow {
 
     QuickSplitView {
         id: splitView
+        enabled: window.enable
         anchors.fill: parent
         LSideBar {
             id: lsidebar
@@ -56,7 +77,16 @@ ApplicationWindow {
 
     footer: T_CVFooter {
         id: _footer
+        enabled: window.enable
         width: parent.width
         height: 40
+        activateItem: window.activateItem
+        onSliderMoved: function(value) {
+            window.sliderMoved(value)
+        }
+        onFitInWindow: window.fitInWindow()
+    }
+    onClosing: function(close) {
+        QuickApp.closeWindow(window)
     }
 }

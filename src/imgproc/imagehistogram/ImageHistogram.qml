@@ -15,10 +15,10 @@ T_CVWindow {
     height: 720
     visible: true
 
-    quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram)
+    quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram, imageHistogramWin)
     inputParams: quicktool.inputParams
     outputParams: quicktool.outputParams
-    activateItem: image
+    activateItem: image.image
 
     Component.onCompleted: {
         console.log("quick tool", quicktool.name)
@@ -26,16 +26,6 @@ T_CVWindow {
         console.log("output params", outputParams.name)
         console.log("Image", inputParams.pdata.Image)
         console.log("Hist", outputParams.pdata.Hist)
-    }
-
-    Connections {
-        target: quicktool
-        function onFinished() {
-            console.log("finished!!!")
-            console.log("Image", inputParams.pdata.Image)
-            console.log("Hist", outputParams.pdata.Hist.length)
-            console.log("Hist", outputParams.pdata.Hist[0].length)
-        }
     }
 
     /**
@@ -63,11 +53,22 @@ T_CVWindow {
             SplitView.minimumWidth: 160
             clip: true
 
-            Image {
+            // Image {
+            //     id: image
+            //     anchors.fill: parent
+            //     fillMode: Image.PreserveAspectFit
+            //     source: {
+            //         if (inputParams.pdata.Image === null || inputParams.pdata.Image === undefined) {
+            //             return ""
+            //         }
+            //         return "file:///" + inputParams.pdata.Image
+            //     }
+            // }
+
+            QuickScaleableImage {
                 id: image
                 anchors.fill: parent
-                fillMode: Image.PreserveAspectFit
-                source: {
+                image.source: {
                     if (inputParams.pdata.Image === null || inputParams.pdata.Image === undefined) {
                         return ""
                     }
@@ -93,4 +94,9 @@ T_CVWindow {
             histogramsMax: outputParams.pdata.HistMax
         }
     }
+
+    onSliderMoved: function(value) {
+        image.scaleInCenter(value)
+    }
+    onFitInWindow: image.imageFitInView()
 }

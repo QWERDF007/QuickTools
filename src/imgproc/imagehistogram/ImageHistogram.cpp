@@ -5,13 +5,19 @@
 #include <QString>
 #include <QtQml>
 #include <chrono>
-#include <iostream>
 #include <vector>
 
 namespace quicktools::imgproc {
 
 using core::paramtypes::QuickToolParamRole;
 using core::paramtypes::QuickToolParamType;
+
+const QVariantList COLOR_SPACES
+{
+    "UNCHANGED",
+    "RGB",
+    "HSV",
+};
 
 ImageHistogram::ImageHistogram(QObject *parent)
     : core::AbstractCVTool(parent)
@@ -27,27 +33,38 @@ std::tuple<int, QString> ImageHistogram::run()
         return {-1, "输入/输出参数为空指针"};
     }
 
-    std::string image_path = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString().toLocal8Bit().toStdString();
-    auto        algorithm_start_time = std::chrono::high_resolution_clock::now();
+    std::string image_path
+        = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString().toLocal8Bit().toStdString();
+    auto algorithm_start_time = std::chrono::high_resolution_clock::now();
 
-    cv::Mat image = cv::imread(image_path, cv::IMREAD_UNCHANGED);
+    auto    temp_start_time = std::chrono::high_resolution_clock::now();
+    cv::Mat image           = cv::imread(image_path, cv::IMREAD_UNCHANGED);
+    auto    temp_end_time   = std::chrono::high_resolution_clock::now();
+    qInfo() << __FUNCTION__ << "read image time"
+            << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
     qInfo() << __FUNCTION__ << "image size" << image.rows << image.cols << image.channels();
+
+    temp_start_time = std::chrono::high_resolution_clock::now();
     std::vector<cv::Mat> chs;
     cv::split(image, chs);
+    temp_end_time = std::chrono::high_resolution_clock::now();
+    qInfo() << __FUNCTION__ << "split channels time"
+            << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
     int          hist_size[] = {255};
     float        range[]     = {0, 255};
     const float *ranges[]    = {range};
 
+    temp_start_time = std::chrono::high_resolution_clock::now();
     QList<QVariantList> hists_data;
-    QVariantList hists_min;
-    QVariantList hists_max;
+    QVariantList        hists_min;
+    QVariantList        hists_max;
     for (const cv::Mat &ch : chs)
     {
         cv::Mat hist;
         cv::calcHist(&ch, 1, 0, cv::noArray(), hist, 1, hist_size, ranges, true, false);
-//        cv::normalize(hist, hist, 0, 1, cv::NORM_MINMAX);
-        float min_value{std::numeric_limits<float>::max()};
-        float max_value{std::numeric_limits<float>::min()};
+        //        cv::normalize(hist, hist, 0, 1, cv::NORM_MINMAX);
+        float           min_value{std::numeric_limits<float>::max()};
+        float           max_value{std::numeric_limits<float>::min()};
         QList<QVariant> hist_data;
         float          *data_ptr = reinterpret_cast<float *>(hist.data);
         for (int i = 0; i < hist_size[0]; ++i)
@@ -62,6 +79,9 @@ std::tuple<int, QString> ImageHistogram::run()
         hists_min.append(min_value);
         hists_max.append(max_value);
     }
+    temp_end_time = std::chrono::high_resolution_clock::now();
+    qInfo() << __FUNCTION__ << "calc hist and append data time"
+            << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
 
     output_params->setData("Channels", image.channels());
@@ -69,6 +89,13 @@ std::tuple<int, QString> ImageHistogram::run()
     output_params->setData("HistMin", QVariant::fromValue(hists_min));
     output_params->setData("HistMax", QVariant::fromValue(hists_max));
     setAlgorithmTime(std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count());
+    temp_end_time = std::chrono::high_resolution_clock::now();
+    qInfo() << __FUNCTION__ << "setData time"
+            << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
+    qInfo() << __FUNCTION__ << "total time"
+            << std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now()
+                                                         - algorithm_start_time)
+                   .count();
     return {0, "运行成功"};
 }
 
@@ -76,8 +103,9 @@ int ImageHistogram::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addParam("Image", "图像", QuickToolParamType::ParamImageType, QVariant(), QVariant(), true, true, true, true);
-        input_params_->setIsInit(true);
+        input_params_->addParam("Image", "图像", QuickToolParamType::ParamImageType, QVariant(), QVariant(), true, true,
+                                true, true);
+        input_params_->addParam("ColorSpace", "色彩空间", QuickToolParamType::ParamComboBoxType, COLOR_SPACES[0], COLOR_SPACES, false, false, true, true);
     }
     return 0;
 }
@@ -86,11 +114,14 @@ int ImageHistogram::initOutputParams()
 {
     if (output_params_)
     {
-        output_params_->addParam("Channels", "图像通道数", QuickToolParamType::ParamIntType, QVariant(), QVariant(), false, true);
-        output_params_->addParam("Hist", "直方图", QuickToolParamType::ParamDouble2DArrayType, QVariant(), QVariant(), true, true);
-        output_params_->addParam("HistMin", "直方图最小值", QuickToolParamType::ParamDouble1DArrayType, QVariant(), QVariant(), true, true);
-        output_params_->addParam("HistMax", "直方图最大值", QuickToolParamType::ParamDouble1DArrayType, QVariant(), QVariant(), true, true);
-        output_params_->setIsInit(true);
+        output_params_->addParam("Channels", "图像通道数", QuickToolParamType::ParamIntType, QVariant(), QVariant(),
+                                 false, true);
+        output_params_->addParam("Hist", "直方图", QuickToolParamType::ParamDouble2DArrayType, QVariant(), QVariant(),
+                                 true, true);
+        output_params_->addParam("HistMin", "直方图最小值", QuickToolParamType::ParamDouble1DArrayType, QVariant(),
+                                 QVariant(), true, true);
+        output_params_->addParam("HistMax", "直方图最大值", QuickToolParamType::ParamDouble1DArrayType, QVariant(),
+                                 QVariant(), true, true);
     }
     return 0;
 }

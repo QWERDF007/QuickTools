@@ -13,10 +13,13 @@ Rectangle {
     property var activateItem
     property color toolbarColor: QuickColor.White
     property color toolbarBorderColor: QuickColor.WindowBackground
+    property color itemDisableColor: Qt.rgba(160/255,160/255,160/255,1)
+    signal sliderMoved(real value)
+    signal fitInWindow
 
     Rectangle {
         id: toolbar
-        color: toolbarColor
+        color: footer.enabled ? toolbarColor : itemDisableColor
         radius: 3
         border.width: 2
         border.color: toolbarBorderColor
@@ -55,19 +58,58 @@ Rectangle {
                 implicitWidth: 32
                 implicitHeight: 32
                 icon.source: "/icons/zoomout"
+                onClicked: {
+                    slider.decrease()
+                    footer.sliderMoved(slider.value)
+                }
             }
             Slider {
                 id: slider
                 implicitHeight: 12
                 implicitWidth: 100
-                from: 0
-                to: 1
+                from: 0.25
+                value: {
+                    if (activateItem === null || activateItem === undefined) {
+                        return 0
+                    }
+                    return activateItem.scale
+                }
+                stepSize: {
+                    if (value < 2) {
+                        return 0.1
+                    } else if (value < 10) {
+                        return 1
+                    } else {
+                        return 2
+                    }
+                }
+
+                to: 32
+                onMoved: {
+                    footer.sliderMoved(slider.value)
+                }
             }
 
             ToolButton {
                 implicitWidth: 32
                 implicitHeight: 32
                 icon.source: "/icons/zoomin"
+                onClicked: {
+                    slider.increase()
+                    footer.sliderMoved(slider.value)
+                }
+            }
+            ToolButton {
+                id: fitBtn
+                implicitWidth: 32
+                implicitHeight: 32
+                icon.source: "/icons/aspectratio"
+                onClicked: footer.fitInWindow()
+                ToolTip {
+                    text: qsTr("适应窗口大小")
+                    visible: fitBtn.hovered
+                    delay: 500
+                }
             }
             Label {
                 Layout.rightMargin: 5
