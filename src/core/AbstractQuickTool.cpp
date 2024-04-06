@@ -24,6 +24,7 @@ int AbstractQuickTool::exec()
     {
         return ret;
     }
+    emit started();
     auto start_time           = std::chrono::high_resolution_clock::now();
     const auto &[status, msg] = run();
     auto end_time             = std::chrono::high_resolution_clock::now();
@@ -88,7 +89,10 @@ int AbstractQuickTool::checkInputParams()
     }
     if (input_params_->empty() || !input_params_->isInit())
     {
-        return initInputParams();
+        int ret = initInputParams();
+        if (ret == 0)
+            input_params_->setIsInit(true);
+        return ret;
     }
     return 0;
 }
@@ -101,18 +105,21 @@ int AbstractQuickTool::checkOutputParams()
     }
     if (output_params_->empty() || !output_params_->isInit())
     {
-        return initOutputParams();
+        int ret = initOutputParams();
+        if (ret == 0)
+            output_params_->setIsInit(true);
+        return ret;
     }
     return 0;
 }
 
-AbstractQuickTool *QuickToolFactor::createQuickTool(int type) const
+AbstractQuickTool *QuickToolFactor::createQuickTool(int type, QObject *parent) const
 {
     auto found = tool_creators_.find(type);
     if (found != tool_creators_.end())
     {
         auto               callable   = found->second;
-        AbstractQuickTool *quick_tool = callable();
+        AbstractQuickTool *quick_tool = callable(parent);
         if (quick_tool)
         {
             quick_tool->init();

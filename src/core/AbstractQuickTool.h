@@ -90,6 +90,7 @@ signals:
     void inputParamsChanged();
     void outputParamsChanged();
     void nameChanged();
+    void started();
     void finished();
 };
 
@@ -128,7 +129,7 @@ class QUICKTOOLS_CORE_EXPORT QuickToolFactor : public QObject
     QML_SINGLETON
 
 public:
-    using AbstractQuickToolCreator = std::function<AbstractQuickTool *(void)>;
+    using AbstractQuickToolCreator = std::function<AbstractQuickTool *(QObject *)>;
 
     /**
      * @brief 获取单例实例的指针
@@ -156,7 +157,7 @@ public:
         return getInstance();
     }
 
-    Q_INVOKABLE AbstractQuickTool *createQuickTool(int type) const;
+    Q_INVOKABLE AbstractQuickTool *createQuickTool(int type, QObject *parent = nullptr) const;
 
     void registerQuickTool(int type, AbstractQuickToolCreator creator);
 
@@ -182,9 +183,9 @@ private:
 } // namespace quicktools::core
 
 #define REGISTER_CLASS(tool_type, ClassName)                                                               \
-    inline ClassName *create##ClassName()                                                                  \
+    inline ClassName *create##ClassName(QObject *parent = nullptr)                                         \
     {                                                                                                      \
-        return new ClassName;                                                                              \
+        return new ClassName(parent);                                                                      \
     }                                                                                                      \
     inline void register##ClassName()                                                                      \
     {                                                                                                      \
