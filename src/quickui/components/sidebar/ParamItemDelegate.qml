@@ -169,7 +169,7 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
-            ToolTip {
+            QuickToolTip {
                 visible: paramItemDelegate.paramTypeName !== "" && headerMouseArea.containsMouse
                 delay: 200
                 text: "参数类型: " + paramTypeName

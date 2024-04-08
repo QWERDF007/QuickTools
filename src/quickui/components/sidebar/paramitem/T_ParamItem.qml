@@ -38,7 +38,7 @@ Item {
             console.log("Click")
         }
     }
-    ToolTip {
+    QuickToolTip {
         id: tooltip
         visible: mouseArea.containsMouse && tooltipVisible
         delay: 500

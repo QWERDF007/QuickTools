@@ -48,7 +48,7 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
                 }
-                ToolTip{
+                QuickToolTip{
                     text: qsTr("图像大小 (宽x高)")
                     delay: 500
                     visible: imageSizeMouseArea.containsMouse
@@ -124,7 +124,7 @@ Rectangle {
                     footer.fitInWindow()
                 }
 
-                ToolTip {
+                QuickToolTip {
                     text: qsTr("适应窗口大小")
                     visible: fitBtn.hovered
                     delay: 500
