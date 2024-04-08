@@ -32,11 +32,11 @@ Item {
                 id: chartview
                 SplitView.fillWidth: true
                 SplitView.minimumHeight: 200
-                implicitHeight: parent.height / 3
+                implicitHeight: 400
                 legend.visible: false
                 antialiasing: true
 
-                ToolTip {
+                QuickToolTip {
                     id: tooltip
                     delay: 200
                     visible: false
