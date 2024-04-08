@@ -5,6 +5,8 @@
 namespace quicktools::core {
 
 QuickToolFactor *QuickToolFactor::instance_ = nullptr;
+QQmlEngine *QuickToolFactor::qmlEngine_ = nullptr;
+QJSEngine *QuickToolFactor::jsEngine_ = nullptr;
 
 AbstractQuickTool::AbstractQuickTool(QObject *parent)
     : QObject(parent)
@@ -70,6 +72,12 @@ bool AbstractQuickTool::setOutputParams(AbstractOutputParams *output_params)
     return false;
 }
 
+void AbstractQuickTool::setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+{
+    qmlEngine_ = qmlEngine;
+    jsEngine_ = jsEngine;
+}
+
 int AbstractQuickTool::checkParams()
 {
     int ret = checkInputParams();
@@ -123,6 +131,7 @@ AbstractQuickTool *QuickToolFactor::createQuickTool(int type, QObject *parent) c
         if (quick_tool)
         {
             quick_tool->init();
+            quick_tool->setEngine(qmlEngine_, jsEngine_);
         }
         return quick_tool;
     }

@@ -67,6 +67,8 @@ public:
         algorithm_time_ = algorithm_time;
     }
 
+    void setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+
 protected:
     virtual int initInputParams()  = 0;
     virtual int initOutputParams() = 0;
@@ -82,6 +84,9 @@ protected:
     double  algorithm_time_{0.};
     int     status_{0};
     QString msg_;
+
+    QQmlEngine *qmlEngine_{nullptr};
+    QJSEngine *jsEngine_{nullptr};
 
 private:
     Q_DISABLE_COPY(AbstractQuickTool)
@@ -152,14 +157,18 @@ public:
      */
     static QuickToolFactor *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
     {
-        Q_UNUSED(qmlEngine)
-        Q_UNUSED(jsEngine)
+        qmlEngine_ = qmlEngine;
+        jsEngine_ = jsEngine;
         return getInstance();
     }
 
     Q_INVOKABLE AbstractQuickTool *createQuickTool(int type, QObject *parent = nullptr) const;
 
     void registerQuickTool(int type, AbstractQuickToolCreator creator);
+
+protected:
+    static QQmlEngine *qmlEngine_;
+    static QJSEngine *jsEngine_;
 
 private:
     explicit QuickToolFactor(QObject *parent = nullptr)
