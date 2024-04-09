@@ -53,6 +53,7 @@ Item {
                 fitInView()
             }
         }
+        transformOrigin: Item.TopLeft
     }
 
     onWidthChanged: {
