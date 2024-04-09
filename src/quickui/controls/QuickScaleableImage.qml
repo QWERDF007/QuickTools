@@ -5,10 +5,10 @@ import QtQuick.Layouts
 Item {
     id: scaleableImage
     clip: true
-    // width: 200
-    // height: 200
-    implicitHeight: _image.implicitHeight // 不确定绑定Image的隐式宽高有没有问题
-    implicitWidth: _image.implicitWidth
+    width: 200
+    height: 200
+    // implicitHeight: _image.implicitHeight // 不确定绑定Image的隐式宽高有没有问题
+    // implicitWidth: _image.implicitWidth
 
     property alias image: _image
     property alias status: _image.status
