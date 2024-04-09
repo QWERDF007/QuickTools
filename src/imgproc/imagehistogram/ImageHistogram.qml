@@ -38,17 +38,6 @@ T_CVWindow {
             SplitView.minimumWidth: 160
             clip: true
 
-            // Image {
-            //     id: image
-            //     anchors.fill: parent
-            //     fillMode: Image.PreserveAspectFit
-            //     source: {
-            //         if (inputParams.pdata.Image === null || inputParams.pdata.Image === undefined) {
-            //             return ""
-            //         }
-            //         return "file:///" + inputParams.pdata.Image
-            //     }
-            // }
 
             QuickScaleableImage {
                 id: image

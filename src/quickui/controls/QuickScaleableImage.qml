@@ -5,11 +5,14 @@ import QtQuick.Layouts
 Item {
     id: scaleableImage
     clip: true
-    width: 200
-    height: 200
+    // width: 200
+    // height: 200
+    implicitHeight: _image.implicitHeight // 不确定绑定Image的隐式宽高有没有问题
+    implicitWidth: _image.implicitWidth
 
     property alias image: _image
     property alias status: _image.status
+    property alias source: _image.source
     property alias sourceSize: _image.sourceSize
     property bool imageDragEnable: false
     property real stepSize: {
@@ -35,6 +38,7 @@ Item {
 
     Image {
         id: _image
+        // asynchronous: true // 异步加载会导致自适应窗口出问题
         property real xOffset: Math.abs(width - paintedWidth) / 2 * scale
         property real yOffset: Math.abs(height - paintedHeight) / 2 * scale
         fillMode: Image.PreserveAspectFit
@@ -43,6 +47,11 @@ Item {
         }
         onYChanged: {
             updateImagePos()
+        }
+        onStatusChanged: {
+            if (_image.status === Image.Ready) {
+                fitInView()
+            }
         }
     }
 
@@ -181,7 +190,7 @@ Item {
      * @brief 图像适应窗口
      */
     function fitInView() {
-        if (_image.sourceSize.height === 0 || _image.sourceSize.width === 0)
+        if (!scaleableImage.isFitInView || _image.sourceSize.height === 0 || _image.sourceSize.width === 0)
             return
         scaleableImage.imageSourceScale = Math.min(scaleableImage.height / _image.sourceSize.height, scaleableImage.width / _image.sourceSize.width)
         // 缩放后的原点
