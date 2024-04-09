@@ -139,19 +139,19 @@ Item {
      * @param scale
      */
     function scaleInCenter(scale) {
-        var x = scaleableImage.width / 2
-        var y = scaleableImage.height / 2
-        // 将图像剧中
-        _image.x = x - _image.paintedWidth / 2
-        _image.y = y - _image.paintedHeight / 2
-        var scaleOrigin = mapToItem(_image, x, y)
-        // _image.scale = Math.min(Math.max(from * scaleableImage.imageSourceScale, scale), to * scaleableImage.imageSourceScale)
+        // 缩放后的原点
+        var scaleOrigin = mapToItem(_image, 0, 0)
         _image.scale = Math.min(Math.max(from, scale), to)
-        // 鼠标位置相对于缩放后图像的位置
+        var dx = (scaleableImage.width - _image.sourceSize.width * _image.scale) / 2
+        var dy = (scaleableImage.height - _image.sourceSize.height * _image.scale) / 2
         var pos = mapFromItem(_image, scaleOrigin)
-        //按照差值移动一下图，使得图看起来在鼠标位置缩放
-        _image.x -= pos.x - x
-        _image.y -= pos.y - y
+        // 按照差值移动一下图，使得图看起来在(0,0)处缩放
+        _image.x -= pos.x
+        _image.y -= pos.y
+        // 移动到窗口中央
+        _image.x -= scaledImagePos.x - dx
+        _image.y -= scaledImagePos.y - dy
+        // 不能将上述四条语句合并，因为 x/y 改变时会调用信号槽改变 scaledImagePos
     }
 
     /**
