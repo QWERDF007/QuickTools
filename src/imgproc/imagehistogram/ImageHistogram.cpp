@@ -88,6 +88,7 @@ std::tuple<int, QString> ImageHistogram::run()
             << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
 
+    temp_start_time = std::chrono::high_resolution_clock::now();
     output_params->setData("Channels", image.channels());
     output_params->setData("Hist", QVariant::fromValue(hists_data));
     output_params->setData("HistMin", QVariant::fromValue(hists_min));
