@@ -25,7 +25,7 @@ Item {
         }
     }
 
-    property real from: 0.25
+    property real from: 0.1
     property real to: 32
     property var scaledImagePos: mapFromItem(_image, 0, 0)
     property bool isFitInView: true

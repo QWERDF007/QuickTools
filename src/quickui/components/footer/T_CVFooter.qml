@@ -70,7 +70,7 @@ Rectangle {
                 id: slider
                 implicitHeight: 12
                 implicitWidth: 100
-                from: 0.25
+                from: 0.1
                 value: {
                     if (activateItem === null || activateItem === undefined) {
                         return 0
