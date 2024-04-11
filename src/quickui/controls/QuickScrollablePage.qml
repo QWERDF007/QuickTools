@@ -17,7 +17,7 @@ Item {
         contentWidth: parent.width
         contentHeight: container.height
         boundsBehavior: Flickable.StopAtBounds
-        ScrollBar.vertical: ScrollBar {
+        ScrollBar.vertical: QuickScrollBar {
             anchors.right: flickview.right
             anchors.rightMargin: 2
         }

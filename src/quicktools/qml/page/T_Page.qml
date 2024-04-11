@@ -6,6 +6,7 @@ import QuickTools.ui
 
 import "../component"
 
+// 工具卡片列表页面
 QuickScrollablePage {
     id: page
     property ToolsList items
@@ -24,7 +25,7 @@ QuickScrollablePage {
         }
     }
 
-    Component {
+    Component { // 工具卡片
         id:com_item
         Item{
             property string desc: modelData.desc

@@ -10,37 +10,22 @@ import "../components/sidebar"
 import "../components/footer"
 
 
-ApplicationWindow {
+T_Window {
     id: window
     width: 1440
     height: 720
-    visible: true
-    color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
-    property int winId
 
     default property alias content: container.data
-
-    property QuickTool quicktool
-    property InputParams inputParams
-    property OutputParams outputParams
     property var activateItem
-    property bool enable: true
     property alias squareChecked: _header.squareChecked
     property alias circleChecked: _header.circleChecked
     property alias polygonChecked: _header.polygonChecked
+
+    property CVInputParams inputParams
+    property CVOutputParams outputParams
+
     signal sliderMoved(real value)
     signal fitInWindow
-
-    Connections {
-        target: quicktool
-        function onStarted() {
-            window.enable = false
-        }
-
-        function onFinished() {
-            window.enable = true
-        }
-    }
 
     header: T_CVHeader {
         id: _header
@@ -85,8 +70,5 @@ ApplicationWindow {
             window.sliderMoved(value)
         }
         onFitInWindow: window.fitInWindow()
-    }
-    onClosing: function(close) {
-        QuickApp.closeWindow(window)
     }
 }

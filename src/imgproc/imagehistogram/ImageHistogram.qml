@@ -10,9 +10,6 @@ import QuickTools.ui
 
 T_CVWindow {
     id: imageHistogramWin
-    width: 1080
-    height: 720
-    visible: true
 
     quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram, imageHistogramWin)
     inputParams: quicktool.inputParams
