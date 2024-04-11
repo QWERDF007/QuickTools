@@ -25,7 +25,7 @@ Item {
     width: d.isVertical ? spacing*2+size : d.parentWidth
     height: d.isVertical ? d.parentHeight : spacing*2+size
     Rectangle{
-        color: Qt.rgba(210/255,210/255,210/255,1)
+        color: QuickColor.Divider
         width: d.isVertical ? size : control.width
         height: d.isVertical ? control.height : size
         anchors.centerIn: parent

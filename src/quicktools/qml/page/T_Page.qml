@@ -8,7 +8,7 @@ import "../component"
 
 QuickScrollablePage {
     id: page
-    property ToolsListItem items
+    property ToolsList items
 
     Item {
         id: d
@@ -30,7 +30,7 @@ QuickScrollablePage {
             property string desc: modelData.desc
             width: 320
             height: 120
-            QuickArea { // 带颜色的卡片区域
+            QuickFrame { // 带颜色的卡片区域
                 radius: 8
                 width: 300
                 height: 100
