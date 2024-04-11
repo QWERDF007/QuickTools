@@ -25,13 +25,13 @@ QuickPopup {
     signal negativeClicked
     signal positiveClicked
     implicitWidth: 400
-    implicitHeight: layoutContent.height
+    implicitHeight: layout_content.height
     focus: true
     Component{
-        id:comMessage
+        id:com_message
         Flickable{
-            id:srollMessage
-            contentHeight: textMessage.height
+            id:sroll_message
+            contentHeight: text_message.height
             contentWidth: width
             clip: true
             boundsBehavior:Flickable.StopAtBounds
