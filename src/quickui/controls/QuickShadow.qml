@@ -3,11 +3,11 @@ import QtQuick.Controls
 
 Item {
     //高性能阴影！！！比DropShadow阴影性能高出数倍！！！
+    property color color: "#999999"
+    property int elevation: 5
+    property int radius: 4
     id:control
     anchors.fill: parent
-    property color color: "#999999"
-    property int elevation: 6
-    property int radius: 4
     Repeater{
         model: elevation
         Rectangle{

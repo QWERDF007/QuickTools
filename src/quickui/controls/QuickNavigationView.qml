@@ -3,37 +3,66 @@ import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
-
 import QuickTools.ui
 
 Item {
-    id: control
+    property url logo
+    property string title: ""
     property QuickObject items
     property QuickObject footerItems
+    // property int displayMode: FluNavigationViewType.Auto
     property Component autoSuggestBox
-
-    property int navTopMargin: 0
+    property Component actionItem
+    property int topPadding: 0
+    // property int pageMode: FluNavigationViewType.Stack
+//    property QuickMenu navItemRightMenu
+//    property QuickMenu navItemExpanderRightMenu
     property int navCompactWidth: 50
+    property int navTopMargin: 0
     property int cellHeight: 38
     property int cellWidth: 300
-
+    property bool hideNavAppBar: false
+//    property alias buttonMenu: btn_menu
+//    property alias buttonBack: btn_back
+//    property alias imageLogo: image_logo
+    signal logoClicked
+    id:control
     Item {
         id:d
+        property bool animDisabled:false
+        property var stackItems: []
+//        property int displayMode: control.displayMode
         property bool enableNavigationPanel: false
+        property bool isCompact: false
+        property bool isMinimal: false
+        // property bool isCompact: d.displayMode === FluNavigationViewType.Compact
+        // property bool isMinimal: d.displayMode === FluNavigationViewType.Minimal
+        // property bool isCompactAndPanel: d.displayMode === FluNavigationViewType.Compact && d.enableNavigationPanel
+        // property bool isCompactAndNotPanel:d.displayMode === FluNavigationViewType.Compact && !d.enableNavigationPanel
+        // property bool isMinimalAndPanel: d.displayMode === FluNavigationViewType.Minimal && d.enableNavigationPanel
         property color itemDisableColor: Qt.rgba(160/255,160/255,160/255,1)
-
+        // onIsCompactAndNotPanelChanged: {
+        //     collapseAll()
+        // }
         function handleItems(){
             var _idx = 0
             var data = []
+            var comEmpty = Qt.createComponent("QuickPaneItemEmpty.qml");
             if(items){
                 for(var i=0;i<items.children.length;i++){
                     var item = items.children[i]
+                    if(item.visible !== true){
+                        continue
+                    }
                     item._idx = _idx
                     data.push(item)
                     _idx++
                     if(item instanceof QuickPaneItemExpander){
                         for(var j=0;j<item.children.length;j++){
                             var itemChild = item.children[j]
+                            if(itemChild.visible !== true){
+                                continue
+                            }
                             itemChild._parent = item
                             itemChild._idx = _idx
                             data.push(itemChild)
@@ -42,25 +71,77 @@ Item {
                     }
                 }
                 if(footerItems){
-                    var comEmpty = Qt.createComponent("QuickPaneItemEmpty.qml");
                     for(var k=0;k<footerItems.children.length;k++){
                         var itemFooter = footerItems.children[k]
-                        if (comEmpty.status === Component.Ready) {
-                            var objEmpty = comEmpty.createObject(items,{_idx:_idx});
-                            itemFooter._idx = _idx;
-                            data.push(objEmpty)
-                            _idx++
+                        if(itemFooter.visible !== true){
+                            continue
                         }
+                        var objEmpty = comEmpty.createObject(items,{_idx:_idx});
+                        itemFooter._idx = _idx;
+                        data.push(objEmpty)
+                        _idx++
                     }
                 }
             }
             return data
         }
+        function handleFooterItems(){
+            var data = []
+            if(footerItems){
+                for(var i=0;i<footerItems.children.length;i++){
+                    var item = footerItems.children[i]
+                    if(item.visible !== true){
+                        continue
+                    }
+                    data.push(item)
+                }
+            }
+            return data;
+        }
+    }
+    //    Component.onCompleted: {
+    //        d.displayMode = Qt.binding(function(){
+    //            if(control.displayMode !==FluNavigationViewType.Auto){
+    //                return control.displayMode
+    //            }
+    //            if(control.width<=700){
+    //                return FluNavigationViewType.Minimal
+    //            }else if(control.width<=900){
+    //                return FluNavigationViewType.Compact
+    //            }else{
+    //                return FluNavigationViewType.Open
+    //            }
+    //        })
+    //        timer_anim_delay.restart()
+    //    }
+    //    Timer{
+    //        id:timer_anim_delay
+    //        interval: 200
+    //        onTriggered: {
+    //            d.animDisabled = true
+    //        }
+    //    }
+    //    Connections{
+    //        target: d
+    //        function onDisplayModeChanged(){
+    //            if(d.displayMode === FluNavigationViewType.Compact){
+    //                collapseAll()
+    //            }
+    //            d.enableNavigationPanel = false
+    //            if(loader_auto_suggest_box.item){
+    //                loader_auto_suggest_box.item.focus = false
+    //            }
+    //        }
+    //    }
+    Component{ // 空项
+        id:com_panel_item_empty
+        Item{
+            visible: false
+        }
     }
 
 
-    // 分割线
-    Component{
+    Component{ // 分割线
         id:com_panel_item_separator
         QuickDivider{
             width: layout_list.width
@@ -81,9 +162,34 @@ Item {
             }
         }
     }
-
-    // 导航展开列表 expander
     Component{
+        id:com_panel_item_header
+        Item{
+            height: {
+                if(model._parent){
+                    return model._parent.isExpand ? control.cellHeight : 0
+                }
+                return  control.cellHeight
+            }
+            Behavior on height {
+                enabled: true // FluTheme.animationEnabled && d.animDisabled
+                NumberAnimation{
+                    duration: 83
+                }
+            }
+            width: layout_list.width
+            QuickText{
+                text:model.title
+                font: QuickFont.BodyStrong
+                anchors{
+                    bottom: parent.bottom
+                    left:parent.left
+                    leftMargin: 10
+                }
+            }
+        }
+    }
+    Component{ // 导航展开列表 expander
         id:com_panel_item_expander
         Item{
             height: control.cellHeight
@@ -101,11 +207,11 @@ Item {
                     leftMargin: 6
                     rightMargin: 6
                 }
-//                FluTooltip {
-//                    text: model.title
-//                    visible: item_control.hovered && model.title && d.isCompact
-//                    delay: 800
-//                }
+                QuickToolTip {
+                    text: model.title
+                    visible: false // item_control.hovered && model.title && d.isCompactAndNotPanel
+                    delay: 800
+                }
                 MouseArea { // 右键菜单
                     anchors.fill: parent
                     acceptedButtons: Qt.RightButton
@@ -126,7 +232,7 @@ Item {
                     model.isExpand = !model.isExpand
                 }
                 Rectangle { // 右上角提示圆点
-                    color: Qt.rgba(255/255,77/255,79/255,1)
+                    color:Qt.rgba(255/255,77/255,79/255,1)
                     width: 10
                     height: 10
                     radius: 5
@@ -170,6 +276,9 @@ Item {
                             }
                             for(var i=0;i<model.children.length;i++){
                                 var item = model.children[i]
+                                if(item.visible !== true){
+                                    continue
+                                }
                                 if(item._idx === nav_list.currentIndex && !model.isExpand){
                                     return true
                                 }
@@ -310,7 +419,7 @@ Item {
                         }
                         Connections{
                             id:item_connection_edit_focus
-                            ignoreUnknownSignals: true
+                            ignoreUnknownSignals:true
                             function onActiveFocusChanged(focus){
                                 if(focus === false){
                                     model.showEdit = false
@@ -324,15 +433,13 @@ Item {
                     }
                 }
             }
-
         }
     }
-
-    // 导航项 item
-    Component{
+    Component{ // 导航项 item
         id:com_panel_item
         Item{
             Behavior on height {
+                enabled: true // FluTheme.animationEnabled && d.animDisabled
                 NumberAnimation{
                     duration: 167
                     easing.type: Easing.OutCubic
@@ -364,12 +471,12 @@ Item {
                     leftMargin: 6
                     rightMargin: 6
                 }
-//                FluTooltip {
-//                    text: model.title
-//                    visible: item_control.hovered && model.title && d.isCompact
-//                    delay: 800
-//                }
-                onClicked: {
+                QuickToolTip {
+                    text: model.title
+                    visible: false // item_control.hovered && model.title && d.isCompact
+                    delay: 800
+                }
+                onClicked:{
                     if(type === 0){
                         if(model.onTapListener){
                             model.onTapListener()
@@ -388,8 +495,8 @@ Item {
                         }
                     }
                 }
-                MouseArea {
-                    id: item_mouse
+                MouseArea{
+                    id:item_mouse
                     anchors.fill: parent
                     acceptedButtons: Qt.RightButton | Qt.LeftButton
                     onClicked:
@@ -546,7 +653,7 @@ Item {
                             verticalCenterOffset: isDot ? -8 : 0
                         }
                         sourceComponent: {
-                            if(model&&model.infoBadge) {
+                            if(model&&model.infoBadge){
                                 return model.infoBadge
                             }
                             return undefined
@@ -557,25 +664,194 @@ Item {
         }
     }
 
+//    Item {
+//        id:nav_app_bar
+//        width: parent.width
+//        height: visible ? 40 : 0
+//        anchors{
+//            top: parent.top
+//            topMargin: control.topPadding
+//        }
+//        visible: !control.hideNavAppBar
+//        z:999
+//        RowLayout{
+//            height:parent.height
+//            spacing: 0
+//            FluIconButton{
+//                id:btn_back
+//                iconSource: FluentIcons.ChromeBack
+//                Layout.leftMargin: 5
+//                Layout.alignment: Qt.AlignVCenter
+//                disabled:  {
+//                    return d.stackItems.length <= 1
+//                }
+//                iconSize: 13
+//                onClicked: {
+//                    d.stackItems = d.stackItems.slice(0, -1)
+//                    var item = d.stackItems[d.stackItems.length-1]
+//                    if(item._idx<(nav_list.count - layout_footer.count)){
+//                        layout_footer.currentIndex = -1
+//                    }else{
+//                        layout_footer.currentIndex = item._idx-(nav_list.count-layout_footer.count)
+//                    }
+//                    nav_list.currentIndex = item._idx
+//                    if(pageMode === FluNavigationViewType.Stack){
+//                        var nav_stack = loader_content.item.navStack()
+//                        var nav_stack2 = loader_content.item.navStack2()
+//                        nav_stack.pop()
+//                        if(nav_stack.currentItem.launchMode === FluPageType.SingleInstance){
+//                            var url = nav_stack.currentItem.url
+//                            var pageIndex = -1
+//                            for(var i=0;i<nav_stack2.children.length;i++){
+//                                var obj =  nav_stack2.children[i]
+//                                if(obj.url === url){
+//                                    pageIndex = i
+//                                    break
+//                                }
+//                            }
+//                            if(pageIndex !== -1){
+//                                nav_stack2.currentIndex = pageIndex
+//                            }
+//                        }
+//                    }else if(pageMode === FluNavigationViewType.NoStack){
+//                        loader_content.setSource(item._ext.url,item._ext.argument)
+//                    }
+//                }
+//            }
+//            FluIconButton{
+//                id:btn_menu
+//                iconSource: FluentIcons.GlobalNavButton
+//                iconSize: 15
+//                Layout.preferredWidth: d.isMinimal ? 30 : 0
+//                Layout.preferredHeight: 30
+//                Layout.alignment: Qt.AlignVCenter
+//                clip: true
+//                onClicked: {
+//                    d.enableNavigationPanel = !d.enableNavigationPanel
+//                }
+//                visible: opacity
+//                opacity: d.isMinimal
+//                Behavior on opacity{
+//                    enabled: FluTheme.animationEnabled && d.animDisabled
+//                    NumberAnimation{
+//                        duration: 83
+//                    }
+//                }
+//                Behavior on Layout.preferredWidth {
+//                    enabled: FluTheme.animationEnabled && d.animDisabled
+//                    NumberAnimation{
+//                        duration: 167
+//                        easing.type: Easing.OutCubic
+//                    }
+//                }
+//            }
+//            Image{
+//                id:image_logo
+//                Layout.preferredHeight: 20
+//                Layout.preferredWidth: 20
+//                source: control.logo
+//                Layout.leftMargin: {
+//                    if(btn_menu.visible){
+//                        return 12
+//                    }
+//                    return 5
+//                }
+//                sourceSize: Qt.size(40,40)
+//                Layout.alignment: Qt.AlignVCenter
+//                MouseArea{
+//                    anchors.fill: parent
+//                    onClicked: {
+//                        logoClicked()
+//                    }
+//                }
+//            }
+//            FluText{
+//                Layout.alignment: Qt.AlignVCenter
+//                text:control.title
+//                Layout.leftMargin: 12
+//                font: FluTextStyle.Body
+//            }
+//        }
+//        Item{
+//            anchors.right: parent.right
+//            height: parent.height
+//            width: {
+//                if(loader_action.item){
+//                    return loader_action.item.width
+//                }
+//                return 0
+//            }
+//            FluLoader{
+//                id:loader_action
+//                anchors.centerIn: parent
+//                sourceComponent: actionItem
+//            }
+//        }
+//    }
+
+//    Component{
+//        id:com_stack_content
+//        Item{
+//            StackView{
+//                id:nav_stack
+//                anchors.fill: parent
+//                clip: true
+//                visible: !nav_stack2.visible
+//                popEnter : Transition{}
+//                popExit : Transition {}
+//                pushEnter: Transition {}
+//                pushExit : Transition{}
+//                replaceEnter : Transition{}
+//                replaceExit : Transition{}
+//            }
+//            StackLayout{
+//                id:nav_stack2
+//                anchors.fill: nav_stack
+//                clip: true
+//                visible: {
+//                    if(!nav_stack.currentItem){
+//                        return false
+//                    }
+//                    return FluPageType.SingleInstance === nav_stack.currentItem.launchMode
+//                }
+//            }
+//            function navStack(){
+//                return nav_stack
+//            }
+//            function navStack2(){
+//                return nav_stack2
+//            }
+//        }
+//    }
 
     QuickLoader { // 导航项具体页面内容加载
         id:loader_content
         anchors{
             left: parent.left
-//            top: nav_app_bar.bottom
-            top: parent.top
+            top: parent.top // nav_app_bar.bottom
             right: parent.right
             bottom: parent.bottom
             leftMargin: control.cellWidth
         }
         Behavior on anchors.leftMargin {
+            enabled: true // FluTheme.animationEnabled && d.animDisabled
             NumberAnimation{
                 duration: 167
                 easing.type: Easing.OutCubic
             }
         }
-//        sourceComponent: com_stack_content
+        // sourceComponent: com_stack_content
     }
+    // MouseArea{
+    //     anchors.fill: parent
+    //     visible: d.isMinimalAndPanel||d.isCompactAndPanel
+    //     hoverEnabled: true
+    //     onWheel: {
+    //     }
+    //     onClicked: {
+    //         d.enableNavigationPanel = false
+    //     }
+    // }
 
     Rectangle { // 导航页面布局
         id:layout_list
@@ -585,14 +861,69 @@ Item {
             topMargin: control.navTopMargin
             bottom: parent.bottom
         }
+        border.color: Qt.rgba(226/255,230/255,234/255,1)
+        border.width: 0
         color: "transparent"
+        QuickShadow{
+            visible: false // d.isMinimal || d.isCompactAndPanel
+            radius: 0
+        }
+        x: visible ? 0 : -width
+        Behavior on width {
+            enabled: true // FluTheme.animationEnabled && d.animDisabled
+            NumberAnimation{
+                duration: 167
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on x {
+            enabled: true // FluTheme.animationEnabled && d.animDisabled
+            NumberAnimation{
+                duration: 167
+                easing.type: Easing.OutCubic
+            }
+        }
+        visible: true
 
         Item { // header 组件 (搜索栏)
             id:layout_header
             width: layout_list.width
             clip: true
+            y: control.topPadding // nav_app_bar.height+control.topPadding
+            height: autoSuggestBox ? 38 : 0
+            QuickLoader {
+                id:loader_auto_suggest_box
+                sourceComponent: autoSuggestBox
+                anchors{
+                    left: parent.left
+                    right: parent.right
+                    leftMargin: 6
+                    rightMargin: 6
+                    verticalCenter: parent.verticalCenter
+                }
+                visible: true
+            }
+            QuickTextIconButton{
+                visible: false
+                anchors{
+                    fill: parent
+                    leftMargin: 6
+                    rightMargin: 6
+                    topMargin: 2
+                    bottomMargin: 2
+                }
+                iconSize: 15
+                iconSource: {
+                    if(loader_auto_suggest_box.item){
+                        return loader_auto_suggest_box.item.autoSuggestBoxReplacement
+                    }
+                    return 0
+                }
+                onClicked: {
+                    d.enableNavigationPanel = !d.enableNavigationPanel
+                }
+            }
         }
-
         Flickable { // content
             id:layout_flickable
             anchors{
@@ -600,12 +931,12 @@ Item {
                 topMargin: 6
                 left: parent.left
                 right: parent.right
-                bottom: parent.bottom
+                bottom: parent.bottom // layout_footer.top
             }
             boundsBehavior: ListView.StopAtBounds
             clip: true
             contentHeight: nav_list.contentHeight
-//            ScrollBar.vertical: FluScrollBar {}
+            ScrollBar.vertical: QuickScrollBar {}
             ListView{
                 id:nav_list
                 displaced: Transition {
@@ -616,7 +947,7 @@ Item {
                 }
                 anchors.fill: parent
                 interactive: false
-                model: d.handleItems()
+                model:d.handleItems()
                 boundsBehavior: ListView.StopAtBounds
                 highlightMoveDuration: 167
                 highlight: Item{
@@ -664,7 +995,7 @@ Item {
         }
 
         ListView { // footer
-            id: layout_footer
+            id:layout_footer
             clip: true
             width: layout_list.width
             height: childrenRect.height
@@ -672,11 +1003,7 @@ Item {
             interactive: false
             boundsBehavior: ListView.StopAtBounds
             currentIndex: -1
-            model: {
-                if(footerItems){
-                    return footerItems.children
-                }
-            }
+            model: d.handleFooterItems()
             highlightMoveDuration: 150
             highlight: Item{
                 clip: true
@@ -709,11 +1036,8 @@ Item {
                 }
             }
         }
-
     }
-
-    // 展开列表的子项显示
-    Popup{
+    Popup{ // 展开列表的子项显示
         property var childModel
         id: control_popup
         enter: Transition {
@@ -724,7 +1048,14 @@ Item {
                 duration: 83
             }
         }
-
+        // Connections{
+        //     target: d
+        //     function onIsCompactChanged(){
+        //         if(!d.isCompact){
+        //             control_popup.close()
+        //         }
+        //     }
+        // }
         padding: 0
         focus: true
         contentItem: Item{
@@ -735,7 +1066,7 @@ Item {
                 currentIndex: -1
                 model: control_popup.childModel
                 boundsBehavior: ListView.StopAtBounds
-//                ScrollBar.vertical: FluScrollBar {}
+                ScrollBar.vertical: QuickScrollBar {}
                 delegate:Button{
                     id:item_button
                     width: 180
@@ -794,9 +1125,9 @@ Item {
         background: Rectangle{
             implicitWidth: 180
             radius: [4,4,4,4]
-//            FluShadow{
-//                radius: 4
-//            }
+            QuickShadow{
+                radius: 4
+            }
             color: Qt.rgba(248/255,250/255,253/255,1)
         }
         function showPopup(pos,height,model){
@@ -807,23 +1138,50 @@ Item {
             control_popup.open()
         }
     }
-
-    function setCurrentIndex(index){
-        nav_list.currentIndex = index
-        var item = nav_list.model[index]
-        if(item instanceof QuickPaneItem){
-            item.tap()
+    QuickLoader{
+        property var modelData
+        id:loader_item_menu
+    }
+    Connections{
+        id:connection_item_menu
+        function onVisibleChanged(visible){
+            if(target.visible === false){
+                loader_item_menu.sourceComponent = undefined
+            }
         }
     }
-
+    Component{
+        id:com_placeholder
+        Item{
+            property int launchMode: FluPageType.SingleInstance
+            property string url
+        }
+    }
+    function collapseAll(){
+        for(var i=0;i<nav_list.model.length;i++){
+            var item = nav_list.model[i]
+            if(item instanceof QuickPaneItemExpander){
+                item.isExpand = false
+            }
+        }
+    }
+    function setCurrentIndex(index){
+        var item = nav_list.model[index]
+        if(item.url){
+            nav_list.currentIndex = index
+            if(item instanceof QuickPaneItem){
+                item.tap()
+            }
+        }else{
+            item.onTapListener()
+        }
+    }
     function getItems(){
         return nav_list.model
     }
-
     function getCurrentIndex(){
         return nav_list.currentIndex
     }
-
     function getCurrentUrl(){
         return loader_content.source.toString()
     }
@@ -839,5 +1197,20 @@ Item {
         }
         noStackPush()
     }
-
+    function startPageByItem(data){
+        var items = getItems()
+        for(var i=0;i<items.length;i++){
+            var item =  items[i]
+            if(item.key === data.key){
+                if(getCurrentIndex() === i){
+                    return
+                }
+                setCurrentIndex(i)
+                if(item._parent){
+                    item._parent.isExpand = true
+                }
+                return
+            }
+        }
+    }
 }

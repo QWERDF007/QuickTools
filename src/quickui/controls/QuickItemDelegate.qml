@@ -1,9 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Templates as T
-
 import QuickTools.ui
-
 
 T.ItemDelegate {
     id: control
@@ -19,12 +17,7 @@ T.ItemDelegate {
     contentItem: QuickText {
         text: control.text
         font: control.font
-        color:{
-            if(control.down){
-                return QuickColor.Grey120
-            }
-            return QuickColor.Grey220
-        }
+        color: control.down ? QuickColor.Grey120 : QuickColor.Grey220
     }
     background: Rectangle {
         implicitWidth: 100

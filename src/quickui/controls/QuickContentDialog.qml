@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Window
-
 import QuickTools.ui
 
 QuickPopup {
@@ -37,10 +36,10 @@ QuickPopup {
             clip: true
             boundsBehavior:Flickable.StopAtBounds
             width: parent.width
-            height: message === "" ? 0 : Math.min(textMessage.height,300)
-            ScrollBar.vertical: ScrollBar {}
+            height: message === "" ? 0 : Math.min(text_message.height,300)
+            ScrollBar.vertical: QuickScrollBar {}
             QuickText { // 消息
-                id:textMessage
+                id:text_message
                 font: QuickFont.Body
                 wrapMode: Text.WrapAnywhere
                 text:message
@@ -53,16 +52,16 @@ QuickPopup {
         }
     }
     Rectangle { // 内容
-        id:layoutContent
+        id:layout_content
         width: parent.width
-        height: layoutColumn.childrenRect.height
+        height: layout_column.childrenRect.height
         color: 'transparent'
         radius:5
         ColumnLayout{
-            id: layoutColumn
+            id:layout_column
             width: parent.width
             QuickText { // 标题
-                id: textTitle
+                id:text_title
                 font: QuickFont.Title
                 text:title
                 topPadding: 20
@@ -71,12 +70,12 @@ QuickPopup {
                 wrapMode: Text.WrapAnywhere
             }
             QuickLoader { // 加载消息组件
-                sourceComponent: comMessage
+                sourceComponent: com_message
                 Layout.fillWidth: true
                 Layout.preferredHeight: status===Loader.Ready ? item.height : 0
             }
             QuickLoader { // 加载内容
-                sourceComponent: control.visible ? control.contentDelegate : undefined
+                sourceComponent:control.visible ? control.contentDelegate : undefined
                 Layout.fillWidth: true
                 onStatusChanged: {
                     if(status===Loader.Ready){
@@ -87,12 +86,12 @@ QuickPopup {
                 }
             }
             Rectangle { // 操作按钮布局
-                id:layoutActions
+                id:layout_actions
                 Layout.fillWidth: true
                 Layout.preferredHeight: 60
                 radius: 5
                 color: Qt.rgba(243/255,243/255,243/255,1)
-                RowLayout {
+                RowLayout{
                     anchors
                     {
                         centerIn: parent
@@ -104,7 +103,7 @@ QuickPopup {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         QuickButton { // 关闭按钮
-                            id:neutralBtn
+                            id:neutral_btn
                             visible: control.buttonFlags&QuickDialogButtonFlag.NeutralButton
                             text: neutralText
                             width: parent.width
@@ -123,7 +122,7 @@ QuickPopup {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         QuickButton { // 取消按钮
-                            id:negativeBtn
+                            id:negative_btn
                             visible: control.buttonFlags&QuickDialogButtonFlag.NegativeButton
                             width: parent.width
                             anchors.centerIn: parent

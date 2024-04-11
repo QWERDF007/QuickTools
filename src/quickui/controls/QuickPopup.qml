@@ -10,7 +10,7 @@ Popup {
     parent: Overlay.overlay
     x: Math.round((d.parentWidth - width) / 2)
     y: Math.round((d.parentHeight - height) / 2)
-    closePolicy: Popup.CloseOnEscape
+    closePolicy: Popup.NoAutoClose
     enter: Transition {
         NumberAnimation {
             property: "opacity"
@@ -29,8 +29,7 @@ Popup {
         }
     }
     background: Rectangle {
-        // radius: [5,5,5,5]
-        radius: 5
+        radius: [5,5,5,5]
         color: Qt.rgba(1,1,1,1)
         QuickShadow{
             radius: 5

@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Basic
-
 import QuickTools.ui
 
 Button {
@@ -10,6 +9,7 @@ Button {
     property color normalColor: Qt.rgba(254/255,254/255,254/255,1)
     property color hoverColor:  Qt.rgba(246/255,246/255,246/255,1)
     property color disableColor: Qt.rgba(244/255,244/255,244/255,1)
+    property color dividerColor: Qt.rgba(233/255,233/255,233/255,1)
     property color textColor: {
         if(!enabled){
             return Qt.rgba(160/255,160/255,160/255,1)
@@ -29,18 +29,17 @@ Button {
     horizontalPadding:12
     font: QuickFont.Body
     focusPolicy:Qt.TabFocus
-    background: Rectangle{
-        implicitWidth: 28
-        implicitHeight: 28
-        border.color: "#DFDFDF"
-        border.width: 1
+    background: QuickControlBackground {
+        implicitWidth: 30
+        implicitHeight: 30
         radius: 4
-        color:{
+        color: {
             if(!enabled){
                 return disableColor
             }
             return hovered ? hoverColor :normalColor
         }
+        shadow: !pressed && enabled
         QuickFocusRectangle {
             visible: control.activeFocus
             radius:4

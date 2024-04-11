@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 import QtQuick.Templates as T
-
 import QuickTools.ui
 
 T.ComboBox {
@@ -134,7 +133,7 @@ T.ComboBox {
             }
         }
         background: Rectangle{
-            color:Qt.rgba(249/255,249/255,249/255,1)
+            color: Qt.rgba(249/255,249/255,249/255,1)
             border.color: Qt.rgba(226/255,229/255,234/255,1)
             border.width: 1
             radius: 5
