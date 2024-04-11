@@ -23,6 +23,8 @@ class QuickColor : public QObject
     Q_PROPERTY_AUTO(QColor, ItemPress)
     Q_PROPERTY_AUTO(QColor, ItemCheck)
 
+    Q_PROPERTY_AUTO(QColor, Divider)
+
     Q_PROPERTY_AUTO(QColor, Transparent)
     Q_PROPERTY_AUTO(QColor, Black)
     Q_PROPERTY_AUTO(QColor, White)

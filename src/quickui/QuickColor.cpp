@@ -33,6 +33,8 @@ QuickColor::QuickColor(QObject *parent)
     ItemPress(QColor(0, 0, 0, 15)); // 255 * 0.06
     ItemCheck(QColor(0, 0, 0, 22)); // 255 * 0.09
 
+    Divider(QColor(210, 210, 210, 255));
+
     Transparent(QColor(0, 0, 0, 0));
     Black(QColor(0, 0, 0));
     White(QColor(255, 255, 255));
