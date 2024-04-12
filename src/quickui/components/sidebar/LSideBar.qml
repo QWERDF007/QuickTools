@@ -25,7 +25,7 @@ Rectangle {
             width: 64
             Layout.fillHeight: true
         }
-        Rectangle {
+        Rectangle { // 分割线
             width: 1
             Layout.fillHeight: true
             color: lsidebar.backgroundColor

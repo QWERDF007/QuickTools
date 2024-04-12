@@ -58,6 +58,7 @@ QuickObject {
     QuickPaneItemExpander {
         title: "未知"
         iconVisible: true
+        disabled: true
         icon: QuickFontIcon.CheckboxComposite
         QuickPaneItem {
             title: "AAA"

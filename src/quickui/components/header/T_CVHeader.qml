@@ -8,14 +8,14 @@ Rectangle {
     id: header
     width: 200
     height: 40
-
+    
     property string toolTitle: qsTr("工具名称")
     property alias squareChecked: squareBtn.checked
     property alias circleChecked: circleBtn.checked
     property alias polygonChecked: polygonBtn.checked
     property color toolbarColor: QuickColor.White
     property color toolbarBorderColor: QuickColor.WindowBackground
-    property color itemDisableColor: Qt.rgba(160/255,160/255,160/255,1)
+    property color itemDisableColor: QuickColor.Grey50
     signal startBtnClicked
 
     QuickText {
@@ -40,7 +40,7 @@ Rectangle {
         RowLayout {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 1
-            ToolButton {
+            QuickToolButton {
                 implicitWidth: 32
                 implicitHeight: 32
                 icon.source: "/icons/play"
@@ -56,7 +56,8 @@ Rectangle {
 
             RowLayout {
                 id: btnRowLayout
-                ToolButton {
+                spacing: 0
+                QuickToolButton {
                     id: squareBtn
                     enabled: header.enabled
                     checkable: true
@@ -68,7 +69,7 @@ Rectangle {
                         polygonBtn.checked = false
                     }
                 }
-                ToolButton {
+                QuickToolButton {
                     id: circleBtn
                     enabled: header.enabled
                     checkable: true
@@ -80,7 +81,7 @@ Rectangle {
                         polygonBtn.checked = false
                     }
                 }
-                ToolButton {
+                QuickToolButton {
                     id: polygonBtn
                     enabled: header.enabled
                     checkable: true

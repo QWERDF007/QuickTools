@@ -13,7 +13,7 @@ Rectangle {
     property var activateItem
     property color toolbarColor: QuickColor.White
     property color toolbarBorderColor: QuickColor.WindowBackground
-    property color itemDisableColor: Qt.rgba(160/255,160/255,160/255,1)
+    property color itemDisableColor: QuickColor.Grey50
     signal sliderMoved(real value)
     signal fitInWindow
 
@@ -54,7 +54,7 @@ Rectangle {
                     visible: imageSizeMouseArea.containsMouse
                 }
             }
-            ToolButton {
+            QuickToolButton {
                 implicitWidth: 32
                 implicitHeight: 32
                 icon.source: "/icons/zoomout"
@@ -100,7 +100,7 @@ Rectangle {
                 }
             }
 
-            ToolButton {
+            QuickToolButton {
                 implicitWidth: 32
                 implicitHeight: 32
                 icon.source: "/icons/zoomin"
@@ -112,7 +112,7 @@ Rectangle {
                     footer.sliderMoved(slider.value)
                 }
             }
-            ToolButton {
+            QuickToolButton {
                 id: fitBtn
                 implicitWidth: 32
                 implicitHeight: 32
