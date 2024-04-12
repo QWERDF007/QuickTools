@@ -181,7 +181,7 @@ Rectangle {
             }
         }
 
-        Rectangle {
+        Rectangle { // 分割线
             width: parent.width
             height: 2
             color: paramItemDelegate.border.color

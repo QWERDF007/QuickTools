@@ -51,8 +51,6 @@ Item {
     Item {
         id: container
         anchors.fill: parent
-        anchors.leftMargin: 5
-        anchors.rightMargin: 5
     }
 
     Menu {

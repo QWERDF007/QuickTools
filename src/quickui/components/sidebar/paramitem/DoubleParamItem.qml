@@ -10,6 +10,8 @@ T_ParamItem {
     QuickText {
         id: _content
         anchors.fill: parent
+        anchors.leftMargin: 5
+        anchors.rightMargin: 5
         text: paramDisplay
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter

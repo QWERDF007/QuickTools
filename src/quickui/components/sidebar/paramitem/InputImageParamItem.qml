@@ -14,6 +14,8 @@ T_ParamItem {
     tooltipText: _content.text
     RowLayout {
         anchors.fill: parent
+        anchors.leftMargin: 5
+        anchors.rightMargin: 0
         spacing: 2
         QuickText {
             id: _content

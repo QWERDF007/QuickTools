@@ -12,8 +12,9 @@ T_ParamItem {
     QuickComboBox {
         id: _content
         anchors.fill: parent
-        leftPadding: 0
-        content.leftPadding: 0
+        anchors.leftMargin: 2
+        // leftPadding: 0
+        content.leftPadding: 5
         // bg.color: "transparent"
         bg.border.width: 0
         model: paramRange
