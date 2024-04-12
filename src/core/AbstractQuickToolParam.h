@@ -123,7 +123,7 @@ private slots:
 
 signals:
     void nameChanged();
-    void quicktoolStart();
+    void runAfterChanged();
 };
 
 class QUICKTOOLS_CORE_EXPORT AbstractInputParams : public AbstractToolParams

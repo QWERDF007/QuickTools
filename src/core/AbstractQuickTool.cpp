@@ -9,8 +9,9 @@ QQmlEngine *QuickToolFactor::qmlEngine_ = nullptr;
 QJSEngine *QuickToolFactor::jsEngine_ = nullptr;
 
 AbstractQuickTool::AbstractQuickTool(QObject *parent)
-    : QObject(parent)
+    : QObject{parent}
 {
+    setAutoDelete(false);
     // connect(input_params_, &AbstractInputParams::quicktoolRun, this, &AbstractQuickTool::run);
 }
 
@@ -19,27 +20,26 @@ AbstractQuickTool::~AbstractQuickTool()
     qDebug() << __FUNCTION__ << this;
 }
 
-int AbstractQuickTool::exec()
+int AbstractQuickTool::init()
+{
+    return checkParams();
+}
+
+void AbstractQuickTool::run()
 {
     int ret = checkParams();
     if (ret != 0)
     {
-        return ret;
+        return;
     }
     emit started();
     auto start_time           = std::chrono::high_resolution_clock::now();
-    const auto &[status, msg] = run();
+    const auto &[status, msg] = exec();
     auto end_time             = std::chrono::high_resolution_clock::now();
     wall_clock_time_          = std::chrono::duration<double, std::milli>(end_time - start_time).count();
     output_params_->setToolTime(wall_clock_time_, algorithm_time_);
     output_params_->setStatus(status, msg);
     emit finished();
-    return status;
-}
-
-int AbstractQuickTool::init()
-{
-    return checkParams();
 }
 
 bool AbstractQuickTool::setInputParams(AbstractInputParams *input_params)
@@ -76,6 +76,11 @@ void AbstractQuickTool::setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 {
     qmlEngine_ = qmlEngine;
     jsEngine_ = jsEngine;
+}
+
+void AbstractQuickTool::submit()
+{
+    QThreadPool::globalInstance()->start(this);
 }
 
 int AbstractQuickTool::checkParams()

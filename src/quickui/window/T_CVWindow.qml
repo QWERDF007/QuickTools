@@ -36,7 +36,7 @@ T_Window {
             if (quicktool === null || quicktool === undefined) {
                 return
             }
-            quicktool.exec()
+            quicktool.submit()
         }
     }
 

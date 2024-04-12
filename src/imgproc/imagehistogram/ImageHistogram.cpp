@@ -25,7 +25,7 @@ ImageHistogram::ImageHistogram(QObject *parent)
 {
 }
 
-std::tuple<int, QString> ImageHistogram::run()
+std::tuple<int, QString> ImageHistogram::exec()
 {
     auto input_params  = inputParams();
     auto output_params = outputParams();

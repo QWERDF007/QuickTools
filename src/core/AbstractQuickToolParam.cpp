@@ -211,7 +211,7 @@ QVariant getParamsDisplay(const int param_type, const QVariant &data)
         {          QuickToolParamType::ParamIntType,           intParamDisplay},
         {       QuickToolParamType::ParamDoubleType,        doubleParamDisplay},
         {         QuickToolParamType::ParamTextType,          textParamDisplay},
-        {   QuickToolParamType::ParamInt1DArrayType, double1DArrayParamDisplay},
+        {   QuickToolParamType::ParamInt1DArrayType,    int1DArrayParamDisplay},
         {QuickToolParamType::ParamDouble1DArrayType, double1DArrayParamDisplay},
         {  QuickToolParamType::ParamText1DArrayType,   text1DArrayParamDisplay},
         {   QuickToolParamType::ParamInt2DArrayType,    int2DArrayParamDisplay},
@@ -299,7 +299,7 @@ bool AbstractToolParams::setData(const QModelIndex &index, const QVariant &value
         const bool run_after_changed = params_data_[param_name][QuickToolParamRole::RunAfterParamChangedRole].toBool();
         if (run_after_changed)
         {
-            emit quicktoolStart();
+            emit runAfterChanged();
         }
         return true;
         break;

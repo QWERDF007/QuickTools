@@ -24,7 +24,7 @@ QML_NAMED_ELEMENT(QuickToolType) // 声明封闭类型或命名空间在 QML 中
 
 // Template classes not supported by Q_OBJECT
 
-class QUICKTOOLS_CORE_EXPORT AbstractQuickTool : public QObject
+class QUICKTOOLS_CORE_EXPORT AbstractQuickTool : public QObject, public QRunnable
 {
     Q_OBJECT
 
@@ -42,11 +42,11 @@ public:
 
     virtual QString name() const = 0;
 
-    Q_INVOKABLE int exec();
+    virtual std::tuple<int, QString> exec() = 0;
 
     int init();
 
-    virtual std::tuple<int, QString> run() = 0;
+    void run() override;
 
     AbstractInputParams *inputParams() const
     {
@@ -68,6 +68,8 @@ public:
     }
 
     void setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+
+    Q_INVOKABLE void submit();
 
 protected:
     virtual int initInputParams()  = 0;
@@ -113,7 +115,7 @@ public:
     {
         input_params_  = new InputParams(this);
         output_params_ = new OutputParams(this);
-        connect(input_params_, &AbstractInputParams::quicktoolStart, this, &AbstractQuickTool::exec);
+        connect(input_params_, &AbstractInputParams::runAfterChanged, this, &AbstractQuickTool::submit);
     }
 
     virtual ~AbstractTool() {}
