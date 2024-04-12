@@ -22,6 +22,7 @@ class QuickColor : public QObject
     Q_PROPERTY_AUTO(QColor, ItemHover)
     Q_PROPERTY_AUTO(QColor, ItemPress)
     Q_PROPERTY_AUTO(QColor, ItemCheck)
+    Q_PROPERTY_AUTO(QColor, ItemDisabled)
 
     Q_PROPERTY_AUTO(QColor, Divider)
 
@@ -29,10 +30,27 @@ class QuickColor : public QObject
     Q_PROPERTY_AUTO(QColor, Black)
     Q_PROPERTY_AUTO(QColor, White)
 
+    Q_PROPERTY_AUTO(QColor, Grey10)
+    Q_PROPERTY_AUTO(QColor, Grey20)
+    Q_PROPERTY_AUTO(QColor, Grey30)
+    Q_PROPERTY_AUTO(QColor, Grey40)
     Q_PROPERTY_AUTO(QColor, Grey50)
+    Q_PROPERTY_AUTO(QColor, Grey60)
+    Q_PROPERTY_AUTO(QColor, Grey70)
     Q_PROPERTY_AUTO(QColor, Grey80)
+    Q_PROPERTY_AUTO(QColor, Grey90)
+    Q_PROPERTY_AUTO(QColor, Grey100)
+    Q_PROPERTY_AUTO(QColor, Grey110)
     Q_PROPERTY_AUTO(QColor, Grey120)
+    Q_PROPERTY_AUTO(QColor, Grey130)
+    Q_PROPERTY_AUTO(QColor, Grey140)
+    Q_PROPERTY_AUTO(QColor, Grey150)
+    Q_PROPERTY_AUTO(QColor, Grey160)
     Q_PROPERTY_AUTO(QColor, Grey170)
+    Q_PROPERTY_AUTO(QColor, Grey180)
+    Q_PROPERTY_AUTO(QColor, Grey190)
+    Q_PROPERTY_AUTO(QColor, Grey200)
+    Q_PROPERTY_AUTO(QColor, Grey210)
     Q_PROPERTY_AUTO(QColor, Grey220)
 
     /**

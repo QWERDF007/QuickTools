@@ -13,17 +13,20 @@ StackLayout {
     property color itemBorderColor: QuickColor.WindowBackground
     property alias inputParams: inputParamsListView.model
     property alias outputParams: outputParamsListView.model
+    property bool itemEnable: true
 
     ParamsListView {
         id: inputParamsListView
         Layout.fillHeight: true
         Layout.fillWidth: true
+        paramItemEnable: itemEnable
     }
 
     ParamsListView {
         id: outputParamsListView
         Layout.fillHeight: true
         Layout.fillWidth: true
+        paramItemEnable: itemEnable
     }
 
     Item {

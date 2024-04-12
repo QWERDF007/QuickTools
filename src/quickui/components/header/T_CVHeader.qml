@@ -15,7 +15,7 @@ Rectangle {
     property alias polygonChecked: polygonBtn.checked
     property color toolbarColor: QuickColor.White
     property color toolbarBorderColor: QuickColor.WindowBackground
-    property color itemDisableColor: QuickColor.Grey50
+    property color itemDisableColor: QuickColor.ItemDisabled
     signal startBtnClicked
 
     QuickText {
@@ -43,6 +43,7 @@ Rectangle {
             QuickToolButton {
                 implicitWidth: 32
                 implicitHeight: 32
+                disableColor: itemDisableColor
                 icon.source: "/icons/play"
                 onClicked: {
                     startBtnClicked()
@@ -63,6 +64,7 @@ Rectangle {
                     checkable: true
                     implicitWidth: 32
                     implicitHeight: 32
+                    disableColor: itemDisableColor
                     icon.source: "/icons/square"
                     onToggled: {
                         circleBtn.checked = false
@@ -75,6 +77,7 @@ Rectangle {
                     checkable: true
                     implicitWidth: 32
                     implicitHeight: 32
+                    disableColor: itemDisableColor
                     icon.source: "/icons/circle"
                     onToggled: {
                         squareBtn.checked = false
@@ -87,6 +90,7 @@ Rectangle {
                     checkable: true
                     implicitWidth: 32
                     implicitHeight: 32
+                    disableColor: itemDisableColor
                     icon.source: "/icons/polygon"
                     onToggled: {
                         squareBtn.checked = false

@@ -7,7 +7,7 @@ import QuickTools.ui
 
 T.ToolButton {
     id: control
-    property color disableColor: QuickColor.Grey50
+    property color disableColor: QuickColor.ItemDisabled
     property alias bg: bg
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
                             implicitContentWidth + leftPadding + rightPadding)

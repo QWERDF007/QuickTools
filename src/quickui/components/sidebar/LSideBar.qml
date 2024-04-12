@@ -13,6 +13,8 @@ Rectangle {
     width: 64 + 1 + 256
     height: parent.height
 
+    property bool childrenEnable: true
+
     property alias backgroundColor: lsidebar.border.color
     property alias inputParams: ltoolview.inputParams
     property alias outputParams: ltoolview.outputParams
@@ -32,6 +34,7 @@ Rectangle {
         }
         LToolView {
             id: ltoolview
+            itemEnable: childrenEnable
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: ltoolbar.currentIndex

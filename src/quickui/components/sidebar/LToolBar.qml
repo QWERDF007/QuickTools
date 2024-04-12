@@ -21,7 +21,9 @@ ListView {
         height: 64
         radius: 3
         color: {
-            if (mouseArea.pressed) {
+            if (!ltoolListView.enabled) {
+                return QuickColor.ItemDisabled
+            } else if (mouseArea.pressed) {
                 return QuickColor.ItemPress
             }  else if (mouseArea.hovered) {
                 return QuickColor.ItemHover

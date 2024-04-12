@@ -13,6 +13,8 @@ Item {
     property color delegateBorderColor: QuickColor.WindowBackground
 
     property alias model: _paramsListView.model
+    property bool paramItemEnable: true
+
 
     ListView {
         id: _paramsListView
@@ -24,6 +26,7 @@ Item {
         boundsBehavior: Flickable.StopAtBounds
         spacing: 10
         delegate: ParamItemDelegate {
+            enabled: paramsListView.paramItemEnable
             width: _paramsListView.width
             height: 48
             color: delegateBackgroundColor

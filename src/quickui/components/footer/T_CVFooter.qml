@@ -13,7 +13,7 @@ Rectangle {
     property var activateItem
     property color toolbarColor: QuickColor.White
     property color toolbarBorderColor: QuickColor.WindowBackground
-    property color itemDisableColor: QuickColor.Grey50
+    property color itemDisableColor: QuickColor.ItemDisabled
     signal sliderMoved(real value)
     signal fitInWindow
 
@@ -57,6 +57,7 @@ Rectangle {
             QuickToolButton {
                 implicitWidth: 32
                 implicitHeight: 32
+                disableColor: itemDisableColor
                 icon.source: "/icons/zoomout"
                 onClicked: {
                     slider.decrease()
@@ -103,6 +104,7 @@ Rectangle {
             QuickToolButton {
                 implicitWidth: 32
                 implicitHeight: 32
+                disableColor: itemDisableColor
                 icon.source: "/icons/zoomin"
                 onClicked: {
                     slider.increase()
@@ -116,6 +118,7 @@ Rectangle {
                 id: fitBtn
                 implicitWidth: 32
                 implicitHeight: 32
+                disableColor: itemDisableColor
                 icon.source: "/icons/aspectratio"
                 onClicked: {
                     if (activateItem instanceof QuickScalableImage) {

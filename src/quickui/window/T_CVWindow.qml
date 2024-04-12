@@ -46,6 +46,7 @@ T_Window {
         anchors.fill: parent
         LSideBar {
             id: lsidebar
+            childrenEnable: false
             border.color: window.color
             SplitView.minimumWidth: 256
             SplitView.preferredWidth: 321
