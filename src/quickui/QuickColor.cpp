@@ -38,7 +38,10 @@ QuickColor::QuickColor(QObject *parent)
     Transparent(QColor(0, 0, 0, 0));
     Black(QColor(0, 0, 0));
     White(QColor(255, 255, 255));
+    Grey50(QColor(210, 208, 206));
+    Grey80(QColor(179, 176, 173));
     Grey120(QColor(121, 119, 117));
+    Grey170(QColor(41, 40, 39));
     Grey220(QColor(17, 16, 15));
 }
 

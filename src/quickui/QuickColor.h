@@ -29,7 +29,10 @@ class QuickColor : public QObject
     Q_PROPERTY_AUTO(QColor, Black)
     Q_PROPERTY_AUTO(QColor, White)
 
+    Q_PROPERTY_AUTO(QColor, Grey50)
+    Q_PROPERTY_AUTO(QColor, Grey80)
     Q_PROPERTY_AUTO(QColor, Grey120)
+    Q_PROPERTY_AUTO(QColor, Grey170)
     Q_PROPERTY_AUTO(QColor, Grey220)
 
     /**
