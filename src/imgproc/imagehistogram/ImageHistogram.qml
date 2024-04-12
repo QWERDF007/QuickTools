@@ -36,7 +36,7 @@ T_CVWindow {
             clip: true
 
 
-            QuickScaleableImage {
+            QuickScalableImage {
                 id: image
                 anchors.fill: parent
                 image.source: {

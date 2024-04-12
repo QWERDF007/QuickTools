@@ -35,7 +35,7 @@ Rectangle {
                 Layout.leftMargin: 5
                 Layout.preferredWidth: 64
                 text: {
-                    if ((activateItem instanceof Image || activateItem instanceof QuickScaleableImage) && activateItem.status === Image.Ready) {
+                    if ((activateItem instanceof Image || activateItem instanceof QuickScalableImage) && activateItem.status === Image.Ready) {
                         var size = activateItem.sourceSize
                         return size.width + "x" + size.height
                     }
@@ -60,7 +60,7 @@ Rectangle {
                 icon.source: "/icons/zoomout"
                 onClicked: {
                     slider.decrease()
-                    if (activateItem instanceof QuickScaleableImage) {
+                    if (activateItem instanceof QuickScalableImage) {
                         activateItem.scaleInCenter(slider.value)
                     }
                     footer.sliderMoved(slider.value)
@@ -74,7 +74,7 @@ Rectangle {
                 value: {
                     if (activateItem === null || activateItem === undefined) {
                         return 0
-                    } else if (activateItem instanceof QuickScaleableImage) {
+                    } else if (activateItem instanceof QuickScalableImage) {
                         return activateItem.image.scale
                     } else if (activateItem instanceof Image) {
                         return activateItem.scale
@@ -93,7 +93,7 @@ Rectangle {
 
                 to: 32
                 onMoved: {
-                    if (activateItem instanceof QuickScaleableImage) {
+                    if (activateItem instanceof QuickScalableImage) {
                         activateItem.scaleInCenter(slider.value)
                     }
                     footer.sliderMoved(slider.value)
@@ -106,7 +106,7 @@ Rectangle {
                 icon.source: "/icons/zoomin"
                 onClicked: {
                     slider.increase()
-                    if (activateItem instanceof QuickScaleableImage) {
+                    if (activateItem instanceof QuickScalableImage) {
                         activateItem.scaleInCenter(slider.value)
                     }
                     footer.sliderMoved(slider.value)
@@ -118,7 +118,7 @@ Rectangle {
                 implicitHeight: 32
                 icon.source: "/icons/aspectratio"
                 onClicked: {
-                    if (activateItem instanceof QuickScaleableImage) {
+                    if (activateItem instanceof QuickScalableImage) {
                         activateItem.fitInView()
                     }
                     footer.fitInWindow()
