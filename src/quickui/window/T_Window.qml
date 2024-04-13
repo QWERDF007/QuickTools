@@ -18,7 +18,7 @@ ApplicationWindow {
     Connections {
         target: quicktool
         function onStart() {
-            indicator.open()
+            busyIndicator.open()
             window.enable = false
         }
 
@@ -28,7 +28,17 @@ ApplicationWindow {
 
         function onFinished() {
             window.enable = true
-            indicator.close()
+            busyIndicator.close()
+        }
+
+        function onShowMessage(level, msg) {
+            switch (level) {
+            case QuickTool.Info: return infobar.showInfo(msg)
+            case QuickTool.Warning: return infobar.showWarning(msg)
+            case QuickTool.Error: return infobar.showError(msg)
+            case QuickTool.Success: return infobar.showSuccess(msg)
+            case QuickTool.Custom: return infobar.showCustom(msg)
+            }
         }
     }
 
@@ -37,12 +47,32 @@ ApplicationWindow {
     }
 
     QuickPopup {
-        id: indicator
+        id: busyIndicator
         bg.color: "transparent"
         modal: true
-        QuickProgressRing {
-            // strokeWidth: 0
+        ColumnLayout {
+            spacing: 8
+            anchors.centerIn: parent
+            QuickProgressRing {
+                Layout.alignment: Qt.AlignHCenter
+            }
+            QuickText{
+                text: qsTr("运行中...")
+                Layout.alignment: Qt.AlignHCenter
+            }
         }
+    }
+
+    QuickLoader {
+        property string loadingText
+        property bool cancel: false
+        id:loader_loading
+        anchors.fill: parent
+    }
+
+    QuickInfoBar {
+        id: infobar
+        root: window
     }
 
     Shortcut {
