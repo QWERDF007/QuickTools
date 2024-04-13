@@ -41,12 +41,19 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 1
             QuickToolButton {
+                id: playBtn
                 implicitWidth: 32
                 implicitHeight: 32
                 disableColor: itemDisableColor
                 icon.source: "/icons/play"
                 onClicked: {
                     startBtnClicked()
+                }
+
+                QuickToolTip {
+                    visible: playBtn.hovered
+                    text: qsTr("Run F5")
+                    delay: 500
                 }
             }
             Rectangle {
