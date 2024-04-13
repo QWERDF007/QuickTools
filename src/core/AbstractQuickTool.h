@@ -2,6 +2,7 @@
 
 #include "AbstractQuickToolParam.h"
 #include "CoreGlobal.h"
+#include "QuickToolHelper.h"
 
 #include <QObject>
 #include <QString>
@@ -35,6 +36,7 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool : public QObject, public QRunnabl
 
     Q_PROPERTY(AbstractInputParams *inputParams READ inputParams NOTIFY inputParamsChanged FINAL)
     Q_PROPERTY(AbstractOutputParams *outputParams READ outputParams NOTIFY outputParamsChanged FINAL)
+    Q_PROPERTY(QuickToolHelper* helper READ helper CONSTANT FINAL)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
 public:
     AbstractQuickTool(QObject *parent = nullptr);
@@ -69,7 +71,15 @@ public:
 
     void setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
+    QuickToolHelper* helper()
+    {
+        return helper_;
+    }
+
     Q_INVOKABLE void submit();
+
+    enum InfoLevel { Info, Warning, Error, Success, Custom };
+    Q_ENUM(InfoLevel)
 
 protected:
     virtual int initInputParams()  = 0;
@@ -90,6 +100,8 @@ protected:
     QQmlEngine *qmlEngine_{nullptr};
     QJSEngine *jsEngine_{nullptr};
 
+    QuickToolHelper* helper_{nullptr};
+
 private:
     Q_DISABLE_COPY(AbstractQuickTool)
 
@@ -100,6 +112,7 @@ signals:
     void start();
     void started();
     void finished();
+    void showMessage(int, const QString&);
 };
 
 template<class InputParams, class OutputParams>

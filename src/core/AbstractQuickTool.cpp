@@ -9,7 +9,7 @@ QQmlEngine *QuickToolFactor::qmlEngine_ = nullptr;
 QJSEngine *QuickToolFactor::jsEngine_ = nullptr;
 
 AbstractQuickTool::AbstractQuickTool(QObject *parent)
-    : QObject{parent}
+    : QObject{parent}, helper_(new QuickToolHelper(this))
 {
     setAutoDelete(false);
     // connect(input_params_, &AbstractInputParams::quicktoolRun, this, &AbstractQuickTool::run);
@@ -30,6 +30,7 @@ void AbstractQuickTool::run()
     int ret = checkParams();
     if (ret != 0)
     {
+        emit showMessage(InfoLevel::Error, "检查参数失败");
         return;
     }
     emit started();
@@ -40,6 +41,8 @@ void AbstractQuickTool::run()
     output_params_->setToolTime(wall_clock_time_, algorithm_time_);
     output_params_->setStatus(status, msg);
     emit finished();
+    InfoLevel level = status == 0 ? InfoLevel::Success : InfoLevel::Error;
+    emit showMessage(level, msg);
 }
 
 bool AbstractQuickTool::setInputParams(AbstractInputParams *input_params)
