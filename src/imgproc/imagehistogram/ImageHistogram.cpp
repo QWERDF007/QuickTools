@@ -32,13 +32,17 @@ std::tuple<int, QString> ImageHistogram::exec()
     if (input_params == nullptr || output_params == nullptr)
         return {-1, "输入/输出参数为空指针"};
 
-    std::string image_path
-        = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString().toLocal8Bit().toStdString();
+    const QString image_path = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
+    if (image_path.isEmpty())
+        return {-1, "输入图像路径为空"};
+    if (!QFile::exists(image_path))
+        return {-1, "输入图像路径不存在"};
+
     QString color_space = input_params->data("ColorSpace", QuickToolParamRole::ParamValueRole).toString();
     auto algorithm_start_time = std::chrono::high_resolution_clock::now();
 
     auto    temp_start_time = std::chrono::high_resolution_clock::now();
-    cv::Mat image           = cv::imread(image_path, cv::IMREAD_UNCHANGED);
+    cv::Mat image           = cv::imread(image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
     auto    temp_end_time   = std::chrono::high_resolution_clock::now();
     qInfo() << __FUNCTION__ << "read image time"
             << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
