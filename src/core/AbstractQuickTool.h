@@ -97,6 +97,7 @@ signals:
     void inputParamsChanged();
     void outputParamsChanged();
     void nameChanged();
+    void start();
     void started();
     void finished();
 };

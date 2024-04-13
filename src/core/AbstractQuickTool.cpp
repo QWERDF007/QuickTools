@@ -80,6 +80,7 @@ void AbstractQuickTool::setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 
 void AbstractQuickTool::submit()
 {
+    emit start();
     QThreadPool::globalInstance()->start(this);
 }
 
