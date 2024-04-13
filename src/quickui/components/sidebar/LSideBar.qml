@@ -34,7 +34,7 @@ Rectangle {
         }
         LToolView {
             id: ltoolview
-            itemEnable: childrenEnable
+            itemEnable: lsidebar.childrenEnable
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: ltoolbar.currentIndex

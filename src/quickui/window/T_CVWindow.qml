@@ -32,21 +32,15 @@ T_Window {
         enabled: window.enable
         width: parent.width
         height: 40
-        onStartBtnClicked: {
-            if (quicktool === null || quicktool === undefined) {
-                return
-            }
-            quicktool.submit()
-        }
+        onStartBtnClicked: run()
     }
 
     QuickSplitView {
         id: splitView
-        enabled: window.enable
         anchors.fill: parent
         LSideBar {
             id: lsidebar
-            childrenEnable: false
+            childrenEnable: window.enable
             border.color: window.color
             SplitView.minimumWidth: 256
             SplitView.preferredWidth: 321
@@ -56,6 +50,7 @@ T_Window {
         }
         Item {
             id: container
+            enabled: window.enable
             SplitView.fillHeight: true
             SplitView.fillWidth: true
         }

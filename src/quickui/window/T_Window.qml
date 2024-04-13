@@ -17,16 +17,43 @@ ApplicationWindow {
 
     Connections {
         target: quicktool
-        function onStarted() {
+        function onStart() {
+            indicator.open()
             window.enable = false
+        }
+
+        function onStarted() {
+
         }
 
         function onFinished() {
             window.enable = true
+            indicator.close()
         }
     }
 
     onClosing: function(close) {
         QuickApp.closeWindow(window)
+    }
+
+    QuickPopup {
+        id: indicator
+        bg.color: "transparent"
+        modal: true
+        QuickProgressRing {
+            // strokeWidth: 0
+        }
+    }
+
+    Shortcut {
+        sequence: StandardKey.Refresh
+        onActivated: run()
+    }
+
+    function run() {
+        if (quicktool === null || quicktool === undefined) {
+            return
+        }
+        quicktool.submit()
     }
 }

@@ -5,6 +5,7 @@ import QtQuick.Window
 
 Popup {
     id: control
+    property alias bg: bg
     padding: 0
     modal:true
     parent: Overlay.overlay
@@ -29,9 +30,10 @@ Popup {
         }
     }
     background: Rectangle {
+        id: bg
         radius: [5,5,5,5]
         color: Qt.rgba(1,1,1,1)
-        QuickShadow{
+        QuickShadow {
             radius: 5
         }
     }
