@@ -7,5 +7,5 @@ QtObject {
     property var url
     property string desc
     property string title
-    property string image
+    property string icon
 }

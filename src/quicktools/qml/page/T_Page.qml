@@ -46,7 +46,7 @@ QuickScrollablePage {
                     id:item_icon
                     height: 40
                     width: 40
-                    source: modelData.image
+                    source: modelData.icon
                     anchors{
                         left: parent.left
                         leftMargin: 20
@@ -87,12 +87,19 @@ QuickScrollablePage {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: {
-                        console.log("单击", modelData.title)
                     }
                     onDoubleClicked: {
-                        console.log("打开工具", modelData.title, modelData.url)
-                        QuickApp.navigate(modelData.url)
+                        var args = {icon: modelData.icon}
+                        QuickApp.navigate(modelData.url, args)
                     }
+                }
+
+                QuickToolTip {
+                    text: qsTr("双击打开工具")
+                    x: item_mouse.mouseX
+                    y: item_mouse.mouseY + 20
+                    delay: 500
+                    visible: item_mouse.containsMouse
                 }
             }
         }
