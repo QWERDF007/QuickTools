@@ -16,6 +16,8 @@
         <file alias="input">icons/input.svg</file>
         <file alias="output">icons/output.svg</file>
         <file alias="image">icons/image.svg</file>
+        <file alias="bar">icons/barchart.svg</file>
+        <file alias="setting">icons/settings.svg</file>
     </qresource>
     <qresource prefix="/Font">
         <file alias="Icons.ttf">Font/Segoe_Fluent_Icons.ttf</file>
