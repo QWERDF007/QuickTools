@@ -55,6 +55,7 @@ Rectangle {
                 }
             }
             QuickToolButton {
+                id: zoomoutBtn
                 implicitWidth: 32
                 implicitHeight: 32
                 disableColor: itemDisableColor
@@ -102,6 +103,7 @@ Rectangle {
             }
 
             QuickToolButton {
+                id: zoominBtn
                 implicitWidth: 32
                 implicitHeight: 32
                 disableColor: itemDisableColor
@@ -141,5 +143,17 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter
             }
         }
+    }
+
+    Shortcut {
+        enabled: footer.enabled && activateItem !== null
+        sequence: StandardKey.ZoomIn
+        onActivated: zoominBtn.clicked()
+    }
+
+    Shortcut {
+        enabled: footer.enabled && activateItem !== null
+        sequence: StandardKey.ZoomOut
+        onActivated: zoomoutBtn.clicked()
     }
 }

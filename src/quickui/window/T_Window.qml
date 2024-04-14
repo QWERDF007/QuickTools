@@ -13,13 +13,20 @@ ApplicationWindow {
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
     property QuickTool quicktool
-    property bool enable: true
+    property bool enabled: true
+
+    title: {
+        if (quicktool === null || quicktool === quicktool === undefined) {
+            return "QuickTools"
+        }
+        return quicktool.name
+    }
 
     Connections {
         target: quicktool
         function onStart() {
             busyIndicator.open()
-            window.enable = false
+            window.enabled = false
         }
 
         function onStarted() {
@@ -27,7 +34,7 @@ ApplicationWindow {
         }
 
         function onFinished() {
-            window.enable = true
+            window.enabled = true
             busyIndicator.close()
         }
 
@@ -48,6 +55,9 @@ ApplicationWindow {
 
     QuickPopup {
         id: busyIndicator
+        width: window.width
+        height: window.height
+        anchors.centerIn: Overlay.overlay
         bg.color: "transparent"
         modal: true
         ColumnLayout {
@@ -76,6 +86,7 @@ ApplicationWindow {
     }
 
     Shortcut {
+        enabled: window.enabled
         sequence: StandardKey.Refresh
         onActivated: run()
     }

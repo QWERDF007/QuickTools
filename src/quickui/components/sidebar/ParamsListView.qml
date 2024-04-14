@@ -40,12 +40,6 @@ Item {
             paramDisplay: model.paramDisplay
             paramRange: model.paramRange
             paramValue: model.paramValue
-            Component.onCompleted: {
-                if (model.paramType === QuickToolParam.ParamStatusType) {
-                    console.log("value", model.paramValue)
-                }
-            }
-
             onValueChanged: function(value) {
                 model.paramValue = value
             }

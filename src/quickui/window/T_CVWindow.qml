@@ -29,7 +29,7 @@ T_Window {
 
     header: T_CVHeader {
         id: _header
-        enabled: window.enable
+        enabled: window.enabled
         width: parent.width
         height: 40
         onStartBtnClicked: run()
@@ -40,7 +40,7 @@ T_Window {
         anchors.fill: parent
         LSideBar {
             id: lsidebar
-            childrenEnable: window.enable
+            childrenEnable: window.enabled
             border.color: window.color
             SplitView.minimumWidth: 256
             SplitView.preferredWidth: 321
@@ -50,7 +50,7 @@ T_Window {
         }
         Item {
             id: container
-            enabled: window.enable
+            enabled: window.enabled
             SplitView.fillHeight: true
             SplitView.fillWidth: true
         }
@@ -58,7 +58,7 @@ T_Window {
 
     footer: T_CVFooter {
         id: _footer
-        enabled: window.enable
+        enabled: window.enabled
         width: parent.width
         height: 40
         activateItem: window.activateItem

@@ -9,7 +9,6 @@ Rectangle {
     width: 200
     height: 40
     
-    property string toolTitle: qsTr("工具名称")
     property alias squareChecked: squareBtn.checked
     property alias circleChecked: circleBtn.checked
     property alias polygonChecked: polygonBtn.checked
@@ -17,15 +16,7 @@ Rectangle {
     property color toolbarBorderColor: QuickColor.WindowBackground
     property color itemDisableColor: QuickColor.ItemDisabled
     signal startBtnClicked
-
-    QuickText {
-        text: toolTitle
-        font: QuickFont.Subtitle
-        verticalAlignment: Text.AlignVCenter
-        anchors.left: parent.left
-        anchors.leftMargin: 5
-        anchors.verticalCenter: parent.verticalCenter
-    }
+    signal settingBtnClicked
 
     Rectangle {
         id: toolbar
@@ -46,9 +37,7 @@ Rectangle {
                 implicitHeight: 32
                 disableColor: itemDisableColor
                 icon.source: "/icons/play"
-                onClicked: {
-                    startBtnClicked()
-                }
+                onClicked: startBtnClicked()
 
                 QuickToolTip {
                     visible: playBtn.hovered
@@ -56,7 +45,7 @@ Rectangle {
                     delay: 500
                 }
             }
-            Rectangle {
+            Rectangle { // 分割线
                 color: toolbarBorderColor
                 width: 3
                 Layout.fillHeight: true
@@ -105,6 +94,24 @@ Rectangle {
                     }
                 }
             }
+        }
+    }
+
+    QuickToolButton {
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 5
+        id: settingBtn
+        implicitWidth: 32
+        implicitHeight: 32
+        disableColor: itemDisableColor
+        icon.source: "/icons/setting"
+        onClicked: settingBtnClicked()
+
+        QuickToolTip {
+            visible: playBtn.hovered
+            text: qsTr("Setting")
+            delay: 500
         }
     }
 }
