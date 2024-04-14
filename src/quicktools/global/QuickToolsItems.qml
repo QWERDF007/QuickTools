@@ -20,7 +20,7 @@ QuickObject {
             count: item_home.count
         }
         icon: QuickFontIcon.Home
-        url:"qrc:/qt/qml/QuickTools/qml/page/Home.qml"
+        url:"qrc:/qt/qml/QuickTools/page/Home.qml"
         // url: "qrc:/qt/qml/QuickTools/imgproc/imagehistogram/ImageHistogram.qml"
         // url: "qrc:/qt/qml/QuickTools/ui/window/T_CVWindow.qml"
         onTap: {
@@ -35,7 +35,7 @@ QuickObject {
         title: "图像处理"
         iconVisible: true
         icon: QuickFontIcon.QRCode
-        url: "qrc:/qt/qml/QuickTools/qml/page/ImageProcessPage.qml"
+        url: "qrc:/qt/qml/QuickTools/page/ImageProcessPage.qml"
         onTap: { navigationView.push(url) }
     }
 
@@ -45,12 +45,12 @@ QuickObject {
         icon: QuickFontIcon.ReportHacked
         QuickPaneItem {
             title: "图像分类"
-            url: "qrc:/qt/qml/QuickTools/qml/page/ImageClassificationPage.qml"
+            url: "qrc:/qt/qml/QuickTools/page/ImageClassificationPage.qml"
             onTap: { navigationView.push(url) }
         }
         QuickPaneItem {
             title: "语义分割"
-            url: "qrc:/qt/qml/QuickTools/qml/page/ImageSegmentationPage.qml"
+            url: "qrc:/qt/qml/QuickTools/page/ImageSegmentationPage.qml"
             onTap: { navigationView.push(url) }
         }
     }

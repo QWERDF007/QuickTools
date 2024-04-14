@@ -8,6 +8,6 @@ Item {
 
     Component.onCompleted: {
         QuickApp.init(app)
-        QuickApp.navigate("qrc:/qt/qml/QuickTools/qml/window/MainWindow.qml")
+        QuickApp.navigate("qrc:/qt/qml/QuickTools/window/MainWindow.qml")
     }
 }
