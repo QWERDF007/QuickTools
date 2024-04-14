@@ -2,7 +2,6 @@
 
 #include <QStringBuilder>
 
-
 namespace quicktools::core {
 
 using paramtypes::QuickToolParamRole;
@@ -397,9 +396,13 @@ bool AbstractOutputParams::addParam(const QString &en_name, const QString &zh_na
     return AbstractToolParams::addParam(en_name, zh_name, type, value, range, false, is_property, false, visible);
 }
 
-bool AbstractOutputParams::setToolTime(const double wall_clock_time, const double algorithm_time)
+bool AbstractOutputParams::setToolTime(const double wall_clock_time, const QVariantList &algorithm_time_array)
 {
-    return setData("Time", QVariantList{wall_clock_time, algorithm_time});
+    if (algorithm_time_array.isEmpty())
+        return setData("Time", wall_clock_time);
+    QVariantList time_array{wall_clock_time};
+    for (const auto &v : algorithm_time_array) time_array.append(v);
+    return setData("Time", time_array);
 }
 
 bool AbstractOutputParams::setStatus(const int status, const QString &msg)
