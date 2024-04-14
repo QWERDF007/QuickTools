@@ -4,15 +4,15 @@
 
 namespace quicktools::core {
 
-QuickToolFactor *QuickToolFactor::instance_ = nullptr;
-QQmlEngine *QuickToolFactor::qmlEngine_ = nullptr;
-QJSEngine *QuickToolFactor::jsEngine_ = nullptr;
+QuickToolFactor *QuickToolFactor::instance_  = nullptr;
+QQmlEngine      *QuickToolFactor::qmlEngine_ = nullptr;
+QJSEngine       *QuickToolFactor::jsEngine_  = nullptr;
 
 AbstractQuickTool::AbstractQuickTool(QObject *parent)
-    : QObject{parent}, helper_(new QuickToolHelper(this))
+    : QObject{parent}
+    , helper_(new QuickToolHelper(this))
 {
     setAutoDelete(false);
-    // connect(input_params_, &AbstractInputParams::quicktoolRun, this, &AbstractQuickTool::run);
 }
 
 AbstractQuickTool::~AbstractQuickTool()
@@ -33,52 +33,23 @@ void AbstractQuickTool::run()
         emit showMessage(InfoLevel::Error, "检查参数失败");
         return;
     }
+    clearAlgorithmTime();
     emit started();
     auto start_time           = std::chrono::high_resolution_clock::now();
     const auto &[status, msg] = exec();
     auto end_time             = std::chrono::high_resolution_clock::now();
     wall_clock_time_          = std::chrono::duration<double, std::milli>(end_time - start_time).count();
-    output_params_->setToolTime(wall_clock_time_, algorithm_time_);
-    output_params_->setStatus(status, msg);
-    emit finished();
+    outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
+    outputParams()->setStatus(status, msg);
+    emit      finished();
     InfoLevel level = status == 0 ? InfoLevel::Success : InfoLevel::Error;
-    emit showMessage(level, msg);
-}
-
-bool AbstractQuickTool::setInputParams(AbstractInputParams *input_params)
-{
-    if (input_params_ != input_params)
-    {
-        if (input_params_ != nullptr)
-        {
-            delete input_params_;
-        }
-        input_params_ = input_params;
-        emit inputParamsChanged();
-        return true;
-    }
-    return false;
-}
-
-bool AbstractQuickTool::setOutputParams(AbstractOutputParams *output_params)
-{
-    if (output_params_ != output_params)
-    {
-        if (output_params_ != nullptr)
-        {
-            delete output_params_;
-        }
-        output_params_ = output_params;
-        emit outputParamsChanged();
-        return true;
-    }
-    return false;
+    emit      showMessage(level, msg);
 }
 
 void AbstractQuickTool::setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 {
     qmlEngine_ = qmlEngine;
-    jsEngine_ = jsEngine;
+    jsEngine_  = jsEngine;
 }
 
 void AbstractQuickTool::submit()
@@ -100,15 +71,15 @@ int AbstractQuickTool::checkParams()
 
 int AbstractQuickTool::checkInputParams()
 {
-    if (input_params_ == nullptr)
+    if (inputParams() == nullptr)
     {
         return -1;
     }
-    if (input_params_->empty() || !input_params_->isInit())
+    if (inputParams()->empty() || !inputParams()->isInit())
     {
         int ret = initInputParams();
         if (ret == 0)
-            input_params_->setIsInit(true);
+            inputParams()->setIsInit(true);
         return ret;
     }
     return 0;
@@ -116,15 +87,15 @@ int AbstractQuickTool::checkInputParams()
 
 int AbstractQuickTool::checkOutputParams()
 {
-    if (output_params_ == nullptr)
+    if (outputParams() == nullptr)
     {
         return -1;
     }
-    if (output_params_->empty() || !output_params_->isInit())
+    if (outputParams()->empty() || !outputParams()->isInit())
     {
         int ret = initOutputParams();
         if (ret == 0)
-            output_params_->setIsInit(true);
+            outputParams()->setIsInit(true);
         return ret;
     }
     return 0;

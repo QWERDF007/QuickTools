@@ -25,7 +25,9 @@ QML_NAMED_ELEMENT(QuickToolType) // 声明封闭类型或命名空间在 QML 中
 
 // Template classes not supported by Q_OBJECT
 
-class QUICKTOOLS_CORE_EXPORT AbstractQuickTool : public QObject, public QRunnable
+class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
+    : public QObject
+    , public QRunnable
 {
     Q_OBJECT
 
@@ -36,13 +38,16 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool : public QObject, public QRunnabl
 
     Q_PROPERTY(AbstractInputParams *inputParams READ inputParams NOTIFY inputParamsChanged FINAL)
     Q_PROPERTY(AbstractOutputParams *outputParams READ outputParams NOTIFY outputParamsChanged FINAL)
-    Q_PROPERTY(QuickToolHelper* helper READ helper CONSTANT FINAL)
+    Q_PROPERTY(QuickToolHelper *helper READ helper CONSTANT FINAL)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
 public:
     AbstractQuickTool(QObject *parent = nullptr);
     virtual ~AbstractQuickTool();
 
-    virtual QString name() const = 0;
+    virtual QString name() const
+    {
+        return "AbstractQuickTool";
+    }
 
     virtual std::tuple<int, QString> exec() = 0;
 
@@ -50,60 +55,70 @@ public:
 
     void run() override;
 
-    AbstractInputParams *inputParams() const
+    virtual AbstractInputParams  *inputParams() const  = 0;
+    virtual AbstractOutputParams *outputParams() const = 0;
+
+    /**
+     * @brief 添加一个算法运行时间
+     * @param algorithm_time
+     */
+    void addAlgorithmTime(const QVariant &algorithm_time)
     {
-        return input_params_;
+        algorithm_time_array_.append(algorithm_time);
     }
 
-    bool setInputParams(AbstractInputParams *input_params);
-
-    AbstractOutputParams *outputParams() const
+    /**
+     * @brief 清除算法运行时间，执行算法之前被调用
+     */
+    void clearAlgorithmTime()
     {
-        return output_params_;
+        algorithm_time_array_.clear();
     }
 
-    bool setOutputParams(AbstractOutputParams *output_params);
-
-    void setAlgorithmTime(const double algorithm_time)
-    {
-        algorithm_time_ = algorithm_time;
-    }
-
+    /**
+     * @brief 绑定界面 engine，用于后续创建 ImageProvider
+     * @param qmlEngine
+     * @param jsEngine
+     */
     void setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
-    QuickToolHelper* helper()
+    QuickToolHelper *helper()
     {
         return helper_;
     }
 
     Q_INVOKABLE void submit();
 
-    enum InfoLevel { Info, Warning, Error, Success, Custom };
+    enum InfoLevel
+    {
+        Info,
+        Warning,
+        Error,
+        Success,
+        Custom
+    };
     Q_ENUM(InfoLevel)
 
 protected:
     virtual int initInputParams()  = 0;
     virtual int initOutputParams() = 0;
 
-    int checkParams();
-    int checkInputParams();
-    int checkOutputParams();
-
-    AbstractInputParams  *input_params_{nullptr};
-    AbstractOutputParams *output_params_{nullptr};
-
-    double  wall_clock_time_{0.};
-    double  algorithm_time_{0.};
-    int     status_{0};
-    QString msg_;
+    double       wall_clock_time_{0.};
+    QVariantList algorithm_time_array_;
+    int          status_{0};
+    QString      msg_;
 
     QQmlEngine *qmlEngine_{nullptr};
-    QJSEngine *jsEngine_{nullptr};
+    QJSEngine  *jsEngine_{nullptr};
 
-    QuickToolHelper* helper_{nullptr};
+    QuickToolHelper *helper_{nullptr};
 
 private:
     Q_DISABLE_COPY(AbstractQuickTool)
+
+    int checkParams();
+    int checkInputParams();
+    int checkOutputParams();
 
 signals:
     void inputParamsChanged();
@@ -112,7 +127,7 @@ signals:
     void start();
     void started();
     void finished();
-    void showMessage(int, const QString&);
+    void showMessage(int, const QString &);
 };
 
 template<class InputParams, class OutputParams>
@@ -133,6 +148,30 @@ public:
     }
 
     virtual ~AbstractTool() {}
+
+    AbstractInputParams *inputParams() const override
+    {
+        return getInputParams();
+    }
+
+    InputParams *getInputParams() const
+    {
+        return input_params_;
+    }
+
+    AbstractOutputParams *outputParams() const override
+    {
+        return getOutputParams();
+    }
+
+    OutputParams *getOutputParams() const
+    {
+        return output_params_;
+    }
+
+protected:
+    InputParams  *input_params_{nullptr};
+    OutputParams *output_params_{nullptr};
 };
 
 class QUICKTOOLS_CORE_EXPORT QuickToolFactor : public QObject
@@ -174,7 +213,7 @@ public:
     static QuickToolFactor *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
     {
         qmlEngine_ = qmlEngine;
-        jsEngine_ = jsEngine;
+        jsEngine_  = jsEngine;
         return getInstance();
     }
 
@@ -184,7 +223,7 @@ public:
 
 protected:
     static QQmlEngine *qmlEngine_;
-    static QJSEngine *jsEngine_;
+    static QJSEngine  *jsEngine_;
 
 private:
     explicit QuickToolFactor(QObject *parent = nullptr)
