@@ -12,8 +12,7 @@ namespace quicktools::imgproc {
 using core::paramtypes::QuickToolParamRole;
 using core::paramtypes::QuickToolParamType;
 
-const QVariantList COLOR_SPACES
-{
+const QVariantList COLOR_SPACES{
     "UNCHANGED",
     "RGB",
     "HSV",
@@ -27,42 +26,32 @@ ImageHistogram::ImageHistogram(QObject *parent)
 
 std::tuple<int, QString> ImageHistogram::exec()
 {
-    auto input_params  = inputParams();
-    auto output_params = outputParams();
+    auto algorithm_start_time = std::chrono::high_resolution_clock::now();
+    auto input_params         = getInputParams();
+    auto output_params        = getOutputParams();
     if (input_params == nullptr || output_params == nullptr)
         return {-1, "输入/输出参数为空指针"};
-
     const QString image_path = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
     if (image_path.isEmpty())
         return {-1, "输入图像路径为空"};
     if (!QFile::exists(image_path))
         return {-1, "输入图像路径不存在"};
-
     QString color_space = input_params->data("ColorSpace", QuickToolParamRole::ParamValueRole).toString();
-    auto algorithm_start_time = std::chrono::high_resolution_clock::now();
 
-    auto    temp_start_time = std::chrono::high_resolution_clock::now();
+    auto    read_start_time = std::chrono::high_resolution_clock::now();
     cv::Mat image           = cv::imread(image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
-    auto    temp_end_time   = std::chrono::high_resolution_clock::now();
-    qInfo() << __FUNCTION__ << "read image time"
-            << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
-    qInfo() << __FUNCTION__ << "image size" << image.rows << image.cols << image.channels();
+    auto    read_end_time   = std::chrono::high_resolution_clock::now();
 
     cv::Mat dst;
     if (cvtColor(image, dst, color_space) != 0)
         return {-1, QString("转换到色彩空间 %1 失败").arg(color_space)};
 
-    temp_start_time = std::chrono::high_resolution_clock::now();
     std::vector<cv::Mat> chs;
     cv::split(dst, chs);
-    temp_end_time = std::chrono::high_resolution_clock::now();
-    qInfo() << __FUNCTION__ << "split channels time"
-            << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
     int          hist_size[] = {255};
     float        range[]     = {0, 255};
     const float *ranges[]    = {range};
 
-    temp_start_time = std::chrono::high_resolution_clock::now();
     QList<QVariantList> hists_data;
     QVariantList        hists_min;
     QVariantList        hists_max;
@@ -87,28 +76,22 @@ std::tuple<int, QString> ImageHistogram::exec()
         hists_min.append(min_value);
         hists_max.append(max_value);
     }
-    temp_end_time = std::chrono::high_resolution_clock::now();
-    qInfo() << __FUNCTION__ << "calc hist and append data time"
-            << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
+    auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
+    auto read_time      = std::chrono::duration<double, std::milli>(read_end_time - read_start_time).count();
+    addAlgorithmTime(algorithm_time);
+    addAlgorithmTime(read_time);
+    addAlgorithmTime(algorithm_time - read_time);
 
-    temp_start_time = std::chrono::high_resolution_clock::now();
     output_params->setData("Channels", image.channels());
     output_params->setData("Hist", QVariant::fromValue(hists_data));
     output_params->setData("HistMin", QVariant::fromValue(hists_min));
     output_params->setData("HistMax", QVariant::fromValue(hists_max));
-    setAlgorithmTime(std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count());
-    temp_end_time = std::chrono::high_resolution_clock::now();
-    qInfo() << __FUNCTION__ << "setData time"
-            << std::chrono::duration<double, std::milli>(temp_end_time - temp_start_time).count();
-    qInfo() << __FUNCTION__ << "total time"
-            << std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now()
-                                                         - algorithm_start_time)
-                   .count();
+
     return {0, "运行成功"};
 }
 
-int ImageHistogram::cvtColor(const cv::Mat& src, cv::Mat& dst, const QString &color_space)
+int ImageHistogram::cvtColor(const cv::Mat &src, cv::Mat &dst, const QString &color_space)
 {
     if (src.empty())
         return -1;
@@ -163,7 +146,8 @@ int ImageHistogram::initInputParams()
     {
         input_params_->addParam("Image", "图像", QuickToolParamType::ParamImageType, QVariant(), QVariant(), true, true,
                                 true, true);
-        input_params_->addParam("ColorSpace", "色彩空间", QuickToolParamType::ParamComboBoxType, COLOR_SPACES[0], COLOR_SPACES, false, false, true, true);
+        input_params_->addParam("ColorSpace", "色彩空间", QuickToolParamType::ParamComboBoxType, COLOR_SPACES[0],
+                                COLOR_SPACES, false, false, true, true);
     }
     return 0;
 }
