@@ -24,7 +24,6 @@ QuickApp *QuickApp::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 
 void QuickApp::navigate(const QString &route, const QJsonObject &argument)
 {
-    Q_UNUSED(argument)
     QQmlComponent component(engine_, route);
     if (component.isError())
     {
@@ -36,6 +35,8 @@ void QuickApp::navigate(const QString &route, const QJsonObject &argument)
     window = qobject_cast<QQuickWindow *>(component.createWithInitialProperties(properties));
     if (window)
     {
+        if (argument.contains("icon"))
+            window->setIcon(QIcon(":" + argument.value("icon").toString()));
         windows_.insert(window->winId(), window);
         // window->show();
     }
