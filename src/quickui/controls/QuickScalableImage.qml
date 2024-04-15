@@ -38,7 +38,7 @@ Item {
 
     Image {
         id: _image
-        // asynchronous: true // 异步加载会导致自适应窗口出问题
+        asynchronous: true
         property real xOffset: Math.abs(width - paintedWidth) / 2 * scale
         property real yOffset: Math.abs(height - paintedHeight) / 2 * scale
         fillMode: Image.PreserveAspectFit
