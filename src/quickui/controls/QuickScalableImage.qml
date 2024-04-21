@@ -55,7 +55,7 @@ Item {
             scalableImage.forceActiveFocus()
             if (mouse.button === Qt.LeftButton) {
                 if (mouse.modifiers & Qt.ControlModifier) {
-                    scalableImage.imageDragEnable = true
+                    setImageDragEnable(true)
                     setCursorShape(Qt.ClosedHandCursor)
                 }
             } else if (mouse.button === Qt.MiddleButton) {
