@@ -2,11 +2,25 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import QuickTools.ui
+
 Item {
     id: scalableImage
     clip: true
     width: 200
     height: 200
+
+    property bool _init: false
+    property int shapeType: QuickShape.NoShape
+
+    property var imageRect
+
+    signal updateImageRect
+    onUpdateImageRect: {
+        var pt1 = mapToItem(_image, 0, 0)
+        var pt2 = mapToItem(_image, scalableImage.width, scalableImage.height)
+        imageRect = [pt1.x, pt1.y, pt2.x - pt1.x, pt2.y - pt1.y]
+    }
 
     property alias image: _image
     property alias status: _image.status
@@ -35,13 +49,10 @@ Item {
         return 1.0
     }
 
-    property var imageRect
-    signal updateImageRect
-    onUpdateImageRect: {
-        var pt1 = mapToItem(_image, 0, 0)
-        var pt2 = mapToItem(_image, scalableImage.width, scalableImage.height)
-        imageRect = [pt1.x, pt1.y, pt2.x - pt1.x, pt2.y - pt1.y]
-    }
+    property color drawingColor: "lightblue"
+    property color drawingBorderColor: "red"
+    property bool drawing: false
+    property var roiItem:  roiLoader.item
 
     MouseArea {
         id: mouseArea
@@ -57,10 +68,19 @@ Item {
                 if (mouse.modifiers & Qt.ControlModifier) {
                     setImageDragEnable(true)
                     setCursorShape(Qt.ClosedHandCursor)
+                } else {
+                    scalableImage.drawing = true
+                    if (roiItem !== undefined) {
+                        roiItem.selected = false
+                        roiItem.startPoint = mapToItem(_image, mouse.x, mouse.y)
+                    }
                 }
             } else if (mouse.button === Qt.MiddleButton) {
                 setImageDragEnable(true)
                 setCursorShape(Qt.ClosedHandCursor)
+                if (roiItem !== undefined) {
+                    roiItem.setCursorShape(Qt.ClosedHandCursor)
+                }
             }
         }
 
@@ -71,14 +91,28 @@ Item {
                     setCursorShape(Qt.OpenHandCursor)
                 } else {
                     setCursorShape(Qt.ArrowCursor)
+                    if (roiItem !== undefined) {
+                        if (roiItem.selected) {
+                            roiItem.setCursorShape(Qt.SizeAllCursor)
+                        } else {
+                            roiItem.setCursorShape(Qt.ArrowCursor)
+                        }
+                    }
                 }
             } else if (mouse.button === Qt.LeftButton) {
-
+                if (scalableImage.drawing) {
+                    if (roiItem !== undefined) {
+                        roiItem.updateByPos(mapToItem(_image, mouse.x, mouse.y))
+                    }
+                    scalableImage.drawing = false
+                }
             }
         }
 
         onPositionChanged: function (mouse) {
-
+            if (scalableImage.drawing && roiItem !== undefined) {
+                roiItem.updateByPos(mapToItem(_image, mouse.x, mouse.y))
+            }
         }
 
         onWheel: function (wheel) {
@@ -109,6 +143,32 @@ Item {
         }
     }
 
+    Component {
+        id: roi_rect
+        QuickEditableRect {
+            color: scalableImage.drawingColor
+            visible: false
+        }
+    }
+
+    Component {
+        id: roi_circle
+        QuickEditableCircle {
+            color: scalableImage.drawingColor
+            visible: false
+        }
+    }
+
+    onShapeTypeChanged: {
+        if (scalableImage.shapeType === QuickShape.Rectangle) {
+            roiLoader.sourceComponent = roi_rect
+        } else if (scalableImage.shapeType === QuickShape.Circle) {
+            roiLoader.sourceComponent = roi_circle
+        } else if (scalableImage.shapeType === QuickShape.Polygon) {
+
+        }
+    }
+
     Image {
         id: _image
         smooth: false
@@ -126,6 +186,8 @@ Item {
             if (_image.status === Image.Ready) {
                 if (isFitInView) {
                     fitInView()
+                } else {
+                    scalableImage.scaleInCenter(1.0)
                 }
                 scalableImage.updateImageRect()
             }
@@ -135,17 +197,30 @@ Item {
         onScaleChanged: {
             scalableImage.updateImageRect()
         }
+
+        QuickLoader {
+            id: roiLoader
+            anchors.fill: parent
+        }
     }
 
     onWidthChanged: {
         if (isFitInView) {
             fitInView()
         }
+        else if (!scalableImage._init && width && height) {
+            scalableImage.scaleInCenter(1.0)
+            scalableImage._init = true
+        }
         scalableImage.updateImageRect()
     }
     onHeightChanged: {
         if (isFitInView) {
             fitInView()
+        }
+        else if (!scalableImage._init && width && height) {
+            scalableImage.scaleInCenter(1.0)
+            scalableImage._init = true
         }
         scalableImage.updateImageRect()
     }
