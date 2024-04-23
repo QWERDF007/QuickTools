@@ -9,6 +9,7 @@ Rectangle {
     width: 200
     height: 40
     
+    property var activateItem
     property alias squareChecked: squareBtn.checked
     property alias circleChecked: circleBtn.checked
     property alias polygonChecked: polygonBtn.checked
@@ -65,6 +66,9 @@ Rectangle {
                     onToggled: {
                         circleBtn.checked = false
                         polygonBtn.checked = false
+                        if (activateItem instanceof QuickScalableImage) {
+                            activateItem.shapeType = checked ? QuickShape.Rectangle : QuickShape.NoShape
+                        }
                     }
                 }
                 QuickToolButton {
@@ -78,6 +82,9 @@ Rectangle {
                     onToggled: {
                         squareBtn.checked = false
                         polygonBtn.checked = false
+                        if (activateItem instanceof QuickScalableImage) {
+                            activateItem.shapeType = checked ? QuickShape.Circle : QuickShape.NoShape
+                        }
                     }
                 }
                 QuickToolButton {
@@ -91,6 +98,9 @@ Rectangle {
                     onToggled: {
                         squareBtn.checked = false
                         circleBtn.checked = false
+                        if (activateItem instanceof QuickScalableImage) {
+                            activateItem.shapeType = checked ? QuickShape.Polygon : QuickShape.NoShape
+                        }
                     }
                 }
             }

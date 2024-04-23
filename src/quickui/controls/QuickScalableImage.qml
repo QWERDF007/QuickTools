@@ -11,16 +11,6 @@ Item {
     height: 200
 
     property bool _init: false
-    property int shapeType: QuickShape.NoShape
-
-    property var imageRect
-
-    signal updateImageRect
-    onUpdateImageRect: {
-        var pt1 = mapToItem(_image, 0, 0)
-        var pt2 = mapToItem(_image, scalableImage.width, scalableImage.height)
-        imageRect = [pt1.x, pt1.y, pt2.x - pt1.x, pt2.y - pt1.y]
-    }
 
     property alias image: _image
     property alias status: _image.status
@@ -49,10 +39,21 @@ Item {
         return 1.0
     }
 
+    property var imageRect // 显示区域映射到图像上的矩形, 可以用于图像导航
+    signal updateImageRect
+    onUpdateImageRect: {
+        var pt1 = mapToItem(_image, 0, 0)
+        var pt2 = mapToItem(_image, scalableImage.width, scalableImage.height)
+        imageRect = [pt1.x, pt1.y, pt2.x - pt1.x, pt2.y - pt1.y]
+    }
+
     property color drawingColor: "lightblue"
     property color drawingBorderColor: "red"
     property bool drawing: false
+
+    property int shapeType: QuickShape.NoShape
     property var roiItem:  roiLoader.item
+    signal roiDataChanged(int shapeType, var data)
 
     MouseArea {
         id: mouseArea
@@ -70,7 +71,7 @@ Item {
                     setCursorShape(Qt.ClosedHandCursor)
                 } else {
                     scalableImage.drawing = true
-                    if (roiItem !== undefined) {
+                    if (roiItem !== null && roiItem !== undefined) {
                         roiItem.selected = false
                         roiItem.startPoint = mapToItem(_image, mouse.x, mouse.y)
                     }
@@ -78,7 +79,7 @@ Item {
             } else if (mouse.button === Qt.MiddleButton) {
                 setImageDragEnable(true)
                 setCursorShape(Qt.ClosedHandCursor)
-                if (roiItem !== undefined) {
+                if (roiItem !== null && roiItem !== undefined) {
                     roiItem.setCursorShape(Qt.ClosedHandCursor)
                 }
             }
@@ -91,7 +92,7 @@ Item {
                     setCursorShape(Qt.OpenHandCursor)
                 } else {
                     setCursorShape(Qt.ArrowCursor)
-                    if (roiItem !== undefined) {
+                    if (roiItem !== null && roiItem !== undefined) {
                         if (roiItem.selected) {
                             roiItem.setCursorShape(Qt.SizeAllCursor)
                         } else {
@@ -101,7 +102,7 @@ Item {
                 }
             } else if (mouse.button === Qt.LeftButton) {
                 if (scalableImage.drawing) {
-                    if (roiItem !== undefined) {
+                    if (scalableImage.shapeType !== QuickShape.NoShape) {
                         roiItem.updateByPos(mapToItem(_image, mouse.x, mouse.y))
                     }
                     scalableImage.drawing = false
@@ -110,7 +111,9 @@ Item {
         }
 
         onPositionChanged: function (mouse) {
-            if (scalableImage.drawing && roiItem !== undefined) {
+            if (scalableImage.drawing && scalableImage.shapeType !== QuickShape.NoShape) {
+                scalableImage.setCursorShape(Qt.CrossCursor)
+                roiItem.setCursorShape(Qt.CrossCursor)
                 roiItem.updateByPos(mapToItem(_image, mouse.x, mouse.y))
             }
         }
@@ -147,6 +150,8 @@ Item {
         id: roi_rect
         QuickEditableRect {
             color: scalableImage.drawingColor
+            border.color: scalableImage.drawingBorderColor
+            border.width: selected ? (_image.scale < 0.5 ? 3 : 2) : (_image.scale < 0.5 ? 2 : 1)
             visible: false
         }
     }
@@ -155,17 +160,33 @@ Item {
         id: roi_circle
         QuickEditableCircle {
             color: scalableImage.drawingColor
+            border.color: scalableImage.drawingBorderColor
+            border.width: selected ? _image.scale < 0.5 ? 3 : 2 : _image.scale < 0.5 ? 2 : 1
             visible: false
+
+        }
+    }
+
+    Connections {
+        target: roiItem
+        function onRoiDataChanged() {
+            scalableImage.roiDataChanged(roiItem.shapeType, roiItem.roiData)
         }
     }
 
     onShapeTypeChanged: {
         if (scalableImage.shapeType === QuickShape.Rectangle) {
+            scalableImage.roiDataChanged(QuickShape.NoShape, [])
             roiLoader.sourceComponent = roi_rect
+            scalableImage.setCursorShape(Qt.CrossCursor)
         } else if (scalableImage.shapeType === QuickShape.Circle) {
+            scalableImage.roiDataChanged(QuickShape.NoShape, [])
             roiLoader.sourceComponent = roi_circle
+            scalableImage.setCursorShape(Qt.CrossCursor)
         } else if (scalableImage.shapeType === QuickShape.Polygon) {
 
+        } else {
+            scalableImage.setCursorShape(Qt.ArrowCursor)
         }
     }
 

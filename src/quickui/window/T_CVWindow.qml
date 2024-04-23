@@ -32,6 +32,7 @@ T_Window {
         enabled: window.enabled
         width: parent.width
         height: 40
+        activateItem: window.activateItem
         onStartBtnClicked: run()
     }
 
@@ -66,5 +67,9 @@ T_Window {
             window.sliderMoved(value)
         }
         onFitInWindow: window.fitInWindow()
+    }
+
+    function updateROI(shapeType, data) {
+        console.log("updateROI", shapeType, data)
     }
 }

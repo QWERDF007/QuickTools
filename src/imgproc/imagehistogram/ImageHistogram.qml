@@ -45,6 +45,9 @@ T_CVWindow {
                     }
                     return "file:///" + inputParams.pdata.Image
                 }
+                onRoiDataChanged: function(shapeType, data) {
+                    updateROI(shapeType, data)
+                }
             }
 
             DropImageArea {

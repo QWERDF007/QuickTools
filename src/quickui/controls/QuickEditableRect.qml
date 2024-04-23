@@ -9,12 +9,12 @@ QuickRectangle {
     property real _m: Math.max(5, 10 / parent.scale) // 靠近顶点和边的距离阈值
     property int _ms: 5 // 矩形最小大小
     property var roiData: [] // 矩形数据
-    property point startPoint // 绘制七点, 坐标系是 parent 上的
+    property point startPoint // 绘制起点, 坐标系是 parent 上的
 
 
     color: "transparent"
     border.color: "red"
-    border.width: selected ? Math.max(2, 2 / parent.scale) : Math.max(1, 1 / parent.scale)
+    border.width: selected ? 2 : 1
 
     property QtObject inner: QtObject {
         property real left: 0
@@ -24,14 +24,18 @@ QuickRectangle {
     }
 
     onXChanged: {
-        if (mouseArea.dragEnable) {
+        if (visible) {
             roiData = [editableRect.x, editableRect.y, editableRect.width, editableRect.height]
+        } else {
+            roiData = []
         }
     }
 
     onYChanged: {
-        if (mouseArea.dragEnable) {
+        if (visible) {
             roiData = [editableRect.x, editableRect.y, editableRect.width, editableRect.height]
+        } else {
+            roiData = []
         }
     }
 

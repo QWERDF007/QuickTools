@@ -9,11 +9,11 @@ QuickCircle {
     property real _m: Math.max(5, 10 / parent.scale) // 靠近顶点和边的距离阈值
     property int _ms: 5 // 矩形最小大小
     property var roiData: [] // 矩形数据
-    property point startPoint // 绘制七点, 坐标系是 parent 上的
+    property point startPoint // 绘制起点, 坐标系是 parent 上的
 
     color: "transparent"
     border.color: "red"
-    border.width: selected ? Math.max(2, 2 / parent.scale) : Math.max(1, 1 / parent.scale)
+    border.width: selected ? 2 : 1
 
     property QtObject inner: QtObject {
         property real left: 0
@@ -25,6 +25,15 @@ QuickCircle {
     onCenterChanged: {
         if (visible) {
             roiData = [editableCircle.center.x, editableCircle.center.y, editableCircle.radius]
+        } else {
+            roiData = []
+        }
+    }
+    onRadiusChanged: {
+        if (visible) {
+            roiData = [editableCircle.center.x, editableCircle.center.y, editableCircle.radius]
+        } else {
+            roiData = []
         }
     }
 
