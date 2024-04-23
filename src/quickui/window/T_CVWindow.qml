@@ -23,6 +23,7 @@ T_Window {
 
     property CVInputParams inputParams
     property CVOutputParams outputParams
+    property QuickToolROI inputROI
 
     signal sliderMoved(real value)
     signal fitInWindow
@@ -70,6 +71,20 @@ T_Window {
     }
 
     function updateROI(shapeType, data) {
-        console.log("updateROI", shapeType, data)
+        if (inputROI === null) {
+            return
+        }
+        if (shapeType === QuickShape.NoShape) {
+            inputROI.roiType = QuickToolROI.NoROI
+            inputROI.data = data
+        } else if (shapeType === QuickShape.Rectangle) {
+            inputROI.roiType = QuickToolROI.Rectangle
+            inputROI.data = data
+        } else if (shapeType === QuickShape.Circle) {
+            inputROI.roiType = QuickToolROI.Circle
+            inputROI.data = data
+        } else if (shapeType === QuickShape.Polygon) {
+
+        }
     }
 }

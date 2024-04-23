@@ -13,12 +13,14 @@ T_CVWindow {
 
     quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram, imageHistogramWin)
     inputParams: quicktool.inputParams
+    inputROI: inputParams.roi
     outputParams: quicktool.outputParams
     activateItem: image
 
     Component.onCompleted: {
         console.log("quick tool", quicktool.name)
         console.log("input params", inputParams.name)
+        console.log("input roi", inputROI)
         console.log("output params", outputParams.name)
         console.log("Image", inputParams.pdata.Image)
         console.log("Hist", outputParams.pdata.Hist)
