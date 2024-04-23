@@ -11,7 +11,7 @@ QuickPen::QuickPen(QObject *parent)
     , color_(Qt::black)
     , valid_(false)
     , style_(Qt::PenStyle::SolidLine)
-    , joinStyle_(Qt::MiterJoin)
+    , join_style_(Qt::MiterJoin)
 {
 }
 
@@ -64,14 +64,14 @@ void QuickPen::setStyle(Qt::PenStyle style)
 
 Qt::PenJoinStyle QuickPen::joinStyle() const
 {
-    return joinStyle_;
+    return join_style_;
 }
 
-void QuickPen::setJoinStyle(Qt::PenJoinStyle joinStyle)
+void QuickPen::setJoinStyle(Qt::PenJoinStyle join_style)
 {
-    if (joinStyle_ == joinStyle)
+    if (join_style_ == join_style)
         return;
-    joinStyle_ = joinStyle;
+    join_style_ = join_style;
     static_cast<QQuickItem *>(parent())->update();
     emit styleChanged();
 }
@@ -250,14 +250,14 @@ void QuickCircle::setCenter(const QPointF &center)
 
 bool QuickCircle::centerVisible() const
 {
-    return centerVisible_;
+    return center_visible_;
 }
 
 void QuickCircle::setCenterVisible(const bool visible)
 {
-    if (centerVisible_ == visible)
+    if (center_visible_ == visible)
         return;
-    centerVisible_ = visible;
+    center_visible_ = visible;
     update();
     emit centerVisibleChanged();
 }
@@ -282,7 +282,7 @@ void QuickCircle::paint(QPainter *painter)
     }
     painter->setBrush(color());
     painter->drawEllipse(QPointF(radius_, radius_), radius_ - border()->width() / 2, radius_ - border()->width() / 2);
-    if (centerVisible_)
+    if (center_visible_)
     {
         //        painter->setPen(Qt::NoPen);
         painter->drawEllipse(QPointF(radius_, radius_), 3, 3);

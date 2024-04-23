@@ -37,7 +37,7 @@ private:
     QColor           color_{Qt::white};
     bool             valid_{false};
     Qt::PenStyle     style_{Qt::PenStyle::SolidLine};
-    Qt::PenJoinStyle joinStyle_{Qt::MiterJoin};
+    Qt::PenJoinStyle join_style_{Qt::MiterJoin};
 
 signals:
     void widthChanged();
@@ -159,7 +159,7 @@ public:
 private:
     qreal   radius_{0};
     QPointF center_;
-    bool    centerVisible_{true};
+    bool    center_visible_{true};
 
     //    QuickCenter *center_{nullptr};
 
