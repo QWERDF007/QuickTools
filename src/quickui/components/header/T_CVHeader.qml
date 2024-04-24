@@ -108,10 +108,10 @@ Rectangle {
     }
 
     QuickToolButton {
+        id: settingBtn
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: 5
-        id: settingBtn
         implicitWidth: 32
         implicitHeight: 32
         disableColor: itemDisableColor
@@ -119,7 +119,7 @@ Rectangle {
         onClicked: settingBtnClicked()
 
         QuickToolTip {
-            visible: playBtn.hovered
+            visible: settingBtn.hovered
             text: qsTr("Setting")
             delay: 500
         }
