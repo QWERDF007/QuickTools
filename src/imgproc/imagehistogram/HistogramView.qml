@@ -57,7 +57,7 @@ Item {
                 axisX: ValuesAxis {
                     tickCount: 11
                     min: 0
-                    max: histogramsData === null || histogramsData === undefined ? 255 : histogramsData[index].length
+                    max: histogramsData === null || histogramsData === undefined ? 255 : histogramsData[index].length - 1
                 }
                 onHovered: function(status, i, barset) {
                     if (mouseArea.mouseX + tooltip.contentWidth + 20 > chartview.width) {

@@ -48,7 +48,7 @@ std::tuple<int, QString> ImageHistogram::exec()
 
     std::vector<cv::Mat> chs;
     cv::split(dst, chs);
-    int          hist_size[] = {255};
+    int          hist_size[] = {256};
     float        range[]     = {0, 255};
     const float *ranges[]    = {range};
 
