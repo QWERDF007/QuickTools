@@ -19,9 +19,23 @@ const QVariantList COLOR_SPACES{
     "Gray",
 };
 
+
+
 ImageHistogram::ImageHistogram(QObject *parent)
     : core::AbstractCVTool(parent)
 {
+}
+
+std::tuple<int,std::tuple<float,float>> getHistSizeAndRange(const QString& color_space, const int ch)
+{
+    if (color_space == "HSV" && ch == 0)
+    {
+        return {180, {0, 180}};
+    }
+    else
+    {
+        return {256, {0,256}};
+    }
 }
 
 std::tuple<int, QString> ImageHistogram::exec()
@@ -48,27 +62,29 @@ std::tuple<int, QString> ImageHistogram::exec()
 
     std::vector<cv::Mat> chs;
     cv::split(dst, chs);
-    int          hist_size[] = {256};
-    float        range[]     = {0, 255};
-    const float *ranges[]    = {range};
 
     QList<QVariantList> hists_data;
     QVariantList        hists_min;
     QVariantList        hists_max;
-    for (const cv::Mat &ch : chs)
+    // for (const cv::Mat &ch : chs)
+    for (size_t i = 0; i < chs.size(); ++i)
     {
         cv::Mat hist;
-        cv::calcHist(&ch, 1, 0, cv::noArray(), hist, 1, hist_size, ranges, true, false);
+        const auto [hist_size, range_values] = getHistSizeAndRange(color_space, static_cast<int>(i));
+        const auto [range_min, range_max] = range_values;
+        float range[] = {range_min, range_max};
+        const float* ranges[] = {range};
+        cv::calcHist(&chs[i], 1, 0, cv::noArray(), hist, 1, &hist_size, ranges, false, false);
         //        cv::normalize(hist, hist, 0, 1, cv::NORM_MINMAX);
         float           min_value{std::numeric_limits<float>::max()};
         float           max_value{std::numeric_limits<float>::min()};
         QList<QVariant> hist_data;
         float          *data_ptr = reinterpret_cast<float *>(hist.data);
-        for (int i = 0; i < hist_size[0]; ++i)
+        for (int j = 0; j < hist_size; ++j)
         {
-            hist_data.append(data_ptr[i]);
-            min_value = std::min(min_value, data_ptr[i]);
-            max_value = std::max(max_value, data_ptr[i]);
+            hist_data.append(data_ptr[j]);
+            min_value = std::min(min_value, data_ptr[j]);
+            max_value = std::max(max_value, data_ptr[j]);
         }
         max_value = std::abs(max_value - std::numeric_limits<float>::min()) < 1e-3 ? 1. : max_value;
         min_value = std::abs(min_value - std::numeric_limits<float>::max()) < 1e-3 ? 1. : min_value;
