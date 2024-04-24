@@ -23,7 +23,7 @@ T_Window {
 
     property CVInputParams inputParams
     property CVOutputParams outputParams
-    property QuickToolROI inputROI
+    property CVToolROI inputROI
 
     signal sliderMoved(real value)
     signal fitInWindow
@@ -75,13 +75,13 @@ T_Window {
             return
         }
         if (shapeType === QuickShape.NoShape) {
-            inputROI.roiType = QuickToolROI.NoROI
+            inputROI.roiType = CVToolROI.NoROI
             inputROI.data = data
         } else if (shapeType === QuickShape.Rectangle) {
-            inputROI.roiType = QuickToolROI.Rectangle
+            inputROI.roiType = CVToolROI.Rectangle
             inputROI.data = data
         } else if (shapeType === QuickShape.Circle) {
-            inputROI.roiType = QuickToolROI.Circle
+            inputROI.roiType = CVToolROI.Circle
             inputROI.data = data
         } else if (shapeType === QuickShape.Polygon) {
 

@@ -4,11 +4,11 @@ namespace quicktools::core {
 
 AbstractCVInputParams::AbstractCVInputParams(QObject *parent)
     : AbstractInputParams(parent)
-    , roi_(new QuickToolROI(this))
+    , roi_(new CVToolROI(this))
 {
 }
 
-QuickToolROI *AbstractCVInputParams::roi()
+CVToolROI *AbstractCVInputParams::roi()
 {
     return roi_;
 }

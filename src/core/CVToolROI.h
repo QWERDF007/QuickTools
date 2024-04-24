@@ -5,29 +5,30 @@
 
 namespace quicktools::core {
 
-class QuickToolROI : public QObject
+class CVToolROI : public QObject
 {
     Q_OBJECT
-    QML_NAMED_ELEMENT(QuickToolROI)
-    QML_UNCREATABLE("Can't not create a QuickToolROI directly")
-
+    QML_NAMED_ELEMENT(CVToolROI)
+    QML_UNCREATABLE("Can't not create a CVToolROI directly")
     Q_PROPERTY(QList<qreal> data READ data WRITE setData NOTIFY dataChanged FINAL)
     Q_PROPERTY(ROITYpe roiType READ roiType WRITE setROIType NOTIFY roiTypeChanged FINAL)
 public:
-    explicit QuickToolROI(QObject *parent = nullptr);
+    explicit CVToolROI(QObject *parent = nullptr);
 
     QList<qreal> data() const;
-    void setData(const QList<qreal>& data);
+    void         setData(const QList<qreal> &data);
 
-    enum ROITYpe {NoROI, Rectangle, Circle, Polygon};
+    // clang-format off
+    enum ROITYpe { NoROI, Rectangle, Circle, Polygon };
     Q_ENUM(ROITYpe);
+    // clang-format on
 
     ROITYpe roiType() const;
-    void setROIType(const ROITYpe roi_type);
+    void    setROIType(const ROITYpe roi_type);
 
 private:
     QList<qreal> data_;
-    ROITYpe roi_type_{ROITYpe::NoROI};
+    ROITYpe      roi_type_{ROITYpe::NoROI};
 
 signals:
     void dataChanged();

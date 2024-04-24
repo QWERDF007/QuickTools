@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AbstractQuickToolParam.h"
-#include "QuickToolROI.h"
+#include "CVToolROI.h"
 
 namespace quicktools::core {
 
@@ -10,7 +10,7 @@ class QUICKTOOLS_CORE_EXPORT AbstractCVInputParams : public AbstractInputParams
     Q_OBJECT
     QML_NAMED_ELEMENT(CVInputParams)
     QML_UNCREATABLE("Can't not create a AbstractCVInputParams directly")
-    Q_PROPERTY(QuickToolROI* roi READ roi CONSTANT FINAL)
+    Q_PROPERTY(CVToolROI *roi READ roi CONSTANT FINAL)
 public:
     AbstractCVInputParams(QObject *parent = nullptr);
 
@@ -21,10 +21,10 @@ public:
         return "AbstractCVInputParams";
     }
 
-    QuickToolROI *roi();
+    CVToolROI *roi();
 
 private:
-    QuickToolROI* roi_{nullptr};
+    CVToolROI *roi_{nullptr};
 };
 
 class QUICKTOOLS_CORE_EXPORT AbstractCVOutputParams : public AbstractOutputParams

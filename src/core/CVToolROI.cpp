@@ -1,31 +1,31 @@
-#include "QuickToolROI.h"
+#include "CVToolROI.h"
 
 namespace quicktools::core {
 
-QuickToolROI::QuickToolROI(QObject *parent)
+CVToolROI::CVToolROI(QObject *parent)
     : QObject(parent)
     , roi_type_(ROITYpe::NoROI)
 {
 }
 
-QList<qreal> QuickToolROI::data() const
+QList<qreal> CVToolROI::data() const
 {
     return data_;
 }
 
-void QuickToolROI::setData(const QList<qreal> &data)
+void CVToolROI::setData(const QList<qreal> &data)
 {
     data_ = data;
     qInfo() << __FUNCTION__ << data;
     emit dataChanged();
 }
 
-QuickToolROI::ROITYpe QuickToolROI::roiType() const
+CVToolROI::ROITYpe CVToolROI::roiType() const
 {
     return roi_type_;
 }
 
-void QuickToolROI::setROIType(const ROITYpe roi_type)
+void CVToolROI::setROIType(const ROITYpe roi_type)
 {
     if (roi_type == roi_type_)
         return;
