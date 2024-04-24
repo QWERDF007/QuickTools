@@ -399,7 +399,7 @@ bool AbstractOutputParams::addParam(const QString &en_name, const QString &zh_na
 bool AbstractOutputParams::setToolTime(const double wall_clock_time, const QVariantList &algorithm_time_array)
 {
     if (algorithm_time_array.isEmpty())
-        return setData("Time", wall_clock_time);
+        return setData("Time", QVariantList{wall_clock_time});
     QVariantList time_array{wall_clock_time};
     for (const auto &v : algorithm_time_array) time_array.append(v);
     return setData("Time", time_array);

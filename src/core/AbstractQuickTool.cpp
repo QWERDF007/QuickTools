@@ -35,15 +35,26 @@ void AbstractQuickTool::run()
     }
     clearAlgorithmTime();
     emit started();
-    auto start_time           = std::chrono::high_resolution_clock::now();
-    const auto &[status, msg] = exec();
-    auto end_time             = std::chrono::high_resolution_clock::now();
-    wall_clock_time_          = std::chrono::duration<double, std::milli>(end_time - start_time).count();
-    outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
-    outputParams()->setStatus(status, msg);
-    emit      finished();
-    InfoLevel level = status == 0 ? InfoLevel::Success : InfoLevel::Error;
-    emit      showMessage(level, msg);
+    auto start_time = std::chrono::high_resolution_clock::now();
+    try
+    {
+        const auto &[status, msg] = exec();
+        auto end_time             = std::chrono::high_resolution_clock::now();
+        wall_clock_time_          = std::chrono::duration<double, std::milli>(end_time - start_time).count();
+        outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
+        outputParams()->setStatus(status, msg);
+        emit finished();
+        emit showMessage(status == 0 ? InfoLevel::Success : InfoLevel::Error, msg);
+    }
+    catch (const std::exception &e)
+    {
+        auto end_time    = std::chrono::high_resolution_clock::now();
+        wall_clock_time_ = std::chrono::duration<double, std::milli>(end_time - start_time).count();
+        outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
+        outputParams()->setStatus(-1, e.what());
+        emit finished();
+        emit showMessage(InfoLevel::Error, e.what());
+    }
 }
 
 void AbstractQuickTool::setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
