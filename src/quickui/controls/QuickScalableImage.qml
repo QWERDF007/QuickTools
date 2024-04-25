@@ -71,7 +71,7 @@ Item {
                     setCursorShape(Qt.ClosedHandCursor)
                 } else {
                     scalableImage.drawing = true
-                    if (roiItem !== null && roiItem !== undefined) {
+                    if (roiItem) {
                         roiItem.selected = false
                         roiItem.startPoint = mapToItem(_image, mouse.x, mouse.y)
                     }
@@ -79,7 +79,7 @@ Item {
             } else if (mouse.button === Qt.MiddleButton) {
                 setImageDragEnable(true)
                 setCursorShape(Qt.ClosedHandCursor)
-                if (roiItem !== null && roiItem !== undefined) {
+                if (roiItem) {
                     roiItem.setCursorShape(Qt.ClosedHandCursor)
                 }
             }
@@ -92,7 +92,7 @@ Item {
                     setCursorShape(Qt.OpenHandCursor)
                 } else {
                     setCursorShape(Qt.ArrowCursor)
-                    if (roiItem !== null && roiItem !== undefined) {
+                    if (roiItem) { // != null && != undefined
                         if (roiItem.selected) {
                             roiItem.setCursorShape(Qt.SizeAllCursor)
                         } else {
@@ -136,7 +136,9 @@ Item {
         } else if (event.key === Qt.Key_Escape) {
 
         } else if (event.key === Qt.Key_Delete) {
-
+            if (roiItem) {
+                roiItem.clear()
+            }
         }
     }
 

@@ -17,9 +17,14 @@ T_Window {
 
     default property alias content: container.data
     property var activateItem
-    property alias squareChecked: _header.squareChecked
+
+    property alias rectangleEnable: _header.rectangleEnable
+    property alias circleEnable: _header.circleEnable
+    property alias polygonEnable: _header.polygonEnable
+    property alias rectangleChecked: _header.rectangleChecked
     property alias circleChecked: _header.circleChecked
     property alias polygonChecked: _header.polygonChecked
+
 
     property CVInputParams inputParams
     property CVOutputParams outputParams

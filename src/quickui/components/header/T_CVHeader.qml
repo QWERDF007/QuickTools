@@ -10,7 +10,10 @@ Rectangle {
     height: 40
     
     property var activateItem
-    property alias squareChecked: squareBtn.checked
+    property bool rectangleEnable: true
+    property bool circleEnable: true
+    property bool polygonEnable: true
+    property alias rectangleChecked: rectangleBtn.checked
     property alias circleChecked: circleBtn.checked
     property alias polygonChecked: polygonBtn.checked
     property color toolbarColor: QuickColor.White
@@ -56,8 +59,8 @@ Rectangle {
                 id: btnRowLayout
                 spacing: 0
                 QuickToolButton {
-                    id: squareBtn
-                    enabled: header.enabled
+                    id: rectangleBtn
+                    enabled: header.rectangleEnable
                     checkable: true
                     implicitWidth: 32
                     implicitHeight: 32
@@ -73,14 +76,14 @@ Rectangle {
                 }
                 QuickToolButton {
                     id: circleBtn
-                    enabled: header.enabled
+                    enabled: header.circleEnable
                     checkable: true
                     implicitWidth: 32
                     implicitHeight: 32
                     disableColor: itemDisableColor
                     icon.source: "/icons/circle"
                     onToggled: {
-                        squareBtn.checked = false
+                        rectangleBtn.checked = false
                         polygonBtn.checked = false
                         if (activateItem instanceof QuickScalableImage) {
                             activateItem.shapeType = checked ? QuickShape.Circle : QuickShape.NoShape
@@ -89,14 +92,14 @@ Rectangle {
                 }
                 QuickToolButton {
                     id: polygonBtn
-                    enabled: header.enabled
+                    enabled: header.polygonEnable
                     checkable: true
                     implicitWidth: 32
                     implicitHeight: 32
                     disableColor: itemDisableColor
                     icon.source: "/icons/polygon"
                     onToggled: {
-                        squareBtn.checked = false
+                        rectangleBtn.checked = false
                         circleBtn.checked = false
                         if (activateItem instanceof QuickScalableImage) {
                             activateItem.shapeType = checked ? QuickShape.Polygon : QuickShape.NoShape
