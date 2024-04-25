@@ -2,10 +2,12 @@
 
 #include <QObject>
 #include <QtQml>
+#include <opencv2/core.hpp>
+#include "CoreGlobal.h"
 
 namespace quicktools::core {
 
-class CVToolROI : public QObject
+class QUICKTOOLS_CORE_EXPORT CVToolROI : public QObject
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(CVToolROI)
@@ -18,6 +20,12 @@ public:
     QList<qreal> data() const;
     void         setData(const QList<qreal> &data);
 
+    bool empty() const;
+    bool isEmpty() const
+    {
+        return empty();
+    }
+
     // clang-format off
     enum ROITYpe { NoROI, Rectangle, Circle, Polygon };
     Q_ENUM(ROITYpe);
@@ -25,6 +33,8 @@ public:
 
     ROITYpe roiType() const;
     void    setROIType(const ROITYpe roi_type);
+
+    cv::Mat toMask(const int width, const int height, const int fill_value=255) const;
 
 private:
     QList<qreal> data_;
