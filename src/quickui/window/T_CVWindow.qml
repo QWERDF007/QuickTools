@@ -33,7 +33,7 @@ T_Window {
     signal sliderMoved(real value)
     signal fitInWindow
 
-    header: T_CVHeader {
+    header: CVHeader {
         id: _header
         enabled: window.enabled
         width: parent.width
@@ -41,6 +41,8 @@ T_Window {
         activateItem: window.activateItem
         onStartBtnClicked: run()
     }
+
+
 
     QuickSplitView {
         id: splitView
@@ -63,7 +65,7 @@ T_Window {
         }
     }
 
-    footer: T_CVFooter {
+    footer: CVFooter {
         id: _footer
         enabled: window.enabled
         width: parent.width
