@@ -51,19 +51,19 @@ Q_ENUM_NS(QuickToolParamRole) // 向元对象系统注册枚举类型 QuickToolP
 QML_NAMED_ELEMENT(QuickToolParam) // 声明命名空间在 QML 中可用，以 QuickToolParam 进行访问
 } // namespace paramtypes
 
-class QUICKTOOLS_CORE_EXPORT AbstractToolParams : public QAbstractListModel
+class QUICKTOOLS_CORE_EXPORT AbstractQuickToolParams : public QAbstractListModel
 {
     Q_OBJECT
     // 声明 QML 中可用
     QML_NAMED_ELEMENT(ToolParams)
     // 声明对象不能在 QML 中创建
-    QML_UNCREATABLE("Can't not create a AbstractToolParams directly")
+    QML_UNCREATABLE("Can't not create a AbstractQuickToolParams directly")
     Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
     Q_PROPERTY(QQmlPropertyMap *pdata READ pdata CONSTANT FINAL)
 public:
-    AbstractToolParams(QObject *parent = nullptr);
+    AbstractQuickToolParams(QObject *parent = nullptr);
 
-    virtual ~AbstractToolParams();
+    virtual ~AbstractQuickToolParams();
 
     virtual QString name() const = 0;
 
@@ -126,7 +126,7 @@ signals:
     void runAfterChanged();
 };
 
-class QUICKTOOLS_CORE_EXPORT AbstractInputParams : public AbstractToolParams
+class QUICKTOOLS_CORE_EXPORT AbstractInputParams : public AbstractQuickToolParams
 {
     Q_OBJECT
     // 声明 QML 中可用
@@ -135,14 +135,14 @@ class QUICKTOOLS_CORE_EXPORT AbstractInputParams : public AbstractToolParams
     QML_UNCREATABLE("Can't not create a AbstractInputParams directly")
 public:
     AbstractInputParams(QObject *parent = nullptr)
-        : AbstractToolParams(parent)
+        : AbstractQuickToolParams(parent)
     {
     }
 
     virtual ~AbstractInputParams() {}
 };
 
-class QUICKTOOLS_CORE_EXPORT AbstractOutputParams : public AbstractToolParams
+class QUICKTOOLS_CORE_EXPORT AbstractOutputParams : public AbstractQuickToolParams
 {
     Q_OBJECT
     // 声明 QML 中可用
