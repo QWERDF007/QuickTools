@@ -58,7 +58,7 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickToolParams : public QAbstractListModel
     QML_NAMED_ELEMENT(QuickToolParams)
     // 声明对象不能在 QML 中创建
     QML_UNCREATABLE("Can't not create a AbstractQuickToolParams directly")
-    Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
+    Q_PROPERTY(QString name READ name CONSTANT FINAL) // FINAL 表明该属性不会被派生类覆盖
     Q_PROPERTY(QQmlPropertyMap *pdata READ pdata CONSTANT FINAL)
 public:
     AbstractQuickToolParams(QObject *parent = nullptr);
@@ -122,7 +122,6 @@ private slots:
     void onPropertyValueChanged(const QString &key, const QVariant &value);
 
 signals:
-    void nameChanged();
     void runAfterChanged();
 };
 
