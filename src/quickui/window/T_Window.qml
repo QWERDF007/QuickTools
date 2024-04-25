@@ -38,7 +38,7 @@ ApplicationWindow {
             busyIndicator.close()
         }
 
-        function onShowMessage(level, msg) {
+        function onShowMessage(level, msg) { // 消息通知
             switch (level) {
             case QuickTool.Info: return infobar.showInfo(msg)
             case QuickTool.Warning: return infobar.showWarning(msg)
@@ -53,7 +53,7 @@ ApplicationWindow {
         QuickApp.closeWindow(window)
     }
 
-    QuickPopup {
+    QuickPopup { // 运行状态指示器
         id: busyIndicator
         width: window.width
         height: window.height
@@ -73,19 +73,12 @@ ApplicationWindow {
         }
     }
 
-    QuickLoader {
-        property string loadingText
-        property bool cancel: false
-        id:loader_loading
-        anchors.fill: parent
-    }
-
     QuickInfoBar {
         id: infobar
         root: window
     }
 
-    Shortcut {
+    Shortcut { // 运行快捷键
         enabled: window.enabled
         sequence: StandardKey.Refresh
         onActivated: run()

@@ -20,7 +20,6 @@ Rectangle {
     property color toolbarBorderColor: QuickColor.WindowBackground
     property color itemDisableColor: QuickColor.ItemDisabled
     signal startBtnClicked
-    signal settingBtnClicked
 
     Rectangle {
         id: toolbar
@@ -107,24 +106,6 @@ Rectangle {
                     }
                 }
             }
-        }
-    }
-
-    QuickToolButton {
-        id: settingBtn
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.right
-        anchors.rightMargin: 5
-        implicitWidth: 32
-        implicitHeight: 32
-        disableColor: itemDisableColor
-        icon.source: "/icons/setting"
-        onClicked: settingBtnClicked()
-
-        QuickToolTip {
-            visible: settingBtn.hovered
-            text: qsTr("Setting")
-            delay: 500
         }
     }
 }

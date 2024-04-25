@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import QuickTools.ui
-import QuickTools.core
 
 StackLayout {
     width: 256
@@ -29,8 +28,14 @@ StackLayout {
         paramItemEnable: itemEnable
     }
 
-    Item {
+    HelpInfos {
         id: helpInfos
+        Layout.fillHeight: true
+        Layout.fillWidth: true
+    }
+
+    ToolSettingsView {
+        id: toolSettingsView
         Layout.fillHeight: true
         Layout.fillWidth: true
     }

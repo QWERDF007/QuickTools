@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import QuickTools.ui
-import QuickTools.core
 
 Item {
     id: paramsListView
