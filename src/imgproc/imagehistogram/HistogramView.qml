@@ -7,12 +7,15 @@ import Qt.labs.platform
 import QuickTools.ui
 
 Item {
-    id: histogramContainer
+    id: histogram
     width: 200
     height: 40
     property var histogramsData
     property var histogramsMin
     property var histogramsMax
+    property int tickCount: 11
+    property real barWidth: 1
+    property real chartHeight: 400
 
 
     ListView {
@@ -33,7 +36,7 @@ Item {
         delegate:  ChartView {
             id: chartview
             width: lv.width - 8
-            height: 400
+            height: histogram.chartHeight
             legend.visible: false
             antialiasing: true
 
@@ -50,14 +53,14 @@ Item {
             }
 
             BarSeries {
-                barWidth: 1
+                barWidth: histogram.barWidth
                 //                        labelsAngle: 270
                 //                        labelsVisible: true
                 //                        labelsPosition: AbstractBarSeries.LabelsInsideEnd
                 axisX: ValuesAxis {
-                    tickCount: 11
+                    tickCount: histogram.tickCount
                     min: 0
-                    max: histogramsData === null || histogramsData === undefined ? 255 : histogramsData[index].length - 1
+                    max: histogramsData === null || histogramsData === undefined ? 255 : histogramsData[index].length
                 }
                 onHovered: function(status, i, barset) {
                     if (mouseArea.mouseX + tooltip.contentWidth + 20 > chartview.width) {
