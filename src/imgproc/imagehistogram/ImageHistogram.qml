@@ -47,6 +47,8 @@ T_CVWindow {
                     }
                     return "file:///" + inputParams.pdata.Image
                 }
+                drawingColor: imageHistogramWin.drawingColor
+                drawingBorderColor: imageHistogramWin.drawingBorderColor
                 onRoiDataChanged: function(shapeType, data) {
                     updateROI(shapeType, data)
                 }
