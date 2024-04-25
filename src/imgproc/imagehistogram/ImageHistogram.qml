@@ -7,7 +7,6 @@ import Qt.labs.platform
 import QuickTools.core
 import QuickTools.ui
 
-
 T_CVWindow {
     id: imageHistogramWin
 
@@ -16,6 +15,7 @@ T_CVWindow {
     inputROI: inputParams.roi
     outputParams: quicktool.outputParams
     activateItem: image
+    polygonEnable: false
 
     Component.onCompleted: {
         console.log("quick tool", quicktool.name)

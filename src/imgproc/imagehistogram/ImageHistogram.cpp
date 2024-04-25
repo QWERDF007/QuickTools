@@ -56,6 +56,11 @@ std::tuple<int, QString> ImageHistogram::exec()
     cv::Mat image           = cv::imread(image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
     auto    read_end_time   = std::chrono::high_resolution_clock::now();
 
+    cv::Mat mask;
+    auto roi = input_params->roi();
+    if (roi && !roi->empty())
+        mask = roi->toMask(image.cols, image.rows);
+
     cv::Mat dst;
     if (cvtColor(image, dst, color_space) != 0)
         return {-1, QString("转换到色彩空间 %1 失败").arg(color_space)};
@@ -74,7 +79,7 @@ std::tuple<int, QString> ImageHistogram::exec()
         const auto [range_min, range_max] = range_values;
         float range[] = {range_min, range_max};
         const float* ranges[] = {range};
-        cv::calcHist(&chs[i], 1, 0, cv::noArray(), hist, 1, &hist_size, ranges, false, false);
+        cv::calcHist(&chs[i], 1, 0, mask, hist, 1, &hist_size, ranges, true, false);
         //        cv::normalize(hist, hist, 0, 1, cv::NORM_MINMAX);
         float           min_value{std::numeric_limits<float>::max()};
         float           max_value{std::numeric_limits<float>::min()};
