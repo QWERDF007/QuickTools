@@ -1,9 +1,12 @@
 #pragma once
 
+#include "CoreGlobal.h"
+
+#include <opencv2/core.hpp>
+
 #include <QObject>
 #include <QtQml>
-#include <opencv2/core.hpp>
-#include "CoreGlobal.h"
+
 
 namespace quicktools::core {
 
@@ -21,6 +24,7 @@ public:
     void         setData(const QList<qreal> &data);
 
     bool empty() const;
+
     bool isEmpty() const
     {
         return empty();
@@ -34,7 +38,7 @@ public:
     ROITYpe roiType() const;
     void    setROIType(const ROITYpe roi_type);
 
-    cv::Mat toMask(const int width, const int height, const int fill_value=255) const;
+    cv::Mat toMask(const int width, const int height, const int fill_value = 255) const;
 
 private:
     QList<qreal> data_;

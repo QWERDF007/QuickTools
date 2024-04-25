@@ -19,23 +19,17 @@ const QVariantList COLOR_SPACES{
     "Gray",
 };
 
-
-
 ImageHistogram::ImageHistogram(QObject *parent)
     : core::AbstractCVTool(parent)
 {
 }
 
-std::tuple<int,std::tuple<float,float>> getHistSizeAndRange(const QString& color_space, const int ch)
+std::tuple<int, std::tuple<float, float>> getHistSizeAndRange(const QString &color_space, const int ch)
 {
     if (color_space == "HSV" && ch == 0)
-    {
-        return {180, {0, 180}};
-    }
+        return std::make_tuple(180, std::make_tuple(0.f,180.f));
     else
-    {
-        return {256, {0,256}};
-    }
+        return std::make_tuple(256, std::make_tuple(0.f,256.f));
 }
 
 std::tuple<int, QString> ImageHistogram::exec()
@@ -57,7 +51,7 @@ std::tuple<int, QString> ImageHistogram::exec()
     auto    read_end_time   = std::chrono::high_resolution_clock::now();
 
     cv::Mat mask;
-    auto roi = input_params->roi();
+    auto    roi = input_params->roi();
     if (roi && !roi->empty())
         mask = roi->toMask(image.cols, image.rows);
 
@@ -76,9 +70,10 @@ std::tuple<int, QString> ImageHistogram::exec()
     {
         cv::Mat hist;
         const auto [hist_size, range_values] = getHistSizeAndRange(color_space, static_cast<int>(i));
-        const auto [range_min, range_max] = range_values;
-        float range[] = {range_min, range_max};
-        const float* ranges[] = {range};
+        const auto [range_min, range_max]    = range_values;
+
+        float        range[]  = {range_min, range_max};
+        const float *ranges[] = {range};
         cv::calcHist(&chs[i], 1, 0, mask, hist, 1, &hist_size, ranges, true, false);
         //        cv::normalize(hist, hist, 0, 1, cv::NORM_MINMAX);
         float           min_value{std::numeric_limits<float>::max()};

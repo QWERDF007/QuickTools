@@ -327,9 +327,9 @@ bool AbstractQuickToolParams::setData(const QString &name, const QVariant &value
     return false;
 }
 
-bool AbstractQuickToolParams::addParam(const QString &en_name, const QString &zh_name, const int type, const QVariant &value,
-                                  const QVariant &range, const bool editable, const bool is_property,
-                                  const bool run_after_changed, const bool &visible)
+bool AbstractQuickToolParams::addParam(const QString &en_name, const QString &zh_name, const int type,
+                                       const QVariant &value, const QVariant &range, const bool editable,
+                                       const bool is_property, const bool run_after_changed, const bool &visible)
 {
     if (params_names_.contains(en_name))
     {
