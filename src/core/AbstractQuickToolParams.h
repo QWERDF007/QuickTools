@@ -55,7 +55,7 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickToolParams : public QAbstractListModel
 {
     Q_OBJECT
     // 声明 QML 中可用
-    QML_NAMED_ELEMENT(ToolParams)
+    QML_NAMED_ELEMENT(QuickToolParams)
     // 声明对象不能在 QML 中创建
     QML_UNCREATABLE("Can't not create a AbstractQuickToolParams directly")
     Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖

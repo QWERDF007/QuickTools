@@ -1,4 +1,4 @@
-#include "CVToolParam.h"
+#include "CVToolParams.h"
 
 namespace quicktools::core {
 

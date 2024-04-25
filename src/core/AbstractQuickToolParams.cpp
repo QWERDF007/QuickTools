@@ -1,4 +1,4 @@
-#include "AbstractQuickToolParam.h"
+#include "AbstractQuickToolParams.h"
 
 #include <QStringBuilder>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AbstractQuickToolParam.h"
+#include "AbstractQuickToolParams.h"
 #include "CVToolROI.h"
 
 namespace quicktools::core {

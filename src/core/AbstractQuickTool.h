@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AbstractQuickToolParam.h"
+#include "AbstractQuickToolParams.h"
 #include "CoreGlobal.h"
 #include "QuickToolHelper.h"
 
