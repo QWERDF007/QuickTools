@@ -51,9 +51,9 @@ T.Menu {
         QuickShadow{}
     }
     T.Overlay.modal: Rectangle {
-        color: QuickUITools.withOpacity(control.palette.shadow, 0.5)
+        color: UITools.withOpacity(control.palette.shadow, 0.5)
     }
     T.Overlay.modeless: Rectangle {
-        color: QuickUITools.withOpacity(control.palette.shadow, 0.12)
+        color: UITools.withOpacity(control.palette.shadow, 0.12)
     }
 }

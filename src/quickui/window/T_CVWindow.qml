@@ -24,7 +24,7 @@ T_Window {
     property alias rectangleChecked: _header.rectangleChecked
     property alias circleChecked: _header.circleChecked
     property alias polygonChecked: _header.polygonChecked
-    property color drawingColor: QuickUITools.withOpacity("lightblue", 0.5)
+    property color drawingColor: UITools.withOpacity("lightblue", 0.5)
     property color drawingBorderColor: "red"
 
     property CVInputParams inputParams

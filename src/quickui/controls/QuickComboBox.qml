@@ -48,7 +48,7 @@ T.ComboBox {
         topPadding: 6 - control.padding
         bottomPadding: 6 - control.padding
         renderType: Text.NativeRendering
-        selectionColor: QuickUITools.withOpacity(QuickColor.Primary,0.5)
+        selectionColor: UITools.withOpacity(QuickColor.Primary,0.5)
         selectedTextColor: color
         text: control.editable ? control.editText : control.displayText
         enabled: control.editable
