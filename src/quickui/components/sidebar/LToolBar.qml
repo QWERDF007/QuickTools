@@ -14,7 +14,7 @@ ListView {
         ListElement {text: "输入参数"; icon: "/icons/input"; rotation: 0 }
         ListElement {text: "输出参数"; icon: "/icons/output"; rotation: 180 }
         ListElement {text: "帮助"; icon: "/icons/help"; rotation: 0 }
-        ListElement {text: "设置"; icon: "/icons/setting"; rotation: 0 }
+        ListElement {text: "设置"; icon: "/icons/settings"; rotation: 0 }
     }
 
     delegate: Rectangle {
