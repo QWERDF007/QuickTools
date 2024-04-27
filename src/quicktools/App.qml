@@ -7,7 +7,7 @@ Item {
     id: app
 
     Component.onCompleted: {
-        QuickApp.init(app)
-        QuickApp.navigate("qrc:/qt/qml/QuickTools/window/MainWindow.qml")
+        App.init(app)
+        App.navigate("qrc:/qt/qml/QuickTools/window/MainWindow.qml")
     }
 }

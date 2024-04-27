@@ -1,28 +1,28 @@
-#include "QuickApp.h"
+#include "App.h"
 
 #include <QQuickItem>
 
 namespace quicktools::ui {
 
-QuickApp *QuickApp::instance_ = nullptr;
+App *App::instance_ = nullptr;
 
-QuickApp *QuickApp::getInstance()
+App *App::getInstance()
 {
     if (instance_ == nullptr)
     {
-        instance_ = new QuickApp;
+        instance_ = new App;
     }
     return instance_;
 }
 
-QuickApp *QuickApp::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+App *App::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 {
     Q_UNUSED(qmlEngine)
     Q_UNUSED(jsEngine)
     return getInstance();
 }
 
-void QuickApp::navigate(const QString &route, const QJsonObject &argument)
+void App::navigate(const QString &route, const QJsonObject &argument)
 {
     QQmlComponent component(engine_, route);
     if (component.isError())
@@ -42,13 +42,13 @@ void QuickApp::navigate(const QString &route, const QJsonObject &argument)
     }
 }
 
-void QuickApp::init(QObject *target, QLocale locale)
+void App::init(QObject *target, QLocale locale)
 {
     Q_UNUSED(locale)
     engine_ = qmlEngine(target);
 }
 
-void QuickApp::exit(int exit_code)
+void App::exit(int exit_code)
 {
     for (const auto &[id, window] : windows_.toStdMap())
     {
@@ -58,19 +58,19 @@ void QuickApp::exit(int exit_code)
     qApp->exit(exit_code);
 }
 
-void QuickApp::closeWindow(QObject *target)
+void App::closeWindow(QObject *target)
 {
     QQuickWindow *window{nullptr};
     window = qobject_cast<QQuickWindow *>(target);
     removeWindow(window);
 }
 
-void QuickApp::addWindow(QQuickWindow *window)
+void App::addWindow(QQuickWindow *window)
 {
     windows_.insert(window->winId(), window);
 }
 
-void QuickApp::removeWindow(QQuickWindow *window)
+void App::removeWindow(QQuickWindow *window)
 {
     if (window)
     {
@@ -80,11 +80,11 @@ void QuickApp::removeWindow(QQuickWindow *window)
     }
 }
 
-QuickApp::QuickApp(QObject *parent)
+App::App(QObject *parent)
     : QObject(parent)
 {
 }
 
-QuickApp::~QuickApp() {}
+App::~App() {}
 
 } // namespace quicktools::ui

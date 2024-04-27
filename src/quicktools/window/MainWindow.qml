@@ -69,7 +69,7 @@ Window {
         }
 
         onPositiveClicked:{
-            QuickApp.exit(0)
+            App.exit(0)
         }
     }
 }

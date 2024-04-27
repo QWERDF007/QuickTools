@@ -10,17 +10,17 @@
 
 namespace quicktools::ui {
 
-class QuickApp : public QObject
+class App : public QObject
 {
     Q_OBJECT
-    QML_NAMED_ELEMENT(QuickApp)
+    QML_NAMED_ELEMENT(App)
     QML_SINGLETON
 public:
     /**
      * @brief 获取单例实例的指针
      * @return
      */
-    static QuickApp *getInstance();
+    static App *getInstance();
 
     /**
      * @brief 提供给 QML 创建一个单例实例的静态工厂函数
@@ -28,7 +28,7 @@ public:
      * @param jsEngine
      * @return
      */
-    static QuickApp *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+    static App *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
     Q_INVOKABLE void navigate(const QString &route, const QJsonObject &argument = {});
     Q_INVOKABLE void init(QObject *target, QLocale locale = QLocale::system());
@@ -39,12 +39,12 @@ public:
     void removeWindow(QQuickWindow *window);
 
 private:
-    explicit QuickApp(QObject *parent = nullptr);
-    ~QuickApp();
+    explicit App(QObject *parent = nullptr);
+    ~App();
 
-    Q_DISABLE_COPY_MOVE(QuickApp)
+    Q_DISABLE_COPY_MOVE(App)
 
-    static QuickApp *instance_;
+    static App *instance_;
 
     QMap<quint64, QQuickWindow *> windows_;
     QQmlEngine                   *engine_{nullptr};

@@ -50,7 +50,7 @@ ApplicationWindow {
     }
 
     onClosing: function(close) {
-        QuickApp.closeWindow(window)
+        App.closeWindow(window)
     }
 
     QuickPopup { // 运行状态指示器

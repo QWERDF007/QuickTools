@@ -90,7 +90,7 @@ QuickScrollablePage {
                     }
                     onDoubleClicked: {
                         var args = {icon: modelData.icon}
-                        QuickApp.navigate(modelData.url, args)
+                        App.navigate(modelData.url, args)
                     }
                 }
 
