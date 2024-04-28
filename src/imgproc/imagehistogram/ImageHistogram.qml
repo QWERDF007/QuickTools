@@ -14,6 +14,7 @@ T_CVWindow {
     inputParams: quicktool.inputParams
     inputROI: inputParams.roi
     outputParams: quicktool.outputParams
+    helpInfos: quicktool.doc
     activateItem: image
     polygonEnable: false
 

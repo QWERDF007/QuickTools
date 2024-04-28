@@ -23,11 +23,15 @@ public:
         return QString("图像直方图");
     }
 
+    QString doc() const override;
+
 private:
     int initInputParams() override;
     int initOutputParams() override;
 
     int cvtColor(const cv::Mat &src, cv::Mat &dst, const QString &color_space);
+
+    static QString doc_;
 };
 
 REGISTER_CLASS(core::tooltypes::ImageHistogram, ImageHistogram)

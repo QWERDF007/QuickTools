@@ -18,6 +18,7 @@ Rectangle {
     property alias backgroundColor: lsidebar.border.color
     property alias inputParams: ltoolview.inputParams
     property alias outputParams: ltoolview.outputParams
+    property alias helpInfos: ltoolview.helpInfos
 
     RowLayout {
         anchors.fill: parent

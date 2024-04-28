@@ -13,6 +13,7 @@ ApplicationWindow {
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
     property QuickTool quicktool
+    property string helpInfos: ""
     property bool enabled: true
 
     title: {

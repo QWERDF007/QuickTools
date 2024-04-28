@@ -39,7 +39,8 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
     Q_PROPERTY(AbstractInputParams *inputParams READ inputParams NOTIFY inputParamsChanged FINAL)
     Q_PROPERTY(AbstractOutputParams *outputParams READ outputParams NOTIFY outputParamsChanged FINAL)
     Q_PROPERTY(QuickToolHelper *helper READ helper CONSTANT FINAL)
-    Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL) // FINAL 表明该属性不会被派生类覆盖
+    Q_PROPERTY(QString name READ name CONSTANT FINAL) // FINAL 表明该属性不会被派生类覆盖
+    Q_PROPERTY(QString doc READ doc CONSTANT FINAL)
 public:
     AbstractQuickTool(QObject *parent = nullptr);
     virtual ~AbstractQuickTool();
@@ -48,6 +49,8 @@ public:
     {
         return "AbstractQuickTool";
     }
+
+    virtual QString doc() const = 0;
 
     virtual std::tuple<int, QString> exec() = 0;
 
@@ -123,7 +126,6 @@ private:
 signals:
     void inputParamsChanged();
     void outputParamsChanged();
-    void nameChanged();
     void start();
     void started();
     void finished();

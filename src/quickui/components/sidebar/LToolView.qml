@@ -12,6 +12,7 @@ StackLayout {
     property color itemBorderColor: QuickColor.WindowBackground
     property alias inputParams: inputParamsListView.model
     property alias outputParams: outputParamsListView.model
+    property alias helpInfos: _helpInfos.text
     property bool itemEnable: true
 
     ParamsListView {
@@ -29,7 +30,7 @@ StackLayout {
     }
 
     HelpInfos {
-        id: helpInfos
+        id: _helpInfos
         Layout.fillHeight: true
         Layout.fillWidth: true
     }

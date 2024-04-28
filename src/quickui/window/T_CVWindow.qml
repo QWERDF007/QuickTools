@@ -57,6 +57,7 @@ T_Window {
             SplitView.fillHeight: true
             inputParams: window.inputParams
             outputParams: window.outputParams
+            helpInfos: window.helpInfos
         }
         Item {
             id: container

@@ -4,6 +4,7 @@
 
 #include <QString>
 #include <QtQml>
+#include <QFile>
 #include <chrono>
 #include <vector>
 
@@ -18,6 +19,18 @@ const QVariantList COLOR_SPACES{
     "HSV",
     "Gray",
 };
+
+QString getMarkdown()
+{
+    QFile markdown_file("docs/imgproc/ImageHistogram.md");
+    if (!markdown_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qInfo() << __FUNCTION__ << "打开文件失败" << "docs/imgproc/ImageHistogram.md";
+        return "";
+    }
+    return markdown_file.readAll();
+}
+
+QString ImageHistogram::doc_ = getMarkdown();
 
 ImageHistogram::ImageHistogram(QObject *parent)
     : core::AbstractCVTool(parent)
@@ -105,6 +118,11 @@ std::tuple<int, QString> ImageHistogram::exec()
     output_params->setData("HistMax", QVariant::fromValue(hists_max));
 
     return {0, "运行成功"};
+}
+
+QString ImageHistogram::doc() const
+{
+    return doc_;
 }
 
 int ImageHistogram::cvtColor(const cv::Mat &src, cv::Mat &dst, const QString &color_space)
