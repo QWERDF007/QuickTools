@@ -28,6 +28,12 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         implicitWidth: childrenRect.width
         RowLayout {
+            enabled: {
+                if (activateItem instanceof QuickScalableImage) {
+                    return activateItem.status === Image.Ready
+                }
+                return true
+            }
             anchors.verticalCenter: parent.verticalCenter
             spacing: 1
             Label {
@@ -141,6 +147,16 @@ Rectangle {
                 text: (slider.value * 100).toFixed(2) + "%"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
+                MouseArea {
+                    id: scaleLabel
+                    hoverEnabled: true
+                    anchors.fill: parent
+                }
+                QuickToolTip {
+                    text: qsTr("缩放比例")
+                    visible: scaleLabel.containsMouse
+                    delay: 500
+                }
             }
         }
     }
