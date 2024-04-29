@@ -2,6 +2,8 @@
 
 namespace quicktools::core {
 
+GlobalSettings * GlobalSettings::instance_ = nullptr;
+
 AbstractQuickToolSettings::AbstractQuickToolSettings(QObject *parent) : QAbstractListModel(parent)
 {
 
@@ -16,13 +18,21 @@ int AbstractQuickToolSettings::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    return settings_.size();
+    return std::min(settings_names_.size(), settings_data_.size());
 }
 
 QHash<int, QByteArray> AbstractQuickToolSettings::roleNames() const
 {
     return {
-
+        {IndexRole, "index"},
+        {GroupRole, "group"},
+        {NameRole, "name"},
+        {DisplayNameRole, "displayName"},
+        {TypeRole, "type"},
+        {VisibleRole, "visible"},
+        {ValueRole, "value"},
+        {DisplayRole, "display"},
+        {RangeRole, "range"},
     };
 }
 
@@ -39,6 +49,20 @@ bool AbstractQuickToolSettings::setData(const QModelIndex &index, const QVariant
     Q_UNUSED(value)
     Q_UNUSED(role)
     return false;
+}
+
+void AbstractQuickToolSettings::onPropertyValueChanged(const QString &key, const QVariant &value)
+{
+    int row = settings_names_.indexOf(key);
+    if (row != -1)
+    {
+        setData(createIndex(row, 0), value, ValueRole);
+    }
+}
+
+GlobalSettings::GlobalSettings(QObject *parent) : AbstractQuickToolSettings(parent)
+{
+    // addSetting("")
 }
 
 } // namespace quicktools::core

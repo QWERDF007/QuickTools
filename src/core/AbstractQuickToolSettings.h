@@ -9,14 +9,18 @@ namespace quicktools::core {
 class QUICKTOOLS_CORE_EXPORT AbstractQuickToolSettings : public QAbstractListModel
 {
     Q_OBJECT
-    // 声明 QML 中可用
     QML_NAMED_ELEMENT(QuickToolSettings)
-    // 声明对象不能在 QML 中创建
     QML_UNCREATABLE("Can't not create a AbstractQuickToolSettings directly")
+    Q_PROPERTY(QQmlPropertyMap *pdata READ pdata CONSTANT FINAL)
 public:
     AbstractQuickToolSettings(QObject *parent = nullptr);
 
     virtual ~AbstractQuickToolSettings();
+
+    QQmlPropertyMap *pdata()
+    {
+        return &property_data_;
+    }
 
     virtual QString name() const = 0;
 
@@ -28,8 +32,76 @@ public:
 
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
+    bool addSetting(const QString& group, const QString &en_name, const QString &zh_name, const int type, const QVariant &value,
+                    const QVariant &range = QVariant(), const bool &visible = true);
+
+    enum SettingsRole
+    {
+        IndexRole = Qt::UserRole + 1,
+        GroupRole,
+        NameRole,
+        DisplayNameRole,
+        TypeRole,
+        VisibleRole,
+        ValueRole,
+        DisplayRole,
+        RangeRole,
+    };
+    Q_ENUM(SettingsRole)
+
 private:
-    QMap<QString, QMap<int, QVariant>> settings_;   // [name, [key, value]]
+    QList<QString>                     settings_names_; // [name]
+    QMap<QString, QMap<int, QVariant>> settings_data_;  // [name, [key, value]]
+    QQmlPropertyMap                    property_data_;  // QML 中可直接访问和修改对应 key 的属性
+
+private slots:
+    void onPropertyValueChanged(const QString &key, const QVariant &value);
 };
+
+class QUICKTOOLS_CORE_EXPORT GlobalSettings : public AbstractQuickToolSettings
+{
+    Q_OBJECT
+    QML_NAMED_ELEMENT(GlobalSettings)
+    QML_UNCREATABLE("Can't not create a AbstractQuickToolSettings directly")
+    QML_SINGLETON
+public:
+
+    QString name() const override
+    {
+        return "GlobalSettings";
+    }
+
+    /**
+     * @brief 获取单例实例的指针
+     * @return
+     */
+    static GlobalSettings *getInstance()
+    {
+        if (instance_ == nullptr)
+        {
+            instance_ = new GlobalSettings;
+        }
+        return instance_;
+    }
+
+    /**
+     * @brief 提供给 QML 创建一个单例实例的静态工厂函数
+     * @param qmlEngine
+     * @param jsEngine
+     * @return
+     */
+    static GlobalSettings *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+    {
+        Q_UNUSED(qmlEngine)
+        Q_UNUSED(jsEngine)
+        return getInstance();
+    }
+
+private:
+    explicit GlobalSettings(QObject *parent = nullptr);
+
+    static GlobalSettings *instance_;
+};
+
 
 } // namespace quicktools::core

@@ -111,7 +111,7 @@ public:
     }
 
 protected:
-    QVector<QString>                   params_names_;  // [name]
+    QList<QString>                   params_names_;  // [name]
     QMap<QString, QMap<int, QVariant>> params_data_;   // [name, [key, value]]
     QQmlPropertyMap                    property_data_; // QML 中可直接访问和修改对应 key 的属性
 
