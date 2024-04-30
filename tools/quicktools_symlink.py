@@ -24,11 +24,6 @@ def dir_symlinks(link_dir, target_dir):
         link.symlink_to(target, target_is_directory=True)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--target', type=str, default='./build/QuickTools', metavar='TARGET', help='directory library output')
-    parser.add_argument('--link', type=str, default='./build/bin/QuickTools', metavar='LINK', help='directory to runtime output')
-    parser.add_argument('-cfg', '--config', type=str, default='debug', choices=['release', 'debug'], help='windows config, debug or release')
-    args = parser.parse_args()
-    
-    dir_symlinks(args.link, args.target)
+    dir_symlinks('./build/bin/QuickTools', './build/QuickTools')
+    dir_symlinks('./build/bin/docs', './docs')
         
