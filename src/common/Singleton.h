@@ -1,5 +1,6 @@
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#pragma once
+
+namespace quicktools::common {
 
 /**
  * @brief The Singleton class
@@ -18,14 +19,26 @@ T *Singleton<T>::getInstance()
     return instance;
 }
 
-#define SINGLETON(Class)                                             \
+} // namespace quicktools::common
+
+#define SINGLETON(Class)                                            \
+private:                                                            \
+    friend class quicktools::common::Singleton<Class>;              \
+                                                                    \
+public:                                                             \
+    static Class *getInstance()                                     \
+    {                                                               \
+        return quicktools::common::Singleton<Class>::getInstance(); \
+    }
+
+#define QT_QML_SINGLETON(Class)                                      \
 private:                                                             \
-    friend class Singleton<Class>;                                   \
+    friend class quicktools::common::Singleton<Class>;               \
                                                                      \
 public:                                                              \
     static Class *getInstance()                                      \
     {                                                                \
-        return Singleton<Class>::getInstance();                      \
+        return quicktools::common::Singleton<Class>::getInstance();  \
     }                                                                \
                                                                      \
     static Class *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine) \
@@ -34,5 +47,3 @@ public:                                                              \
         Q_UNUSED(jsEngine)                                           \
         return getInstance();                                        \
     }
-
-#endif // SINGLETON_H
