@@ -2,9 +2,9 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <QFile>
 #include <QString>
 #include <QtQml>
-#include <QFile>
 #include <chrono>
 #include <vector>
 
@@ -23,10 +23,8 @@ const QVariantList COLOR_SPACES{
 QString getMarkdown()
 {
     QFile markdown_file("docs/imgproc/ImageHistogram.md");
-    if (!markdown_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qInfo() << __FUNCTION__ << "打开文件失败" << "docs/imgproc/ImageHistogram.md";
+    if (!markdown_file.open(QIODevice::ReadOnly | QIODevice::Text))
         return "";
-    }
     return markdown_file.readAll();
 }
 
@@ -40,9 +38,9 @@ ImageHistogram::ImageHistogram(QObject *parent)
 std::tuple<int, std::tuple<float, float>> getHistSizeAndRange(const QString &color_space, const int ch)
 {
     if (color_space == "HSV" && ch == 0)
-        return std::make_tuple(180, std::make_tuple(0.f,180.f));
+        return std::make_tuple(180, std::make_tuple(0.f, 180.f));
     else
-        return std::make_tuple(256, std::make_tuple(0.f,256.f));
+        return std::make_tuple(256, std::make_tuple(0.f, 256.f));
 }
 
 std::tuple<int, QString> ImageHistogram::exec()
