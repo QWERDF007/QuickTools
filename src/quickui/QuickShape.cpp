@@ -2,7 +2,6 @@
 
 #include <QPainter>
 
-
 namespace quicktools::ui {
 
 QuickPen::QuickPen(QObject *parent)

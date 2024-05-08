@@ -2,8 +2,6 @@
 
 namespace quicktools::ui {
 
-QuickFont *QuickFont::instance_ = nullptr;
-
 QuickFont::QuickFont(QObject *parent)
     : QObject(parent)
 {
@@ -39,17 +37,6 @@ QuickFont::QuickFont(QObject *parent)
     display.setPixelSize(68);
     display.setWeight(QFont::DemiBold);
     Display(display);
-}
-
-QuickFont::~QuickFont() {}
-
-QuickFont *QuickFont::getInstance()
-{
-    if (instance_ == nullptr)
-    {
-        instance_ = new QuickFont;
-    }
-    return instance_;
 }
 
 } // namespace quicktools::ui

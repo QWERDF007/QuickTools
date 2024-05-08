@@ -10,22 +10,22 @@ enum ROIListModelRole
     ROIHeightRole,
 };
 
-
-QuickROI::QuickROI(QObject *parent) : QObject(parent)
+QuickROI::QuickROI(QObject *parent)
+    : QObject(parent)
 {
     data_ = QMap<int, QVariant>{
-                                {ROIVisible, QVariant()},
-                                {ROISelected, QVariant()},
-                                {ROIXRole, QVariant()},
-                                {ROIYRole, QVariant()},
-                                {ROIWidthRole, QVariant()},
-                                {ROIHeightRole, QVariant()},
-                                };
+        {   ROIVisible, QVariant()},
+        {  ROISelected, QVariant()},
+        {     ROIXRole, QVariant()},
+        {     ROIYRole, QVariant()},
+        { ROIWidthRole, QVariant()},
+        {ROIHeightRole, QVariant()},
+    };
 }
 
-QuickROI::QuickROI(const QuickROI &other) : data_{other.data_}
+QuickROI::QuickROI(const QuickROI &other)
+    : data_{other.data_}
 {
-
 }
 
 QuickROI &QuickROI::operator=(const QuickROI &other)
@@ -47,15 +47,15 @@ bool QuickROI::setData(int role, const QVariant &value)
     return true;
 }
 
-
-
-QuickROIListModel::QuickROIListModel(QObject *parent) : QAbstractListModel{parent}
+QuickROIListModel::QuickROIListModel(QObject *parent)
+    : QAbstractListModel{parent}
 {
-
 }
 
 int QuickROIListModel::rowCount(const QModelIndex &parent) const
 {
+    if (parent.isValid())
+        return 0;
     return roi_list_.size();
 }
 
@@ -106,13 +106,13 @@ bool QuickROIListModel::removeRows(int row, int count, const QModelIndex &parent
 QHash<int, QByteArray> QuickROIListModel::roleNames() const
 {
     return {
-            {ROIVisible, "visible"},
-            {ROISelected, "selected"},
-            {ROIXRole, "x"},
-            {ROIYRole, "y"},
-            {ROIWidthRole, "width"},
-            {ROIHeightRole, "height"},
-            };
+        {   ROIVisible,  "visible"},
+        {  ROISelected, "selected"},
+        {     ROIXRole,        "x"},
+        {     ROIYRole,        "y"},
+        { ROIWidthRole,    "width"},
+        {ROIHeightRole,   "height"},
+    };
 }
 
 void QuickROIListModel::addROI(double x, double y, double width, double height)
@@ -128,8 +128,4 @@ void QuickROIListModel::addROI(double x, double y, double width, double height)
     setData(_index, height, ROIHeightRole);
 }
 
-void QuickROIListModel::deleteROI(int index)
-{
-
-}
-
+void QuickROIListModel::deleteROI(int index) {}

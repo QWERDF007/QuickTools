@@ -7,7 +7,10 @@ namespace quicktools::ui {
 QuickColor *QuickColor::instance_ = nullptr;
 
 /**
- * 注意不能使用返回静态变量的指针, 会报错 _CrtlsValidHeapPointer(block)
+ * @note: 不能使用返回静态局部变量的指针, 否则结束时会报错 _CrtlsValidHeapPointer(block),
+ *        应该是 Qt 对指针进行了 delete, 然后结束时静态变量又自己 delete, 导致 double delete.
+ * @note: 此实现不是Meyers' Singleton! 可能存在问题?
+ *        参考: https://www.zhihu.com/question/56527586/answer/2344903391
  */
 QuickColor *QuickColor::getInstance()
 {

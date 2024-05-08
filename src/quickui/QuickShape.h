@@ -62,7 +62,13 @@ public:
 
     QuickPen *border();
 
-    enum QuickShapeType { NoShape, Rectangle, Circle, Polygon };
+    enum QuickShapeType
+    {
+        NoShape,
+        Rectangle,
+        Circle,
+        Polygon
+    };
     Q_ENUM(QuickShapeType)
 
     virtual QuickShapeType shapeType() const = 0;

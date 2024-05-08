@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Macros.h"
+#include "Singleton.h"
 
 #include <QFont>
 #include <QObject>
@@ -31,33 +32,12 @@ class QuickFont : public QObject
     QML_SINGLETON
 
 public:
-    /**
-     * @brief 获取单例实例的指针
-     * @return
-     */
-    static QuickFont *getInstance();
-
-    /**
-     * @brief 提供给 QML 创建一个单例实例的静态工厂函数
-     * @param qmlEngine
-     * @param jsEngine
-     * @return
-     */
-    static QuickFont *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
-    {
-        Q_UNUSED(qmlEngine)
-        Q_UNUSED(jsEngine)
-        return getInstance();
-    }
+    QT_QML_SINGLETON(QuickFont)
 
 private:
     explicit QuickFont(QObject *parent = nullptr);
-    ~QuickFont();
 
-    /**
-     * @brief 单例实例指针
-     */
-    static QuickFont *instance_;
+    ~QuickFont() {}
 
     /**
      * 禁用拷贝和移动构造和运算符

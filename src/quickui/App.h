@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Macros.h"
+#include "Singleton.h"
 
 #include <QJsonObject>
 #include <QObject>
@@ -16,19 +16,7 @@ class App : public QObject
     QML_NAMED_ELEMENT(App)
     QML_SINGLETON
 public:
-    /**
-     * @brief 获取单例实例的指针
-     * @return
-     */
-    static App *getInstance();
-
-    /**
-     * @brief 提供给 QML 创建一个单例实例的静态工厂函数
-     * @param qmlEngine
-     * @param jsEngine
-     * @return
-     */
-    static App *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+    QT_QML_SINGLETON(App)
 
     Q_INVOKABLE void navigate(const QString &route, const QJsonObject &argument = {});
     Q_INVOKABLE void init(QObject *target, QLocale locale = QLocale::system());
@@ -44,7 +32,7 @@ private:
 
     Q_DISABLE_COPY_MOVE(App)
 
-    static App *instance_;
+    //    static App *instance_;
 
     QMap<quint64, QQuickWindow *> windows_;
     QQmlEngine                   *engine_{nullptr};

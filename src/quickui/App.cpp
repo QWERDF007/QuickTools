@@ -4,24 +4,6 @@
 
 namespace quicktools::ui {
 
-App *App::instance_ = nullptr;
-
-App *App::getInstance()
-{
-    if (instance_ == nullptr)
-    {
-        instance_ = new App;
-    }
-    return instance_;
-}
-
-App *App::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
-{
-    Q_UNUSED(qmlEngine)
-    Q_UNUSED(jsEngine)
-    return getInstance();
-}
-
 void App::navigate(const QString &route, const QJsonObject &argument)
 {
     QQmlComponent component(engine_, route);
