@@ -34,10 +34,4 @@ StackLayout {
         Layout.fillHeight: true
         Layout.fillWidth: true
     }
-
-    ToolSettingsView {
-        id: toolSettingsView
-        Layout.fillHeight: true
-        Layout.fillWidth: true
-    }
 }
