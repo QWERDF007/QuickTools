@@ -52,7 +52,7 @@ Item {
     property bool drawing: false
 
     property int shapeType: QuickShape.NoShape
-    property var roiItem:  roiLoader.item
+    property var roiItem: roiLoader.item
     signal roiDataChanged(int shapeType, var data)
 
     MouseArea {
@@ -177,16 +177,17 @@ Item {
     }
 
     onShapeTypeChanged: {
-        if (scalableImage.shapeType === QuickShape.Rectangle) {
-            scalableImage.roiDataChanged(QuickShape.NoShape, [])
+        if (scalableImage.shapeType === QuickShape.Rectangle && roiLoader.sourceComponent !== roi_rect) {
             roiLoader.sourceComponent = roi_rect
-            scalableImage.setCursorShape(Qt.CrossCursor)
-        } else if (scalableImage.shapeType === QuickShape.Circle) {
+            scalableImage.roiDataChanged(QuickShape.NoShape, [])
+        } else if (scalableImage.shapeType === QuickShape.Circle && roiLoader.sourceComponent !== roi_circle) {
             scalableImage.roiDataChanged(QuickShape.NoShape, [])
             roiLoader.sourceComponent = roi_circle
-            scalableImage.setCursorShape(Qt.CrossCursor)
         } else if (scalableImage.shapeType === QuickShape.Polygon) {
 
+        }
+        if (scalableImage.shapeType !== QuickShape.NoShape && scalableImage.status === Image.Ready) {
+            scalableImage.setCursorShape(Qt.CrossCursor)
         } else {
             scalableImage.setCursorShape(Qt.ArrowCursor)
         }
