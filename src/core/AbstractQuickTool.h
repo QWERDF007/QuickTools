@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AbstractQuickToolParams.h"
+#include "AbstractQuickToolSettings.h"
 #include "CoreGlobal.h"
 #include "QuickToolHelper.h"
 
@@ -36,8 +37,9 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
     // 声明对象不能在 QML 中创建
     QML_UNCREATABLE("Can't not create a AbstractQuickTool directly")
 
-    Q_PROPERTY(AbstractInputParams *inputParams READ inputParams NOTIFY inputParamsChanged FINAL)
-    Q_PROPERTY(AbstractOutputParams *outputParams READ outputParams NOTIFY outputParamsChanged FINAL)
+    Q_PROPERTY(AbstractInputParams *inputParams READ inputParams CONSTANT FINAL)
+    Q_PROPERTY(AbstractOutputParams *outputParams READ outputParams CONSTANT FINAL)
+    Q_PROPERTY(AbstractQuickToolSettings *settings READ settings CONSTANT FINAL)
     Q_PROPERTY(QuickToolHelper *helper READ helper CONSTANT FINAL)
     Q_PROPERTY(QString name READ name CONSTANT FINAL) // FINAL 表明该属性不会被派生类覆盖
     Q_PROPERTY(QString doc READ doc CONSTANT FINAL)
@@ -58,8 +60,9 @@ public:
 
     void run() override;
 
-    virtual AbstractInputParams  *inputParams() const  = 0;
-    virtual AbstractOutputParams *outputParams() const = 0;
+    virtual AbstractInputParams       *inputParams()  = 0;
+    virtual AbstractOutputParams      *outputParams() = 0;
+    virtual AbstractQuickToolSettings *settings()     = 0;
 
     /**
      * @brief 添加一个算法运行时间
@@ -124,21 +127,21 @@ private:
     int checkOutputParams();
 
 signals:
-    void inputParamsChanged();
-    void outputParamsChanged();
     void start();
     void started();
     void finished();
     void showMessage(int, const QString &);
 };
 
-template<class InputParams, class OutputParams>
+template<class InputParams, class OutputParams, class Settings>
 class QUICKTOOLS_CORE_EXPORT AbstractTool : public AbstractQuickTool
 {
     static_assert(std::is_base_of<AbstractInputParams, InputParams>::value,
                   "InputParams must be subclass of AbstractInputParams");
     static_assert(std::is_base_of<AbstractOutputParams, OutputParams>::value,
                   "OutputParams must be subclass of AbstractOutputParams");
+    static_assert(std::is_base_of<AbstractQuickToolSettings, Settings>::value,
+                  "Settings must be subclass of AbstractQuickToolSettings");
 
 public:
     AbstractTool(QObject *parent = nullptr)
@@ -146,34 +149,46 @@ public:
     {
         input_params_  = new InputParams(this);
         output_params_ = new OutputParams(this);
+        settings_      = new Settings(this);
         connect(input_params_, &AbstractInputParams::runAfterChanged, this, &AbstractQuickTool::submit);
     }
 
     virtual ~AbstractTool() {}
 
-    AbstractInputParams *inputParams() const override
+    AbstractInputParams *inputParams() override
     {
         return getInputParams();
     }
 
-    InputParams *getInputParams() const
+    InputParams *getInputParams()
     {
         return input_params_;
     }
 
-    AbstractOutputParams *outputParams() const override
+    AbstractOutputParams *outputParams() override
     {
         return getOutputParams();
     }
 
-    OutputParams *getOutputParams() const
+    OutputParams *getOutputParams()
     {
         return output_params_;
+    }
+
+    AbstractQuickToolSettings *settings() override
+    {
+        return settings_;
+    }
+
+    Settings getSettings()
+    {
+        return settings_;
     }
 
 protected:
     InputParams  *input_params_{nullptr};
     OutputParams *output_params_{nullptr};
+    Settings     *settings_{nullptr};
 };
 
 class QUICKTOOLS_CORE_EXPORT QuickToolFactor : public QObject

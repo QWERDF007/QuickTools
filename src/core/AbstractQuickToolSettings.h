@@ -1,8 +1,10 @@
 #pragma once
 
-#include <QAbstractListModel>
-#include <QtQml>
 #include "CoreGlobal.h"
+
+#include <QAbstractListModel>
+#include <QQmlPropertyMap>
+#include <QtQml>
 
 namespace quicktools::core {
 
@@ -26,19 +28,11 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QHash<int, QByteArray> roleNames() const override;
-
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
-
-    bool addSetting(const QString& group, const QString &en_name, const QString &zh_name, const int type, const QVariant &value,
-                    const QVariant &range = QVariant(), const bool &visible = true);
-
     enum SettingsRole
     {
         IndexRole = Qt::UserRole + 1,
         GroupRole,
+        GroupNameRole,
         NameRole,
         DisplayNameRole,
         TypeRole,
@@ -49,10 +43,42 @@ public:
     };
     Q_ENUM(SettingsRole)
 
+    QHash<int, QByteArray> roleNames() const override;
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+
+    enum SettingsType
+    {
+        CheckBoxType = 0,
+        SpinBoxType,
+        DoubleSpinBoxType,
+        ComboBoxType,
+    };
+    Q_ENUM(SettingsType)
+
+    enum SettingsGroup
+    {
+        Basic = 0,
+        Drawing,
+        Custom = 256,
+    };
+
+    bool addGroup(const int group, const QString &group_name);
+
+    bool addSetting(const int group, const QString &name, const QString &display_name, const int type,
+                    const QVariant &value, const QVariant &range = QVariant(), const bool &visible = true);
+
+    QMap<QString, QMap<int, QVariant>> settings(const int group = -1) const;
+
+    std::tuple<int, QString> copyFrom(AbstractQuickToolSettings *other, const int group = -1);
+
 private:
     QList<QString>                     settings_names_; // [name]
     QMap<QString, QMap<int, QVariant>> settings_data_;  // [name, [key, value]]
-    QQmlPropertyMap                    property_data_;  // QML 中可直接访问和修改对应 key 的属性
+    QQmlPropertyMap    property_data_; // [key, value] QML 中可直接访问和修改对应 key 的属性
+    QMap<int, QString> groups_;        // [key, name]
 
 private slots:
     void onPropertyValueChanged(const QString &key, const QVariant &value);
@@ -65,7 +91,6 @@ class QUICKTOOLS_CORE_EXPORT GlobalSettings : public AbstractQuickToolSettings
     QML_UNCREATABLE("Can't not create a AbstractQuickToolSettings directly")
     QML_SINGLETON
 public:
-
     QString name() const override
     {
         return "GlobalSettings";
@@ -99,9 +124,9 @@ public:
 
 private:
     explicit GlobalSettings(QObject *parent = nullptr);
+    void addBasicSettings();
 
     static GlobalSettings *instance_;
 };
-
 
 } // namespace quicktools::core
