@@ -64,10 +64,11 @@ public:
 
     enum QuickShapeType
     {
-        NoShape,
-        Rectangle,
-        Circle,
-        Polygon
+        NoShape   = 0x00000000,
+        Rectangle = 0x00000001,
+        Circle    = 0x00000002,
+        Polygon   = 0x00000004,
+        AllShapes = 0x07ffffff,
     };
     Q_ENUM(QuickShapeType)
 

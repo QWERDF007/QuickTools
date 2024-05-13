@@ -91,4 +91,8 @@ ApplicationWindow {
         }
         quicktool.submit()
     }
+
+    function openSettings() {
+        console.log("balabala")
+    }
 }

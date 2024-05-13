@@ -16,7 +16,7 @@ T_CVWindow {
     outputParams: quicktool.outputParams
     helpInfos: quicktool.doc
     activateItem: image
-    polygonEnable: false
+    acceptedShapes: QuickShape.Rectangle | QuickShape.Circle
 
     Component.onCompleted: {
         console.log("quick tool", quicktool.name)

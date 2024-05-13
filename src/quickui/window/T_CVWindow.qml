@@ -18,12 +18,7 @@ T_Window {
     default property alias content: container.data
     property var activateItem
 
-    property alias rectangleEnable: _header.rectangleEnable
-    property alias circleEnable: _header.circleEnable
-    property alias polygonEnable: _header.polygonEnable
-    property alias rectangleChecked: _header.rectangleChecked
-    property alias circleChecked: _header.circleChecked
-    property alias polygonChecked: _header.polygonChecked
+    property alias acceptedShapes: _header.acceptedShapes
     property color drawingColor: UITools.withOpacity("lightblue", 0.5)
     property color drawingBorderColor: "red"
 
@@ -41,6 +36,7 @@ T_Window {
         height: 40
         activateItem: window.activateItem
         onStartBtnClicked: run()
+        onSettingsBtnClicked: openSettings()
     }
 
 
