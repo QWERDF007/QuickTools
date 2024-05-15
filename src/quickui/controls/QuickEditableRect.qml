@@ -11,10 +11,9 @@ QuickRectangle {
     property var roiData: [] // 矩形数据
     property point startPoint // 绘制起点, 坐标系是 parent 上的
 
-
     color: "transparent"
     border.color: "red"
-    border.width: selected ? 2 : 1
+    border.width: selected ? 3 : 1
 
     property QtObject inner: QtObject {
         property real left: 0
@@ -38,8 +37,6 @@ QuickRectangle {
             roiData = []
         }
     }
-
-
 
     MouseArea {
         id: mouseArea
@@ -178,6 +175,12 @@ QuickRectangle {
             } else {
                 editableRect.setCursorShape(Qt.ArrowCursor)
             }
+        }
+    }
+
+    Keys.onDeletePressed: {
+        if (editableRect.selected) {
+            editableRect.clear()
         }
     }
 

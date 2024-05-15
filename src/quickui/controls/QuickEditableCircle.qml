@@ -13,7 +13,7 @@ QuickCircle {
 
     color: "transparent"
     border.color: "red"
-    border.width: selected ? 2 : 1
+    border.width: selected ? 3 : 1
 
     property QtObject inner: QtObject {
         property real left: 0
@@ -36,8 +36,6 @@ QuickCircle {
             roiData = []
         }
     }
-
-
 
     MouseArea {
         id: mouseArea
@@ -121,6 +119,12 @@ QuickCircle {
             } else {
                 editableCircle.setCursorShape(Qt.ArrowCursor)
             }
+        }
+    }
+
+    Keys.onDeletePressed: {
+        if (editableCircle.selected) {
+            editableCircle.clear()
         }
     }
 
