@@ -64,6 +64,10 @@ Item {
         hoverEnabled: true
         acceptedButtons: Qt.AllButtons
 
+        onEntered: {
+            scalableImage.forceActiveFocus()
+        }
+
         onPressed: function (mouse) {
             scalableImage.forceActiveFocus()
             if (mouse.button === Qt.LeftButton) {
@@ -124,9 +128,9 @@ Item {
     Keys.onPressed: function(event) {
         if (event.key === Qt.Key_Control) {
             if (mouseArea.containsPress) {
-                setCursorShape(Qt.ClosedHandCursor)
+                scalableImage.setCursorShape(Qt.ClosedHandCursor)
             } else {
-                setCursorShape(Qt.OpenHandCursor)
+                scalableImage.setCursorShape(Qt.OpenHandCursor)
             }
         } else if (event.key === Qt.Key_Space) {
             fitInView()
@@ -141,7 +145,7 @@ Item {
 
     Keys.onReleased: function(event) {
         if (event.key === Qt.Key_Control && !mouseArea.containsPress) {
-            setCursorShape(Qt.ArrowCursor)
+            scalableImage.setCursorShape(scalableImage.shapeType !== QuickShape.NoShape ? Qt.CrossCursor : Qt.ArrowCursor)
         }
     }
 
