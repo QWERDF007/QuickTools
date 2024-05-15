@@ -20,6 +20,7 @@ T_Header {
                 implicitHeight: 32
                 disableColor: itemDisableColor
                 icon.source: "/icons/square"
+                icon.color: checked ? "#009688" : palette.buttonText
                 onToggled: {
                     circleBtn.checked = false
                     polygonBtn.checked = false
@@ -38,6 +39,7 @@ T_Header {
                 implicitHeight: 32
                 disableColor: itemDisableColor
                 icon.source: "/icons/circle"
+                icon.color: checked ? "#009688" : palette.buttonText
                 onToggled: {
                     rectangleBtn.checked = false
                     polygonBtn.checked = false
@@ -56,6 +58,7 @@ T_Header {
                 implicitHeight: 32
                 disableColor: itemDisableColor
                 icon.source: "/icons/polygon"
+                icon.color: checked ? "#009688" : palette.buttonText
                 onToggled: {
                     rectangleBtn.checked = false
                     circleBtn.checked = false
