@@ -5,8 +5,13 @@
 #include <QPalette>
 #include <QQmlApplicationEngine>
 
+#include "CrashHandler.h"
+
 int main(int argc, char *argv[])
 {
+    quicktools::common::CrashHandler crash_handler;
+    crash_handler.setup();
+
     QApplication          app(argc, argv);
     QQmlApplicationEngine engine;
 

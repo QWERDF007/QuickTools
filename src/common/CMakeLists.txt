@@ -39,6 +39,12 @@ target_link_libraries(${TARGET_NAME}
         Qt6::Core
 )
 
+if (WIN32)
+    target_link_libraries(${TARGET_NAME} PRIVATE Dbghelp)
+else()
+    target_link_libraries(${TARGET_NAME} PRIVATE dl)
+endif()
+
 # 添加一个宏定义, 配合动态库导出函数、类
 # https://stackoverflow.com/a/67923443
 add_compile_definitions(${TARGET_NAME} PRIVATE ${TARGET_EXPORTS})

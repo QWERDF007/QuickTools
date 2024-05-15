@@ -61,4 +61,5 @@ PRIVATE
     QuickTools_core QuickTools_core_headers
     QuickTools_imgproc QuickTools_imgproc_headers
     QuickTools_ui
+    QuickTools_common QuickTools_common_headers
 )
