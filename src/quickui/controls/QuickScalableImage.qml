@@ -57,6 +57,7 @@ Item {
 
     MouseArea {
         id: mouseArea
+        enabled: scalableImage.visible && scalableImage.status === Image.Ready
         anchors.fill: parent
         drag.target: scalableImage.imageDragEnable ? _image : null
         drag.axis: Drag.XAndYAxis
@@ -91,14 +92,10 @@ Item {
                 if (mouse.modifiers & Qt.ControlModifier) {
                     setCursorShape(Qt.OpenHandCursor)
                 } else {
-                    setCursorShape(Qt.ArrowCursor)
                     if (roiItem) { // != null && != undefined
-                        if (roiItem.selected) {
-                            roiItem.setCursorShape(Qt.SizeAllCursor)
-                        } else {
-                            roiItem.setCursorShape(Qt.ArrowCursor)
-                        }
+                        roiItem.setCursorShape(roiItem.selected ? Qt.SizeAllCursor : Qt.ArrowCursor)
                     }
+                    scalableImage.setCursorShape(scalableImage.shapeType !== QuickShape.NoShape ? Qt.CrossCursor : Qt.ArrowCursor)
                 }
             } else if (mouse.button === Qt.LeftButton) {
                 if (scalableImage.drawing) {
