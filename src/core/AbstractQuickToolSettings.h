@@ -55,14 +55,15 @@ public:
         SpinBoxType,
         DoubleSpinBoxType,
         ComboBoxType,
+        ColorDialogType,
     };
     Q_ENUM(SettingsType)
 
     enum SettingsGroup
     {
-        Basic = 0,
-        Drawing,
-        Custom = 256,
+        BasicGroup = 0,
+        DrawingGroup,
+        UserGroup = 256,
     };
 
     bool addGroup(const int group, const QString &group_name);
@@ -71,6 +72,8 @@ public:
                     const QVariant &value, const QVariant &range = QVariant(), const bool &visible = true);
 
     QMap<QString, QMap<int, QVariant>> settings(const int group = -1) const;
+
+    QString groupName(const int group) const;
 
     std::tuple<int, QString> copyFrom(AbstractQuickToolSettings *other, const int group = -1);
 

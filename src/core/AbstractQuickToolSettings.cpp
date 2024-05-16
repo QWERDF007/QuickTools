@@ -24,6 +24,7 @@ QHash<int, QByteArray> AbstractQuickToolSettings::roleNames() const
     return {
         {      SettingsRole::IndexRole,       "index"},
         {      SettingsRole::GroupRole,       "group"},
+        {      SettingsRole::GroupNameRole,   "groupName"},
         {       SettingsRole::NameRole,        "name"},
         {SettingsRole::DisplayNameRole, "displayName"},
         {       SettingsRole::TypeRole,        "type"},
@@ -40,6 +41,11 @@ QVariant AbstractQuickToolSettings::data(const QModelIndex &index, int role) con
         return QVariant();
     const QString &setting_name = settings_names_[index.row()];
     auto           setting_data = settings_data_.find(setting_name);
+    if (role == SettingsRole::GroupNameRole)
+    {
+        const int group = setting_data->value(SettingsRole::GroupRole, -1).toInt();
+        return groupName(group);
+    }
     return setting_data->value(role, QVariant());
 }
 
@@ -104,11 +110,20 @@ QMap<QString, QMap<int, QVariant>> AbstractQuickToolSettings::settings(const int
     return settings_data;
 }
 
+QString AbstractQuickToolSettings::groupName(const int group) const
+{
+    auto found = groups_.find(group);
+    if (found == groups_.end())
+        return "";
+    return found.value();
+}
+
 std::tuple<int, QString> AbstractQuickToolSettings::copyFrom(AbstractQuickToolSettings *other, const int group)
 {
     if (other == nullptr)
         return {-1, "复制目标为空"};
     auto settings = other->settings(group);
+    addGroup(group, other->groupName(group));
     for (auto iter = settings.constBegin(); iter != settings.constEnd(); ++iter)
     {
         const auto setting = iter.value();
@@ -136,9 +151,8 @@ GlobalSettings::GlobalSettings(QObject *parent)
 
 void GlobalSettings::addBasicSettings()
 {
-    addGroup(SettingsGroup::Basic, "Basic Settings");
-    addSetting(SettingsGroup::Basic, "Run After Changed", "改变后运行", SettingsType::CheckBoxType, true, QVariant(),
-               true);
+    addGroup(SettingsGroup::BasicGroup, "Basic Settings");
+    addSetting(SettingsGroup::BasicGroup, "Run After Changed", tr("改变后运行"), SettingsType::CheckBoxType, true);
 }
 
 } // namespace quicktools::core

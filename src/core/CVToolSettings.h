@@ -14,6 +14,9 @@ public:
     {
         return "CVToolSettings";
     }
+
+private:
+    void addCVBasicSettings();
 };
 
 } // namespace quicktools::core

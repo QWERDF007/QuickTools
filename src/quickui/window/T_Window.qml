@@ -14,6 +14,8 @@ ApplicationWindow {
 
     property QuickTool quicktool
     property string helpInfos: quicktool ? quicktool.doc : ""
+    property QuickToolSettings toolSettings: quicktool ? quicktool.settings : null
+
     property bool enabled: true
 
     title: {
@@ -87,6 +89,7 @@ ApplicationWindow {
 
     ToolSettingsDialog {
         id: toolSettingsDialog
+        settingsModel: window.toolSettings
         width: 800
         height: 600
     }
