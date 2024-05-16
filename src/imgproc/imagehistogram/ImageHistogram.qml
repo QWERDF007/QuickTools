@@ -11,10 +11,6 @@ T_CVWindow {
     id: imageHistogramWin
 
     quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram, imageHistogramWin)
-    inputParams: quicktool.inputParams
-    inputROI: inputParams.roi
-    outputParams: quicktool.outputParams
-    helpInfos: quicktool.doc
     activateItem: image
     acceptedShapes: QuickShape.Rectangle | QuickShape.Circle
 

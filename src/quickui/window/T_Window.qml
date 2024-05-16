@@ -13,7 +13,7 @@ ApplicationWindow {
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
     property QuickTool quicktool
-    property string helpInfos: ""
+    property string helpInfos: quicktool ? quicktool.doc : ""
     property bool enabled: true
 
     title: {
@@ -87,8 +87,6 @@ ApplicationWindow {
 
     ToolSettingsDialog {
         id: toolSettingsDialog
-//        x: (parent.width - width) / 2
-//        y: (parent.header - height) / 2
         width: 800
         height: 600
     }
@@ -100,7 +98,6 @@ ApplicationWindow {
     }
 
     function openSettings() {
-        console.log("balabala")
         toolSettingsDialog.show()
     }
 }

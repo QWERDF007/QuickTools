@@ -22,9 +22,9 @@ T_Window {
     property color drawingColor: UITools.withOpacity("lightblue", 0.5)
     property color drawingBorderColor: "red"
 
-    property CVInputParams inputParams
-    property CVOutputParams outputParams
-    property CVToolROI inputROI
+    property CVInputParams inputParams : quicktool ? quicktool.inputParams : null
+    property CVOutputParams outputParams : quicktool ? quicktool.outputParams : null
+    property CVToolROI inputROI : inputParams ? inputParams.roi : null
 
     signal sliderMoved(real value)
     signal fitInWindow
