@@ -17,10 +17,10 @@ ApplicationWindow {
     property bool enabled: true
 
     title: {
-        if (quicktool === null || quicktool === quicktool === undefined) {
-            return "QuickTools"
+        if (quicktool) {
+            return quicktool.name
         }
-        return quicktool.name
+        return "QuickTools"
     }
 
     Connections {
@@ -85,14 +85,22 @@ ApplicationWindow {
         onActivated: run()
     }
 
+    ToolSettingsDialog {
+        id: toolSettingsDialog
+//        x: (parent.width - width) / 2
+//        y: (parent.header - height) / 2
+        width: 800
+        height: 600
+    }
+
     function run() {
-        if (quicktool === null || quicktool === undefined) {
-            return
+        if (quicktool) {
+            quicktool.submit()
         }
-        quicktool.submit()
     }
 
     function openSettings() {
         console.log("balabala")
+        toolSettingsDialog.show()
     }
 }

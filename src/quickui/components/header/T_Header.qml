@@ -54,7 +54,6 @@ Rectangle {
             }
 
             RowLayout {
-                id: btnRowLayout
                 spacing: 0
                 QuickLoader {
                     sourceComponent: header.visible ? header.toolbarButtons : undefined

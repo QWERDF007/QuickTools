@@ -8,9 +8,9 @@ QuickPopup {
     id: control
     property string title: ""
     property string message: ""
-    property string neutralText: qsTr("关闭")
-    property string negativeText: qsTr("取消")
-    property string positiveText: qsTr("确认")
+    property string neutralText: qsTr("Close")
+    property string negativeText: qsTr("Cancel")
+    property string positiveText: qsTr("OK")
     property int messageTextFormart: Text.AutoText
     property int delayTime: 100
     property int buttonFlags: QuickDialogButtonFlag.NegativeButton | QuickDialogButtonFlag.PositiveButton
