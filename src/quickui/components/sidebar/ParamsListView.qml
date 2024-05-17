@@ -1,52 +1,54 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
 import QuickTools.ui
 
 Item {
     id: paramsListView
-    clip: true
-    width: 200
-    height: 400
+
     property color delegateBackgroundColor: QuickColor.White
     property color delegateBorderColor: QuickColor.WindowBackground
-
     property alias model: _paramsListView.model
     property bool paramItemEnable: true
 
+    clip: true
+    height: 400
+    width: 200
 
     ListView {
         id: _paramsListView
-        clip: true
-        anchors.fill: parent
-        anchors.topMargin: 5
+
         anchors.bottomMargin: 5
+        anchors.fill: parent
         anchors.leftMargin: 5
-        // anchors.rightMargin: 5
-        ScrollBar.vertical: QuickScrollBar{}
+        anchors.topMargin: 5
         boundsBehavior: Flickable.StopAtBounds
+        clip: true
         spacing: 10
+
+        // anchors.rightMargin: 5
+        ScrollBar.vertical: QuickScrollBar {
+        }
         delegate: ParamItemDelegate {
-            enabled: paramsListView.paramItemEnable
             // width: _paramsListView.width
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.rightMargin: 5
-            height: 48
-            color: delegateBackgroundColor
-            border.width: 2
             border.color: delegateBorderColor
-            paramIndex: model.paramIndex
+            border.width: 2
+            color: delegateBackgroundColor
+            enabled: paramsListView.paramItemEnable
+            height: 48
+            paramDisplay: model.paramDisplay
+            paramDisplayName: model.paramDisplayName
             paramName: model.paramName
+            paramRange: model.paramRange
             paramType: model.paramType
             paramTypeName: model.paramTypeName
-            paramDisplayName: model.paramDisplayName
-            paramDisplay: model.paramDisplay
-            paramRange: model.paramRange
             paramValue: model.paramValue
-            onValueChanged: function(value) {
-                model.paramValue = value
+
+            onValueChanged: function (value) {
+                model.paramValue = value;
             }
         }
     }

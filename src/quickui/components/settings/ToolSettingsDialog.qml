@@ -1,47 +1,45 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Dialogs
-
+import QtQuick.Layouts
 import QuickTools.ui
 
 Window {
-    title: qsTr("Settings")
     property alias settingsModel: settingsView.model
+
+    title: qsTr("Settings")
 
     ListView {
         id: settingsView
-        clip: true
-        anchors.fill: parent
-        anchors.topMargin: 5
+
         anchors.bottomMargin: 5
+        anchors.fill: parent
         anchors.leftMargin: 5
-        ScrollBar.vertical: QuickScrollBar{}
+        anchors.topMargin: 5
         boundsBehavior: Flickable.StopAtBounds
+        clip: true
         spacing: 5
 
-        delegate: Item {
+        ScrollBar.vertical: QuickScrollBar {
+        }
+        delegate: SettingItemDelegate {
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
-            height: 24
-            Text {
-                text: model.name
-            }
+            anchors.rightMargin: 5
+            height: 32
         }
 
         section {
-            property: "groupName"
             criteria: ViewSection.FullString
-            delegate: Rectangle {
-                color: "#b0dfb0"
+            property: "groupName"
+
+            delegate: Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.leftMargin: 5
                 anchors.rightMargin: 5
-                height: 32
-                Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
+                height: 48
+
+                QuickText {
+                    font: QuickFont.Title
                     text: section
                 }
             }
