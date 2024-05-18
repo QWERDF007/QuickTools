@@ -24,7 +24,8 @@ QHash<int, QByteArray> AbstractQuickToolSettings::roleNames() const
     return {
         {      SettingsRole::IndexRole,       "index"},
         {      SettingsRole::GroupRole,       "group"},
-        {      SettingsRole::GroupNameRole,   "groupName"},
+        {  SettingsRole::GroupNameRole,   "groupName"},
+        {       SettingsRole::DescRole,        "desc"},
         {       SettingsRole::NameRole,        "name"},
         {SettingsRole::DisplayNameRole, "displayName"},
         {       SettingsRole::TypeRole,        "type"},

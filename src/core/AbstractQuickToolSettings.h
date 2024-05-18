@@ -35,6 +35,7 @@ public:
         GroupNameRole,
         NameRole,
         DisplayNameRole,
+        DescRole,
         TypeRole,
         VisibleRole,
         ValueRole,
