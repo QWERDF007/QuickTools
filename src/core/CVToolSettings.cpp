@@ -16,10 +16,10 @@ CVToolSettings::~CVToolSettings() {}
 void CVToolSettings::addCVBasicSettings()
 {
     addGroup(SettingsGroup::DrawingGroup, "Drawing Settings");
-    addColorDialogSetting(SettingsGroup::DrawingGroup, "ROIColor", tr("ROI Color"), "", QColor("red"));
-    addColorDialogSetting(SettingsGroup::DrawingGroup, "ROIBorderColor", tr("ROI Border Color"), "", QColor("red"));
-    addSliderSetting(SettingsGroup::DrawingGroup, "ROIColorAlpha", tr("ROI Color Alpha"), tr("alpha of the ROI color"),
-                     0.5, 0.0, 1.0, 0.1);
+    addColorDialogSetting(SettingsGroup::DrawingGroup, "ROIColor", tr("ROI 颜色"), "", QColor("red"));
+    addColorDialogSetting(SettingsGroup::DrawingGroup, "ROIBorderColor", tr("ROI 边框颜色"), "", QColor("red"));
+    addSliderSetting(SettingsGroup::DrawingGroup, "ROIColorAlpha", tr("ROI 颜色 Alpha"),
+                     tr("ROI 颜色的 Alpha 数值, 修改 ROI 的不透明度"), 0.5, 0.0, 1.0, 0.1);
 }
 
 } // namespace quicktools::core

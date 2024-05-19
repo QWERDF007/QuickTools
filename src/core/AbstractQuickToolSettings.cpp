@@ -184,8 +184,8 @@ GlobalSettings::GlobalSettings(QObject *parent)
 void GlobalSettings::addBasicSettings()
 {
     addGroup(SettingsGroup::BasicGroup, "Basic Settings");
-    addToogleSwitchSetting(SettingsGroup::BasicGroup, RUN_AFTER_CHANGED, tr("Run After Changed"),
-                           tr("Run After Input Param Changed"), true);
+    addToogleSwitchSetting(SettingsGroup::BasicGroup, RUN_AFTER_CHANGED, tr("改变后运行"), tr("输入参数改变后运行工具"),
+                           true);
 }
 
 } // namespace quicktools::core
