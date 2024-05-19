@@ -25,7 +25,16 @@ Window {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.rightMargin: 5
-            height: 32
+            height: 48
+            settingAdditional: model.additional
+            settingDesc: model.desc
+            settingDisplayName: model.displayName
+            settingType: model.type
+            settingValue: model.value
+
+            onValueChanged: function (value) {
+                model.value = value;
+            }
         }
 
         section {

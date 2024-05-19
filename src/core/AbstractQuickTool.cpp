@@ -1,6 +1,9 @@
 #include "AbstractQuickTool.h"
 
+#include <priv/Predefined.h>
+
 #include <chrono>
+
 
 namespace quicktools::core {
 
@@ -110,6 +113,18 @@ int AbstractQuickTool::checkOutputParams()
         return ret;
     }
     return 0;
+}
+
+void AbstractQuickTool::onRunAfterChanged()
+{
+    if (run_after_changed)
+        submit();
+}
+
+void AbstractQuickTool::onSettingChanged(const QString &key, const QVariant &value)
+{
+    if (key == RUN_AFTER_CHANGED)
+        run_after_changed = value.toBool();
 }
 
 AbstractQuickTool *QuickToolFactor::createQuickTool(int type, QObject *parent) const

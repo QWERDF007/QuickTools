@@ -40,7 +40,7 @@ public:
         VisibleRole,
         ValueRole,
         DisplayRole,
-        RangeRole,
+        AdditionalRole,
     };
     Q_ENUM(SettingsRole)
 
@@ -56,6 +56,8 @@ public:
         SpinBoxType,
         DoubleSpinBoxType,
         ComboBoxType,
+        ToggleSwitchType,
+        SliderType,
         ColorDialogType,
     };
     Q_ENUM(SettingsType)
@@ -69,14 +71,22 @@ public:
 
     bool addGroup(const int group, const QString &group_name);
 
-    bool addSetting(const int group, const QString &name, const QString &display_name, const int type,
-                    const QVariant &value, const QVariant &range = QVariant(), const bool &visible = true);
+    bool addSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
+                    const int type, const QVariant &value, const QVariant &additional = QVariant(),
+                    const bool &visible = true);
 
     QMap<QString, QMap<int, QVariant>> settings(const int group = -1) const;
 
     QString groupName(const int group) const;
 
     std::tuple<int, QString> copyFrom(AbstractQuickToolSettings *other, const int group = -1);
+
+    bool addToogleSwitchSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
+                                const QVariant &value);
+    bool addSliderSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
+                          const QVariant &value, const QVariant &from, const QVariant &to, const QVariant &step_size);
+    bool addColorDialogSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
+                               const QVariant &value);
 
 private:
     QList<QString>                     settings_names_; // [name]
@@ -86,6 +96,9 @@ private:
 
 private slots:
     void onPropertyValueChanged(const QString &key, const QVariant &value);
+
+signals:
+    void settingChanged(const QString &key, const QVariant &value);
 };
 
 class QUICKTOOLS_CORE_EXPORT GlobalSettings : public AbstractQuickToolSettings

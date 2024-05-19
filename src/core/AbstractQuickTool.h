@@ -119,6 +119,12 @@ protected:
 
     QuickToolHelper *helper_{nullptr};
 
+    bool run_after_changed{true};
+
+protected slots:
+    void onRunAfterChanged();
+    void onSettingChanged(const QString &key, const QVariant &value);
+
 private:
     Q_DISABLE_COPY(AbstractQuickTool)
 
@@ -150,7 +156,10 @@ public:
         input_params_  = new InputParams(this);
         output_params_ = new OutputParams(this);
         settings_      = new Settings(this);
-        connect(input_params_, &AbstractInputParams::runAfterChanged, this, &AbstractQuickTool::submit);
+        connect(input_params_, &AbstractInputParams::runAfterChanged, this,
+                &AbstractTool<InputParams, OutputParams, Settings>::onRunAfterChanged);
+        connect(settings_, &AbstractQuickToolSettings::settingChanged, this,
+                &AbstractTool<InputParams, OutputParams, Settings>::onSettingChanged);
     }
 
     virtual ~AbstractTool() {}

@@ -1,5 +1,8 @@
 #include "AbstractQuickToolSettings.h"
 
+#include "priv/Predefined.h"
+
+
 namespace quicktools::core {
 
 GlobalSettings *GlobalSettings::instance_ = nullptr;
@@ -32,7 +35,7 @@ QHash<int, QByteArray> AbstractQuickToolSettings::roleNames() const
         {    SettingsRole::VisibleRole,     "visible"},
         {      SettingsRole::ValueRole,       "value"},
         {    SettingsRole::DisplayRole,     "display"},
-        {      SettingsRole::RangeRole,       "range"},
+        { SettingsRole::AdditionalRole,  "additional"},
     };
 }
 
@@ -63,6 +66,8 @@ bool AbstractQuickToolSettings::setData(const QModelIndex &index, const QVariant
     {
         settings_data_[setting_name][role] = value;
         property_data_.insert(setting_name, value);
+        emit dataChanged(index, index, {role});
+        emit settingChanged(setting_name, value);
     }
     return false;
 }
@@ -76,8 +81,8 @@ bool AbstractQuickToolSettings::addGroup(const int group, const QString &group_n
 }
 
 bool AbstractQuickToolSettings::addSetting(const int group, const QString &name, const QString &display_name,
-                                           const int type, const QVariant &value, const QVariant &range,
-                                           const bool &visible)
+                                           const QString &desc, const int type, const QVariant &value,
+                                           const QVariant &additional, const bool &visible)
 {
     if (settings_names_.contains(name))
         return false;
@@ -91,7 +96,8 @@ bool AbstractQuickToolSettings::addSetting(const int group, const QString &name,
         {       SettingsRole::TypeRole,                  type},
         {    SettingsRole::VisibleRole,               visible},
         {      SettingsRole::ValueRole,                 value},
-        {      SettingsRole::RangeRole,                 range},
+        { SettingsRole::AdditionalRole,            additional},
+        {       SettingsRole::DescRole,                  desc},
     };
     settings_data_.insert(name, setting);
     return true;
@@ -130,11 +136,37 @@ std::tuple<int, QString> AbstractQuickToolSettings::copyFrom(AbstractQuickToolSe
         const auto setting = iter.value();
         addSetting(setting.value(SettingsRole::GroupRole).toInt(), setting.value(SettingsRole::NameRole).toString(),
                    setting.value(SettingsRole::DisplayNameRole).toString(),
-                   setting.value(SettingsRole::TypeRole).toInt(), setting.value(SettingsRole::ValueRole),
-                   setting.value(SettingsRole::RangeRole), setting.value(SettingsRole::VisibleRole).toBool());
+                   setting.value(SettingsRole::DescRole).toString(), setting.value(SettingsRole::TypeRole).toInt(),
+                   setting.value(SettingsRole::ValueRole), setting.value(SettingsRole::AdditionalRole),
+                   setting.value(SettingsRole::VisibleRole).toBool());
     }
 
     return {0, "复制设置成功"};
+}
+
+bool AbstractQuickToolSettings::addToogleSwitchSetting(const int group, const QString &name,
+                                                       const QString &display_name, const QString &desc,
+                                                       const QVariant &value)
+{
+    return addSetting(group, name, display_name, desc, SettingsType::ToggleSwitchType, value, QVariant(), true);
+}
+
+bool AbstractQuickToolSettings::addSliderSetting(const int group, const QString &name, const QString &display_name,
+                                                 const QString &desc, const QVariant &value, const QVariant &from,
+                                                 const QVariant &to, const QVariant &step_size)
+{
+    QVariantMap data{
+        {    "from",      from},
+        {      "to",        to},
+        {"stepSize", step_size},
+    };
+    return addSetting(group, name, display_name, desc, SettingsType::SliderType, value, data, true);
+}
+
+bool AbstractQuickToolSettings::addColorDialogSetting(const int group, const QString &name, const QString &display_name,
+                                                      const QString &desc, const QVariant &value)
+{
+    return addSetting(group, name, display_name, desc, SettingsType::ColorDialogType, value, QVariant(), true);
 }
 
 void AbstractQuickToolSettings::onPropertyValueChanged(const QString &key, const QVariant &value)
@@ -153,7 +185,8 @@ GlobalSettings::GlobalSettings(QObject *parent)
 void GlobalSettings::addBasicSettings()
 {
     addGroup(SettingsGroup::BasicGroup, "Basic Settings");
-    addSetting(SettingsGroup::BasicGroup, "Run After Changed", tr("改变后运行"), SettingsType::CheckBoxType, true);
+    addToogleSwitchSetting(SettingsGroup::BasicGroup, RUN_AFTER_CHANGED, tr("Run After Changed"),
+                           tr("Run After Input Param Changed"), true);
 }
 
 } // namespace quicktools::core
