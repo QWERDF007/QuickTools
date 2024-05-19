@@ -34,13 +34,13 @@ T_CVWindow {
                 drawingColor: imageHistogramWin.drawingBorderColor
                 image.source: {
                     if (inputParams.pdata.Image === null || inputParams.pdata.Image === undefined) {
-                        return "";
+                        return ""
                     }
-                    return "file:///" + inputParams.pdata.Image;
+                    return "file:///" + inputParams.pdata.Image
                 }
 
                 onRoiDataChanged: function (shapeType, data) {
-                    updateROI(shapeType, data);
+                    updateROI(shapeType, data)
                 }
             }
             DropImageArea {
@@ -48,7 +48,7 @@ T_CVWindow {
                 dropBtnAreaVisible: image.status === Image.Null
 
                 onPathChanged: function (path) {
-                    inputParams.pdata.Image = path;
+                    inputParams.pdata.Image = path
                 }
             }
         }
