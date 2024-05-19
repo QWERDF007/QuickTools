@@ -13,7 +13,7 @@ Item {
     property var mouseObj: mouseArea
     property var paramDisplay
     property string paramName: ""
-    property var paramRange
+    property var paramAdditional
     property int paramType
     property var paramValue
     property alias tooltipText: tooltip.text
@@ -33,8 +33,8 @@ Item {
         hoverEnabled: true
 
         onClicked: {
-            mouseMenu.open();
-            paramItem.clicked();
+            mouseMenu.open()
+            paramItem.clicked()
         }
     }
     QuickToolTip {
@@ -62,8 +62,8 @@ Item {
 
             // shortcut: StandardKey.Copy
             onTriggered: {
-                textEdit.selectAll();
-                textEdit.copy();
+                textEdit.selectAll()
+                textEdit.copy()
             }
         }
     }

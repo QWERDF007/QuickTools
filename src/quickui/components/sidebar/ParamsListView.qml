@@ -42,13 +42,14 @@ Item {
             paramDisplay: model.paramDisplay
             paramDisplayName: model.paramDisplayName
             paramName: model.paramName
-            paramRange: model.paramRange
+            paramAdditional: model.paramAdditional
             paramType: model.paramType
             paramTypeName: model.paramTypeName
             paramValue: model.paramValue
+            paramDesc: model.paramDesc
 
             onValueChanged: function (value) {
-                model.paramValue = value;
+                model.paramValue = value
             }
         }
     }

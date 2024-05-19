@@ -36,12 +36,13 @@ enum QuickToolParamRole
     ParamIndexRole = Qt::UserRole + 1,
     ParamNameRole,
     ParamDisplayNameRole,
+    ParamDescRole,
     ParamTypeRole,
     ParamTypeNameRole,
     ParamVisibleRole,
     ParamValueRole,
     ParamDisplayRole,
-    ParamRangeRole,
+    ParamAdditionalRole,
     ParamIsPropertyRole,
     ParamEditableRole,
     RunAfterParamChangedRole,
@@ -79,9 +80,9 @@ public:
 
     bool setData(const QString &name, const QVariant &value);
 
-    bool addParam(const QString &en_name, const QString &zh_name, const int type, const QVariant &value,
-                  const QVariant &range = QVariant(), const bool editable = false, const bool is_property = false,
-                  const bool run_after_changed = true, const bool &visible = true);
+    bool addParam(const QString &name, const QString &display_name, const QString &desc, const int type,
+                  const QVariant &value, const QVariant &additional = QVariant(), const bool editable = false,
+                  const bool is_property = false, const bool run_after_changed = true, const bool &visible = true);
 
     QQmlPropertyMap *pdata()
     {
@@ -153,8 +154,9 @@ public:
 
     virtual ~AbstractOutputParams() {}
 
-    bool addParam(const QString &name, const QString &display_name, const int type, const QVariant &value,
-                  const QVariant &range = QVariant(), const bool is_property = false, const bool &visible = true);
+    bool addParam(const QString &name, const QString &display_name, const QString &desc, const int type,
+                  const QVariant &value, const QVariant &additional = QVariant(), const bool is_property = false,
+                  const bool &visible = true);
 
     bool setToolTime(const double wall_clock_time, const QVariantList &algorithm_time);
     bool setStatus(const int status, const QString &msg);

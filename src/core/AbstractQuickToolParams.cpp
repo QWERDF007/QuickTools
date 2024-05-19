@@ -31,13 +31,14 @@ QHash<int, QByteArray> AbstractQuickToolParams::roleNames() const
         {      QuickToolParamRole::ParamIndexRole,       "paramIndex"},
         {       QuickToolParamRole::ParamNameRole,        "paramName"},
         {QuickToolParamRole::ParamDisplayNameRole, "paramDisplayName"},
+        {       QuickToolParamRole::ParamDescRole,        "paramDesc"},
         {       QuickToolParamRole::ParamTypeRole,        "paramType"},
         {   QuickToolParamRole::ParamTypeNameRole,    "paramTypeName"},
         {   QuickToolParamRole::ParamEditableRole,    "paramEditable"},
         {    QuickToolParamRole::ParamVisibleRole,     "paramVisible"},
         {      QuickToolParamRole::ParamValueRole,       "paramValue"},
         {    QuickToolParamRole::ParamDisplayRole,     "paramDisplay"},
-        {      QuickToolParamRole::ParamRangeRole,       "paramRange"},
+        { QuickToolParamRole::ParamAdditionalRole,  "paramAdditional"},
     };
 }
 
@@ -327,9 +328,10 @@ bool AbstractQuickToolParams::setData(const QString &name, const QVariant &value
     return false;
 }
 
-bool AbstractQuickToolParams::addParam(const QString &name, const QString &display_name, const int type,
-                                       const QVariant &value, const QVariant &range, const bool editable,
-                                       const bool is_property, const bool run_after_changed, const bool &visible)
+bool AbstractQuickToolParams::addParam(const QString &name, const QString &display_name, const QString &desc,
+                                       const int type, const QVariant &value, const QVariant &additional,
+                                       const bool editable, const bool is_property, const bool run_after_changed,
+                                       const bool &visible)
 {
     if (params_names_.contains(name))
     {
@@ -340,11 +342,12 @@ bool AbstractQuickToolParams::addParam(const QString &name, const QString &displ
         {          QuickToolParamRole::ParamIndexRole, params_data_.size()},
         {           QuickToolParamRole::ParamNameRole,                name},
         {    QuickToolParamRole::ParamDisplayNameRole,        display_name},
+        {           QuickToolParamRole::ParamDescRole,                desc},
         {           QuickToolParamRole::ParamTypeRole,                type},
         {       QuickToolParamRole::ParamTypeNameRole,   getTypeName(type)},
         {        QuickToolParamRole::ParamVisibleRole,             visible},
         {          QuickToolParamRole::ParamValueRole,               value},
-        {          QuickToolParamRole::ParamRangeRole,               range},
+        {     QuickToolParamRole::ParamAdditionalRole,          additional},
         {     QuickToolParamRole::ParamIsPropertyRole,         is_property},
         {       QuickToolParamRole::ParamEditableRole,            editable},
         {QuickToolParamRole::RunAfterParamChangedRole,   run_after_changed},
@@ -360,6 +363,9 @@ bool AbstractQuickToolParams::addParam(const QString &name, const QString &displ
 QString AbstractQuickToolParams::getTypeName(const int type)
 {
     static QMap<int, QString> typeNamesMap{
+        {   QuickToolParamType::ParamIntSpinBoxType,      "IntSpinBox"},
+        {QuickToolParamType::ParamDoubleSpinBoxType,   "DoubleSpinBox"},
+        {     QuickToolParamType::ParamComboBoxType,        "ComboBox"},
         {       QuickToolParamType::ParamStatusType,          "Status"},
         {          QuickToolParamType::ParamIntType,             "Int"},
         {       QuickToolParamType::ParamDoubleType,          "Double"},
@@ -384,16 +390,18 @@ void AbstractQuickToolParams::onPropertyValueChanged(const QString &key, const Q
 AbstractOutputParams::AbstractOutputParams(QObject *parent)
     : AbstractQuickToolParams(parent)
 {
-    addParam("Status", tr("运行状态"), QuickToolParamType::ParamStatusType, QVariant(), QVariant(), false, true);
-    addParam("Time", tr("运行时间"), QuickToolParamType::ParamDouble1DArrayType, QVariant(), QVariant(), false, true);
+    addParam("Status", tr("运行状态"), tr("工具的运行状态"), QuickToolParamType::ParamStatusType, QVariant(),
+             QVariant(), false, true);
+    addParam("Time", tr("运行时间"), tr("工具的运行时间"), QuickToolParamType::ParamDouble1DArrayType, QVariant(),
+             QVariant(), false, true);
 }
 
-bool AbstractOutputParams::addParam(const QString &name, const QString &display_name, const int type,
-                                    const QVariant &value, const QVariant &range, const bool is_property,
-                                    const bool &visible)
+bool AbstractOutputParams::addParam(const QString &name, const QString &display_name, const QString &desc,
+                                    const int type, const QVariant &value, const QVariant &additional,
+                                    const bool is_property, const bool &visible)
 {
-    return AbstractQuickToolParams::addParam(name, display_name, type, value, range, false, is_property, false,
-                                             visible);
+    return AbstractQuickToolParams::addParam(name, display_name, desc, type, value, additional, false, is_property,
+                                             false, visible);
 }
 
 bool AbstractOutputParams::setToolTime(const double wall_clock_time, const QVariantList &algorithm_time_array)

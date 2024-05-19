@@ -8,10 +8,12 @@ import "./paramitem"
 Rectangle {
     id: paramItemDelegate
 
-    property var paramDisplay
-    property string paramDisplayName: ""
+
     property string paramName: ""
-    property var paramRange
+    property string paramDisplayName: ""
+    property string paramDesc: ""
+    property var paramDisplay
+    property var paramAdditional
     property int paramType: -1
     property string paramTypeName: ""
     property var paramValue
@@ -19,7 +21,7 @@ Rectangle {
     signal valueChanged(var value)
 
     function forwardValueChanged(value) {
-        paramChanged(value);
+        paramChanged(value)
     }
 
     height: 48
@@ -33,7 +35,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -45,7 +47,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -57,7 +59,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -69,7 +71,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -81,7 +83,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -93,7 +95,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -105,7 +107,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -117,7 +119,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -129,7 +131,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -141,7 +143,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -153,7 +155,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -163,11 +165,11 @@ Rectangle {
         ComboBoxParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
-            paramRange: paramItemDelegate.paramRange
+            paramAdditional: paramItemDelegate.paramAdditional
             paramValue: paramItemDelegate.paramValue
 
             onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value);
+                paramItemDelegate.valueChanged(value)
             }
         }
     }
@@ -191,7 +193,8 @@ Rectangle {
             }
             QuickToolTip {
                 delay: 200
-                text: "参数类型: " + paramTypeName
+                text: paramItemDelegate.paramDesc ? paramItemDelegate.paramDesc + qsTr("\n参数类型: ") + paramTypeName :
+                                                    qsTr("参数类型: ") + paramTypeName
                 visible: paramItemDelegate.paramTypeName !== "" && headerMouseArea.containsMouse
             }
             MouseArea {
@@ -214,31 +217,31 @@ Rectangle {
             height: 24
             sourceComponent: {
                 if (paramItemDelegate.paramType === QuickToolParam.ParamStatusType) {
-                    return statusParamItem;
+                    return statusParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamIntType) {
-                    return intParamItem;
+                    return intParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamDoubleType) {
-                    return doubleParamItem;
+                    return doubleParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamTextType) {
-                    return textParamItem;
+                    return textParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamInt1DArrayType) {
-                    return int1DArrayParamItem;
+                    return int1DArrayParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamDouble1DArrayType) {
-                    return double1DArrayParamItem;
+                    return double1DArrayParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamText1DArrayType) {
-                    return text1DArrayParamItem;
+                    return text1DArrayParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamInt2DArrayType) {
-                    return int2DArrayParamItem;
+                    return int2DArrayParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamDouble2DArrayType) {
-                    return double2DArrayParamItem;
+                    return double2DArrayParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamText2DArrayType) {
-                    return text2DArrayParamItem;
+                    return text2DArrayParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamImageType) {
-                    return inputImageParamItem;
+                    return inputImageParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParam.ParamComboBoxType) {
-                    return comboBoxParamItem;
+                    return comboBoxParamItem
                 }
-                return undefined;
+                return undefined
             }
             width: parent.width
         }
