@@ -153,7 +153,7 @@ public:
 
     virtual ~AbstractOutputParams() {}
 
-    bool addParam(const QString &en_name, const QString &zh_name, const int type, const QVariant &value,
+    bool addParam(const QString &name, const QString &display_name, const int type, const QVariant &value,
                   const QVariant &range = QVariant(), const bool is_property = false, const bool &visible = true);
 
     bool setToolTime(const double wall_clock_time, const QVariantList &algorithm_time);

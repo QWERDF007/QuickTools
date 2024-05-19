@@ -4,7 +4,6 @@
 
 #include <chrono>
 
-
 namespace quicktools::core {
 
 QuickToolFactor *QuickToolFactor::instance_  = nullptr;
@@ -33,7 +32,7 @@ void AbstractQuickTool::run()
     int ret = checkParams();
     if (ret != 0)
     {
-        emit showMessage(InfoLevel::Error, "检查参数失败");
+        emit showMessage(InfoLevel::Error, tr("检查参数失败"));
         return;
     }
     clearAlgorithmTime();

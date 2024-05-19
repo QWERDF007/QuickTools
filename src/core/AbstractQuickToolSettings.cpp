@@ -2,7 +2,6 @@
 
 #include "priv/Predefined.h"
 
-
 namespace quicktools::core {
 
 GlobalSettings *GlobalSettings::instance_ = nullptr;
@@ -128,7 +127,7 @@ QString AbstractQuickToolSettings::groupName(const int group) const
 std::tuple<int, QString> AbstractQuickToolSettings::copyFrom(AbstractQuickToolSettings *other, const int group)
 {
     if (other == nullptr)
-        return {-1, "复制目标为空"};
+        return {-1, tr("复制目标为空")};
     auto settings = other->settings(group);
     addGroup(group, other->groupName(group));
     for (auto iter = settings.constBegin(); iter != settings.constEnd(); ++iter)
@@ -141,7 +140,7 @@ std::tuple<int, QString> AbstractQuickToolSettings::copyFrom(AbstractQuickToolSe
                    setting.value(SettingsRole::VisibleRole).toBool());
     }
 
-    return {0, "复制设置成功"};
+    return {0, tr("复制设置成功")};
 }
 
 bool AbstractQuickToolSettings::addToogleSwitchSetting(const int group, const QString &name,

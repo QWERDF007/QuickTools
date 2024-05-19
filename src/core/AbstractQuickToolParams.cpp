@@ -327,19 +327,19 @@ bool AbstractQuickToolParams::setData(const QString &name, const QVariant &value
     return false;
 }
 
-bool AbstractQuickToolParams::addParam(const QString &en_name, const QString &zh_name, const int type,
+bool AbstractQuickToolParams::addParam(const QString &name, const QString &display_name, const int type,
                                        const QVariant &value, const QVariant &range, const bool editable,
                                        const bool is_property, const bool run_after_changed, const bool &visible)
 {
-    if (params_names_.contains(en_name))
+    if (params_names_.contains(name))
     {
         return false;
     }
-    params_names_.append(en_name);
+    params_names_.append(name);
     QMap<int, QVariant> param{
         {          QuickToolParamRole::ParamIndexRole, params_data_.size()},
-        {           QuickToolParamRole::ParamNameRole,             en_name},
-        {    QuickToolParamRole::ParamDisplayNameRole,             zh_name},
+        {           QuickToolParamRole::ParamNameRole,                name},
+        {    QuickToolParamRole::ParamDisplayNameRole,        display_name},
         {           QuickToolParamRole::ParamTypeRole,                type},
         {       QuickToolParamRole::ParamTypeNameRole,   getTypeName(type)},
         {        QuickToolParamRole::ParamVisibleRole,             visible},
@@ -349,10 +349,10 @@ bool AbstractQuickToolParams::addParam(const QString &en_name, const QString &zh
         {       QuickToolParamRole::ParamEditableRole,            editable},
         {QuickToolParamRole::RunAfterParamChangedRole,   run_after_changed},
     };
-    params_data_.insert(en_name, param);
+    params_data_.insert(name, param);
     if (is_property)
     {
-        property_data_.insert(en_name, value);
+        property_data_.insert(name, value);
     }
     return true;
 }
@@ -378,22 +378,22 @@ QString AbstractQuickToolParams::getTypeName(const int type)
 
 void AbstractQuickToolParams::onPropertyValueChanged(const QString &key, const QVariant &value)
 {
-    qInfo() << __FUNCTION__ << key << value;
     setData(key, value);
 }
 
 AbstractOutputParams::AbstractOutputParams(QObject *parent)
     : AbstractQuickToolParams(parent)
 {
-    addParam("Status", "运行状态", QuickToolParamType::ParamStatusType, QVariant(), QVariant(), false, true);
-    addParam("Time", "运行时间", QuickToolParamType::ParamDouble1DArrayType, QVariant(), QVariant(), false, true);
+    addParam("Status", tr("运行状态"), QuickToolParamType::ParamStatusType, QVariant(), QVariant(), false, true);
+    addParam("Time", tr("运行时间"), QuickToolParamType::ParamDouble1DArrayType, QVariant(), QVariant(), false, true);
 }
 
-bool AbstractOutputParams::addParam(const QString &en_name, const QString &zh_name, const int type,
+bool AbstractOutputParams::addParam(const QString &name, const QString &display_name, const int type,
                                     const QVariant &value, const QVariant &range, const bool is_property,
                                     const bool &visible)
 {
-    return AbstractQuickToolParams::addParam(en_name, zh_name, type, value, range, false, is_property, false, visible);
+    return AbstractQuickToolParams::addParam(name, display_name, type, value, range, false, is_property, false,
+                                             visible);
 }
 
 bool AbstractOutputParams::setToolTime(const double wall_clock_time, const QVariantList &algorithm_time_array)
