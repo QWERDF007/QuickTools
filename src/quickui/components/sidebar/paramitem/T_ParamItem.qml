@@ -35,7 +35,6 @@ Item {
         onClicked: {
             mouseMenu.open();
             paramItem.clicked();
-            console.log("Click");
         }
     }
     QuickToolTip {
