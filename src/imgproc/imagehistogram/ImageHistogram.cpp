@@ -49,12 +49,12 @@ std::tuple<int, QString> ImageHistogram::exec()
     auto input_params         = getInputParams();
     auto output_params        = getOutputParams();
     if (input_params == nullptr || output_params == nullptr)
-        return {-1, "输入/输出参数为空指针"};
+        return {-1, tr("输入/输出参数为空指针")};
     const QString image_path = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
     if (image_path.isEmpty())
-        return {-1, "输入图像路径为空"};
+        return {-1, tr("输入图像路径为空")};
     if (!QFile::exists(image_path))
-        return {-1, "输入图像路径不存在"};
+        return {-1, tr("输入图像路径不存在")};
     QString color_space = input_params->data("ColorSpace", QuickToolParamRole::ParamValueRole).toString();
 
     auto    read_start_time = std::chrono::high_resolution_clock::now();
@@ -68,7 +68,7 @@ std::tuple<int, QString> ImageHistogram::exec()
 
     cv::Mat dst;
     if (cvtColor(image, dst, color_space) != 0)
-        return {-1, QString("转换到色彩空间 %1 失败").arg(color_space)};
+        return {-1, tr("转换到色彩空间 %1 失败").arg(color_space)};
 
     std::vector<cv::Mat> chs;
     cv::split(dst, chs);
@@ -115,7 +115,7 @@ std::tuple<int, QString> ImageHistogram::exec()
     output_params->setData("HistMin", QVariant::fromValue(hists_min));
     output_params->setData("HistMax", QVariant::fromValue(hists_max));
 
-    return {0, "运行成功"};
+    return {0, tr("运行成功")};
 }
 
 QString ImageHistogram::doc() const
@@ -176,9 +176,9 @@ int ImageHistogram::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addParam("Image", "图像", QuickToolParamType::ParamImageType, QVariant(), QVariant(), true, true,
+        input_params_->addParam("Image", tr("图像"), QuickToolParamType::ParamImageType, QVariant(), QVariant(), true, true,
                                 true, true);
-        input_params_->addParam("ColorSpace", "色彩空间", QuickToolParamType::ParamComboBoxType, COLOR_SPACES[0],
+        input_params_->addParam("ColorSpace", tr("色彩空间"), QuickToolParamType::ParamComboBoxType, COLOR_SPACES[0],
                                 COLOR_SPACES, false, false, true, true);
     }
     return 0;
@@ -188,14 +188,24 @@ int ImageHistogram::initOutputParams()
 {
     if (output_params_)
     {
-        output_params_->addParam("Channels", "图像通道数", QuickToolParamType::ParamIntType, QVariant(), QVariant(),
+        output_params_->addParam("Channels", tr("图像通道数"), QuickToolParamType::ParamIntType, QVariant(), QVariant(),
                                  false, true);
-        output_params_->addParam("Hist", "直方图", QuickToolParamType::ParamDouble2DArrayType, QVariant(), QVariant(),
+        output_params_->addParam("Hist", tr("直方图"), QuickToolParamType::ParamDouble2DArrayType, QVariant(), QVariant(),
                                  true, true);
-        output_params_->addParam("HistMin", "直方图最小值", QuickToolParamType::ParamDouble1DArrayType, QVariant(),
+        output_params_->addParam("HistMin", tr("直方图最小值"), QuickToolParamType::ParamDouble1DArrayType, QVariant(),
                                  QVariant(), true, true);
-        output_params_->addParam("HistMax", "直方图最大值", QuickToolParamType::ParamDouble1DArrayType, QVariant(),
+        output_params_->addParam("HistMax", tr("直方图最大值"), QuickToolParamType::ParamDouble1DArrayType, QVariant(),
                                  QVariant(), true, true);
+    }
+    return 0;
+}
+
+int ImageHistogram::initSettings()
+{
+    qInfo() << __FUNCTION__ << __LINE__ << "TODO";
+    if (settings_)
+    {
+        // TODO: add chart height
     }
     return 0;
 }

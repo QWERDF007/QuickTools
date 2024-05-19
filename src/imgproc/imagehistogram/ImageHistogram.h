@@ -20,7 +20,7 @@ public:
 
     QString name() const override
     {
-        return QString("图像直方图");
+        return tr("图像直方图");
     }
 
     QString doc() const override;
@@ -28,6 +28,7 @@ public:
 private:
     int initInputParams() override;
     int initOutputParams() override;
+    int initSettings() override;
 
     int cvtColor(const cv::Mat &src, cv::Mat &dst, const QString &color_space);
 
