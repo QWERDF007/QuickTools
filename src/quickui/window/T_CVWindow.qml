@@ -1,78 +1,81 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
 import QuickTools.ui
 import QuickTools.core
-
 import "../components/header"
 import "../components/sidebar"
 import "../components/footer"
 
-
 T_Window {
     id: window
-    width: 1440
-    height: 720
-
-    default property alias content: container.data
-    property var activateItem
 
     property alias acceptedShapes: _header.acceptedShapes
-    property color drawingColor: UITools.withOpacity("lightblue", 0.5)
-    property color drawingBorderColor: "red"
+    property var activateItem
+    default property alias content: container.data
+    property color drawingBorderColor: toolSettings ? toolSettings.pdata.ROIBorderColor : "red"
+    property color drawingColor: toolSettings ? UITools.withOpacity(toolSettings.pdata.ROIColor, toolSettings.pdata.ROIColorAlpha) : UITools.withOpacity("red", 0.5)
+    property CVInputParams inputParams: quicktool ? quicktool.inputParams : null
+    property CVToolROI inputROI: inputParams ? inputParams.roi : null
+    property CVOutputParams outputParams: quicktool ? quicktool.outputParams : null
 
-    property CVInputParams inputParams : quicktool ? quicktool.inputParams : null
-    property CVOutputParams outputParams : quicktool ? quicktool.outputParams : null
-    property CVToolROI inputROI : inputParams ? inputParams.roi : null
-
-    signal sliderMoved(real value)
     signal fitInWindow
+    signal sliderMoved(real value)
+
+    height: 720
+    width: 1440
+
 
     header: CVHeader {
         id: _header
-        enabled: window.enabled
-        width: parent.width
-        height: 40
+
         activateItem: window.activateItem
-        onStartBtnClicked: run()
+        enabled: window.enabled
+        height: 40
+        width: parent.width
+
         onSettingsBtnClicked: openSettings()
+        onStartBtnClicked: run()
     }
-
-
 
     QuickSplitView {
         id: splitView
+
         anchors.fill: parent
+
         LSideBar {
             id: lsidebar
-            childrenEnable: window.enabled
-            border.color: window.color
+
+            SplitView.fillHeight: true
             SplitView.minimumWidth: 256
             SplitView.preferredWidth: 321
-            SplitView.fillHeight: true
+            border.color: window.color
+            childrenEnable: window.enabled
+            helpInfos: window.helpInfos
             inputParams: window.inputParams
             outputParams: window.outputParams
-            helpInfos: window.helpInfos
         }
         Item {
             id: container
-            enabled: window.enabled
+
             SplitView.fillHeight: true
             SplitView.fillWidth: true
+            enabled: window.enabled
         }
     }
 
     footer: CVFooter {
         id: _footer
-        enabled: window.enabled
-        width: parent.width
-        height: 40
+
         activateItem: window.activateItem
-        onSliderMoved: function(value) {
+        enabled: window.enabled
+        height: 40
+        width: parent.width
+
+        onFitInWindow: window.fitInWindow()
+        onSliderMoved: function (value) {
             window.sliderMoved(value)
         }
-        onFitInWindow: window.fitInWindow()
     }
 
     function updateROI(shapeType, data) {
