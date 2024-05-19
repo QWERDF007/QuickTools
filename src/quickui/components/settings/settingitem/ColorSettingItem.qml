@@ -44,7 +44,7 @@ T_SettingItem {
         currentColor: settingValue
 
         onAccepted: {
-            colorSettingItem.valueChanged(colorDialog.color);
+            valueChanged(colorDialog.color)
         }
     }
 }

@@ -21,7 +21,7 @@ T_SettingItem {
             value: settingValue
 
             onMoved: {
-                sliderSettingItem.valueChanged(value);
+                sliderSettingItem.valueChanged(value)
             }
         }
     }

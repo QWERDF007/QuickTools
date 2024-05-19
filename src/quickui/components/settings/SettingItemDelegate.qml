@@ -27,7 +27,7 @@ QuickFrame {
             settingValue: settingDelegate.settingValue
 
             onValueChanged: function (value) {
-                settingDelegate.valueChanged(value);
+                settingDelegate.valueChanged(value)
             }
         }
     }
@@ -39,7 +39,7 @@ QuickFrame {
             settingValue: settingDelegate.settingValue
 
             onValueChanged: function (value) {
-                settingDelegate.valueChanged(value);
+                settingDelegate.valueChanged(value)
             }
         }
     }
@@ -51,7 +51,7 @@ QuickFrame {
             settingValue: settingDelegate.settingValue
 
             onValueChanged: function (value) {
-                settingDelegate.valueChanged(value);
+                settingDelegate.valueChanged(value)
             }
         }
     }
@@ -63,18 +63,18 @@ QuickFrame {
         ColumnLayout {
             Layout.fillHeight: true
             Layout.fillWidth: true
-            spacing: 0
+            spacing: 5
 
             Item {
                 Layout.fillHeight: true
             }
             QuickText {
-                font: QuickFont.Subtitle
+                font: QuickFont.Body
                 text: settingDelegate.settingDisplayName
             }
             QuickText {
-                Layout.leftMargin: 10
                 font: QuickFont.Caption
+                textColor: QuickColor.FontCaption
                 text: settingDelegate.settingDesc
                 visible: settingDesc ? true : false
             }
@@ -92,13 +92,13 @@ QuickFrame {
             Layout.fillHeight: true
             sourceComponent: {
                 if (settingDelegate.settingType === QuickToolSettings.ToggleSwitchType) {
-                    return toggleSwitchSettingItem;
+                    return toggleSwitchSettingItem
                 } else if (settingDelegate.settingType === QuickToolSettings.SliderType) {
-                    return sliderSettingItem;
+                    return sliderSettingItem
                 } else if (settingDelegate.settingType === QuickToolSettings.ColorDialogType) {
-                    return colorSettingItem;
+                    return colorSettingItem
                 }
-                return undefined;
+                return undefined
             }
         }
     }

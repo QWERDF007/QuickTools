@@ -13,7 +13,7 @@ T_SettingItem {
             checked: settingValue
 
             onToggled: {
-                checkBoxSettingItem.valueChanged(checked);
+                valueChanged(checked);
             }
         }
     }

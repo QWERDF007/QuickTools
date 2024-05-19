@@ -15,7 +15,7 @@ T_SettingItem {
             textRight: false
 
             onClicked: {
-                toggleSwitchSettingItem.valueChanged(checked);
+                valueChanged(checked)
             }
         }
     }
