@@ -69,6 +69,26 @@ public:
         UserGroup = 256,
     };
 
+    int size() const
+    {
+        return rowCount();
+    }
+
+    bool empty() const
+    {
+        return size() <= 0;
+    }
+
+    bool isInit() const
+    {
+        return is_init_;
+    }
+
+    void setIsInit(const bool is_init)
+    {
+        is_init_ = is_init;
+    }
+
     bool addGroup(const int group, const QString &group_name);
 
     bool addSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
@@ -93,6 +113,7 @@ private:
     QMap<QString, QMap<int, QVariant>> settings_data_;  // [name, [key, value]]
     QQmlPropertyMap    property_data_; // [key, value] QML 中可直接访问和修改对应 key 的属性
     QMap<int, QString> groups_;        // [key, name]
+    bool is_init_{false};
 
 private slots:
     void onPropertyValueChanged(const QString &key, const QVariant &value);

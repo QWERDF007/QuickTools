@@ -24,7 +24,10 @@ AbstractQuickTool::~AbstractQuickTool()
 
 int AbstractQuickTool::init()
 {
-    return checkParams();
+    int ret = checkParams();
+    if (ret == 0)
+        ret = checkSettings();
+    return ret;
 }
 
 void AbstractQuickTool::run()
@@ -71,6 +74,11 @@ void AbstractQuickTool::submit()
     QThreadPool::globalInstance()->start(this);
 }
 
+int AbstractQuickTool::initSettings()
+{
+    return 0;
+}
+
 int AbstractQuickTool::checkParams()
 {
     int ret = checkInputParams();
@@ -85,10 +93,8 @@ int AbstractQuickTool::checkParams()
 int AbstractQuickTool::checkInputParams()
 {
     if (inputParams() == nullptr)
-    {
         return -1;
-    }
-    if (inputParams()->empty() || !inputParams()->isInit())
+    if (!inputParams()->isInit())
     {
         int ret = initInputParams();
         if (ret == 0)
@@ -101,14 +107,26 @@ int AbstractQuickTool::checkInputParams()
 int AbstractQuickTool::checkOutputParams()
 {
     if (outputParams() == nullptr)
-    {
         return -1;
-    }
-    if (outputParams()->empty() || !outputParams()->isInit())
+    if (!outputParams()->isInit())
     {
         int ret = initOutputParams();
         if (ret == 0)
             outputParams()->setIsInit(true);
+        return ret;
+    }
+    return 0;
+}
+
+int AbstractQuickTool::checkSettings()
+{
+    if (settings() == nullptr)
+        return -1;
+    if (!settings()->isInit())
+    {
+        int ret = initSettings();
+        if (ret == 0)
+            settings()->setIsInit(true);
         return ret;
     }
     return 0;

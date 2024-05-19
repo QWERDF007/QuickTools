@@ -108,6 +108,7 @@ public:
 protected:
     virtual int initInputParams()  = 0;
     virtual int initOutputParams() = 0;
+    virtual int initSettings();
 
     double       wall_clock_time_{0.};
     QVariantList algorithm_time_array_;
@@ -131,6 +132,7 @@ private:
     int checkParams();
     int checkInputParams();
     int checkOutputParams();
+    int checkSettings();
 
 signals:
     void start();
