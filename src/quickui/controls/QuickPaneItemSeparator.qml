@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QuickTools.ui
 
 QtObject {
     property string key
@@ -8,7 +9,7 @@ QtObject {
     property var parent
     property real spacing
     property int size:1
-    // Component.onCompleted: {
-    //     key = FluTools.uuid()
-    // }
+    Component.onCompleted: {
+        key = UITools.uuid()
+    }
 }

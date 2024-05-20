@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QuickTools.ui
 
 QuickObject {
     property string key
@@ -14,7 +15,7 @@ QuickObject {
     property Component iconDelegate
     property Component menuDelegate
     property Component editDelegate
-    // Component.onCompleted: {
-    //     key = FluTools.uuid()
-    // }
+    Component.onCompleted: {
+        key = UITools.uuid()
+    }
 }

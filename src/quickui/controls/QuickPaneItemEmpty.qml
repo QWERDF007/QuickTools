@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QuickTools.ui
 
 QtObject {
     property string key
@@ -7,7 +8,7 @@ QtObject {
     property var _ext
     property var _parent
     property bool visible: true
-    // Component.onCompleted: {
-    //     key = FluTools.uuid()
-    // }
+    Component.onCompleted: {
+        key = UITools.uuid()
+    }
 }

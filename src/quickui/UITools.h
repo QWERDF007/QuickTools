@@ -15,6 +15,8 @@ public:
 
     Q_INVOKABLE QColor withOpacity(const QColor &color, qreal opacity);
 
+    Q_INVOKABLE QString uuid();
+
 private:
     explicit UITools(QObject *parent = nullptr);
 

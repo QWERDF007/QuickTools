@@ -13,7 +13,7 @@ QuickObject {
 
     QuickPaneItem {
         id:item_home
-        count: 9
+        count: RecentlyItems.getRecentlyAddedData().length + RecentlyItems.getRecentlyUpdatedData().length
         title: "Home"
         //        menuDelegate: paneItemMenu
         infoBadge: QuickBadge {
@@ -66,5 +66,9 @@ QuickObject {
         QuickPaneItem {
             title: "BBB"
         }
+    }
+
+    function startPageByItem(data){
+        navigationView.startPageByItem(data)
     }
 }

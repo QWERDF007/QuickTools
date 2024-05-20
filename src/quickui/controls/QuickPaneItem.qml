@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QuickTools.ui
 
 QtObject {
     property string key
@@ -21,7 +22,7 @@ QtObject {
     property var extra
     property bool showEdit
     signal tap
-    // Component.onCompleted: {
-    //     key = FluTools.uuid()
-    // }
+    Component.onCompleted: {
+        key = UITools.uuid()
+    }
 }
