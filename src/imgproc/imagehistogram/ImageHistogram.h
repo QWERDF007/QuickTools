@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AbstractCVTool.h"
+#include "QuickToolType.h"
 
 #include <opencv2/core.hpp>
 
@@ -35,6 +36,6 @@ private:
     static QString doc_;
 };
 
-REGISTER_CLASS(core::tooltypes::ImageHistogram, ImageHistogram)
+REGISTER_CLASS(core::quicktooltypes::ImageHistogram, ImageHistogram)
 
 } // namespace quicktools::imgproc

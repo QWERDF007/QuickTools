@@ -12,17 +12,7 @@
 
 namespace quicktools::core {
 
-namespace tooltypes {
-Q_NAMESPACE
 
-enum QuickToolType
-{
-    ImageHistogram = 1, //!< 图像直方图
-};
-Q_ENUM_NS(QuickToolType) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
-
-QML_NAMED_ELEMENT(QuickToolType) // 声明封闭类型或命名空间在 QML 中可用，以 name 进行访问
-} // namespace tooltypes
 
 // Template classes not supported by Q_OBJECT
 
@@ -245,15 +235,27 @@ public:
         return getInstance();
     }
 
-    Q_INVOKABLE AbstractQuickTool *createQuickTool(int type, QObject *parent = nullptr) const;
+    Q_INVOKABLE AbstractQuickTool *createQuickTool(const int type, QObject *parent = nullptr) const;
 
-    void registerQuickTool(int type, AbstractQuickToolCreator creator);
+    void registerQuickTool(const int type, AbstractQuickToolCreator creator);
+
+
+    QString groupUUID(const int group);
+    QString taskUUID(const int task);
+    QString toolUUID(const int tool_type);
+    void registerGroupAndTask(const int group, const int task);
+    void registerQuickTool(const int group, const int task, const int tool_type, AbstractQuickToolCreator creator);
 
 protected:
     static QQmlEngine *qmlEngine_;
     static QJSEngine  *jsEngine_;
 
 private:
+    /**
+     * 禁用拷贝和移动构造和运算符
+     */
+    Q_DISABLE_COPY_MOVE(QuickToolFactor)
+
     explicit QuickToolFactor(QObject *parent = nullptr)
         : QObject(parent)
     {
@@ -266,10 +268,10 @@ private:
 
     std::map<int, AbstractQuickToolCreator> tool_creators_;
 
-    /**
-     * 禁用拷贝和移动构造和运算符
-     */
-    Q_DISABLE_COPY_MOVE(QuickToolFactor)
+    std::map<int, std::map<int, std::map<int, AbstractQuickToolCreator>>> factors_;
+    std::map<int, QString> groups_uuid_;
+    std::map<int, QString> tasks_uuid_;
+    std::map<int, QString> tools_uuid_;
 };
 
 } // namespace quicktools::core

@@ -1,6 +1,6 @@
 #include "AbstractQuickTool.h"
-
-#include <priv/Predefined.h>
+#include "priv/Predefined.h"
+#include "Utils.h"
 
 #include <chrono>
 
@@ -144,9 +144,9 @@ void AbstractQuickTool::onSettingChanged(const QString &key, const QVariant &val
         run_after_changed = value.toBool();
 }
 
-AbstractQuickTool *QuickToolFactor::createQuickTool(int type, QObject *parent) const
+AbstractQuickTool *QuickToolFactor::createQuickTool(const int tool_type, QObject *parent) const
 {
-    auto found = tool_creators_.find(type);
+    auto found = tool_creators_.find(tool_type);
     if (found != tool_creators_.end())
     {
         auto               callable   = found->second;
@@ -161,11 +161,55 @@ AbstractQuickTool *QuickToolFactor::createQuickTool(int type, QObject *parent) c
     return nullptr;
 }
 
-void QuickToolFactor::registerQuickTool(int type, AbstractQuickToolCreator creator)
+void QuickToolFactor::registerQuickTool(const int tool_type, AbstractQuickToolCreator creator)
 {
-    auto found = tool_creators_.find(type);
-    assert(found == tool_creators_.end() && "This type is already registerd");
-    tool_creators_.emplace(type, creator);
+    auto found = tool_creators_.find(tool_type);
+    assert(found == tool_creators_.end() && "This type is already registered");
+    tool_creators_.emplace(tool_type, creator);
+}
+
+QString QuickToolFactor::groupUUID(const int group)
+{
+    auto found = groups_uuid_.find(group);
+    if (found == groups_uuid_.end())
+        return "";
+    return found->second;
+}
+
+QString QuickToolFactor::taskUUID(const int task)
+{
+    auto found = tasks_uuid_.find(task);
+    if (found == tasks_uuid_.end())
+        return "";
+    return found->second;
+}
+
+QString QuickToolFactor::toolUUID(const int tool_type)
+{
+    auto found = tools_uuid_.find(tool_type);
+    if (found == tools_uuid_.end())
+        return "";
+    return found->second;
+}
+
+void QuickToolFactor::registerGroupAndTask(const int group, const int task)
+{
+    assert(groups_uuid_.find(group) == groups_uuid_.end() && "This group is already registered");
+    assert(tasks_uuid_.find(task) == tasks_uuid_.end() && "This task is already registered");
+    groups_uuid_.emplace(group, common::uuid());
+    tasks_uuid_.emplace(task, common::uuid());
+}
+
+void QuickToolFactor::registerQuickTool(const int group, const int task, const int tool_type, AbstractQuickToolCreator creator)
+{
+    auto found_group = factors_.find(group);
+    assert(found_group != factors_.end() && "This group has not been created yet, call registerGroupAndTask first!");
+    auto tasks = found_group->second;
+    auto found_task = tasks.find(task);
+    assert(found_task != tasks.end() && "This task has not been created yet, call registerGroupAndTask first!");
+    auto types = found_task->second;
+    assert(types.find(tool_type) == types.end() && "This type is already registered");
+    factors_[group][task].emplace(tool_type, creator);
 }
 
 } // namespace quicktools::core
