@@ -17,7 +17,7 @@ public:
 
     ~ImageHistogram() = default;
 
-    std::tuple<int, QString> exec() override;
+    std::tuple<int, QString> process() override;
 
     QString name() const override
     {

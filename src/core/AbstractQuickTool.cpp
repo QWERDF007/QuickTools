@@ -27,15 +27,19 @@ int AbstractQuickTool::init()
     int ret = checkParams();
     if (ret == 0)
         ret = checkSettings();
+    if (ret == 0)
+        setIsInit(true);
     return ret;
 }
 
 void AbstractQuickTool::run()
 {
-    int ret = checkParams();
+    int ret = 0;
+    if (!isInit())
+        ret = init();
     if (ret != 0)
     {
-        emit showMessage(InfoLevel::Error, tr("检查参数失败"));
+        emit showMessage(InfoLevel::Error, tr("初始化失败"));
         return;
     }
     clearAlgorithmTime();
@@ -43,7 +47,7 @@ void AbstractQuickTool::run()
     auto start_time = std::chrono::high_resolution_clock::now();
     try
     {
-        const auto &[status, msg] = exec();
+        const auto &[status, msg] = process();
         auto end_time             = std::chrono::high_resolution_clock::now();
         wall_clock_time_          = std::chrono::duration<double, std::milli>(end_time - start_time).count();
         outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
@@ -77,6 +81,16 @@ void AbstractQuickTool::submit()
 int AbstractQuickTool::initSettings()
 {
     return 0;
+}
+
+bool AbstractQuickTool::isInit() const
+{
+    return is_init_;
+}
+
+void AbstractQuickTool::setIsInit(bool is_init)
+{
+    is_init_ = is_init;
 }
 
 int AbstractQuickTool::checkParams()

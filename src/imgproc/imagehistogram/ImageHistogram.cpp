@@ -43,7 +43,7 @@ std::tuple<int, std::tuple<float, float>> getHistSizeAndRange(const QString &col
         return std::make_tuple(256, std::make_tuple(0.f, 256.f));
 }
 
-std::tuple<int, QString> ImageHistogram::exec()
+std::tuple<int, QString> ImageHistogram::process()
 {
     auto algorithm_start_time = std::chrono::high_resolution_clock::now();
     auto input_params         = getInputParams();

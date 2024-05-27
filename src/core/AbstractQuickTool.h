@@ -44,9 +44,9 @@ public:
 
     virtual QString doc() const = 0;
 
-    virtual std::tuple<int, QString> exec() = 0;
+    virtual std::tuple<int, QString> process() = 0;
 
-    int init();
+    virtual int init();
 
     void run() override;
 
@@ -100,17 +100,8 @@ protected:
     virtual int initOutputParams() = 0;
     virtual int initSettings();
 
-    double       wall_clock_time_{0.};
-    QVariantList algorithm_time_array_;
-    int          status_{0};
-    QString      msg_;
-
-    QQmlEngine *qmlEngine_{nullptr};
-    QJSEngine  *jsEngine_{nullptr};
-
-    QuickToolHelper *helper_{nullptr};
-
-    bool run_after_changed{true};
+    bool isInit() const;
+    void setIsInit(bool);
 
 protected slots:
     void onRunAfterChanged();
@@ -123,6 +114,18 @@ private:
     int checkInputParams();
     int checkOutputParams();
     int checkSettings();
+
+    double       wall_clock_time_{0.};
+    QVariantList algorithm_time_array_;
+
+    bool run_after_changed{true};
+
+    QQmlEngine *qmlEngine_{nullptr};
+    QJSEngine  *jsEngine_{nullptr};
+
+    QuickToolHelper *helper_{nullptr};
+
+    bool is_init_{false};
 
 signals:
     void start();
