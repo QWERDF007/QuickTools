@@ -1,6 +1,8 @@
 #include "PythonManager.h"
+
 #include <QDebug>
 #include <QDir>
+
 
 namespace quicktools::core {
 
@@ -41,7 +43,7 @@ QStringList PythonManager::sysPaths() const
 
 void PythonManager::addSysPaths(const QStringList &sys_paths)
 {
-    for (const QString& path : sys_paths)
+    for (const QString &path : sys_paths)
     {
         if (sys_paths_.contains(path))
             continue;

@@ -12,6 +12,8 @@ ApplicationWindow {
     visible: true
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
+    property int group: QuickToolGroupType.EmptyGroup
+    property int task: QuickToolTaskType.EmptyTask
     property QuickTool quicktool
     property string helpInfos: quicktool ? quicktool.doc : ""
     property QuickToolSettings toolSettings: quicktool ? quicktool.settings : null

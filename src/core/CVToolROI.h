@@ -7,7 +7,6 @@
 #include <QObject>
 #include <QtQml>
 
-
 namespace quicktools::core {
 
 class QUICKTOOLS_CORE_EXPORT CVToolROI : public QObject

@@ -13,7 +13,6 @@ class QuickToolHelper : public QObject
 
 public:
     explicit QuickToolHelper(QObject *parent = nullptr);
-
 };
 
 } // namespace quicktools::core

@@ -1,8 +1,11 @@
 #include "AbstractQuickTool.h"
-#include "priv/Predefined.h"
+
+#include "QuickToolType.h"
 #include "Utils.h"
+#include "priv/Predefined.h"
 
 #include <chrono>
+
 
 namespace quicktools::core {
 
@@ -198,32 +201,12 @@ QString QuickToolFactor::taskUUID(const int task)
     return found->second;
 }
 
-QString QuickToolFactor::toolUUID(const int tool_type)
-{
-    auto found = tools_uuid_.find(tool_type);
-    if (found == tools_uuid_.end())
-        return "";
-    return found->second;
-}
-
 void QuickToolFactor::registerGroupAndTask(const int group, const int task)
 {
-    assert(groups_uuid_.find(group) == groups_uuid_.end() && "This group is already registered");
-    assert(tasks_uuid_.find(task) == tasks_uuid_.end() && "This task is already registered");
-    groups_uuid_.emplace(group, common::uuid());
-    tasks_uuid_.emplace(task, common::uuid());
-}
-
-void QuickToolFactor::registerQuickTool(const int group, const int task, const int tool_type, AbstractQuickToolCreator creator)
-{
-    auto found_group = factors_.find(group);
-    assert(found_group != factors_.end() && "This group has not been created yet, call registerGroupAndTask first!");
-    auto tasks = found_group->second;
-    auto found_task = tasks.find(task);
-    assert(found_task != tasks.end() && "This task has not been created yet, call registerGroupAndTask first!");
-    auto types = found_task->second;
-    assert(types.find(tool_type) == types.end() && "This type is already registered");
-    factors_[group][task].emplace(tool_type, creator);
+    if (groups_uuid_.find(group) == groups_uuid_.end())
+        groups_uuid_.emplace(group, common::uuid());
+    if (tasks_uuid_.find(task) == tasks_uuid_.end())
+        tasks_uuid_.emplace(task, common::uuid());
 }
 
 } // namespace quicktools::core

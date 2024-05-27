@@ -6,12 +6,14 @@ import Qt.labs.platform
 import QuickTools.core
 import QuickTools.ui
 
-T_CVWindow {
+import "../"
+
+T_ImageProcessWindow {
     id: imageHistogramWin
 
     acceptedShapes: QuickShape.Rectangle | QuickShape.Circle
     activateItem: image
-    quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogram, imageHistogramWin)
+    quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogramTool, imageHistogramWin)
 
     QuickSplitView {
         id: sv1
@@ -30,8 +32,8 @@ T_CVWindow {
                 id: image
 
                 anchors.fill: parent
-                drawingBorderColor: imageHistogramWin.drawingColor
-                drawingColor: imageHistogramWin.drawingBorderColor
+                drawingColor: imageHistogramWin.drawingColor
+                drawingBorderColor: imageHistogramWin.drawingBorderColor
                 image.source: {
                     if (inputParams.pdata.Image === null || inputParams.pdata.Image === undefined) {
                         return ""

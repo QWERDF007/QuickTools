@@ -113,7 +113,7 @@ private:
     QMap<QString, QMap<int, QVariant>> settings_data_;  // [name, [key, value]]
     QQmlPropertyMap    property_data_; // [key, value] QML 中可直接访问和修改对应 key 的属性
     QMap<int, QString> groups_;        // [key, name]
-    bool is_init_{false};
+    bool               is_init_{false};
 
 private slots:
     void onPropertyValueChanged(const QString &key, const QVariant &value);

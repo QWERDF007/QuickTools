@@ -12,8 +12,6 @@
 
 namespace quicktools::core {
 
-
-
 // Template classes not supported by Q_OBJECT
 
 class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
@@ -242,12 +240,9 @@ public:
 
     void registerQuickTool(const int type, AbstractQuickToolCreator creator);
 
-
     QString groupUUID(const int group);
     QString taskUUID(const int task);
-    QString toolUUID(const int tool_type);
-    void registerGroupAndTask(const int group, const int task);
-    void registerQuickTool(const int group, const int task, const int tool_type, AbstractQuickToolCreator creator);
+    void    registerGroupAndTask(const int group, const int task);
 
 protected:
     static QQmlEngine *qmlEngine_;
@@ -271,15 +266,13 @@ private:
 
     std::map<int, AbstractQuickToolCreator> tool_creators_;
 
-    std::map<int, std::map<int, std::map<int, AbstractQuickToolCreator>>> factors_;
     std::map<int, QString> groups_uuid_;
     std::map<int, QString> tasks_uuid_;
-    std::map<int, QString> tools_uuid_;
 };
 
 } // namespace quicktools::core
 
-#define REGISTER_CLASS(tool_type, ClassName)                                                               \
+#define REGISTER_QUICKTOOL(tool_type, ClassName)                                                           \
     inline ClassName *create##ClassName(QObject *parent = nullptr)                                         \
     {                                                                                                      \
         return new ClassName(parent);                                                                      \

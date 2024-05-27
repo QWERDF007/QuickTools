@@ -36,6 +36,6 @@ private:
     static QString doc_;
 };
 
-REGISTER_CLASS(core::quicktooltypes::ImageHistogram, ImageHistogram)
+REGISTER_QUICKTOOL(core::quicktooltype::ImageHistogramTool, ImageHistogram)
 
 } // namespace quicktools::imgproc
