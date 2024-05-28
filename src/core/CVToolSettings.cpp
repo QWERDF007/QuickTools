@@ -15,7 +15,7 @@ CVToolSettings::~CVToolSettings() {}
 
 void CVToolSettings::addCVBasicSettings()
 {
-    addGroup(SettingsGroup::DrawingGroup, "Drawing Settings");
+    addGroup(SettingsGroup::DrawingGroup, tr("绘制设置"));
     addColorDialogSetting(SettingsGroup::DrawingGroup, "ROIColor", tr("ROI 颜色"), "", QColor("red"));
     addColorDialogSetting(SettingsGroup::DrawingGroup, "ROIBorderColor", tr("ROI 边框颜色"), "", QColor("red"));
     addSliderSetting(SettingsGroup::DrawingGroup, "ROIColorAlpha", tr("ROI 颜色 Alpha"),
