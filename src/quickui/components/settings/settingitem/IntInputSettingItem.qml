@@ -6,14 +6,15 @@ import QuickTools.ui
 T_SettingItem {
     id: intInputSettingItem
 
-    RowLayout {
+    TextField {
         anchors.verticalCenter: parent.verticalCenter
-
-        TextField {
-            text: settingValue
-            onEditingFinished: {
-                intInputSettingItem.valueChanged(text)
-            }
+        implicitWidth: Math.max(64, contentWidth + 5)
+        implicitHeight: 32
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+        text: settingValue
+        onEditingFinished: {
+            intInputSettingItem.valueChanged(text)
         }
     }
 }

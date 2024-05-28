@@ -6,17 +6,14 @@ import QuickTools.ui
 T_SettingItem {
     id: toggleSwitchSettingItem
 
-    RowLayout {
+    QuickToggleSwitch {
         anchors.verticalCenter: parent.verticalCenter
+        checked: settingValue
+        text: settingValue ? qsTr("on") : qsTr("off")
+        textRight: false
 
-        QuickToggleSwitch {
-            checked: settingValue
-            text: settingValue ? qsTr("on") : qsTr("off")
-            textRight: false
-
-            onClicked: {
-                valueChanged(checked)
-            }
+        onClicked: {
+            valueChanged(checked)
         }
     }
 }

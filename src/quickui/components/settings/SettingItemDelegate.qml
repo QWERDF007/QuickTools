@@ -68,14 +68,18 @@ QuickFrame {
         }
     }
 
-    RowLayout {
+    Item {
         anchors.fill: parent
         anchors.leftMargin: 5
         anchors.rightMargin: 5
 
         ColumnLayout {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
+            anchors{
+                left: parent.left
+                top: parent.top
+                bottom: parent.bottom
+            }
+
             spacing: 5
 
             Item {
@@ -95,14 +99,15 @@ QuickFrame {
                 Layout.fillHeight: true
             }
         }
-        Item {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-        }
+
         QuickLoader {
             id: loader
+            anchors{
+                right: parent.right
+                top: parent.top
+                bottom: parent.bottom
+            }
 
-            Layout.fillHeight: true
             sourceComponent: {
                 if (settingDelegate.settingType === QuickToolSettings.ToggleSwitchType) {
                     return toggleSwitchSettingItem

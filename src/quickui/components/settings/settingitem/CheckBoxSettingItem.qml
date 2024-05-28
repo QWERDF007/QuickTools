@@ -6,15 +6,12 @@ import QuickTools.ui
 T_SettingItem {
     id: checkBoxSettingItem
 
-    RowLayout {
+    CheckBox {
         anchors.verticalCenter: parent.verticalCenter
+        checked: settingValue
 
-        CheckBox {
-            checked: settingValue
-
-            onToggled: {
-                valueChanged(checked);
-            }
+        onToggled: {
+            valueChanged(checked);
         }
     }
 }
