@@ -58,6 +58,7 @@ T_CVWindow {
             histogramsMax: outputParams.pdata.HistMax
             histogramsMin: outputParams.pdata.HistMin
             implicitWidth: sv1.width / 2
+            chartHeight: toolSettings ? toolSettings.pdata.ChartHeight : 400
             visible: outputParams.pdata.Hist === null || outputParams.pdata.Hist === undefined ? false : true
         }
     }

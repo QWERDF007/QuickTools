@@ -59,6 +59,7 @@ public:
         ToggleSwitchType,
         SliderType,
         ColorDialogType,
+        IntInputType,
     };
     Q_ENUM(SettingsType)
 
@@ -107,6 +108,8 @@ public:
                           const QVariant &value, const QVariant &from, const QVariant &to, const QVariant &step_size);
     bool addColorDialogSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
                                const QVariant &value);
+    bool addIntInputSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
+                            const QVariant &value, const QVariant &from = 0, const QVariant &to = 9999);
 
 private:
     QList<QString>                     settings_names_; // [name]

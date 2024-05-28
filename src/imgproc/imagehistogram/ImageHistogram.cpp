@@ -1,5 +1,5 @@
 #include "ImageHistogram.h"
-
+#include "AbstractQuickToolSettings.h"
 #include <opencv2/opencv.hpp>
 
 #include <QFile>
@@ -201,12 +201,19 @@ int ImageHistogram::initOutputParams()
     return 0;
 }
 
+enum SettingsGroup
+{
+    Misc = core::AbstractQuickToolSettings::SettingsGroup::UserGroup + 1,
+};
+
 int ImageHistogram::initSettings()
 {
     qInfo() << __FUNCTION__ << __LINE__ << "TODO";
     if (settings_)
     {
         // TODO: add chart height
+        settings_->addGroup(SettingsGroup::Misc, tr("杂项设置"));
+        settings_->addIntInputSetting(SettingsGroup::Misc, "ChartHeight", tr("图表高"), "", 400, 200, 1000);
     }
     return 0;
 }

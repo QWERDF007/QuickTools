@@ -168,6 +168,17 @@ bool AbstractQuickToolSettings::addColorDialogSetting(const int group, const QSt
     return addSetting(group, name, display_name, desc, SettingsType::ColorDialogType, value, QVariant(), true);
 }
 
+bool AbstractQuickToolSettings::addIntInputSetting(const int group, const QString &name, const QString &display_name,
+                                                   const QString &desc, const QVariant &value, const QVariant &from,
+                                                   const QVariant &to)
+{
+    QVariantMap data{
+        {    "from",      from},
+        {      "to",        to},
+    };
+    return addSetting(group, name, display_name, desc, SettingsType::IntInputType, value, data, true);
+}
+
 void AbstractQuickToolSettings::onPropertyValueChanged(const QString &key, const QVariant &value)
 {
     int row = settings_names_.indexOf(key);
@@ -183,7 +194,7 @@ GlobalSettings::GlobalSettings(QObject *parent)
 
 void GlobalSettings::addBasicSettings()
 {
-    addGroup(SettingsGroup::BasicGroup, "Basic Settings");
+    addGroup(SettingsGroup::BasicGroup, tr("基础设置"));
     addToogleSwitchSetting(SettingsGroup::BasicGroup, RUN_AFTER_CHANGED, tr("改变后运行"), tr("输入参数改变后运行工具"),
                            true);
 }

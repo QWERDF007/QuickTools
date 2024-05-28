@@ -55,6 +55,19 @@ QuickFrame {
             }
         }
     }
+    Component {
+        id: intInputSettingItem
+
+        IntInputSettingItem {
+            settingAdditional: settingDelegate.settingAdditional
+            settingValue: settingDelegate.settingValue
+
+            onValueChanged: function (value) {
+                settingDelegate.valueChanged(value)
+            }
+        }
+    }
+
     RowLayout {
         anchors.fill: parent
         anchors.leftMargin: 5
@@ -97,7 +110,10 @@ QuickFrame {
                     return sliderSettingItem
                 } else if (settingDelegate.settingType === QuickToolSettings.ColorDialogType) {
                     return colorSettingItem
+                } else if (settingDelegate.settingType === QuickToolSettings.IntInputType) {
+                    return intInputSettingItem
                 }
+
                 return undefined
             }
         }
