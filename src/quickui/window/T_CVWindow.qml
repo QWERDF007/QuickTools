@@ -13,8 +13,8 @@ T_Window {
     property alias acceptedShapes: _header.acceptedShapes
     property var activateItem
     default property alias content: container.data
-    property color drawingBorderColor: toolSettings ? toolSettings.pdata.ROIBorderColor : "red"
     property color drawingColor: toolSettings ? UITools.withOpacity(toolSettings.pdata.ROIColor, toolSettings.pdata.ROIColorAlpha) : UITools.withOpacity("red", 0.5)
+    property color drawingBorderColor: toolSettings ? toolSettings.pdata.ROIBorderColor : "red"
     property CVInputParams inputParams: quicktool ? quicktool.inputParams : null
     property CVToolROI inputROI: inputParams ? inputParams.roi : null
     property CVOutputParams outputParams: quicktool ? quicktool.outputParams : null
@@ -79,7 +79,7 @@ T_Window {
     }
 
     function updateROI(shapeType, data) {
-        if (inputROI === null) {
+        if (!inputROI) {
             return
         }
         if (shapeType === QuickShape.NoShape) {

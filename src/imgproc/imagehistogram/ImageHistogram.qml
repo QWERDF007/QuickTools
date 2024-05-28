@@ -6,9 +6,7 @@ import Qt.labs.platform
 import QuickTools.core
 import QuickTools.ui
 
-import "../"
-
-T_ImageProcessWindow {
+T_CVWindow {
     id: imageHistogramWin
 
     acceptedShapes: QuickShape.Rectangle | QuickShape.Circle
