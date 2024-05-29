@@ -1,5 +1,7 @@
 #include "ImageHistogram.h"
+
 #include "AbstractQuickToolSettings.h"
+
 #include <opencv2/opencv.hpp>
 
 #include <QFile>
@@ -7,6 +9,7 @@
 #include <QtQml>
 #include <chrono>
 #include <vector>
+
 
 namespace quicktools::imgproc {
 
