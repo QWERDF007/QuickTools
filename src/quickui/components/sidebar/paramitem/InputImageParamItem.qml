@@ -29,13 +29,19 @@ T_ParamItem {
             text: paramDisplay
             verticalAlignment: Text.AlignVCenter
         }
-        ToolButton {
+        QuickToolButton {
+            id: imageBtn
             icon.source: "/icons/image"
             implicitHeight: Math.min(parent.width, parent.height)
             implicitWidth: Math.min(parent.width, parent.height)
 
             onClicked: {
                 fileDialog.open();
+            }
+            QuickToolTip{
+                text: qsTr("选择图像")
+                visible: imageBtn.hovered
+                delay: 200
             }
         }
     }

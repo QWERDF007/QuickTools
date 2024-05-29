@@ -12,6 +12,8 @@ file(GLOB_RECURSE HEADERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h *.hpp)
 
 # 获取所有资源文件的相对路径
 file(GLOB_RECURSE RES_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} */qmldir)
+# 将 qtquickcontrols2.conf 添加到资源文件列表
+list(APPEND RES_FILES qtquickcontrols2.conf)
 # 将 qmldir 组织到一起
 source_group("Resource Files" FILES ${RES_FILES})
 
@@ -47,6 +49,13 @@ qt_add_qml_module(${PROJECT_NAME}
     QML_FILES ${QML_SOURCES}
     RESOURCES ${RES_FILES}
 )
+
+# 添加资源文件
+qt_add_resources(${PROJECT_NAME} "controls2_conf"
+    PREFIX "/"
+    FILES "qtquickcontrols2.conf"
+)
+
 
 # 如果编译模式是Debug或RelWithDebInfo，则添加预处理定义QT_QML_DEBUG。用于开启Qt Quick调试功能
 target_compile_definitions(${PROJECT_NAME}

@@ -6,8 +6,8 @@ import QuickTools.ui
 
 import "../component"
 
-// 工具卡片列表页面
-QuickScrollablePage {
+
+QuickScrollablePage { // 工具卡片列表页面, 可滚动
     id: page
     property ToolsList items
 
