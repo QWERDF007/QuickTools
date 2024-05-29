@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include "Utils.h"
 
 #ifndef _AddressOfReturnAddress
 
@@ -139,38 +140,6 @@ void WindowsCCrashHandler::GetExceptionPointers(DWORD dwExceptionCode, EXCEPTION
 
 // clang-format on
 
-std::string wcharToString(const wchar_t *wstr)
-{
-    if (wstr == nullptr)
-        return "";
-    // 首先计算需要的字符数量
-    int len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, nullptr, nullptr);
-
-    // 创建一个足够大的字符数组来存储转换后的字符串
-    std::string str(len, 0);
-
-    // 执行转换
-    WideCharToMultiByte(CP_UTF8, 0, wstr, -1, &str[0], len, nullptr, nullptr);
-
-    return str;
-}
-
-std::wstring stringToWchar(const std::string &str)
-{
-    if (str.empty())
-        return L"";
-
-    // 首先计算需要的宽字符数量
-    int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, nullptr, 0);
-
-    // 创建一个足够大的宽字符数组来存储转换后的字符串
-    std::wstring wstr(len, 0);
-
-    // 执行转换
-    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &wstr[0], len);
-
-    return wstr;
-}
 
 std::string WindowsCCrashHandler::GetExceptionModule(HANDLE process, LPVOID address)
 {
