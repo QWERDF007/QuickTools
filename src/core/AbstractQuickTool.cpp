@@ -6,7 +6,6 @@
 
 #include <chrono>
 
-
 namespace quicktools::core {
 
 QuickToolFactor *QuickToolFactor::instance_  = nullptr;

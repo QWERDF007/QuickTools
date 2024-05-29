@@ -1,6 +1,8 @@
 #include "Utils.h"
+
 #include <QString>
 #include <QUuid>
+
 
 namespace quicktools::common {
 

@@ -173,8 +173,8 @@ bool AbstractQuickToolSettings::addIntInputSetting(const int group, const QStrin
                                                    const QVariant &to)
 {
     QVariantMap data{
-        {    "from",      from},
-        {      "to",        to},
+        {"from", from},
+        {  "to",   to},
     };
     return addSetting(group, name, display_name, desc, SettingsType::IntInputType, value, data, true);
 }
