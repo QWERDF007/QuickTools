@@ -42,9 +42,9 @@ public:
 
     virtual QString doc() const = 0;
 
-    virtual std::tuple<int, QString> process() = 0;
+    int init();
 
-    virtual int init();
+    virtual std::tuple<int, QString> process() = 0;
 
     void run() override;
 
@@ -98,8 +98,9 @@ protected:
     virtual int initOutputParams() = 0;
     virtual int initSettings();
 
-    bool isInit() const;
-    void setIsInit(bool);
+    bool        isInit() const;
+    void        setIsInit(bool);
+    virtual int doInInit();
 
 protected slots:
     void onRunAfterChanged();

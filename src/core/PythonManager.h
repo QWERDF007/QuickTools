@@ -4,12 +4,14 @@
 
 #include <QStringList>
 
-
 namespace quicktools::core {
 class PythonManager
 {
 public:
     SINGLETON(PythonManager)
+
+    void init();
+    bool isInit() const;
 
     QString defaultPythonHome() const;
     QString pythonHome() const;
@@ -24,5 +26,7 @@ private:
 
     QStringList sys_paths_;
     QString     python_home_;
+
+    bool is_init_{false};
 };
 } // namespace quicktools::core

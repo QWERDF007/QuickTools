@@ -1,12 +1,12 @@
 #include "PythonManager.h"
-
+//#include "pybind11/embed.h"
 #include <QDebug>
 #include <QDir>
-
 
 namespace quicktools::core {
 
 PythonManager::PythonManager()
+    : is_init_{false}
 {
     qInfo() << __FUNCTION__ << this;
     setPythonHome(defaultPythonHome());
@@ -15,6 +15,16 @@ PythonManager::PythonManager()
 PythonManager::~PythonManager()
 {
     qInfo() << __FUNCTION__ << this;
+}
+
+void PythonManager::init()
+{
+
+}
+
+bool PythonManager::isInit() const
+{
+    return is_init_;
 }
 
 QString PythonManager::defaultPythonHome() const
@@ -32,6 +42,8 @@ bool PythonManager::setPythonHome(const QString &python_home)
 {
     if (python_home_ == python_home)
         return false;
+    //    pybind11::gil_scoped_acquire acquire;
+    //    Py_SetPythonHome()
     python_home_ = python_home;
     return true;
 }

@@ -1,6 +1,5 @@
 #include "AbstractQuickTool.h"
 
-#include "QuickToolType.h"
 #include "Utils.h"
 #include "priv/Predefined.h"
 
@@ -16,6 +15,8 @@ AbstractQuickTool::AbstractQuickTool(QObject *parent)
     : QObject{parent}
     , helper_(new QuickToolHelper(this))
 {
+    // If auto-deletion is enabled, QThreadPool will automatically
+    // delete this runnable after calling run();
     setAutoDelete(false);
 }
 
@@ -30,8 +31,15 @@ int AbstractQuickTool::init()
     if (ret == 0)
         ret = checkSettings();
     if (ret == 0)
+        ret = doInInit();
+    if (ret == 0)
         setIsInit(true);
     return ret;
+}
+
+int AbstractQuickTool::doInInit()
+{
+    return 0;
 }
 
 void AbstractQuickTool::run()

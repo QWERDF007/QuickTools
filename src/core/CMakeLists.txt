@@ -59,6 +59,7 @@ target_link_libraries(${TARGET_NAME}
         Qt6::Core Qt6::Gui
         opencv_core
         QuickTools_common QuickTools_common_headers
+        pybind11::embed
 )
 
 # 添加一个宏定义, 配合动态库导出函数、类
