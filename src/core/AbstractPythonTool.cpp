@@ -4,12 +4,9 @@
 
 #include <QDebug>
 
-
 namespace quicktools::core {
 
-AbstractPythonTool::AbstractPythonTool()
-{
-}
+AbstractPythonTool::AbstractPythonTool() {}
 
 AbstractPythonTool::~AbstractPythonTool()
 {
@@ -19,12 +16,16 @@ AbstractPythonTool::~AbstractPythonTool()
 int AbstractPythonTool::init()
 {
     qInfo() << __FUNCTION__;
+    int ret = 0;
     if (!PythonManager::getInstance()->isInit())
     {
-        return -1;
+        ret = PythonManager::getInstance()->init();
     }
-    PythonManager::getInstance()->addSysPaths(importPaths());
-    return 0;
+    if (ret == 0)
+    {
+        PythonManager::getInstance()->addSysPaths(importPaths());
+    }
+    return ret;
 }
 
 QStringList AbstractPythonTool::importPaths()

@@ -2,15 +2,17 @@
 
 #include "Singleton.h"
 
+#include <QObject>
 #include <QStringList>
 
 namespace quicktools::core {
-class PythonManager
+class PythonManager : public QObject
 {
+    Q_OBJECT
 public:
     SINGLETON(PythonManager)
 
-    void init();
+    int  init();
     bool isInit() const;
 
     QString defaultPythonHome() const;
@@ -20,8 +22,10 @@ public:
     QStringList sysPaths() const;
     void        addSysPaths(const QStringList &sys_paths);
 
+public slots:
+
 private:
-    explicit PythonManager();
+    explicit PythonManager(QObject *parent = nullptr);
     ~PythonManager();
 
     QStringList sys_paths_;
