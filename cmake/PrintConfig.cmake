@@ -96,3 +96,7 @@ message(STATUS "    Qt core lib         : ${Qt6Core_LIBRARIES}")
 message(STATUS "    Qt core include dir : ${Qt6Core_INCLUDE_DIRS}")
 message(STATUS "    Qt libs             : ${Qt6Core_LIBRARIES} ${Qt6Gui_LIBRARIES} ${Qt6Quick_LIBRARIES} ${Qt6QuickTest_LIBRARIES}")
 message(STATUS "")
+
+message(STATUS "Python")
+message(STATUS "    PYTHON_EXECUTABLE   : ${PYTHON_EXECUTABLE}")
+message(STATUS "")
