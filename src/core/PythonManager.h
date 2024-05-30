@@ -2,6 +2,10 @@
 
 #include "Singleton.h"
 
+#undef slots
+#include <pybind11/embed.h>
+#define slots Q_SLOTS
+
 #include <QObject>
 #include <QStringList>
 
@@ -14,23 +18,26 @@ public:
 
     int  init();
     bool isInit() const;
+    int  initializeInterpreter();
+    void finalizeInterpreter();
 
-    QString defaultPythonHome() const;
-    QString pythonHome() const;
-    bool    setPythonHome(const QString &python_home);
+    static QString defaultPythonHome();
+    QString        pythonHome() const;
+    bool           setPythonHome(const QString &python_home);
+
+    static QString getPythonExecutable(const QString &python_home);
 
     QStringList sysPaths() const;
     void        addSysPaths(const QStringList &sys_paths);
-
-public slots:
 
 private:
     explicit PythonManager(QObject *parent = nullptr);
     ~PythonManager();
 
-    QStringList sys_paths_;
-    QString     python_home_;
-
-    bool is_init_{false};
+    QStringList      sys_paths_;
+    QString          python_home_;
+    pybind11::object sys_;
+signals:
+    void pythonHomeChanged();
 };
 } // namespace quicktools::core

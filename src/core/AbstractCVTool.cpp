@@ -9,9 +9,10 @@ AbstractCVTool::AbstractCVTool(QObject *parent)
 
 AbstractCVTool::~AbstractCVTool() {}
 
-AbstractPythonCVTool::AbstractPythonCVTool(QObject *parent) : AbstractCVTool(parent), AbstractPythonTool()
+AbstractPythonCVTool::AbstractPythonCVTool(QObject *parent)
+    : AbstractCVTool(parent)
+    , AbstractPythonTool()
 {
-
 }
 
 AbstractPythonCVTool::~AbstractPythonCVTool()
@@ -23,7 +24,5 @@ int AbstractPythonCVTool::doInInit()
 {
     return AbstractPythonTool::init();
 }
-
-
 
 } // namespace quicktools::core
