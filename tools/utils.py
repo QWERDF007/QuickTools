@@ -1,6 +1,10 @@
 import os
+import re
 import sys
 import ctypes
+from pathlib import Path
+from typing import Union
+
 
 def get_file_path(path, suffix) -> list:
     """ 递归遍历目录获取指定后缀的文件路径
@@ -38,3 +42,27 @@ def runas_admin():
     if not is_admin():
         ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
         
+def symlink(target : Union[str, Path], link : Union[str, Path]):
+    if isinstance(target, str):
+        target = Path(target)
+    if isinstance(link, str):
+        link = Path(link)
+    target = target.absolute()
+    link = link.absolute()
+    if link.exists():
+        link.unlink()
+    if not target.exists():
+        print(f'failed to create symlink, not found {target}')
+        return
+    print(f'create symlink {link} to {target}')
+    link.symlink_to(target)
+
+def find_pattern_in_cmake(cmake_config_file, pattern):
+    result = None
+    with open(cmake_config_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            group = re.match(pattern, line)
+            if group:
+                result = Path(group.group(1))
+                break
+    return result

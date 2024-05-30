@@ -1,7 +1,7 @@
 import argparse
 import platform
 from pathlib import Path
-import os
+from utils import symlink, find_pattern_in_cmake
 
 
 
@@ -26,25 +26,18 @@ def opencv_symlinks(opencv_home, link_dir, config):
     for stem in dll_stems:
         target = target_dir / (prefix + stem + suffix)
         link = link_dir / target.name
-        target = target.absolute()
-        link = link.absolute()
-        if link.exists():
-            link.unlink()
-        if not target.exists():
-            print(f'failed to create symlink, not found {target}')
-            continue
-        else:
-            print(f'create symlink {link} to {target}')
-        link.symlink_to(target)
+        symlink(target, link)
     
     
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('opencv_home', type=str, metavar='DIR', help='directory to opencv home')
-    parser.add_argument('--link', type=str, default='./build/bin', metavar='LINK', help='directory to runtime output')
     parser.add_argument('-cfg', '--config', type=str, default='debug', choices=['release', 'debug'], help='windows config, debug or release')
     args = parser.parse_args()
-    
-    opencv_symlinks(args.opencv_home, args.link, args.config)
+    # 编写正则表达式来匹配 OPENCV_HOME 的路径
+    pattern = r'set\(OpenCV_HOME "([^"]+)"\)'
+    opencv_home = find_pattern_in_cmake(Path('./cmake/ConfigOpenCV.cmake'), pattern)
+    print('find opencv home:', opencv_home)
+    if opencv_home:
+        opencv_symlinks(opencv_home, './build/bin', args.config)
         
