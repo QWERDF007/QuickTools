@@ -4,6 +4,11 @@
 #include "priv/Predefined.h"
 
 #include <chrono>
+#include <sstream>
+
+#undef slots
+#include <pybind11/embed.h>
+#define slots Q_SLOTS
 
 namespace quicktools::core {
 
@@ -42,9 +47,25 @@ int AbstractQuickTool::doInInit()
     return 0;
 }
 
+QString pythonErrorHandle(const pybind11::error_already_set &e)
+{
+    auto traceback = pybind11::module::import("traceback").attr("format_exception");
+    auto format_exception
+        = traceback(e.type(), e.value() ? e.value() : pybind11::none(), e.trace() ? e.trace() : pybind11::none());
+    std::stringstream sout;
+    sout << e.what() << "\n\n";
+    for (auto line : format_exception)
+    {
+        sout << line.cast<std::string>();
+    }
+    QString msg = QString::fromStdString(sout.str());
+    return msg;
+}
+
 void AbstractQuickTool::run()
 {
-    int ret = 0;
+    int     ret = 0;
+    QString error_msg;
     if (!isInit())
         ret = init();
     if (ret != 0)
@@ -58,22 +79,27 @@ void AbstractQuickTool::run()
     try
     {
         const auto &[status, msg] = process();
-        auto end_time             = std::chrono::high_resolution_clock::now();
-        wall_clock_time_          = std::chrono::duration<double, std::milli>(end_time - start_time).count();
-        outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
-        outputParams()->setStatus(status, msg);
-        emit finished();
-        emit showMessage(status == 0 ? InfoLevel::Success : InfoLevel::Error, msg);
+
+        ret       = status;
+        error_msg = msg;
+    }
+    catch (const pybind11::error_already_set &e)
+    {
+        ret = -1;
+        pybind11::gil_scoped_acquire acquire;
+        error_msg = pythonErrorHandle(e);
     }
     catch (const std::exception &e)
     {
-        auto end_time    = std::chrono::high_resolution_clock::now();
-        wall_clock_time_ = std::chrono::duration<double, std::milli>(end_time - start_time).count();
-        outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
-        outputParams()->setStatus(-1, e.what());
-        emit finished();
-        emit showMessage(InfoLevel::Error, e.what());
+        ret       = -1;
+        error_msg = e.what();
     }
+    wall_clock_time_
+        = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - start_time).count();
+    outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
+    outputParams()->setStatus(ret, error_msg);
+    emit finished();
+    emit showMessage(ret == 0 ? InfoLevel::Success : InfoLevel::Error, error_msg);
 }
 
 void AbstractQuickTool::setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine)

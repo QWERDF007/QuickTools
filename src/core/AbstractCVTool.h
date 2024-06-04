@@ -19,9 +19,19 @@ class QUICKTOOLS_CORE_EXPORT AbstractPythonCVTool
     : public AbstractCVTool
     , public AbstractPythonTool
 {
+    Q_OBJECT
+    Q_PROPERTY(bool hasPython READ hasPython CONSTANT FINAL)
 public:
     AbstractPythonCVTool(QObject *parent = nullptr);
+
     virtual ~AbstractPythonCVTool();
+
+    bool hasPython() const
+    {
+        return true;
+    }
+
+    Q_INVOKABLE void reloadModule();
 
 protected:
     int doInInit() override;

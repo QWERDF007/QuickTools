@@ -16,13 +16,13 @@ public:
     AbstractPythonTool();
     virtual ~AbstractPythonTool();
 
-    int init();
-
-    virtual QStringList importPaths();
-    virtual QString     importModule() = 0;
+    int                      init();
+    std::tuple<int, QString> reloadModule();
 
 protected:
-    pybind11::object object_;
+    virtual QString importModule() const = 0;
+
+    pybind11::module_ module_;
 };
 
 } // namespace quicktools::core

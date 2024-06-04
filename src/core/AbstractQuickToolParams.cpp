@@ -13,10 +13,7 @@ AbstractQuickToolParams::AbstractQuickToolParams(QObject *parent)
     connect(&property_data_, &QQmlPropertyMap::valueChanged, this, &AbstractQuickToolParams::onPropertyValueChanged);
 }
 
-AbstractQuickToolParams::~AbstractQuickToolParams()
-{
-    qInfo() << __FUNCTION__ << this;
-}
+AbstractQuickToolParams::~AbstractQuickToolParams() {}
 
 int AbstractQuickToolParams::rowCount(const QModelIndex &parent) const
 {

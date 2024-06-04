@@ -1,6 +1,7 @@
 
 #include "CrashHandler.h"
 #include "imgprocregister.h"
+#include "PythonManager.h"
 
 #include <QApplication>
 #include <QQmlApplicationEngine>
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     quicktools::imgproc::registerTools();
+    quicktools::core::PythonManager::getInstance()->init();
 
     qDebug() << "qml import path list" << engine.importPathList();
     const QUrl url(QStringLiteral("qrc:/qt/qml/QuickTools/App.qml"));

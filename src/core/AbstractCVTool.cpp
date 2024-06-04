@@ -20,6 +20,12 @@ AbstractPythonCVTool::~AbstractPythonCVTool()
     qInfo() << __FUNCTION__ << this;
 }
 
+void AbstractPythonCVTool::reloadModule()
+{
+    const auto [status, msg] = AbstractPythonTool::reloadModule();
+    emit showMessage(status == 0 ? InfoLevel::Success : InfoLevel::Error, msg);
+}
+
 int AbstractPythonCVTool::doInInit()
 {
     return AbstractPythonTool::init();

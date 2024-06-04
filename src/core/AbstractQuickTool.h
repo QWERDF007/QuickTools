@@ -44,8 +44,6 @@ public:
 
     int init();
 
-    virtual std::tuple<int, QString> process() = 0;
-
     void run() override;
 
     virtual AbstractInputParams       *inputParams()  = 0;
@@ -101,6 +99,8 @@ protected:
     bool        isInit() const;
     void        setIsInit(bool);
     virtual int doInInit();
+
+    virtual std::tuple<int, QString> process() = 0;
 
 protected slots:
     void onRunAfterChanged();

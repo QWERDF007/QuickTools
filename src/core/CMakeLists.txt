@@ -58,8 +58,8 @@ target_link_libraries(${TARGET_NAME}
     PRIVATE
         Qt6::Core Qt6::Gui
         opencv_core
-        QuickTools_common QuickTools_common_headers
     PUBLIC
+        QuickTools_common QuickTools_common_headers
         pybind11::embed
 )
 

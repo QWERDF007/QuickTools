@@ -34,6 +34,7 @@ enum QuickToolType
 {
     EmptyTool          = 0,
     ImageHistogramTool = 1, //!< 图像直方图
+    PyTestTool,
 };
 Q_ENUM_NS(QuickToolType)
 QML_NAMED_ELEMENT(QuickToolType)
