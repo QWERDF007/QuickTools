@@ -13,3 +13,4 @@ if __name__ == '__main__':
         target_dir = Path('./build/bin')
         for dll in python_home.glob('python*.dll'):
             symlink(dll, target_dir / dll.name)
+    symlink('./src/py_module', './build/bin/py_module')
