@@ -10,7 +10,6 @@
 #include <chrono>
 #include <vector>
 
-
 namespace quicktools::imgproc {
 
 using core::paramtypes::QuickToolParamRole;
@@ -211,7 +210,6 @@ enum SettingsGroup
 
 int ImageHistogram::initSettings()
 {
-    qInfo() << __FUNCTION__ << __LINE__ << "TODO";
     if (settings_)
     {
         // TODO: add chart height
