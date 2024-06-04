@@ -1,5 +1,7 @@
 #include "UITools.h"
 
+#include "Utils.h"
+
 #include <QColor>
 #include <QUuid>
 
@@ -18,7 +20,7 @@ QColor UITools::withOpacity(const QColor &color, qreal opacity)
 
 QString UITools::uuid()
 {
-    return QUuid::createUuid().toString().remove('-').remove('{').remove('}');
+    return common::uuid();
 }
 
 } // namespace quicktools::ui
