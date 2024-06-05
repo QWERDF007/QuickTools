@@ -193,7 +193,7 @@ Rectangle {
             }
             QuickToolTip {
                 delay: 200
-                text: paramItemDelegate.paramDesc ? paramItemDelegate.paramDesc + qsTr("\n参数类型: ") + paramTypeName :
+                text: paramItemDelegate.paramDesc ? qsTr("参数类型: ") + paramTypeName + "\n" + paramItemDelegate.paramDesc:
                                                     qsTr("参数类型: ") + paramTypeName
                 visible: paramItemDelegate.paramTypeName !== "" && headerMouseArea.containsMouse
             }
