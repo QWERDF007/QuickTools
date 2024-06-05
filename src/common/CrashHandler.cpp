@@ -1,9 +1,9 @@
-#include "CrashHandler.h"
+#include "common/CrashHandler.h"
 
 #if defined(_WIN32)
-#    include "WindowsCCrashHandler.h"
+#    include "common/WindowsCCrashHandler.h"
 #else
-#    include "LinuxCCrashHandler.h"
+#    include "common/LinuxCCrashHandler.h"
 #endif
 
 namespace quicktools::common {

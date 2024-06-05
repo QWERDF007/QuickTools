@@ -1,4 +1,4 @@
-#include "PythonManager.h"
+#include "core/PythonManager.h"
 
 #include <QDebug>
 #include <QDir>

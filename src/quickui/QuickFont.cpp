@@ -1,4 +1,4 @@
-#include "QuickFont.h"
+#include "ui/QuickFont.h"
 
 namespace quicktools::ui {
 

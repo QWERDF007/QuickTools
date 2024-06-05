@@ -1,4 +1,4 @@
-#include "AbstractQuickToolSettings.h"
+#include "core/AbstractQuickToolSettings.h"
 
 #include "priv/Predefined.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Macros.h"
-#include "Singleton.h"
+#include "common/Singleton.h"
 
 #include <QFont>
 #include <QObject>
@@ -12,6 +12,8 @@ namespace quicktools::ui {
 class QuickFont : public QObject
 {
     Q_OBJECT
+    QML_SINGLETON
+    QML_NAMED_ELEMENT(QuickFont)
 
     Q_PROPERTY_AUTO(QFont, Caption);
     Q_PROPERTY_AUTO(QFont, Body);
@@ -20,16 +22,6 @@ class QuickFont : public QObject
     Q_PROPERTY_AUTO(QFont, Title);
     Q_PROPERTY_AUTO(QFont, TitleLarge);
     Q_PROPERTY_AUTO(QFont, Display);
-
-    /**
-     * 在 QML 中通过 QuickColor 可访问本单例
-     */
-    QML_NAMED_ELEMENT(QuickFont)
-
-    /**
-     * 在 QML 声明本类为单例
-     */
-    QML_SINGLETON
 
 public:
     QT_QML_SINGLETON(QuickFont)

@@ -19,7 +19,6 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
     , public QRunnable
 {
     Q_OBJECT
-
     // 声明 QML 中可用
     QML_NAMED_ELEMENT(QuickTool)
     // 声明对象不能在 QML 中创建
@@ -197,17 +196,10 @@ protected:
 class QUICKTOOLS_CORE_EXPORT QuickToolFactor : public QObject
 {
     Q_OBJECT
-
-    /**
-     * 在 QML 中通过 QuickToolFactor 可访问本单例
-     */
-    QML_NAMED_ELEMENT(QuickToolFactor)
-
-    /**
-     * 在 QML 声明本类为单例
-     */
+    // 声明在 QML 本类为单例
     QML_SINGLETON
-
+    // 声明在 QML 中通过 QuickToolFactor 可访问本单例
+    QML_NAMED_ELEMENT(QuickToolFactor)
 public:
     using AbstractQuickToolCreator = std::function<AbstractQuickTool *(QObject *)>;
 
@@ -215,14 +207,7 @@ public:
      * @brief 获取单例实例的指针
      * @return
      */
-    static QuickToolFactor *getInstance()
-    {
-        if (instance_ == nullptr)
-        {
-            instance_ = new QuickToolFactor;
-        }
-        return instance_;
-    }
+    static QuickToolFactor *getInstance();
 
     /**
      * @brief 提供给 QML 创建一个单例实例的静态工厂函数
@@ -230,12 +215,7 @@ public:
      * @param jsEngine
      * @return
      */
-    static QuickToolFactor *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
-    {
-        qmlEngine_ = qmlEngine;
-        jsEngine_  = jsEngine;
-        return getInstance();
-    }
+    static QuickToolFactor *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
     Q_INVOKABLE AbstractQuickTool *createQuickTool(const int type, QObject *parent = nullptr) const;
 
@@ -250,9 +230,6 @@ protected:
     static QJSEngine  *jsEngine_;
 
 private:
-    /**
-     * 禁用拷贝和移动构造和运算符
-     */
     Q_DISABLE_COPY_MOVE(QuickToolFactor)
 
     explicit QuickToolFactor(QObject *parent = nullptr)

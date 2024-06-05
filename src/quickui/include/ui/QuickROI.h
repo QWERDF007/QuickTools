@@ -7,7 +7,6 @@
 class QuickROI : public QObject
 {
     Q_OBJECT
-    // 声明 QML 中可用
     QML_NAMED_ELEMENT(QuickROI)
 public:
     explicit QuickROI(QObject *parent = nullptr);
@@ -24,9 +23,7 @@ private:
 class QuickROIListModel : public QAbstractListModel
 {
     Q_OBJECT
-    // 声明 QML 中可用
     QML_NAMED_ELEMENT(QuickROIListModel)
-
 public:
     explicit QuickROIListModel(QObject *parent = nullptr);
 

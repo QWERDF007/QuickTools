@@ -1,4 +1,4 @@
-#include "AbstractCVTool.h"
+#include "core/AbstractCVTool.h"
 
 namespace quicktools::core {
 

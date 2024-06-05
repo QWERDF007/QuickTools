@@ -11,12 +11,15 @@ namespace quicktools::ui {
 class QuickPen : public QObject
 {
     Q_OBJECT
+    // QML 可用, 但无法从 QML 定义, 只能从 C++ 层传递
+    QML_ANONYMOUS
     Q_PROPERTY(qreal width READ width WRITE setWidth NOTIFY widthChanged FINAL)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged FINAL)
     Q_PROPERTY(Qt::PenStyle style READ style WRITE setStyle NOTIFY styleChanged FINAL)
     Q_PROPERTY(Qt::PenJoinStyle joinStyle READ joinStyle WRITE setJoinStyle NOTIFY joinStyleChanged FINAL)
-    QML_ANONYMOUS // QML 可用, 但无法从 QML 定义, 只能从 C++ 层传递
-        public : explicit QuickPen(QObject *parent = nullptr);
+
+public:
+    explicit QuickPen(QObject *parent = nullptr);
 
     qreal width() const;
     void  setWidth(qreal w);

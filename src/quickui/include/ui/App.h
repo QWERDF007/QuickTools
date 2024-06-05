@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Singleton.h"
+#include "common/Singleton.h"
 
 #include <QJsonObject>
 #include <QObject>

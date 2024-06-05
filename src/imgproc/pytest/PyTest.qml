@@ -9,6 +9,6 @@ T_CVWindow {
     Component.onCompleted: {
         console.log("quicktool", quicktool)
         console.log("hasPython", quicktool.hasPython)
-        quicktool.reloadPythonModule()
+        quicktool.reloadModule()
     }
 }

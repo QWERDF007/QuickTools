@@ -1,7 +1,7 @@
 
-#include "CrashHandler.h"
+#include "common/CrashHandler.h"
 #include "imgprocregister.h"
-#include "PythonManager.h"
+#include "core/PythonManager.h"
 
 #include <QApplication>
 #include <QQmlApplicationEngine>

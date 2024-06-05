@@ -1,6 +1,6 @@
-#include "UITools.h"
+#include "ui/UITools.h"
 
-#include "Utils.h"
+#include "common/Utils.h"
 
 #include <QColor>
 #include <QUuid>

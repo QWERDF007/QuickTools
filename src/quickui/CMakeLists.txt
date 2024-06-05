@@ -13,12 +13,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
-# 将名称转换为大写
-string(TOUPPER ${TARGET_NAME} TARGET_NAME_UPPER)
-# 设置额外编译定义
-set(TARGET_EXPORTS "${TARGET_NAME_UPPER}_LIBRARY")
-
-
 # 获取所有源文件的相对路径
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
@@ -61,6 +55,17 @@ target_link_libraries(${TARGET_NAME}
         QuickTools_common QuickTools_common_headers
 )
 
+target_include_directories(${TARGET_NAME} 
+    PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${PLUGIN_NAME}>
+        $<INSTALL_INTERFACE:include>
+)
+
+# 将名称转换为大写
+string(TOUPPER ${TARGET_NAME} TARGET_NAME_UPPER)
+# 设置额外编译定义
+set(TARGET_EXPORTS "${TARGET_NAME_UPPER}_LIBRARY")
 # 添加一个宏定义, 配合动态库导出函数、类
 # https://stackoverflow.com/a/67923443
 add_compile_definitions(${TARGET_NAME} PRIVATE ${TARGET_EXPORTS})
@@ -69,5 +74,7 @@ add_compile_definitions(${TARGET_NAME} PRIVATE ${TARGET_EXPORTS})
 set(PLUGIN_HEADER "${PROJECT_NAME}_${PLUGIN_NAME}_headers")
 add_library(${PROJECT_NAME}_${PLUGIN_NAME}_headers INTERFACE)
 target_include_directories(${PLUGIN_HEADER}
-    INTERFACE .
+    INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_BINARY_DIR}/include
 )

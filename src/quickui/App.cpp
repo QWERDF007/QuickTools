@@ -1,4 +1,4 @@
-#include "App.h"
+#include "ui/App.h"
 
 #include <QQuickItem>
 

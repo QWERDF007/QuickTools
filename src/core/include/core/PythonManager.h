@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreGlobal.h"
-#include "Singleton.h"
+#include "common/Singleton.h"
 
 #undef slots
 #include <pybind11/embed.h>

@@ -1,4 +1,4 @@
-#include "Singleton.h"
+#include "common/Singleton.h"
 
 #include <QObject>
 #include <QtQml>
@@ -8,8 +8,8 @@ namespace quicktools::ui {
 class UITools : public QObject
 {
     Q_OBJECT
-    QML_NAMED_ELEMENT(UITools)
     QML_SINGLETON
+    QML_NAMED_ELEMENT(UITools)
 public:
     QT_QML_SINGLETON(UITools)
 

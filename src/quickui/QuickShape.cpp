@@ -1,4 +1,4 @@
-#include "QuickShape.h"
+#include "ui/QuickShape.h"
 
 #include <QPainter>
 

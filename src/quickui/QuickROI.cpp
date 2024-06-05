@@ -1,4 +1,4 @@
-#include "QuickROI.h"
+#include "ui/QuickROI.h"
 
 enum ROIListModelRole
 {

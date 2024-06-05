@@ -1,6 +1,6 @@
-#include "AbstractQuickTool.h"
+#include "core/AbstractQuickTool.h"
 
-#include "Utils.h"
+#include "common/Utils.h"
 #include "priv/Predefined.h"
 
 #include <chrono>
@@ -192,6 +192,28 @@ void AbstractQuickTool::onSettingChanged(const QString &key, const QVariant &val
 {
     if (key == RUN_AFTER_CHANGED)
         run_after_changed = value.toBool();
+}
+
+/**
+ * @note: 不能使用返回静态局部变量的指针, 否则结束时会报错 _CrtlsValidHeapPointer(block),
+ *        应该是 Qt 对指针进行了 delete, 然后结束时静态变量又自己 delete, 导致 double delete.
+ * @note: 此实现不是Meyers' Singleton! 可能存在问题?
+ *        参考: https://www.zhihu.com/question/56527586/answer/2344903391
+ */
+QuickToolFactor *QuickToolFactor::getInstance()
+{
+    if (instance_ == nullptr)
+    {
+        instance_ = new QuickToolFactor;
+    }
+    return instance_;
+}
+
+QuickToolFactor *QuickToolFactor::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+{
+    qmlEngine_ = qmlEngine;
+    jsEngine_  = jsEngine;
+    return getInstance();
 }
 
 AbstractQuickTool *QuickToolFactor::createQuickTool(const int tool_type, QObject *parent) const

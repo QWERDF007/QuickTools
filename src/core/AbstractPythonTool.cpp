@@ -1,6 +1,6 @@
-#include "AbstractPythonTool.h"
+#include "core/AbstractPythonTool.h"
 
-#include "PythonManager.h"
+#include "core/PythonManager.h"
 
 #include <QDebug>
 #include <QString>

@@ -1,6 +1,6 @@
 #include "ImageHistogram.h"
 
-#include "AbstractQuickToolSettings.h"
+#include "core/AbstractQuickToolSettings.h"
 
 #include <opencv2/opencv.hpp>
 

@@ -1,4 +1,6 @@
-#include "WindowsCCrashHandler.h"
+#include "common/WindowsCCrashHandler.h"
+
+#include "common/Utils.h"
 
 #if defined(_WIN32)
 #    include <DbgHelp.h> // for SymGetLineFromAddr etc.
@@ -10,7 +12,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "Utils.h"
 
 #ifndef _AddressOfReturnAddress
 
@@ -139,7 +140,6 @@ void WindowsCCrashHandler::GetExceptionPointers(DWORD dwExceptionCode, EXCEPTION
 }
 
 // clang-format on
-
 
 std::string WindowsCCrashHandler::GetExceptionModule(HANDLE process, LPVOID address)
 {

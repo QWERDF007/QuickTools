@@ -1,4 +1,4 @@
-#include "QuickToolHelper.h"
+#include "core/QuickToolHelper.h"
 
 namespace quicktools::core {
 
