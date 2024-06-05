@@ -2,13 +2,14 @@
 #include "core/AbstractCVTool.h"
 #include "core/QuickToolType.h"
 
-namespace quicktools::imgproc {
+namespace quicktools::samples {
 
 class PyTest : public core::AbstractPythonCVTool
 {
 public:
-    PyTest(QObject* parent=nullptr);
+    PyTest(QObject *parent = nullptr);
     ~PyTest() = default;
+
     QString name() const override
     {
         return "PyTest";
@@ -29,8 +30,7 @@ protected:
     QString importModule() const override;
 
 private:
-
 };
 
 REGISTER_QUICKTOOL(core::quicktooltype::PyTestTool, PyTest)
-} // namespace quicktools::imgproc
+} // namespace quicktools::samples

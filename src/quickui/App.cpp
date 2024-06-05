@@ -9,7 +9,7 @@ void App::navigate(const QString &route, const QJsonObject &argument)
     QQmlComponent component(engine_, route);
     if (component.isError())
     {
-        qCritical() << __FUNCTION__ << component.errors();
+        qCritical() << __FUNCTION__ << __LINE__ << component.errors();
         return;
     }
     QVariantMap   properties;

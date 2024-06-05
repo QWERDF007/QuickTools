@@ -7,6 +7,7 @@ import "../component"
 QuickObject {
     property var pages: [
         ImageProcessItems,
+        SamplesItems,
     ]
     function getRecentlyAddedData() {
         var data = []

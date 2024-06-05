@@ -1,4 +1,4 @@
-set(PLUGIN_NAME "core")
+set(PLUGIN_NAME "samples")
 set(TARGET_NAME "${PROJECT_NAME}_${PLUGIN_NAME}")
 
 # 指定可执行文件和库文件的输出目录
@@ -13,14 +13,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
-
-
-
 # 获取所有源文件的相对路径
-file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
+file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp) 
 
 # 获取所有头文件的相对路径
-file(GLOB_RECURSE HEADERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h *.hpp)
+file(GLOB_RECURSE HEADERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h *.hpp) 
 
 # 获取所有QML文件的相对路径
 file(GLOB_RECURSE QML_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml)
@@ -54,12 +51,11 @@ target_compile_definitions(${TARGET_NAME}
 
 target_link_libraries(${TARGET_NAME}
     PRIVATE
-        Qt6::Core Qt6::Gui
+        Qt6::Core Qt6::Gui Qt6::Quick
+        QuickTools_core QuickTools_core_headers QuickTools_ui
         opencv_core
-    PUBLIC
-        QuickTools_common QuickTools_common_headers
-        pybind11::embed
 )
+
 
 target_include_directories(${TARGET_NAME} 
     PRIVATE
@@ -84,3 +80,4 @@ target_include_directories(${PLUGIN_HEADER}
         ${CMAKE_CURRENT_SOURCE_DIR}/include 
         ${CMAKE_CURRENT_BINARY_DIR}/include
 )
+

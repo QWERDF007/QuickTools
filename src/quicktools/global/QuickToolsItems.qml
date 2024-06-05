@@ -55,17 +55,12 @@ QuickObject {
         }
     }
 
-    QuickPaneItemExpander {
-        title: "未知"
+    QuickPaneItem {
+        title: "示例工具"
         iconVisible: true
-        disabled: true
-        icon: QuickFontIcon.CheckboxComposite
-        QuickPaneItem {
-            title: "AAA"
-        }
-        QuickPaneItem {
-            title: "BBB"
-        }
+        icon: QuickFontIcon.Emoji2
+        url: "qrc:/qt/qml/QuickTools/page/SamplesPage.qml"
+        onTap: { navigationView.push(url) }
     }
 
     function startPageByItem(data){

@@ -1,14 +1,14 @@
-#include "imgprocregister.h"
+#include "samples/SamplesRegister.h"
 
-#include "imagehistogram/ImageHistogram.h"
+#include "samples/PyTest.h"
 
-namespace quicktools::imgproc {
+namespace quicktools::samples {
 
 void registerTools()
 {
     core::QuickToolFactor::getInstance()->registerGroupAndTask(core::quicktoolgrouptype::ImageProcessGroup,
                                                                core::quicktooltasktype::EmptyTask);
-    registerImageHistogram();
+    registerPyTest();
 }
 
 } // namespace quicktools::imgproc

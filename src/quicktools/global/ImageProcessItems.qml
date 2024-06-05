@@ -13,12 +13,5 @@ ToolsList {
         url: "qrc:/qt/qml/QuickTools/imgproc/imagehistogram/ImageHistogram.qml"
         extra: ({recentlyUpdated:true,recentlyAdded:true})
     }
-    ToolItem {
-        title: qsTr("PyTest")
-        desc: qsTr("Python 测试工具")
-        icon: "/icons/bar"
-        url: "qrc:/qt/qml/QuickTools/imgproc/pytest/PyTest.qml"
-        extra: ({recentlyUpdated:true,recentlyAdded:true})
-    }
 }
 

@@ -2,6 +2,7 @@
 #include "common/CrashHandler.h"
 #include "imgprocregister.h"
 #include "core/PythonManager.h"
+#include "samples/SamplesRegister.h"
 
 #include <QApplication>
 #include <QQmlApplicationEngine>
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     quicktools::imgproc::registerTools();
+    quicktools::samples::registerTools();
     quicktools::core::PythonManager::getInstance()->init();
 
     qDebug() << "qml import path list" << engine.importPathList();
