@@ -1,6 +1,6 @@
 #include "samples/SamplesRegister.h"
 
-#include "samples/PyTest.h"
+#include "PyTest/PyTest.h"
 
 namespace quicktools::samples {
 
@@ -11,4 +11,4 @@ void registerTools()
     registerPyTest();
 }
 
-} // namespace quicktools::imgproc
+} // namespace quicktools::samples

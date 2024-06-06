@@ -10,7 +10,7 @@ ToolsList {
         title: qsTr("PyTest")
         desc: qsTr("Python 测试工具")
         icon: "/icons/bar"
-        url: "qrc:/qt/qml/QuickTools/samples/PyTest.qml"
+        url: "qrc:/qt/qml/QuickTools/samples/PyTest/PyTest.qml"
         extra: ({recentlyUpdated:true,recentlyAdded:true})
     }
 }
