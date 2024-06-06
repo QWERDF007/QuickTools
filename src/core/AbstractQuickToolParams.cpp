@@ -49,6 +49,20 @@ QVariant statusParamDisplay(const QVariant &value)
     return QString("[%1, %2]").arg(data[0].toInt()).arg(data[1].toString());
 }
 
+QVariant timeParamDisplay(const QVariant &value)
+{
+    const QVariantList &time_array       = value.toList();
+    const int           size             = time_array.size();
+    const int           array_last_index = size - 1;
+    QString             display;
+    for (int i = 0; i < size; ++i)
+    {
+        double v = time_array[i].toDouble();
+        display += i < array_last_index ? QString("%1ms, ").arg(v, 0, 'g', 3) : QString("%1ms").arg(v, 0, 'g', 3);
+    }
+    return display;
+}
+
 QVariant intParamDisplay(const QVariant &value)
 {
     return value;
@@ -204,17 +218,18 @@ QVariant imageParamDisplay(const QVariant &value)
 QVariant getParamsDisplay(const int param_type, const QVariant &data)
 {
     static std::map<int, std::function<QVariant(const QVariant &)>> func_map{
-        {       QuickToolParamType::ParamStatusType,        statusParamDisplay},
-        {          QuickToolParamType::ParamIntType,           intParamDisplay},
-        {       QuickToolParamType::ParamDoubleType,        doubleParamDisplay},
-        {         QuickToolParamType::ParamTextType,          textParamDisplay},
-        {   QuickToolParamType::ParamInt1DArrayType,    int1DArrayParamDisplay},
-        {QuickToolParamType::ParamDouble1DArrayType, double1DArrayParamDisplay},
-        {  QuickToolParamType::ParamText1DArrayType,   text1DArrayParamDisplay},
-        {   QuickToolParamType::ParamInt2DArrayType,    int2DArrayParamDisplay},
-        {QuickToolParamType::ParamDouble2DArrayType, double2DArrayParamDisplay},
-        {  QuickToolParamType::ParamText2DArrayType,   text2DArrayParamDisplay},
-        {        QuickToolParamType::ParamImageType,         imageParamDisplay},
+        {       QuickToolParamType::StatusParamType,        statusParamDisplay},
+        {         QuickToolParamType::TimeParamType,          timeParamDisplay},
+        {          QuickToolParamType::IntParamType,           intParamDisplay},
+        {       QuickToolParamType::DoubleParamType,        doubleParamDisplay},
+        {         QuickToolParamType::TextParamType,          textParamDisplay},
+        {   QuickToolParamType::Int1DArrayParamType,    int1DArrayParamDisplay},
+        {QuickToolParamType::Double1DArrayParamType, double1DArrayParamDisplay},
+        {  QuickToolParamType::Text1DArrayParamType,   text1DArrayParamDisplay},
+        {   QuickToolParamType::Int2DArrayParamType,    int2DArrayParamDisplay},
+        {QuickToolParamType::Double2DArrayParamType, double2DArrayParamDisplay},
+        {  QuickToolParamType::Text2DArrayParamType,   text2DArrayParamDisplay},
+        {        QuickToolParamType::ImageParamType,         imageParamDisplay},
     };
     if (data.isNull())
         return "";
@@ -331,9 +346,7 @@ bool AbstractQuickToolParams::addParam(const QString &name, const QString &displ
                                        const bool &visible)
 {
     if (params_names_.contains(name))
-    {
         return false;
-    }
     params_names_.append(name);
     QMap<int, QVariant> param{
         {          QuickToolParamRole::ParamIndexRole, params_data_.size()},
@@ -351,29 +364,28 @@ bool AbstractQuickToolParams::addParam(const QString &name, const QString &displ
     };
     params_data_.insert(name, param);
     if (is_property)
-    {
         property_data_.insert(name, value);
-    }
     return true;
 }
 
 QString AbstractQuickToolParams::getTypeName(const int type)
 {
     static QMap<int, QString> typeNamesMap{
-        {   QuickToolParamType::ParamIntSpinBoxType,      "IntSpinBox"},
-        {QuickToolParamType::ParamDoubleSpinBoxType,   "DoubleSpinBox"},
-        {     QuickToolParamType::ParamComboBoxType,        "ComboBox"},
-        {       QuickToolParamType::ParamStatusType,          "Status"},
-        {          QuickToolParamType::ParamIntType,             "Int"},
-        {       QuickToolParamType::ParamDoubleType,          "Double"},
-        {         QuickToolParamType::ParamTextType,            "Text"},
-        {   QuickToolParamType::ParamInt1DArrayType,    "1D Int Array"},
-        {QuickToolParamType::ParamDouble1DArrayType, "1D Double Array"},
-        {  QuickToolParamType::ParamText1DArrayType,   "1D Text Array"},
-        {   QuickToolParamType::ParamInt2DArrayType,    "2D Int Array"},
-        {QuickToolParamType::ParamDouble2DArrayType, "2D Double Array"},
-        {  QuickToolParamType::ParamText2DArrayType,   "2D Text Array"},
-        {        QuickToolParamType::ParamImageType,           "Image"},
+        {   QuickToolParamType::IntSpinBoxParamType,      "IntSpinBox"},
+        {QuickToolParamType::DoubleSpinBoxParamType,   "DoubleSpinBox"},
+        {     QuickToolParamType::ComboBoxParamType,        "ComboBox"},
+        {       QuickToolParamType::StatusParamType,          "Status"},
+        {         QuickToolParamType::TimeParamType,            "Time"},
+        {          QuickToolParamType::IntParamType,             "Int"},
+        {       QuickToolParamType::DoubleParamType,          "Double"},
+        {         QuickToolParamType::TextParamType,            "Text"},
+        {   QuickToolParamType::Int1DArrayParamType,    "1D Int Array"},
+        {QuickToolParamType::Double1DArrayParamType, "1D Double Array"},
+        {  QuickToolParamType::Text1DArrayParamType,   "1D Text Array"},
+        {   QuickToolParamType::Int2DArrayParamType,    "2D Int Array"},
+        {QuickToolParamType::Double2DArrayParamType, "2D Double Array"},
+        {  QuickToolParamType::Text2DArrayParamType,   "2D Text Array"},
+        {        QuickToolParamType::ImageParamType,           "Image"},
     };
     auto found = typeNamesMap.find(type);
     return found == typeNamesMap.end() ? "undefined" : found.value();
@@ -387,10 +399,10 @@ void AbstractQuickToolParams::onPropertyValueChanged(const QString &key, const Q
 AbstractOutputParams::AbstractOutputParams(QObject *parent)
     : AbstractQuickToolParams(parent)
 {
-    addParam("Status", tr("运行状态"), tr("工具的运行状态"), QuickToolParamType::ParamStatusType, QVariant(),
+    addParam("Status", tr("运行状态"), tr("工具的运行状态"), QuickToolParamType::StatusParamType, QVariant(),
              QVariant(), false, true);
-    addParam("Time", tr("运行时间"), tr("工具的运行时间"), QuickToolParamType::ParamDouble1DArrayType, QVariant(),
-             QVariant(), false, true);
+    addParam("Time", tr("运行时间"), tr("工具的运行时间"), QuickToolParamType::TimeParamType, QVariant(), QVariant(),
+             false, true);
 }
 
 bool AbstractOutputParams::addParam(const QString &name, const QString &display_name, const QString &desc,
@@ -401,12 +413,15 @@ bool AbstractOutputParams::addParam(const QString &name, const QString &display_
                                              false, visible);
 }
 
-bool AbstractOutputParams::setToolTime(const double wall_clock_time, const QVariantList &algorithm_time_array)
+bool AbstractOutputParams::setToolTime(const double wall_clock_time, const QList<double> &algorithm_time_array)
 {
     if (algorithm_time_array.isEmpty())
         return setData("Time", QVariantList{wall_clock_time});
     QVariantList time_array{wall_clock_time};
-    for (const auto &v : algorithm_time_array) time_array.append(v);
+    for (const double &v : algorithm_time_array)
+    {
+        time_array.append(v);
+    }
     return setData("Time", time_array);
 }
 

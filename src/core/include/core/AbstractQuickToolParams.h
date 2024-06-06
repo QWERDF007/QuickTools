@@ -13,23 +13,25 @@ Q_NAMESPACE
 
 enum QuickToolParamType
 {
-    ParamStatusType = 0,
-    ParamTextType   = 1,    //!< 文本参数
-    ParamIntSpinBoxType,    //!< 整型旋钮
-    ParamDoubleSpinBoxType, //!< 浮点旋钮
-    ParamComboBoxType,      //!< 下拉列表
-    ParamIntType = 2000,
-    ParamDoubleType,
-    ParamInt1DArrayType,
-    ParamDouble1DArrayType,
-    ParamText1DArrayType,
-    ParamInt2DArrayType,
-    ParamDouble2DArrayType,
-    ParamText2DArrayType,
-    ParamImageType = 4000, //!< 图像
-    ParamAudioType = 6000, //!< 音频
+    StatusParamType = 0,
+    TimeParamType,
+    TextParamType,          //!< 文本参数
+    IntSpinBoxParamType,    //!< 整型旋钮
+    DoubleSpinBoxParamType, //!< 浮点旋钮
+    ComboBoxParamType,      //!< 下拉列表
+    IntParamType = 2000,
+    DoubleParamType,
+    Int1DArrayParamType,
+    Double1DArrayParamType,
+    Text1DArrayParamType,
+    Int2DArrayParamType,
+    Double2DArrayParamType,
+    Text2DArrayParamType,
+    ImageParamType = 4000, //!< 图像
+    AudioParamType = 6000, //!< 音频
 };
 Q_ENUM_NS(QuickToolParamType) // 向元对象系统注册枚举类型 QuickToolParamType，必须在 Q_NAMESPACE 宏声明的命名空间中
+QML_NAMED_ELEMENT(QuickToolParamType) // 声明命名空间在 QML 中可用，以 QuickToolParam 进行访问
 
 enum QuickToolParamRole
 {
@@ -47,9 +49,7 @@ enum QuickToolParamRole
     ParamEditableRole,
     RunAfterParamChangedRole,
 };
-Q_ENUM_NS(QuickToolParamRole) // 向元对象系统注册枚举类型 QuickToolParamRole，必须在 Q_NAMESPACE 宏声明的命名空间中
 
-QML_NAMED_ELEMENT(QuickToolParam) // 声明命名空间在 QML 中可用，以 QuickToolParam 进行访问
 } // namespace paramtypes
 
 class QUICKTOOLS_CORE_EXPORT AbstractQuickToolParams : public QAbstractListModel
@@ -158,7 +158,7 @@ public:
                   const QVariant &value, const QVariant &additional = QVariant(), const bool is_property = false,
                   const bool &visible = true);
 
-    bool setToolTime(const double wall_clock_time, const QVariantList &algorithm_time);
+    bool setToolTime(const double wall_clock_time, const QList<double> &algorithm_time);
     bool setStatus(const int status, const QString &msg);
 };
 

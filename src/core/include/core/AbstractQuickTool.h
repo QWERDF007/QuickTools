@@ -50,10 +50,10 @@ public:
     virtual AbstractQuickToolSettings *settings()     = 0;
 
     /**
-     * @brief 添加一个算法运行时间
+     * @brief 添加一个算法运行时间 (ms)
      * @param algorithm_time
      */
-    void addAlgorithmTime(const QVariant &algorithm_time)
+    void addAlgorithmTime(const double &algorithm_time)
     {
         algorithm_time_array_.append(algorithm_time);
     }
@@ -113,8 +113,8 @@ private:
     int checkOutputParams();
     int checkSettings();
 
-    double       wall_clock_time_{0.};
-    QVariantList algorithm_time_array_;
+    double        wall_clock_time_{0.};
+    QList<double> algorithm_time_array_;
 
     bool run_after_changed{true};
 

@@ -33,10 +33,14 @@ Rectangle {
         StatusParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+        }
+    }
+    Component {
+        id: timeParamItem
 
-            onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value)
-            }
+        TimeParamItem {
+            paramDisplay: paramItemDelegate.paramDisplay
+            paramName: paramItemDelegate.paramName
         }
     }
     Component {
@@ -216,29 +220,31 @@ Rectangle {
 
             height: 24
             sourceComponent: {
-                if (paramItemDelegate.paramType === QuickToolParam.ParamStatusType) {
+                if (paramItemDelegate.paramType === QuickToolParamType.StatusParamType) {
                     return statusParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamIntType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.TimeParamType) {
+                    return timeParamItem
+                } else if (paramItemDelegate.paramType === QuickToolParamType.IntParamType) {
                     return intParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamDoubleType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.DoubleParamType) {
                     return doubleParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamTextType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.TextParamType) {
                     return textParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamInt1DArrayType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.Int1DArrayParamType) {
                     return int1DArrayParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamDouble1DArrayType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.Double1DArrayParamType) {
                     return double1DArrayParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamText1DArrayType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.Text1DArrayParamType) {
                     return text1DArrayParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamInt2DArrayType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.Int2DArrayParamType) {
                     return int2DArrayParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamDouble2DArrayType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.Double2DArrayParamType) {
                     return double2DArrayParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamText2DArrayType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.Text2DArrayParamType) {
                     return text2DArrayParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamImageType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.ImageParamType) {
                     return inputImageParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParam.ParamComboBoxType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.ComboBoxParamType) {
                     return comboBoxParamItem
                 }
                 return undefined

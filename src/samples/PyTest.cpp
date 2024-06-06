@@ -55,7 +55,7 @@ int PyTest::initOutputParams()
 {
     if (output_params_)
     {
-        output_params_->addParam("Now", tr("当前时间"), "", QuickToolParamType::ParamTextType, QVariant(), QVariant(),
+        output_params_->addParam("Now", tr("当前时间"), "", QuickToolParamType::TextParamType, QVariant(), QVariant(),
                                  false, true);
     }
     return 0;
@@ -71,4 +71,4 @@ QString PyTest::importModule() const
     return "mytest";
 }
 
-} // namespace quicktools::imgproc
+} // namespace quicktools::samples

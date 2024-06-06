@@ -178,10 +178,10 @@ int ImageHistogram::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addParam("Image", tr("图像"), tr("输入图像的路径"), QuickToolParamType::ParamImageType,
+        input_params_->addParam("Image", tr("图像"), tr("输入图像的路径"), QuickToolParamType::ImageParamType,
                                 QVariant(), QVariant(), true, true, true, true);
         input_params_->addParam("ColorSpace", tr("色彩空间"), tr("将输入图像转换到对应的色彩空间"),
-                                QuickToolParamType::ParamComboBoxType, COLOR_SPACES[0], COLOR_SPACES, false, false,
+                                QuickToolParamType::ComboBoxParamType, COLOR_SPACES[0], COLOR_SPACES, false, false,
                                 true, true);
     }
     return 0;
@@ -191,13 +191,13 @@ int ImageHistogram::initOutputParams()
 {
     if (output_params_)
     {
-        output_params_->addParam("Channels", tr("图像通道数"), "", QuickToolParamType::ParamIntType, QVariant(),
+        output_params_->addParam("Channels", tr("图像通道数"), "", QuickToolParamType::IntParamType, QVariant(),
                                  QVariant(), false, true);
-        output_params_->addParam("Hist", tr("直方图"), "", QuickToolParamType::ParamDouble2DArrayType, QVariant(),
+        output_params_->addParam("Hist", tr("直方图"), "", QuickToolParamType::Double2DArrayParamType, QVariant(),
                                  QVariant(), true, true);
-        output_params_->addParam("HistMin", tr("直方图最小值"), "", QuickToolParamType::ParamDouble1DArrayType,
+        output_params_->addParam("HistMin", tr("直方图最小值"), "", QuickToolParamType::Double1DArrayParamType,
                                  QVariant(), QVariant(), true, true);
-        output_params_->addParam("HistMax", tr("直方图最大值"), "", QuickToolParamType::ParamDouble1DArrayType,
+        output_params_->addParam("HistMax", tr("直方图最大值"), "", QuickToolParamType::Double1DArrayParamType,
                                  QVariant(), QVariant(), true, true);
     }
     return 0;
