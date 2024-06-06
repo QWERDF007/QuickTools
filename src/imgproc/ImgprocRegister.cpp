@@ -1,4 +1,4 @@
-#include "imgprocregister.h"
+#include "imgproc/ImgprocRegister.h"
 
 #include "imagehistogram/ImageHistogram.h"
 

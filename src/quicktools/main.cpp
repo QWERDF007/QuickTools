@@ -1,6 +1,6 @@
 
 #include "common/CrashHandler.h"
-#include "imgprocregister.h"
+#include "imgproc/ImgprocRegister.h"
 #include "core/PythonManager.h"
 #include "samples/SamplesRegister.h"
 

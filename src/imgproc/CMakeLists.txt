@@ -56,6 +56,13 @@ target_link_libraries(${TARGET_NAME}
         opencv_core
 )
 
+target_include_directories(${TARGET_NAME} 
+    PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${PLUGIN_NAME}>
+        $<INSTALL_INTERFACE:include>
+)
+
 # 将名称转换为大写
 string(TOUPPER ${TARGET_NAME} TARGET_NAME_UPPER)
 # 设置额外编译定义
@@ -68,5 +75,7 @@ add_compile_definitions(${TARGET_NAME} PRIVATE ${TARGET_EXPORTS})
 set(PLUGIN_HEADER "${PROJECT_NAME}_${PLUGIN_NAME}_headers")
 add_library(${PROJECT_NAME}_${PLUGIN_NAME}_headers INTERFACE)
 target_include_directories(${PLUGIN_HEADER}
-    INTERFACE .
+    INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include 
+        ${CMAKE_CURRENT_BINARY_DIR}/include
 )
