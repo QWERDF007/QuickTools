@@ -47,6 +47,7 @@ Item {
             paramTypeName: model.paramTypeName
             paramValue: model.paramValue
             paramDesc: model.paramDesc
+            paramEditable: model.paramEditable
 
             onValueChanged: function (value) {
                 model.paramValue = value

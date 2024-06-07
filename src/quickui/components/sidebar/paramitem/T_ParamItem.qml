@@ -18,6 +18,7 @@ Item {
     property var paramValue
     property alias tooltipText: tooltip.text
     property bool tooltipVisible: false
+    property bool paramEditable: false
 
     signal clicked
     signal valueChanged(var value)

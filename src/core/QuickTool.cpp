@@ -49,17 +49,26 @@ int AbstractQuickTool::doInInit()
 
 QString pythonErrorHandle(const pybind11::error_already_set &e)
 {
-    auto traceback = pybind11::module::import("traceback").attr("format_exception");
-    auto format_exception
-        = traceback(e.type(), e.value() ? e.value() : pybind11::none(), e.trace() ? e.trace() : pybind11::none());
-    std::stringstream sout;
-    sout << e.what() << "\n\n";
-    for (auto line : format_exception)
+    try
     {
-        sout << line.cast<std::string>();
+        auto traceback = pybind11::module::import("traceback").attr("format_exception");
+        auto format_exception
+            = traceback(e.type(), e.value() ? e.value() : pybind11::none(), e.trace() ? e.trace() : pybind11::none());
+        std::stringstream sout;
+        sout << e.what() << "\n\n";
+        for (auto line : format_exception)
+        {
+            sout << line.cast<std::string>();
+        }
+        QString msg = QString::fromStdString(sout.str());
+        return msg;
     }
-    QString msg = QString::fromStdString(sout.str());
-    return msg;
+    catch (...)
+    {
+        QString msg = "pythonErrorHandle Crash\n";
+        msg += e.what();
+        return msg;
+    }
 }
 
 void AbstractQuickTool::run()
@@ -85,9 +94,10 @@ void AbstractQuickTool::run()
     }
     catch (const pybind11::error_already_set &e)
     {
-        ret = -1;
-        pybind11::gil_scoped_acquire acquire;
-        error_msg = pythonErrorHandle(e);
+        ret       = -1;
+        error_msg = e.what();
+        //        pybind11::gil_scoped_acquire acquire;
+        //        error_msg = pythonErrorHandle(e);
     }
     catch (const std::exception &e)
     {

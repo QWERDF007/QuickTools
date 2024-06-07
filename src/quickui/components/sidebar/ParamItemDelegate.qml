@@ -17,6 +17,7 @@ Rectangle {
     property int paramType: -1
     property string paramTypeName: ""
     property var paramValue
+    property bool paramEditable: false
 
     signal valueChanged(var value)
 
@@ -73,7 +74,7 @@ Rectangle {
         TextParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
-
+            paramEditable: paramItemDelegate.paramEditable
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
             }
