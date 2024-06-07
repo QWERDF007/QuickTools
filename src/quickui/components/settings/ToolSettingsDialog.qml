@@ -6,7 +6,7 @@ import QuickTools.ui
 Window {
     property alias settingsModel: settingsView.model
 
-    title: qsTr("Settings")
+    title: qsTr("设置")
 
     ListView {
         id: settingsView

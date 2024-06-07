@@ -1,11 +1,12 @@
 #pragma once
 
-#include "AbstractQuickToolParams.h"
 #include "CVToolROI.h"
+#include "QuickToolParams.h"
+
 
 namespace quicktools::core {
 
-class QUICKTOOLS_CORE_EXPORT CVInputParams : public AbstractInputParams
+class QUICKTOOLS_CORE_EXPORT CVInputParams : public InputParams
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(CVInputParams)
@@ -27,7 +28,7 @@ private:
     CVToolROI *roi_{nullptr};
 };
 
-class QUICKTOOLS_CORE_EXPORT CVOutputParams : public AbstractOutputParams
+class QUICKTOOLS_CORE_EXPORT CVOutputParams : public OutputParams
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(CVOutputParams)

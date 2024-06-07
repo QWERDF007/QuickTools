@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/AbstractCVTool.h"
+#include "core/CVTool.h"
 #include "core/QuickToolType.h"
 
 #include <opencv2/core.hpp>

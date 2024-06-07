@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AbstractQuickToolSettings.h"
+#include "QuickToolSettings.h"
 
 namespace quicktools::core {
 

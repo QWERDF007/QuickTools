@@ -8,7 +8,7 @@ using core::paramtypes::QuickToolParamRole;
 using core::paramtypes::QuickToolParamType;
 
 PyTest::PyTest(QObject *parent)
-    : core::AbstractPythonCVTool(parent)
+    : core::AbstractPythonTool(parent)
 {
 }
 

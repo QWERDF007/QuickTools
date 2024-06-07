@@ -1,4 +1,4 @@
-#include "core/AbstractPythonTool.h"
+#include "core/PythonTool.h"
 
 #include "core/PythonManager.h"
 
@@ -8,9 +8,9 @@
 
 namespace quicktools::core {
 
-AbstractPythonTool::AbstractPythonTool() {}
+AbstractPythonInterface::AbstractPythonInterface() {}
 
-AbstractPythonTool::~AbstractPythonTool()
+AbstractPythonInterface::~AbstractPythonInterface()
 {
     qInfo() << __FUNCTION__ << this;
     pybind11::gil_scoped_acquire acquire;
@@ -18,7 +18,7 @@ AbstractPythonTool::~AbstractPythonTool()
         module_.release();
 }
 
-int AbstractPythonTool::init()
+int AbstractPythonInterface::init()
 {
     qInfo() << __FUNCTION__;
     int ret = 0;
@@ -48,7 +48,7 @@ int AbstractPythonTool::init()
     return -1;
 }
 
-std::tuple<int, QString> AbstractPythonTool::reloadModule()
+std::tuple<int, QString> AbstractPythonInterface::reloadModule()
 {
     pybind11::gil_scoped_acquire acquire;
 
@@ -70,6 +70,17 @@ std::tuple<int, QString> AbstractPythonTool::reloadModule()
         msg    = e.what();
     }
     return {status, msg};
+}
+
+void AbstractPythonTool::reloadModule()
+{
+    const auto [status, msg] = AbstractPythonInterface::reloadModule();
+    emit showMessage(status == 0 ? InfoLevel::Success : InfoLevel::Error, msg);
+}
+
+int AbstractPythonTool::doInInit()
+{
+    return AbstractPythonInterface::init();
 }
 
 } // namespace quicktools::core

@@ -125,6 +125,23 @@ signals:
     void settingChanged(const QString &key, const QVariant &value);
 };
 
+class QUICKTOOLS_CORE_EXPORT QuickToolSettings : public AbstractQuickToolSettings
+{
+    Q_OBJECT
+public:
+    QuickToolSettings(QObject *parent = nullptr)
+        : AbstractQuickToolSettings(parent)
+    {
+    }
+
+    virtual ~QuickToolSettings() {}
+
+    QString name() const override
+    {
+        return "QuickToolSettings";
+    }
+};
+
 class QUICKTOOLS_CORE_EXPORT GlobalSettings : public AbstractQuickToolSettings
 {
     Q_OBJECT

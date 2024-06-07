@@ -12,9 +12,14 @@ ApplicationWindow {
     visible: true
     color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
 
+    default property alias content: container.data
+
     property QuickTool quicktool
     property string helpInfos: quicktool ? quicktool.doc : ""
     property QuickToolSettings toolSettings: quicktool ? quicktool.settings : null
+    property InputParams inputParams: quicktool ? quicktool.inputParams : null
+    property OutputParams outputParams: quicktool ? quicktool.outputParams : null
+    property bool hasPython: quicktool ? quicktool.hasOwnProperty("hasPython") && quicktool.hasPython : false
 
     property bool enabled: true
 
@@ -23,6 +28,41 @@ ApplicationWindow {
             return quicktool.name
         }
         return "QuickTools"
+    }
+
+    header: T_Header {
+        height: 40
+        width: window.width
+        hasPython: window.hasPython
+        onSettingsBtnClicked: window.openSettings()
+        onStartBtnClicked: window.run()
+        onReloadBtnClicked: window.reloadModule()
+    }
+
+    QuickSplitView {
+        id: splitView
+
+        anchors.fill: parent
+
+        LSideBar {
+            id: lsidebar
+
+            SplitView.fillHeight: true
+            SplitView.minimumWidth: 256
+            SplitView.preferredWidth: 321
+            border.color: window.color
+            childrenEnable: window.enabled
+            helpInfos: window.helpInfos
+            inputParams: window.inputParams
+            outputParams: window.outputParams
+        }
+        Item {
+            id: container
+
+            SplitView.fillHeight: true
+            SplitView.fillWidth: true
+            enabled: window.enabled
+        }
     }
 
     Connections {
@@ -89,9 +129,9 @@ ApplicationWindow {
 
     ToolSettingsDialog {
         id: toolSettingsDialog
-        settingsModel: window.toolSettings
         width: 800
         height: 600
+        settingsModel: window.toolSettings
     }
 
     function run() {
@@ -102,5 +142,11 @@ ApplicationWindow {
 
     function openSettings() {
         toolSettingsDialog.show()
+    }
+
+    function reloadModule() {
+        if (quicktool && quicktool.hasPython) {
+            quicktool.reloadModule()
+        }
     }
 }

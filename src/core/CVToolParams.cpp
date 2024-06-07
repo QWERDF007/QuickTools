@@ -3,7 +3,7 @@
 namespace quicktools::core {
 
 CVInputParams::CVInputParams(QObject *parent)
-    : AbstractInputParams(parent)
+    : InputParams(parent)
     , roi_(new CVToolROI(this))
 {
 }
@@ -14,7 +14,7 @@ CVToolROI *CVInputParams::roi()
 }
 
 CVOutputParams::CVOutputParams(QObject *parent)
-    : AbstractOutputParams(parent)
+    : OutputParams(parent)
 {
 }
 

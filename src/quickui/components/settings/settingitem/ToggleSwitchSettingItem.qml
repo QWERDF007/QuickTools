@@ -9,7 +9,7 @@ T_SettingItem {
     QuickToggleSwitch {
         anchors.verticalCenter: parent.verticalCenter
         checked: settingValue
-        text: settingValue ? qsTr("on") : qsTr("off")
+        text: settingValue ? qsTr("开") : qsTr("关")
         textRight: false
 
         onClicked: {

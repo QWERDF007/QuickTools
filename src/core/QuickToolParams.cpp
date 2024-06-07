@@ -1,4 +1,4 @@
-#include "core/AbstractQuickToolParams.h"
+#include "core/QuickToolParams.h"
 
 #include <QStringBuilder>
 
@@ -396,7 +396,7 @@ void AbstractQuickToolParams::onPropertyValueChanged(const QString &key, const Q
     setData(key, value);
 }
 
-AbstractOutputParams::AbstractOutputParams(QObject *parent)
+OutputParams::OutputParams(QObject *parent)
     : AbstractQuickToolParams(parent)
 {
     addParam("Status", tr("运行状态"), tr("工具的运行状态"), QuickToolParamType::StatusParamType, QVariant(),
@@ -405,15 +405,15 @@ AbstractOutputParams::AbstractOutputParams(QObject *parent)
              false, true);
 }
 
-bool AbstractOutputParams::addParam(const QString &name, const QString &display_name, const QString &desc,
-                                    const int type, const QVariant &value, const QVariant &additional,
-                                    const bool is_property, const bool &visible)
+bool OutputParams::addParam(const QString &name, const QString &display_name, const QString &desc, const int type,
+                            const QVariant &value, const QVariant &additional, const bool is_property,
+                            const bool &visible)
 {
     return AbstractQuickToolParams::addParam(name, display_name, desc, type, value, additional, false, is_property,
                                              false, visible);
 }
 
-bool AbstractOutputParams::setToolTime(const double wall_clock_time, const QList<double> &algorithm_time_array)
+bool OutputParams::setToolTime(const double wall_clock_time, const QList<double> &algorithm_time_array)
 {
     if (algorithm_time_array.isEmpty())
         return setData("Time", QVariantList{wall_clock_time});
@@ -425,7 +425,7 @@ bool AbstractOutputParams::setToolTime(const double wall_clock_time, const QList
     return setData("Time", time_array);
 }
 
-bool AbstractOutputParams::setStatus(const int status, const QString &msg)
+bool OutputParams::setStatus(const int status, const QString &msg)
 {
     return setData("Status", QVariantList{status, msg});
 }

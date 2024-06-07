@@ -1,10 +1,10 @@
 #pragma once
-#include "core/AbstractCVTool.h"
+#include "core/PythonTool.h"
 #include "core/QuickToolType.h"
 
 namespace quicktools::samples {
 
-class PyTest : public core::AbstractPythonCVTool
+class PyTest : public core::AbstractPythonTool
 {
 public:
     PyTest(QObject *parent = nullptr);

@@ -41,7 +41,7 @@ Item {
             }
             Label {
                 id: headerLabel
-                text: qsTr("Title")
+                text: "Title"
                 Layout.alignment: Qt.AlignLeft
                 Layout.fillWidth: true
                 font.pixelSize: 16

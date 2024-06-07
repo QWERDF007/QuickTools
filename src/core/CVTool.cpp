@@ -1,4 +1,4 @@
-#include "core/AbstractCVTool.h"
+#include "core/CVTool.h"
 
 namespace quicktools::core {
 
@@ -11,7 +11,7 @@ AbstractCVTool::~AbstractCVTool() {}
 
 AbstractPythonCVTool::AbstractPythonCVTool(QObject *parent)
     : AbstractCVTool(parent)
-    , AbstractPythonTool()
+    , AbstractPythonInterface()
 {
 }
 
@@ -22,13 +22,13 @@ AbstractPythonCVTool::~AbstractPythonCVTool()
 
 void AbstractPythonCVTool::reloadModule()
 {
-    const auto [status, msg] = AbstractPythonTool::reloadModule();
+    const auto [status, msg] = AbstractPythonInterface::reloadModule();
     emit showMessage(status == 0 ? InfoLevel::Success : InfoLevel::Error, msg);
 }
 
 int AbstractPythonCVTool::doInInit()
 {
-    return AbstractPythonTool::init();
+    return AbstractPythonInterface::init();
 }
 
 } // namespace quicktools::core

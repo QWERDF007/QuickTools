@@ -1,9 +1,10 @@
 #pragma once
 
-#include "AbstractPythonTool.h"
-#include "AbstractQuickTool.h"
 #include "CVToolParams.h"
 #include "CVToolSettings.h"
+#include "PythonTool.h"
+#include "QuickTool.h"
+
 
 namespace quicktools::core {
 
@@ -17,7 +18,7 @@ public:
 
 class QUICKTOOLS_CORE_EXPORT AbstractPythonCVTool
     : public AbstractCVTool
-    , public AbstractPythonTool
+    , public AbstractPythonInterface
 {
     Q_OBJECT
     Q_PROPERTY(bool hasPython READ hasPython CONSTANT FINAL)
@@ -25,11 +26,6 @@ public:
     AbstractPythonCVTool(QObject *parent = nullptr);
 
     virtual ~AbstractPythonCVTool();
-
-    bool hasPython() const
-    {
-        return true;
-    }
 
     Q_INVOKABLE void reloadModule();
 

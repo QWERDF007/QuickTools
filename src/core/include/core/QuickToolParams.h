@@ -55,10 +55,6 @@ enum QuickToolParamRole
 class QUICKTOOLS_CORE_EXPORT AbstractQuickToolParams : public QAbstractListModel
 {
     Q_OBJECT
-    // 声明 QML 中可用
-    QML_NAMED_ELEMENT(QuickToolParams)
-    // 声明对象不能在 QML 中创建
-    QML_UNCREATABLE("Can't not create a AbstractQuickToolParams directly")
     Q_PROPERTY(QString name READ name CONSTANT FINAL) // FINAL 表明该属性不会被派生类覆盖
     Q_PROPERTY(QQmlPropertyMap *pdata READ pdata CONSTANT FINAL)
 public:
@@ -126,33 +122,41 @@ signals:
     void runAfterChanged();
 };
 
-class QUICKTOOLS_CORE_EXPORT AbstractInputParams : public AbstractQuickToolParams
+class QUICKTOOLS_CORE_EXPORT InputParams : public AbstractQuickToolParams
 {
     Q_OBJECT
     // 声明 QML 中可用
     QML_NAMED_ELEMENT(InputParams)
     // 声明对象不能在 QML 中创建
-    QML_UNCREATABLE("Can't not create a AbstractInputParams directly")
+    QML_UNCREATABLE("Can't not create a InputParams directly")
 public:
-    AbstractInputParams(QObject *parent = nullptr)
+    InputParams(QObject *parent = nullptr)
         : AbstractQuickToolParams(parent)
     {
     }
 
-    virtual ~AbstractInputParams() {}
+    virtual ~InputParams() {}
+
+    QString name() const override
+    {
+        return "InputParams";
+    }
 };
 
-class QUICKTOOLS_CORE_EXPORT AbstractOutputParams : public AbstractQuickToolParams
+class QUICKTOOLS_CORE_EXPORT OutputParams : public AbstractQuickToolParams
 {
     Q_OBJECT
-    // 声明 QML 中可用
     QML_NAMED_ELEMENT(OutputParams)
-    // 声明对象不能在 QML 中创建
     QML_UNCREATABLE("Can't not create a AbstractOutputParams directly")
 public:
-    AbstractOutputParams(QObject *parent = nullptr);
+    OutputParams(QObject *parent = nullptr);
 
-    virtual ~AbstractOutputParams() {}
+    virtual ~OutputParams() {}
+
+    QString name() const override
+    {
+        return "OutputParams";
+    }
 
     bool addParam(const QString &name, const QString &display_name, const QString &desc, const int type,
                   const QVariant &value, const QVariant &additional = QVariant(), const bool is_property = false,

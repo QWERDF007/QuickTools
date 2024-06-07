@@ -7,7 +7,7 @@ import "../component"
 
 ToolsList {
     ToolItem {
-        title: qsTr("PyTest")
+        title: "PyTest"
         desc: qsTr("Python 测试工具")
         icon: "/icons/bar"
         url: "qrc:/qt/qml/QuickTools/samples/PyTest/PyTest.qml"

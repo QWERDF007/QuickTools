@@ -25,7 +25,7 @@ T_SettingItem {
 
             QuickToolTip {
                 delay: 500
-                text: qsTr("Click to Change ROI Color")
+                text: qsTr("点击修改颜色")
                 visible: mouseArea.containsMouse
             }
             MouseArea {
