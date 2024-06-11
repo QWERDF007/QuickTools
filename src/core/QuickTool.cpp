@@ -83,6 +83,7 @@ void AbstractQuickTool::run()
         return;
     }
     clearAlgorithmTime();
+    setProgress(0);
     emit started();
     auto start_time = std::chrono::high_resolution_clock::now();
     try
@@ -108,8 +109,18 @@ void AbstractQuickTool::run()
         = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - start_time).count();
     outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
     outputParams()->setStatus(ret, error_msg);
+    setProgress(1.0);
     emit finished();
     emit showMessage(ret == 0 ? InfoLevel::Success : InfoLevel::Error, error_msg);
+}
+
+bool AbstractQuickTool::setProgress(const double v)
+{
+    if (v < 0 || v > 1 || v == progress_)
+        return false;
+    progress_ = v;
+    emit progressChanged();
+    return true;
 }
 
 void AbstractQuickTool::setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine)

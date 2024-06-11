@@ -20,6 +20,7 @@ ApplicationWindow {
     property InputParams inputParams: quicktool ? quicktool.inputParams : null
     property OutputParams outputParams: quicktool ? quicktool.outputParams : null
     property bool hasPython: quicktool ? quicktool.hasOwnProperty("hasPython") && quicktool.hasPython : false
+    property real progress: quicktool ? quicktool.progress : 0
 
     property bool enabled: true
 
@@ -39,29 +40,52 @@ ApplicationWindow {
         onReloadBtnClicked: window.reloadModule()
     }
 
-    QuickSplitView {
-        id: splitView
-
+    Item {
         anchors.fill: parent
+        QuickSplitView {
+            id: splitView
 
-        LSideBar {
-            id: lsidebar
+            anchors.fill: parent
 
-            SplitView.fillHeight: true
-            SplitView.minimumWidth: 256
-            SplitView.preferredWidth: 321
-            border.color: window.color
-            childrenEnable: window.enabled
-            helpInfos: window.helpInfos
-            inputParams: window.inputParams
-            outputParams: window.outputParams
+            LSideBar {
+                id: lsidebar
+
+                SplitView.fillHeight: true
+                SplitView.minimumWidth: 256
+                SplitView.preferredWidth: 321
+                border.color: window.color
+                childrenEnable: window.enabled
+                helpInfos: window.helpInfos
+                inputParams: window.inputParams
+                outputParams: window.outputParams
+            }
+            Item {
+                id: container
+
+                SplitView.fillHeight: true
+                SplitView.fillWidth: true
+                enabled: window.enabled
+            }
         }
-        Item {
-            id: container
+        QuickProgressBar {
+            id: progressbar
+            visible: false
+            anchors.top: parent.top
+            anchors.topMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            indeterminate: false
+            z: 65536
+            from: 0
+            to: 1
+            value: window.progress
 
-            SplitView.fillHeight: true
-            SplitView.fillWidth: true
-            enabled: window.enabled
+            states: [
+                State {
+                    name: "finished"
+                    when: outputParams && outputParams.pdata.Status ? outputParams.pdata.Status[0] !== 0 : false
+                    PropertyChanges { target: progressbar; color: "red" }
+                }
+            ]
         }
     }
 
@@ -73,10 +97,12 @@ ApplicationWindow {
         }
 
         function onStarted() {
-
+            if (!progressbar.visible) {
+                progressbar.visible = true
+            }
         }
 
-        function onFinished() {
+        function onFinished(status) {
             window.enabled = true
             busyIndicator.close()
         }
@@ -91,6 +117,8 @@ ApplicationWindow {
             }
         }
     }
+
+
 
     onClosing: function(close) {
         App.closeWindow(window)

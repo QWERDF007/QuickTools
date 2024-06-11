@@ -400,7 +400,7 @@ OutputParams::OutputParams(QObject *parent)
     : AbstractQuickToolParams(parent)
 {
     addParam("Status", tr("运行状态"), tr("工具的运行状态"), QuickToolParamType::StatusParamType, QVariant(),
-             QVariant(), false, true);
+             QVariant(), true, true);
     addParam("Time", tr("运行时间"), tr("工具的运行时间"), QuickToolParamType::TimeParamType, QVariant(), QVariant(),
              false, true);
 }

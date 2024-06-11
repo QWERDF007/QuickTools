@@ -6,6 +6,7 @@ import QuickTools.ui
 ProgressBar{
     property int duration: 888
     property real strokeWidth: 6
+    property bool tooltipVisible: true
     property bool progressVisible: false
     property color color: QuickColor.Primary
     property color backgroundColor : Qt.rgba(214/255,214/255,214/255,1)
@@ -65,5 +66,17 @@ ProgressBar{
             leftMargin: control.width+5
             verticalCenter: parent.verticalCenter
         }
+    }
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        hoverEnabled: true
+    }
+    QuickToolTip {
+        visible: mouseArea.containsMouse && control.tooltipVisible && !control.progressVisible
+        text:(control.visualPosition * 100).toFixed(0) + "%"
+        delay: 500
+        x: mouseArea.mouseX
+        y: mouseArea.mouseY + 20
     }
 }

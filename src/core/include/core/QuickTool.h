@@ -30,6 +30,7 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
     Q_PROPERTY(QuickToolHelper *helper READ helper CONSTANT FINAL)
     Q_PROPERTY(QString name READ name CONSTANT FINAL) // FINAL 表明该属性不会被派生类覆盖
     Q_PROPERTY(QString doc READ doc CONSTANT FINAL)
+    Q_PROPERTY(double progress READ progress WRITE setProgress NOTIFY progressChanged)
 public:
     AbstractQuickTool(QObject *parent = nullptr);
     virtual ~AbstractQuickTool();
@@ -49,6 +50,13 @@ public:
     virtual OutputParams *outputParams() = 0;
 
     virtual AbstractQuickToolSettings *settings() = 0;
+
+    double progress() const
+    {
+        return progress_;
+    }
+
+    bool setProgress(const double v);
 
     /**
      * @brief 添加一个算法运行时间 (ms)
@@ -126,10 +134,13 @@ private:
 
     bool is_init_{false};
 
+    double progress_{0.};
+
 signals:
     void start();
     void started();
     void finished();
+    void progressChanged();
     void showMessage(int, const QString &);
 };
 
