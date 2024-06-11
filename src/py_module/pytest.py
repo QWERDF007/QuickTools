@@ -1,6 +1,6 @@
 import datetime
 
-BB = '1.55'
+BB = 1.55
 
 def get_current_time():
     # ac.fuck()

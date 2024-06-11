@@ -58,7 +58,7 @@ int PyTest::initInputParams()
     if (input_params_)
     {
         input_params_->addParam("Key", tr("变量名"), tr("需要获取的变量的名称"), QuickToolParamType::TextParamType,
-                                QVariant(), QVariant(), true, false, true, true);
+                                "BB", QVariant(), true, false, true, true);
     }
     return 0;
 }
