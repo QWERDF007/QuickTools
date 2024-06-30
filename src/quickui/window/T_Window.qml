@@ -67,7 +67,7 @@ ApplicationWindow {
                 enabled: window.enabled
             }
         }
-        QuickProgressBar {
+        QuickProgressBar { // 工具运行进度条, 运行过程中显示, 完成后消失
             id: progressbar
             visible: false
             anchors.top: parent.top
@@ -104,6 +104,7 @@ ApplicationWindow {
 
         function onFinished(status) {
             window.enabled = true
+            progressbar.visible = false
             busyIndicator.close()
         }
 
