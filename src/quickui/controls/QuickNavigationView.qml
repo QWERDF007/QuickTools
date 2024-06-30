@@ -3,7 +3,9 @@ import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
+
 import QuickTools.ui
+import QuickTools.core
 
 Item {
     property url logo
@@ -1201,7 +1203,10 @@ Item {
         var items = getItems()
         for(var i=0;i<items.length;i++){
             var item =  items[i]
-            if(item.key === data.key){
+            if(item.group && data.group && item.group === data.group){
+                if ((item.task || data.task) && item.task !== data.task) {
+                    continue
+                }
                 if(getCurrentIndex() === i){
                     return
                 }

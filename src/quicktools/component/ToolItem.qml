@@ -10,4 +10,6 @@ QtObject {
     property string title
     property string icon
     property var extra
+    property string task
+    property string group
 }

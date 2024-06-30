@@ -71,6 +71,7 @@ QuickScrollablePage {
                     onClicked: {
                     }
                     onDoubleClicked: {
+                        QuickToolsItems.startPageByItem(modelData)
                         var args = {icon: modelData.icon}
                         App.navigate(modelData.url, args)
                     }
