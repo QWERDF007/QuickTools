@@ -23,8 +23,8 @@ PythonManager::~PythonManager()
 
 int PythonManager::init()
 {
-    setPythonHome(DefaultPythonHome());
-    return 0;
+    bool ok = setPythonHome(DefaultPythonHome());
+    return ok ? 0 : -1;
 }
 
 bool PythonManager::isInit() const
