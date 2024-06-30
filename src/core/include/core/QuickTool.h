@@ -233,8 +233,8 @@ public:
 
     void registerQuickTool(const int type, AbstractQuickToolCreator creator);
 
-    QString groupUUID(const int group);
-    QString taskUUID(const int task);
+    Q_INVOKABLE QString getGroupUUID(const int group);
+    Q_INVOKABLE QString getTaskUUID(const int task);
     void    registerGroupAndTask(const int group, const int task);
 
 protected:

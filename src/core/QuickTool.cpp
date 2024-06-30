@@ -261,7 +261,7 @@ void QuickToolFactor::registerQuickTool(const int tool_type, AbstractQuickToolCr
     tool_creators_.emplace(tool_type, creator);
 }
 
-QString QuickToolFactor::groupUUID(const int group)
+QString QuickToolFactor::getGroupUUID(const int group)
 {
     auto found = groups_uuid_.find(group);
     if (found == groups_uuid_.end())
@@ -269,7 +269,7 @@ QString QuickToolFactor::groupUUID(const int group)
     return found->second;
 }
 
-QString QuickToolFactor::taskUUID(const int task)
+QString QuickToolFactor::getTaskUUID(const int task)
 {
     auto found = tasks_uuid_.find(task);
     if (found == tasks_uuid_.end())

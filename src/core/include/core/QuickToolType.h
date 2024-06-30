@@ -11,6 +11,7 @@ enum QuickToolGroupType
     EmptyGroup = 0,
     ImageProcessGroup, //!< 图像处理分组
     DeepLearningGroup, //!< 深度学习分组
+    SamplesGroup,      //!< 示例分组
 };
 Q_ENUM_NS(QuickToolGroupType) // 向元对象系统注册枚举类型，必须在 Q_NAMESPACE 宏声明的命名空间中
 QML_NAMED_ELEMENT(QuickToolGroupType)
