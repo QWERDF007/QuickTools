@@ -63,6 +63,8 @@ std::tuple<int, QString> ImageHistogram::process()
     cv::Mat image           = cv::imread(image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
     auto    read_end_time   = std::chrono::high_resolution_clock::now();
 
+    setProgress(0.5);
+
     cv::Mat mask;
     auto    roi = input_params->roi();
     if (roi && !roi->empty())
@@ -79,7 +81,9 @@ std::tuple<int, QString> ImageHistogram::process()
     QVariantList        hists_min;
     QVariantList        hists_max;
     // for (const cv::Mat &ch : chs)
-    for (size_t i = 0; i < chs.size(); ++i)
+    size_t size = chs.size();
+    double step = 0.4 / size;
+    for (size_t i = 0; i < size; ++i)
     {
         cv::Mat hist;
         const auto [hist_size, range_values] = getHistSizeAndRange(color_space, static_cast<int>(i));
@@ -104,6 +108,7 @@ std::tuple<int, QString> ImageHistogram::process()
         hists_data.append(hist_data);
         hists_min.append(min_value);
         hists_max.append(max_value);
+        setProgress(0.5 + (i+1) * step);
     }
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
     auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
