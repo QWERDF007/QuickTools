@@ -37,6 +37,7 @@ include(ConfigQT)
 include(ConfigOpenCV)
 include(ConfigCUDA)
 include(ConfigPython)
+include(ConfigSQLite)
 
 # Define the build tree
 add_subdirectory(3rdparty EXCLUDE_FROM_ALL)

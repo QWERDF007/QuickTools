@@ -36,3 +36,13 @@ if %errorlevel% neq 0 (
 ) else (
     echo "link python dll success"
 )
+
+python tools\sqlite_symlink.py
+
+if %errorlevel% neq 0 (
+    echo "link sqlite3 dll failed"
+    exit /b 1
+) else (
+    echo "link sqlite3 dll success"
+)
+
