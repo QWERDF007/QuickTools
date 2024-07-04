@@ -109,7 +109,6 @@ Window {
                         text: positiveText
                         onClicked: {
                             if (control.onPositiveClickListener) {
-                                console.log("onClicked onPositiveClickListener")
                                 control.onPositiveClickListener()
                             } else {
                                 positiveClicked()
