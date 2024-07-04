@@ -111,6 +111,8 @@ public:
     bool addIntInputSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
                             const QVariant &value, const QVariant &from = 0, const QVariant &to = 9999);
 
+    Q_INVOKABLE bool save();
+
 private:
     QList<QString>                     settings_names_; // [name]
     QMap<QString, QMap<int, QVariant>> settings_data_;  // [name, [key, value]]

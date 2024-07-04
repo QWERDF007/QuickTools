@@ -56,6 +56,7 @@ target_link_libraries(${TARGET_NAME}
     PRIVATE
         Qt6::Core Qt6::Gui
         opencv_core
+        sqlpp11::sqlite3
     PUBLIC
         QuickTools_common QuickTools_common_headers
         pybind11::embed

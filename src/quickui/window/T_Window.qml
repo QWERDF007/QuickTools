@@ -161,6 +161,11 @@ ApplicationWindow {
         width: 800
         height: 600
         settingsModel: window.toolSettings
+        onPositiveClicked: {
+            if (toolSettings) {
+                toolSettings.save() // 保存到数据库
+            }
+        }
     }
 
     function run() {

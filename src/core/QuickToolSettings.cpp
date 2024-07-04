@@ -2,6 +2,9 @@
 
 #include "priv/Predefined.h"
 
+#include <sqlpp11/sqlpp11.h>
+#include <sqlpp11/sqlite3/sqlite3.h>
+
 namespace quicktools::core {
 
 GlobalSettings *GlobalSettings::instance_ = nullptr;
@@ -177,6 +180,26 @@ bool AbstractQuickToolSettings::addIntInputSetting(const int group, const QStrin
         {  "to",   to},
     };
     return addSetting(group, name, display_name, desc, SettingsType::IntInputType, value, data, true);
+}
+
+bool AbstractQuickToolSettings::save()
+{
+    qInfo() << __FUNCTION__ << "start";
+    try
+    {
+        sqlpp::sqlite3::connection_config config;
+        config.path_to_database = "config/config.db";
+        config.flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+        sqlpp::sqlite3::connection db(config);
+        if (!db.is_connected())
+            qInfo() << __FUNCTION__ << __LINE__ << "can't connect to settings.db";
+    }
+    catch (const std::exception & e)
+    {
+        qCritical() << __FUNCTION__ << __LINE__ << e.what();
+    }
+
+    return true;
 }
 
 void AbstractQuickToolSettings::onPropertyValueChanged(const QString &key, const QVariant &value)
