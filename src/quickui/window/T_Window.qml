@@ -92,11 +92,11 @@ ApplicationWindow {
     Connections {
         target: quicktool
         function onStart() {
-            busyIndicator.open()
-            window.enabled = false
         }
 
         function onStarted() {
+            window.enabled = false
+            busyIndicator.open()
             if (!progressbar.visible) {
                 progressbar.visible = true
             }
