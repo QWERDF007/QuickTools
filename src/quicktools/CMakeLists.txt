@@ -72,4 +72,5 @@ PRIVATE
     QuickTools_ui
     QuickTools_common QuickTools_common_headers
     QuickTools_samples QuickTools_samples_headers
+    spdlog::spdlog
 )

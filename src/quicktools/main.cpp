@@ -7,10 +7,23 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 
+#include <spdlog/spdlog.h>
+
+void initLog()
+{
+    // Set global log level to debug
+    spdlog::set_level(spdlog::level::debug);
+    // change log pattern
+    spdlog::set_pattern("[%Y%m%d %H:%M:%S.%e] [%n] [%L] [%t] %v");
+}
+
 int main(int argc, char *argv[])
 {
     quicktools::common::CrashHandler crash_handler;
     crash_handler.setup();
+
+    initLog();
+    spdlog::info("Welcome to QuickTools!");
 
 //    QQuickStyle::setStyle("Basic");
 //    qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
