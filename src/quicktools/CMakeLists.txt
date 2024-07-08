@@ -73,4 +73,5 @@ PRIVATE
     QuickTools_common QuickTools_common_headers
     QuickTools_samples QuickTools_samples_headers
     spdlog::spdlog
+    sqlpp11::sqlite3
 )

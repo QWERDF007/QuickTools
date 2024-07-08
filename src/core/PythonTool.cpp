@@ -13,9 +13,12 @@ AbstractPythonInterface::AbstractPythonInterface() {}
 AbstractPythonInterface::~AbstractPythonInterface()
 {
     qInfo() << __FUNCTION__ << this;
-    pybind11::gil_scoped_acquire acquire;
+
     if (module_)
+    {
+        pybind11::gil_scoped_acquire acquire;
         module_.release();
+    }
 }
 
 int AbstractPythonInterface::init()

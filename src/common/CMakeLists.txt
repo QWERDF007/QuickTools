@@ -33,6 +33,7 @@ target_link_libraries(${TARGET_NAME}
     PRIVATE
         Qt6::Core
         spdlog::spdlog
+        sqlpp11::sqlite3
 )
 
 target_include_directories(${TARGET_NAME} 

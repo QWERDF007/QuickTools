@@ -1,6 +1,7 @@
 
 #include "common/CrashHandler.h"
 #include "common/Logger.h"
+#include "common/sqlite_sink.h"
 #include "core/Logger.h"
 #include "core/PythonManager.h"
 #include "imgproc/ImgprocRegister.h"
@@ -19,7 +20,8 @@ void initLog()
     {
         std::vector<spdlog::sink_ptr> sinks;
         sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
-        //        sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_st>("logfile", 23, 59));
+        sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_st>("logfile", 23, 59));
+        sinks.push_back(std::make_shared<spdlog::sinks::sqlite_sink_st>("test.db"));
         auto logger = quicktools::common::setupLogger(sinks);
         logger->set_level(spdlog::level::debug);
         logger->set_pattern("[%Y/%m/%d %T.%e] [%n] [%^%L%$] [%t] %v");

@@ -31,6 +31,7 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
     Q_PROPERTY(QString name READ name CONSTANT FINAL) // FINAL 表明该属性不会被派生类覆盖
     Q_PROPERTY(QString doc READ doc CONSTANT FINAL)
     Q_PROPERTY(double progress READ progress WRITE setProgress NOTIFY progressChanged)
+    Q_PROPERTY(QString uuid READ uuid CONSTANT FINAL)
 public:
     AbstractQuickTool(QObject *parent = nullptr);
     virtual ~AbstractQuickTool();
@@ -43,6 +44,11 @@ public:
     virtual QString doc() const = 0;
 
     int init();
+
+    QString uuid() const
+    {
+        return uuid_;
+    }
 
     void run() override;
 
@@ -135,6 +141,7 @@ private:
     bool is_init_{false};
 
     double progress_{0.};
+    QString uuid_;
 
 signals:
     void start();

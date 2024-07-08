@@ -6,6 +6,8 @@
 #include <chrono>
 #include <sstream>
 
+#include <spdlog/spdlog.h>
+
 #undef slots
 #include <pybind11/embed.h>
 #define slots Q_SLOTS
@@ -19,6 +21,7 @@ QJSEngine       *QuickToolFactor::jsEngine_  = nullptr;
 AbstractQuickTool::AbstractQuickTool(QObject *parent)
     : QObject{parent}
     , helper_(new QuickToolHelper(this))
+    , uuid_(common::uuid())
 {
     // If auto-deletion is enabled, QThreadPool will automatically
     // delete this runnable after calling run();
@@ -248,6 +251,7 @@ AbstractQuickTool *QuickToolFactor::createQuickTool(const int tool_type, QObject
         {
             quick_tool->init();
             quick_tool->setEngine(qmlEngine_, jsEngine_);
+            spdlog::info("创建 QuickTool: {}, uuid: {}", quick_tool->name().toLocal8Bit().data(), quick_tool->uuid().toLocal8Bit().data());
         }
         return quick_tool;
     }
