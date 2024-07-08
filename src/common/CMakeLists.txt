@@ -32,6 +32,7 @@ target_compile_definitions(${TARGET_NAME}
 target_link_libraries(${TARGET_NAME}
     PRIVATE
         Qt6::Core
+        spdlog::spdlog
 )
 
 target_include_directories(${TARGET_NAME} 

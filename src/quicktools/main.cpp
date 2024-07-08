@@ -1,20 +1,34 @@
 
 #include "common/CrashHandler.h"
-#include "imgproc/ImgprocRegister.h"
+#include "common/Logger.h"
+#include "core/Logger.h"
 #include "core/PythonManager.h"
+#include "imgproc/ImgprocRegister.h"
 #include "samples/SamplesRegister.h"
+
+#include <spdlog/sinks/daily_file_sink.h>
+#include <spdlog/sinks/stdout_sinks.h>
+#include <spdlog/spdlog.h>
 
 #include <QApplication>
 #include <QQmlApplicationEngine>
 
-#include <spdlog/spdlog.h>
-
 void initLog()
 {
-    // Set global log level to debug
-    spdlog::set_level(spdlog::level::debug);
-    // change log pattern
-    spdlog::set_pattern("[%Y%m%d %H:%M:%S.%e] [%n] [%L] [%t] %v");
+    try
+    {
+        std::vector<spdlog::sink_ptr> sinks;
+        sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
+        //        sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_st>("logfile", 23, 59));
+        auto logger = quicktools::common::setupLogger(sinks);
+        logger->set_level(spdlog::level::debug);
+        logger->set_pattern("[%Y/%m/%d %T.%e] [%n] [%^%L%$] [%t] %v");
+        quicktools::core::registerLogger(logger);
+    }
+    catch (const std::exception &e)
+    {
+        qInfo() << __FUNCTION__ << e.what();
+    }
 }
 
 int main(int argc, char *argv[])
@@ -25,8 +39,8 @@ int main(int argc, char *argv[])
     initLog();
     spdlog::info("Welcome to QuickTools!");
 
-//    QQuickStyle::setStyle("Basic");
-//    qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
+    //    QQuickStyle::setStyle("Basic");
+    //    qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
 
     QApplication          app(argc, argv);
     QQmlApplicationEngine engine;
