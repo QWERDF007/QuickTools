@@ -25,6 +25,7 @@ endif()
 # Match warning setup with GVS
 if (MSVC)
     # set(C_WARNING_FLAGS "-Wall")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
     set(C_WARNING_FLAGS "-W4")
     # set(CXX_WARNING_FLAGS "/permissive-")
 else ()
