@@ -7,7 +7,7 @@ import QuickTools.core
 QtObject {
     property string key
     property string group: QuickToolFactor.getGroupUUID(QuickToolGroupType.EmptyGroup)
-    property string task: QuickToolFactor.getGroupUUID(QuickToolTaskType.EmptyTask)
+    property string task: QuickToolFactor.getTaskUUID(QuickToolTaskType.EmptyTask)
     property int _idx
     property var _ext
     property var _parent

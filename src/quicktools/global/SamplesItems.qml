@@ -16,6 +16,7 @@ ToolsList {
         url: "qrc:/qt/qml/QuickTools/samples/PyTest/PyTest.qml"
         extra: ({recentlyUpdated:true,recentlyAdded:true})
         group: list.group
+        task: QuickToolFactor.getTaskUUID(QuickToolTaskType.EmptyTask)
     }
 }
 
