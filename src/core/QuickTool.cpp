@@ -83,6 +83,7 @@ void AbstractQuickTool::run()
     if (ret != 0)
     {
         emit showMessage(InfoLevel::Error, tr("初始化失败"));
+        spdlog::error("初始化失败: {}", name().toUtf8().constData());
         return;
     }
     clearAlgorithmTime();
@@ -115,6 +116,10 @@ void AbstractQuickTool::run()
     setProgress(1.0);
     emit finished();
     emit showMessage(ret == 0 ? InfoLevel::Success : InfoLevel::Error, error_msg);
+    if (ret == 0)
+        spdlog::info("运行成功: {}", name().toUtf8().constData());
+    else
+        spdlog::error("运行失败: {}, error: {}", name().toUtf8().constData(), error_msg.toUtf8().constData());
 }
 
 bool AbstractQuickTool::setProgress(const double v)
@@ -251,7 +256,7 @@ AbstractQuickTool *QuickToolFactor::createQuickTool(const int tool_type, QObject
         {
             quick_tool->init();
             quick_tool->setEngine(qmlEngine_, jsEngine_);
-            spdlog::info("创建 QuickTool: {}, uuid: {}", quick_tool->name().toLocal8Bit().data(), quick_tool->uuid().toLocal8Bit().data());
+            spdlog::info("创建工具: {}, uuid: {}", quick_tool->name().toUtf8().constData(), quick_tool->uuid().toUtf8().constData());
         }
         return quick_tool;
     }
