@@ -8,7 +8,7 @@ import "../component"
 
 ToolsList {
     id: list
-    group: QuickToolFactor.getGroupUUID(QuickToolGroupType.SamplesGroup)
+    group: QuickToolManager.getGroupUUID(QuickToolGroupType.SamplesGroup)
     ToolItem {
         title: "PyTest"
         desc: qsTr("Python 测试工具")
@@ -16,7 +16,6 @@ ToolsList {
         url: "qrc:/qt/qml/QuickTools/samples/PyTest/PyTest.qml"
         extra: ({recentlyUpdated:true,recentlyAdded:true})
         group: list.group
-        task: QuickToolFactor.getTaskUUID(QuickToolTaskType.EmptyTask)
     }
 }
 

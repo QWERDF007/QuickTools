@@ -22,8 +22,6 @@ QuickObject {
         }
         icon: QuickFontIcon.Home
         url:"qrc:/qt/qml/QuickTools/page/Home.qml"
-        // url: "qrc:/qt/qml/QuickTools/imgproc/imagehistogram/ImageHistogram.qml"
-        // url: "qrc:/qt/qml/QuickTools/ui/window/T_CVWindow.qml"
         onTap: {
             if(navigationView.getCurrentUrl()){
                 item_home.count = 0
@@ -34,7 +32,7 @@ QuickObject {
 
     QuickPaneItem {
         title: "图像处理"
-        group: QuickToolFactor.getGroupUUID(QuickToolGroupType.ImageProcessGroup)
+        group: QuickToolManager.getGroupUUID(QuickToolGroupType.ImageProcessGroup)
         iconVisible: true
         icon: QuickFontIcon.QRCode
         url: "qrc:/qt/qml/QuickTools/page/ImageProcessPage.qml"
@@ -46,7 +44,7 @@ QuickObject {
         title: "深度学习"
         iconVisible: true
         icon: QuickFontIcon.ReportHacked
-        group: QuickToolFactor.getGroupUUID(QuickToolGroupType.DeepLearningGroup)
+        group: QuickToolManager.getGroupUUID(QuickToolGroupType.DeepLearningGroup)
         QuickPaneItem {
             title: "图像分类"
             url: "qrc:/qt/qml/QuickTools/page/ImageClassificationPage.qml"
@@ -63,7 +61,7 @@ QuickObject {
 
     QuickPaneItem {
         title: "示例工具"
-        group: QuickToolFactor.getGroupUUID(QuickToolGroupType.SamplesGroup)
+        group: QuickToolManager.getGroupUUID(QuickToolGroupType.SamplesGroup)
         iconVisible: true
         icon: QuickFontIcon.Emoji2
         url: "qrc:/qt/qml/QuickTools/page/SamplesPage.qml"

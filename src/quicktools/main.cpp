@@ -1,15 +1,10 @@
 
 #include "common/CrashHandler.h"
 #include "common/Logger.h"
-#include "common/sqlite_sink.h"
 #include "core/Logger.h"
 #include "core/PythonManager.h"
 #include "imgproc/ImgprocRegister.h"
 #include "samples/SamplesRegister.h"
-
-#include <spdlog/sinks/daily_file_sink.h>
-#include <spdlog/sinks/stdout_sinks.h>
-#include <spdlog/spdlog.h>
 
 #include <QApplication>
 #include <QQmlApplicationEngine>
@@ -18,11 +13,7 @@ void initLog()
 {
     try
     {
-        std::vector<spdlog::sink_ptr> sinks;
-        sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
-        sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_st>("logs/log.txt", 23, 59));
-        sinks.push_back(std::make_shared<spdlog::sinks::sqlite_sink_st>("db/log.db", 23, 59));
-        auto logger = quicktools::common::setupLogger(sinks);
+        auto logger = quicktools::common::setupLogger(quicktools::common::defaultSinks());
         logger->set_level(spdlog::level::debug);
         logger->set_pattern("[%Y/%m/%d %T.%e] [%n] [%^%L%$] [%t] %v");
         quicktools::core::registerLogger(logger);
