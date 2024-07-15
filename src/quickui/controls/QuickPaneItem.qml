@@ -5,9 +5,8 @@ import QuickTools.ui
 import QuickTools.core
 
 QtObject {
-    property string key
-    property string group: QuickToolFactor.getGroupUUID(QuickToolGroupType.EmptyGroup)
-    property string task: QuickToolFactor.getTaskUUID(QuickToolTaskType.EmptyTask)
+    property string group: QuickToolManager.getGroupUUID(QuickToolGroupType.EmptyGroup)
+    property string task: QuickToolManager.getTaskUUID(QuickToolTaskType.EmptyTask)
     property int _idx
     property var _ext
     property var _parent
@@ -26,7 +25,4 @@ QtObject {
     property var extra
     property bool showEdit
     signal tap
-    Component.onCompleted: {
-        key = UITools.uuid()
-    }
 }
