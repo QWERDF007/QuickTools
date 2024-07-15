@@ -4,7 +4,6 @@
 #include <spdlog/sinks/daily_file_sink.h>
 #include <spdlog/spdlog.h>
 #include <sqlpp11/sqlite3/sqlite3.h>
-#include <iostream>
 
 namespace spdlog { namespace sinks {
 
@@ -152,10 +151,10 @@ private:
             return false;
 
         // std::cout << __FUNCTION__ << " " << __LINE__ << " " << std::string( msg.payload.data(), msg.payload.size()) << " size: " << msg.payload.size() << std::endl;
-        if (sqlite3_bind_text(stmt_, 2, msg.payload.data(), msg.payload.size(), SQLITE_STATIC) != SQLITE_OK)
+        if (sqlite3_bind_text(stmt_, 2, msg.payload.data(), static_cast<int>(msg.payload.size()), SQLITE_STATIC) != SQLITE_OK)
             return false;
 
-        if (sqlite3_bind_text(stmt_, 3, msg.logger_name.data(), msg.logger_name.size(), SQLITE_STATIC) != SQLITE_OK)
+        if (sqlite3_bind_text(stmt_, 3, msg.logger_name.data(), static_cast<int>(msg.logger_name.size()), SQLITE_STATIC) != SQLITE_OK)
             return false;
 
         if (sqlite3_bind_int(stmt_, 4, static_cast<int>(msg.thread_id)) != SQLITE_OK)
