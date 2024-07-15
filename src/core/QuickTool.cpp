@@ -3,20 +3,16 @@
 #include "common/Utils.h"
 #include "priv/Predefined.h"
 
+#include <spdlog/spdlog.h>
+
 #include <chrono>
 #include <sstream>
-
-#include <spdlog/spdlog.h>
 
 #undef slots
 #include <pybind11/embed.h>
 #define slots Q_SLOTS
 
 namespace quicktools::core {
-
-QuickToolFactor *QuickToolFactor::instance_  = nullptr;
-QQmlEngine      *QuickToolFactor::qmlEngine_ = nullptr;
-QJSEngine       *QuickToolFactor::jsEngine_  = nullptr;
 
 AbstractQuickTool::AbstractQuickTool(QObject *parent)
     : QObject{parent}
@@ -76,50 +72,13 @@ QString pythonErrorHandle(const pybind11::error_already_set &e)
 
 void AbstractQuickTool::run()
 {
-    int     ret = 0;
-    QString error_msg;
-    if (!isInit())
-        ret = init();
-    if (ret != 0)
-    {
-        emit showMessage(InfoLevel::Error, tr("初始化失败"));
-        spdlog::error("初始化失败: {}", name().toUtf8().constData());
+    if (!preprocess())
         return;
-    }
-    clearAlgorithmTime();
-    setProgress(0);
-    emit started();
-    auto start_time = std::chrono::high_resolution_clock::now();
-    try
-    {
-        const auto &[status, msg] = process();
-
-        ret       = status;
-        error_msg = msg;
-    }
-    catch (const pybind11::error_already_set &e)
-    {
-        ret       = -1;
-        error_msg = e.what();
-        //        pybind11::gil_scoped_acquire acquire;
-        //        error_msg = pythonErrorHandle(e);
-    }
-    catch (const std::exception &e)
-    {
-        ret       = -1;
-        error_msg = e.what();
-    }
-    wall_clock_time_
-        = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - start_time).count();
-    outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
-    outputParams()->setStatus(ret, error_msg);
-    setProgress(1.0);
-    emit finished();
-    emit showMessage(ret == 0 ? InfoLevel::Success : InfoLevel::Error, error_msg);
-    if (ret == 0)
-        spdlog::info("运行成功: {}", name().toUtf8().constData());
-    else
-        spdlog::error("运行失败: {}, error: {}", name().toUtf8().constData(), error_msg.toUtf8().constData());
+    auto start_time  = std::chrono::high_resolution_clock::now();
+    auto res         = process();
+    auto end_time    = std::chrono::high_resolution_clock::now();
+    wall_clock_time_ = std::chrono::duration<double, std::milli>(end_time - start_time).count();
+    postprocess(res);
 }
 
 bool AbstractQuickTool::setProgress(const double v)
@@ -162,9 +121,7 @@ int AbstractQuickTool::checkParams()
 {
     int ret = checkInputParams();
     if (ret != 0)
-    {
         return ret;
-    }
     ret = checkOutputParams();
     return ret;
 }
@@ -211,6 +168,68 @@ int AbstractQuickTool::checkSettings()
     return 0;
 }
 
+bool AbstractQuickTool::preprocess()
+{
+    int ret = 0;
+    if (!isInit())
+        ret = init();
+    if (ret != 0)
+    {
+        emit showMessage(InfoLevel::Error, tr("运行失败, 初始化失败"));
+        spdlog::error("运行失败, 初始化失败: {}", name().toUtf8().constData());
+        return false;
+    }
+    clearAlgorithmTime();
+    setProgress(0);
+    emit started();
+    return true;
+}
+
+std::tuple<int, QString> AbstractQuickTool::process()
+{
+    int     ret = 0;
+    QString error_msg;
+    try
+    {
+        const auto &[status, msg] = doInProcess();
+
+        ret       = status;
+        error_msg = msg;
+    }
+    catch (const pybind11::error_already_set &e)
+    {
+        ret       = -1;
+        error_msg = e.what();
+        //        pybind11::gil_scoped_acquire acquire;
+        //        error_msg = pythonErrorHandle(e);
+    }
+    catch (const std::exception &e)
+    {
+        ret       = -1;
+        error_msg = e.what();
+    }
+    catch (...)
+    {
+        ret       = -1;
+        error_msg = tr("未知错误");
+    }
+    return {ret, error_msg};
+}
+
+void AbstractQuickTool::postprocess(const std::tuple<int, QString> &res)
+{
+    const auto &[ret, error_msg] = res;
+    outputParams()->setToolTime(wall_clock_time_, algorithm_time_array_);
+    outputParams()->setStatus(ret, error_msg);
+    setProgress(1.0);
+    emit finished();
+    emit showMessage(ret == 0 ? InfoLevel::Success : InfoLevel::Error, error_msg);
+    if (ret == 0)
+        spdlog::info("运行成功: {}", name().toUtf8().constData());
+    else
+        spdlog::error("运行失败: {}, error: {}", name().toUtf8().constData(), error_msg.toUtf8().constData());
+}
+
 void AbstractQuickTool::onRunAfterChanged()
 {
     if (run_after_changed)
@@ -221,77 +240,6 @@ void AbstractQuickTool::onSettingChanged(const QString &key, const QVariant &val
 {
     if (key == RUN_AFTER_CHANGED)
         run_after_changed = value.toBool();
-}
-
-/**
- * @note: 不能使用返回静态局部变量的指针, 否则结束时会报错 _CrtlsValidHeapPointer(block),
- *        应该是 Qt 对指针进行了 delete, 然后结束时静态变量又自己 delete, 导致 double delete.
- * @note: 此实现不是Meyers' Singleton! 可能存在问题?
- *        参考: https://www.zhihu.com/question/56527586/answer/2344903391
- */
-QuickToolFactor *QuickToolFactor::getInstance()
-{
-    if (instance_ == nullptr)
-    {
-        instance_ = new QuickToolFactor;
-    }
-    return instance_;
-}
-
-QuickToolFactor *QuickToolFactor::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
-{
-    qmlEngine_ = qmlEngine;
-    jsEngine_  = jsEngine;
-    return getInstance();
-}
-
-AbstractQuickTool *QuickToolFactor::createQuickTool(const int tool_type, QObject *parent) const
-{
-    auto found = tool_creators_.find(tool_type);
-    if (found != tool_creators_.end())
-    {
-        auto               callable   = found->second;
-        AbstractQuickTool *quick_tool = callable(parent);
-        if (quick_tool)
-        {
-            quick_tool->init();
-            quick_tool->setEngine(qmlEngine_, jsEngine_);
-            spdlog::info("创建工具: {}, uuid: {}", quick_tool->name().toUtf8().constData(), quick_tool->uuid().toUtf8().constData());
-        }
-        return quick_tool;
-    }
-    return nullptr;
-}
-
-void QuickToolFactor::registerQuickTool(const int tool_type, AbstractQuickToolCreator creator)
-{
-    auto found = tool_creators_.find(tool_type);
-    assert(found == tool_creators_.end() && "This type is already registered");
-    tool_creators_.emplace(tool_type, creator);
-}
-
-QString QuickToolFactor::getGroupUUID(const int group)
-{
-    auto found = groups_uuid_.find(group);
-    if (found == groups_uuid_.end())
-        return "";
-    return found->second;
-}
-
-QString QuickToolFactor::getTaskUUID(const int task)
-{
-    auto found = tasks_uuid_.find(task);
-    if (found == tasks_uuid_.end())
-        return "";
-    return found->second;
-}
-
-void QuickToolFactor::registerGroupAndTask(const int group, const int task)
-{
-    if (groups_uuid_.find(group) == groups_uuid_.end())
-        groups_uuid_.emplace(group, common::uuid());
-    if (tasks_uuid_.find(task) == tasks_uuid_.end())
-        tasks_uuid_.emplace(task, common::uuid());
 }
 
 } // namespace quicktools::core

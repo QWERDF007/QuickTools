@@ -47,7 +47,10 @@ public:
     Q_INVOKABLE void reloadModule();
 
 protected:
-    int doInInit() override;
+    int doInInit() override
+    {
+        return AbstractPythonInterface::init();
+    }
 };
 
 } // namespace quicktools::core
