@@ -46,8 +46,10 @@ Window {
                 id: nav_view
                 anchors.fill: parent
                 items: QuickToolsItems
+                footerItems: QuickToolsFooter
                 Component.onCompleted: {
                     QuickToolsItems.navigationView = nav_view
+                    QuickToolsFooter.navigationView = nav_view
                     setCurrentIndex(0)
                 }
             }

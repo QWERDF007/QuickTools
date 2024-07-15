@@ -72,7 +72,7 @@ Item {
                         }
                     }
                 }
-                if(footerItems){
+                if(footerItems){ // 往 nav_list 添加空项, 方便使用统一的 push(url,args) 进行跳转
                     for(var k=0;k<footerItems.children.length;k++){
                         var itemFooter = footerItems.children[k]
                         if(itemFooter.visible !== true){
@@ -479,7 +479,7 @@ Item {
                     delay: 800
                 }
                 onClicked:{
-                    if(type === 0){
+                    if (type === 0) { // nav items
                         if(model.onTapListener){
                             model.onTapListener()
                         }else{
@@ -487,7 +487,7 @@ Item {
                             layout_footer.currentIndex = -1 // 取消底部组件选中
                             model.tap()
                         }
-                    }else{
+                    } else { // footer items
                         if(model.onTapListener){
                             model.onTapListener()
                         }else{
@@ -939,7 +939,7 @@ Item {
             clip: true
             contentHeight: nav_list.contentHeight
             ScrollBar.vertical: QuickScrollBar {}
-            ListView{
+            ListView { // 导航项展示列表
                 id:nav_list
                 displaced: Transition {
                     NumberAnimation {
@@ -974,20 +974,15 @@ Item {
                     sourceComponent: {
                         if (model === null || !model) {
                             return undefined
-                        }
-                        if (modelData instanceof QuickPaneItem) {
+                        } else if (modelData instanceof QuickPaneItem) {
                             return com_panel_item
-                        }
-                        if (modelData instanceof QuickPaneItemHeader) {
+                        } else if (modelData instanceof QuickPaneItemHeader) {
                             return com_panel_item_header
-                        }
-                        if (modelData instanceof QuickPaneItemSeparator) {
+                        } else if (modelData instanceof QuickPaneItemSeparator) {
                             return com_panel_item_separator
-                        }
-                        if (modelData instanceof QuickPaneItemExpander) {
+                        } else if (modelData instanceof QuickPaneItemExpander) {
                             return com_panel_item_expander
-                        }
-                        if (modelData instanceof QuickPaneItemEmpty) {
+                        } else if (modelData instanceof QuickPaneItemEmpty) {
                             return com_panel_item_empty
                         }
                         return undefined
@@ -1028,11 +1023,9 @@ Item {
                 sourceComponent: {
                     if(modelData instanceof QuickPaneItem){
                         return com_panel_item
-                    }
-                    if(modelData instanceof QuickPaneItemHeader){
+                    } else if(modelData instanceof QuickPaneItemHeader){
                         return com_panel_item_header
-                    }
-                    if(modelData instanceof QuickPaneItemSeparator){
+                    } else if(modelData instanceof QuickPaneItemSeparator){
                         return com_panel_item_separatorr
                     }
                 }
