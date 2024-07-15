@@ -4,5 +4,5 @@ import QuickTools.core
 
 T_Window {
     id: pytestWindow
-    quicktool: QuickToolFactor.createQuickTool(QuickToolType.PyTestTool, pytestWindow)
+    quicktool: QuickToolManager.createQuickTool(QuickToolType.PyTestTool, pytestWindow)
 }

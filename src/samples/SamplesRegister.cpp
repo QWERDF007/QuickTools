@@ -6,7 +6,7 @@ namespace quicktools::samples {
 
 void registerTools()
 {
-    core::QuickToolFactor::getInstance()->registerGroupAndTask(core::quicktoolgrouptype::SamplesGroup,
+    core::QuickToolManager::getInstance()->registerGroupAndTask(core::quicktoolgrouptype::SamplesGroup,
                                                                core::quicktooltasktype::EmptyTask);
     registerPyTest();
 }

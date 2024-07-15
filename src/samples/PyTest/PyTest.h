@@ -1,5 +1,6 @@
 #pragma once
 #include "core/PythonTool.h"
+#include "core/QuickToolManager.h"
 #include "core/QuickToolType.h"
 
 namespace quicktools::samples {
@@ -15,7 +16,7 @@ public:
         return "PyTest";
     }
 
-    std::tuple<int, QString> process() override;
+    std::tuple<int, QString> doInProcess() override;
 
     QString doc() const override
     {

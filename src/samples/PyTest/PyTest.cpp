@@ -12,7 +12,7 @@ PyTest::PyTest(QObject *parent)
 {
 }
 
-std::tuple<int, QString> PyTest::process()
+std::tuple<int, QString> PyTest::doInProcess()
 {
     auto    algorithm_start_time = std::chrono::high_resolution_clock::now();
     int     status               = 0;
