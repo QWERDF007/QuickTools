@@ -1,13 +1,31 @@
 #include "common/Utils.h"
 
-#include <QString>
 #include <QUuid>
+#include <QStringList>
 
 namespace quicktools::common {
 
 QString uuid()
 {
     return QUuid::createUuid().toString().remove('-').remove('{').remove('}');
+}
+
+QString toQString(const QStringList & str_list, const QString &sep, Qt::SplitBehavior behavior)
+{
+    QString str;
+    if (str_list.isEmpty())
+        return str;
+    int size = str_list.size() - 1;
+    if (size == 0)
+        return str_list[0];
+    for (int i = 0; i < size; ++i)
+    {
+        if (behavior == Qt::SkipEmptyParts && str_list[i].isEmpty())
+            continue;
+        str += str_list[i] + sep;
+    }
+    str += str_list[size];
+    return str;
 }
 
 #ifdef _WIN32

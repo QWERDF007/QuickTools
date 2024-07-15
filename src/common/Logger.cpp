@@ -1,10 +1,13 @@
 #include "common/Logger.h"
+#include "common/sqlite_sink.h"
 
+#include <spdlog/sinks/daily_file_sink.h>
+#include <spdlog/sinks/stdout_sinks.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace quicktools::common {
 
-std::shared_ptr<spdlog::logger> setupLogger(std::vector<spdlog::sink_ptr> sinks)
+std::shared_ptr<spdlog::logger> setupLogger(const std::vector<spdlog::sink_ptr>& sinks)
 {
     static const std::string logger_name = "root";
     auto                     logger      = spdlog::get(logger_name);
@@ -23,4 +26,14 @@ std::shared_ptr<spdlog::logger> setupLogger(std::vector<spdlog::sink_ptr> sinks)
     }
     return logger;
 }
+
+std::vector<spdlog::sink_ptr> defaultSinks()
+{
+    std::vector<spdlog::sink_ptr> sinks;
+//    sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
+    sinks.push_back(std::make_shared<spdlog::sinks::daily_file_sink_st>("logs/log.txt", 23, 59));
+    sinks.push_back(std::make_shared<spdlog::sinks::sqlite_sink_st>("db/log.db", 23, 59));
+    return sinks;
+}
+
 } // namespace quicktools::common
