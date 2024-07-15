@@ -11,7 +11,7 @@ T_CVWindow {
 
     acceptedShapes: QuickShape.Rectangle | QuickShape.Circle
     activateItem: image
-    quicktool: QuickToolFactor.createQuickTool(QuickToolType.ImageHistogramTool, imageHistogramWin)
+    quicktool: QuickToolManager.createQuickTool(QuickToolType.ImageHistogramTool, imageHistogramWin)
 
     QuickSplitView {
         id: sv1

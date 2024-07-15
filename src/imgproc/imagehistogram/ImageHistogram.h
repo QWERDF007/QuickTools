@@ -2,6 +2,7 @@
 
 #include "core/CVTool.h"
 #include "core/QuickToolType.h"
+#include "core/QuickToolManager.h"
 
 #include <opencv2/core.hpp>
 
@@ -17,7 +18,7 @@ public:
 
     ~ImageHistogram() = default;
 
-    std::tuple<int, QString> process() override;
+    std::tuple<int, QString> doInProcess() override;
 
     QString name() const override
     {
