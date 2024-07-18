@@ -68,18 +68,32 @@ QuickFrame {
         }
     }
 
+    Component {
+        id: fileFolderInputSettingItem
+
+        FileFolderInputSettingItem {
+            settingAdditional: settingDelegate.settingAdditional
+            settingValue: settingDelegate.settingValue
+
+            onValueChanged: function (value) {
+                settingDelegate.valueChanged(value)
+            }
+        }
+    }
+
     Item {
         anchors.fill: parent
         anchors.leftMargin: 5
         anchors.rightMargin: 5
 
         ColumnLayout {
+            id: desc
             anchors{
                 left: parent.left
                 top: parent.top
                 bottom: parent.bottom
             }
-
+            width: 200
             spacing: 5
 
             Item {
@@ -103,6 +117,8 @@ QuickFrame {
         QuickLoader {
             id: loader
             anchors{
+                left: desc.right
+                leftMargin: 5
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
@@ -117,8 +133,9 @@ QuickFrame {
                     return colorSettingItem
                 } else if (settingDelegate.settingType === QuickToolSettings.IntInputType) {
                     return intInputSettingItem
+                } else if (settingDelegate.settingType === QuickToolSettings.FileFolderInputType) {
+                    return fileFolderInputSettingItem
                 }
-
                 return undefined
             }
         }

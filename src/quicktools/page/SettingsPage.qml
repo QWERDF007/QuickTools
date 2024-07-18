@@ -1,8 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 
-import "../component"
+import QuickTools.ui
+import QuickTools.core
 
-T_Page {
-
+ToolSettingsView {
+    settingsModel: GlobalSettings
 }

@@ -158,6 +158,8 @@ ApplicationWindow {
 
     ToolSettingsDialog {
         id: toolSettingsDialog
+        minimumHeight: 240
+        minimumWidth: 320
         width: 800
         height: 600
         settingsModel: window.toolSettings
@@ -165,6 +167,9 @@ ApplicationWindow {
             if (toolSettings) {
                 toolSettings.save() // 保存到数据库
             }
+        }
+        onNegativeClicked: {
+            toolSettingsDialog.close()
         }
     }
 

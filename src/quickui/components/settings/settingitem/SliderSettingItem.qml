@@ -7,6 +7,7 @@ T_SettingItem {
     id: sliderSettingItem
 
     RowLayout {
+        anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
 
         QuickText {

@@ -7,6 +7,7 @@ T_SettingItem {
     id: intInputSettingItem
 
     TextField {
+        anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         implicitWidth: Math.max(64, contentWidth + 20)
         implicitHeight: 32
@@ -14,7 +15,7 @@ T_SettingItem {
         horizontalAlignment: Text.AlignHCenter
         text: settingValue
         onEditingFinished: {
-            intInputSettingItem.valueChanged(text)
+            valueChanged(text)
         }
     }
 }

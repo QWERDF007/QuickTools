@@ -7,6 +7,7 @@ T_SettingItem {
     id: checkBoxSettingItem
 
     CheckBox {
+        anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         checked: settingValue
 
