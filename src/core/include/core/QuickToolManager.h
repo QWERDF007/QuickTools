@@ -2,6 +2,20 @@
 
 namespace quicktools::core {
 
+class ActivatedQuickToolsList : public QAbstractListModel
+{
+public:
+    ActivatedQuickToolsList(QObject *parent = nullptr) : QAbstractListModel(parent) {}
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+
+    QHash<int, QByteArray> roleNames() const override;
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+};
+
 class QUICKTOOLS_CORE_EXPORT QuickToolManager : public QObject
 {
     Q_OBJECT

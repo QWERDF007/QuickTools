@@ -46,9 +46,10 @@ AbstractQuickTool *QuickToolManager::createQuickTool(const int tool_type, QObjec
             quick_tool->setEngine(qmlEngine_, jsEngine_);
             spdlog::info("创建工具: {}, uuid: {}", quick_tool->name().toUtf8().constData(),
                          quick_tool->uuid().toUtf8().constData());
+            return quick_tool;
         }
-        return quick_tool;
     }
+    spdlog::error("创建工具失败, type: {}", tool_type);
     return nullptr;
 }
 
