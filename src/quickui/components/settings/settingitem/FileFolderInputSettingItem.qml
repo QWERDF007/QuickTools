@@ -27,8 +27,8 @@ T_SettingItem {
         }
 
         QuickToolButton {
-            id: imageBtn
-            icon.source: "/icons/image"
+            id: folderBtn
+            icon.source: "/icons/folder"
             implicitHeight: 32
             implicitWidth: 32
 
@@ -41,7 +41,7 @@ T_SettingItem {
             }
             QuickToolTip{
                 text: qsTr("选择文件或目录")
-                visible: imageBtn.hovered
+                visible: folderBtn.hovered
                 delay: 200
             }
         }
