@@ -24,10 +24,7 @@ AbstractQuickTool::AbstractQuickTool(QObject *parent)
     setAutoDelete(false);
 }
 
-AbstractQuickTool::~AbstractQuickTool()
-{
-    qDebug() << __FUNCTION__ << this;
-}
+AbstractQuickTool::~AbstractQuickTool() {}
 
 int AbstractQuickTool::init()
 {
@@ -238,7 +235,7 @@ void AbstractQuickTool::onRunAfterChanged()
 
 void AbstractQuickTool::onSettingChanged(const QString &key, const QVariant &value)
 {
-    if (key == RUN_AFTER_CHANGED)
+    if (key == Predefined::RUN_AFTER_CHANGED)
         run_after_changed = value.toBool();
 }
 

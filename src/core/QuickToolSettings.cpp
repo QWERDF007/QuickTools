@@ -1,9 +1,10 @@
 #include "core/QuickToolSettings.h"
 
+#include "core/PythonManager.h"
 #include "priv/Predefined.h"
 
-#include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/sqlite3/sqlite3.h>
+#include <sqlpp11/sqlpp11.h>
 
 namespace quicktools::core {
 
@@ -11,8 +12,9 @@ GlobalSettings *GlobalSettings::instance_ = nullptr;
 
 AbstractQuickToolSettings::AbstractQuickToolSettings(QObject *parent)
     : QAbstractListModel(parent)
+    , property_data_(new QQmlPropertyMap(this))
 {
-    connect(&property_data_, &QQmlPropertyMap::valueChanged, this, &AbstractQuickToolSettings::onPropertyValueChanged);
+    connect(property_data_, &QQmlPropertyMap::valueChanged, this, &AbstractQuickToolSettings::onPropertyValueChanged);
 }
 
 AbstractQuickToolSettings::~AbstractQuickToolSettings() {}
@@ -67,11 +69,26 @@ bool AbstractQuickToolSettings::setData(const QModelIndex &index, const QVariant
     if (role == SettingsRole::ValueRole)
     {
         settings_data_[setting_name][role] = value;
-        property_data_.insert(setting_name, value);
+        property_data_->insert(setting_name, value);
         emit dataChanged(index, index, {role});
         emit settingChanged(setting_name, value);
     }
     return false;
+}
+
+void AbstractQuickToolSettings::reset()
+{
+    settings_names_.clear();
+    settings_data_.clear();
+    groups_.clear();
+    if (property_data_)
+    {
+        delete property_data_;
+        property_data_ = nullptr;
+    }
+    property_data_ = new QQmlPropertyMap(this);
+    connect(property_data_, &QQmlPropertyMap::valueChanged, this, &AbstractQuickToolSettings::onPropertyValueChanged);
+    is_init_ = false;
 }
 
 bool AbstractQuickToolSettings::addGroup(const int group, const QString &group_name)
@@ -89,7 +106,7 @@ bool AbstractQuickToolSettings::addSetting(const int group, const QString &name,
     if (settings_names_.contains(name))
         return false;
     settings_names_.append(name);
-    property_data_.insert(name, value);
+    property_data_->insert(name, value);
     QMap<int, QVariant> setting{
         {      SettingsRole::IndexRole, settings_data_.size()},
         {      SettingsRole::GroupRole,                 group},
@@ -107,7 +124,7 @@ bool AbstractQuickToolSettings::addSetting(const int group, const QString &name,
 
 QMap<QString, QMap<int, QVariant>> AbstractQuickToolSettings::settings(const int group) const
 {
-    if (group == -1)
+    if (group == SettingsGroup::AllGroups)
         return settings_data_;
     QMap<QString, QMap<int, QVariant>> settings_data;
     for (auto iter = settings_data_.constBegin(); iter != settings_data_.constEnd(); ++iter)
@@ -125,6 +142,23 @@ QString AbstractQuickToolSettings::groupName(const int group) const
     if (found == groups_.end())
         return "";
     return found.value();
+}
+
+std::tuple<int, QString> AbstractQuickToolSettings::copyFrom(AbstractQuickToolSettings *other,
+                                                             const std::vector<int>    &groups)
+{
+    if (other == nullptr)
+        return {-1, tr("复制目标为空")};
+    for (const int group : groups)
+    {
+        const auto &[ret, msg] = copyFrom(other, group);
+        if (ret != 0)
+        {
+            reset();
+            return {ret, msg};
+        }
+    }
+    return {0, tr("复制设置成功")};
 }
 
 std::tuple<int, QString> AbstractQuickToolSettings::copyFrom(AbstractQuickToolSettings *other, const int group)
@@ -146,6 +180,19 @@ std::tuple<int, QString> AbstractQuickToolSettings::copyFrom(AbstractQuickToolSe
     return {0, tr("复制设置成功")};
 }
 
+bool AbstractQuickToolSettings::addFileFolderInputSetting(const int group, const QString &name,
+                                                          const QString &display_name, const QString &desc,
+                                                          const QVariant &value, const bool is_file,
+                                                          const QString &placeholder, const QString &filter)
+{
+    QVariantMap additional_data{
+        {     "isFile",     is_file},
+        {     "filter",      filter},
+        {"placeholder", placeholder},
+    };
+    return addSetting(group, name, display_name, desc, SettingsType::FileFolderInputType, value, additional_data, true);
+}
+
 bool AbstractQuickToolSettings::addToogleSwitchSetting(const int group, const QString &name,
                                                        const QString &display_name, const QString &desc,
                                                        const QVariant &value)
@@ -157,12 +204,12 @@ bool AbstractQuickToolSettings::addSliderSetting(const int group, const QString 
                                                  const QString &desc, const QVariant &value, const QVariant &from,
                                                  const QVariant &to, const QVariant &step_size)
 {
-    QVariantMap data{
+    QVariantMap additional_data{
         {    "from",      from},
         {      "to",        to},
         {"stepSize", step_size},
     };
-    return addSetting(group, name, display_name, desc, SettingsType::SliderType, value, data, true);
+    return addSetting(group, name, display_name, desc, SettingsType::SliderType, value, additional_data, true);
 }
 
 bool AbstractQuickToolSettings::addColorDialogSetting(const int group, const QString &name, const QString &display_name,
@@ -189,12 +236,12 @@ bool AbstractQuickToolSettings::save()
     {
         sqlpp::sqlite3::connection_config config;
         config.path_to_database = "config/config.db";
-        config.flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+        config.flags            = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
         sqlpp::sqlite3::connection db(config);
         if (!db.is_connected())
             qInfo() << __FUNCTION__ << __LINE__ << "can't connect to settings.db";
     }
-    catch (const std::exception & e)
+    catch (const std::exception &e)
     {
         qCritical() << __FUNCTION__ << __LINE__ << e.what();
     }
@@ -213,13 +260,26 @@ GlobalSettings::GlobalSettings(QObject *parent)
     : AbstractQuickToolSettings(parent)
 {
     addBasicSettings();
+    connect(this, &AbstractQuickToolSettings::settingChanged, this, &GlobalSettings::onSettingChanged);
 }
 
 void GlobalSettings::addBasicSettings()
 {
     addGroup(SettingsGroup::BasicGroup, tr("基础设置"));
-    addToogleSwitchSetting(SettingsGroup::BasicGroup, RUN_AFTER_CHANGED, tr("改变后运行"), tr("输入参数改变后运行工具"),
-                           true);
+    addToogleSwitchSetting(SettingsGroup::BasicGroup, Predefined::RUN_AFTER_CHANGED, tr("改变后运行"),
+                           tr("输入参数改变后运行工具"), true);
+    addGroup(SettingsGroup::PythonGroup, tr("Python 设置"));
+    addFileFolderInputSetting(SettingsGroup::PythonGroup, Predefined::PYTHON_HOME, "PYTHON_HOME", "",
+                              PythonManager::getInstance()->DefaultPythonHome(), false);
+}
+
+void GlobalSettings::onSettingChanged(const QString &key, const QVariant &value)
+{
+    if (key == Predefined::PYTHON_HOME)
+    {
+        Q_UNUSED(value)
+        // TODO: 设置 PYTHON_HOME
+    }
 }
 
 } // namespace quicktools::core

@@ -21,7 +21,7 @@ public:
 
     QQmlPropertyMap *pdata()
     {
-        return &property_data_;
+        return property_data_;
     }
 
     virtual QString name() const = 0;
@@ -60,13 +60,16 @@ public:
         SliderType,
         ColorDialogType,
         IntInputType,
+        FileFolderInputType,
     };
     Q_ENUM(SettingsType)
 
     enum SettingsGroup
     {
+        AllGroups  = -1,
         BasicGroup = 0,
         DrawingGroup,
+        PythonGroup,
         UserGroup = 256,
     };
 
@@ -90,6 +93,8 @@ public:
         is_init_ = is_init;
     }
 
+    void reset();
+
     bool addGroup(const int group, const QString &group_name);
 
     bool addSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
@@ -100,8 +105,12 @@ public:
 
     QString groupName(const int group) const;
 
+    std::tuple<int, QString> copyFrom(AbstractQuickToolSettings *other, const std::vector<int> &groups);
     std::tuple<int, QString> copyFrom(AbstractQuickToolSettings *other, const int group = -1);
 
+    bool addFileFolderInputSetting(const int group, const QString &name, const QString &display_name,
+                                   const QString &desc, const QVariant &value, const bool is_file = true,
+                                   const QString &placeholder = QString(), const QString &filter = QString());
     bool addToogleSwitchSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
                                 const QVariant &value);
     bool addSliderSetting(const int group, const QString &name, const QString &display_name, const QString &desc,
@@ -116,8 +125,8 @@ public:
 private:
     QList<QString>                     settings_names_; // [name]
     QMap<QString, QMap<int, QVariant>> settings_data_;  // [name, [key, value]]
-    QQmlPropertyMap    property_data_; // [key, value] QML 中可直接访问和修改对应 key 的属性
-    QMap<int, QString> groups_;        // [key, name]
+    QQmlPropertyMap   *property_data_{nullptr}; // [key, value] QML 中可直接访问和修改对应 key 的属性
+    QMap<int, QString> groups_;                 // [key, name]
     bool               is_init_{false};
 
 private slots:
@@ -187,6 +196,9 @@ private:
     void addBasicSettings();
 
     static GlobalSettings *instance_;
+
+private slots:
+    void onSettingChanged(const QString &key, const QVariant &value);
 };
 
 } // namespace quicktools::core

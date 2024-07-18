@@ -1,11 +1,12 @@
 #include "core/PythonManager.h"
 
+#include <spdlog/spdlog.h>
+
 #include <QDebug>
 #include <QDir>
 #include <QProcess>
 #include <QRegularExpression>
 #include <QThread>
-#include <iostream>
 
 namespace quicktools::core {
 
@@ -17,7 +18,6 @@ PythonManager::PythonManager(QObject *parent)
 
 PythonManager::~PythonManager()
 {
-    qInfo() << __FUNCTION__ << this;
     finalizeInterpreter();
 }
 
@@ -62,15 +62,15 @@ int PythonManager::initializeInterpreter()
     }
     catch (const pybind11::error_already_set &e)
     {
-        qCritical() << __FUNCTION__ << __LINE__ << "failed to set initialize interpreter:" << e.what();
+        spdlog::error("Failed to set initialize interpreter: {}", e.what());
     }
     catch (const std::exception &e)
     {
-        qCritical() << __FUNCTION__ << __LINE__ << "failed to set initialize interpreter:" << e.what();
+        spdlog::error("Failed to set initialize interpreter: {}", e.what());
     }
     catch (...)
     {
-        qCritical() << __FUNCTION__ << __LINE__ << "failed to set initialize interpreter with unknown exception.";
+        spdlog::error("Failed to set initialize interpreter with unknown exception!");
     }
     return -1;
 }
@@ -107,8 +107,10 @@ QString PythonManager::pythonHome() const
 
 bool PythonManager::setPythonHome(const QString &python_home)
 {
-    qInfo() << __FUNCTION__ << __LINE__ << python_home << GetPythonExecutable(python_home);
-    if (python_home_ == python_home || GetPythonExecutable(python_home).isEmpty())
+    spdlog::info("设置 PYTHON_HOME: {}", python_home.toUtf8().constData());
+    if (python_home_ == python_home)
+        return true;
+    if (GetPythonExecutable(python_home).isEmpty())
         return false;
     python_home_ = python_home;
     emit pythonHomeChanged();
