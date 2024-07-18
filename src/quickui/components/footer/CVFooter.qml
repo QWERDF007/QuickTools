@@ -83,7 +83,7 @@ Rectangle {
                     footer.sliderMoved(slider.value);
                 }
             }
-            Slider {
+            QuickSlider {
                 id: slider
 
                 from: 0.1
