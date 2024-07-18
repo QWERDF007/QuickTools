@@ -6,4 +6,5 @@ import QuickTools.core
 
 ToolSettingsView {
     settingsModel: GlobalSettings
+    buttonFlags: QuickDialogButtonFlag.PositiveButton
 }

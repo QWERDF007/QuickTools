@@ -14,6 +14,7 @@ Item {
     property var onPositiveClickListener
     signal negativeClicked
     signal positiveClicked
+    property int buttonFlags: QuickDialogButtonFlag.NegativeButton | QuickDialogButtonFlag.PositiveButton
 
     ColumnLayout {
         anchors.fill: parent
@@ -87,13 +88,13 @@ Item {
                         enabled: settingsView.count
                         width: parent.width
                         anchors.centerIn: parent
-                        visible: true // control.buttonFlags&QuickDialogButtonFlag.NeutralButton
+                        visible: control.buttonFlags&QuickDialogButtonFlag.NegativeButton
                         text: negativeText
                         onClicked: {
-                            if (onNegativeClickListener) {
-                                onNegativeClickListener()
+                            if (control.onNegativeClickListener) {
+                                control.onNegativeClickListener()
                             } else {
-                                negativeClicked()
+                                control.negativeClicked()
                             }
                         }
                     }
@@ -106,13 +107,13 @@ Item {
                         enabled: settingsView.count
                         width: parent.width
                         anchors.centerIn: parent
-                        visible: true // control.buttonFlags&QuickDialogButtonFlag.PositiveButton
+                        visible: control.buttonFlags&QuickDialogButtonFlag.PositiveButton
                         text: positiveText
                         onClicked: {
-                            if (onPositiveClickListener) {
-                                onPositiveClickListener()
+                            if (control.onPositiveClickListener) {
+                                control.onPositiveClickListener()
                             } else {
-                                positiveClicked()
+                                control.positiveClicked()
                             }
                         }
                     }
