@@ -1,4 +1,5 @@
 #include "core/CVToolSettings.h"
+#include "core/GlobalSettings.h"
 
 #include <QColor>
 
