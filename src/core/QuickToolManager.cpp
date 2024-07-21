@@ -4,7 +4,6 @@
 
 #include <spdlog/spdlog.h>
 
-
 namespace quicktools::core {
 
 QuickToolManager *QuickToolManager::instance_  = nullptr;
@@ -26,6 +25,12 @@ QuickToolManager *QuickToolManager::getInstance()
     return instance_;
 }
 
+QuickToolManager::QuickToolManager(QObject *parent)
+    : QObject(parent)
+    , activated_tools(new ActivatedTools(this))
+{
+}
+
 QuickToolManager *QuickToolManager::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 {
     qmlEngine_ = qmlEngine;
@@ -33,7 +38,21 @@ QuickToolManager *QuickToolManager::create(QQmlEngine *qmlEngine, QJSEngine *jsE
     return getInstance();
 }
 
-AbstractQuickTool *QuickToolManager::createQuickTool(const int tool_type, QObject *parent) const
+bool QuickToolManager::addToActivted(AbstractQuickTool *tool)
+{
+    if (activated_tools == nullptr)
+        return false;
+    return activated_tools->addToActivated(tool);
+}
+
+bool QuickToolManager::removeFromActivated(AbstractQuickTool *tool)
+{
+    if (activated_tools == nullptr)
+        return false;
+    return activated_tools->removeFromActivated(tool);
+}
+
+AbstractQuickTool *QuickToolManager::createQuickTool(const int tool_type, QObject *parent)
 {
     auto found = tool_creators_.find(tool_type);
     if (found != tool_creators_.end())
@@ -44,6 +63,7 @@ AbstractQuickTool *QuickToolManager::createQuickTool(const int tool_type, QObjec
         {
             quick_tool->init();
             quick_tool->setEngine(qmlEngine_, jsEngine_);
+            addToActivted(quick_tool);
             spdlog::info("创建工具: {}, uuid: {}", quick_tool->name().toUtf8().constData(),
                          quick_tool->uuid().toUtf8().constData());
             return quick_tool;
@@ -82,6 +102,82 @@ void QuickToolManager::registerGroupAndTask(const int group, const int task)
         groups_uuid_.emplace(group, common::uuid());
     if (tasks_uuid_.find(task) == tasks_uuid_.end())
         tasks_uuid_.emplace(task, common::uuid());
+}
+
+int ActivatedTools::rowCount(const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return 0;
+    return static_cast<int>(activated_tools_.size());
+}
+
+enum ActivatedQuickToolRoles
+{
+    NameRole = Qt::UserRole + 1,
+    UuidRole,
+};
+
+QHash<int, QByteArray> ActivatedTools::roleNames() const
+{
+    return {
+        {NameRole, "name"},
+        {UuidRole, "uuid"},
+    };
+}
+
+QVariant ActivatedTools::data(const QModelIndex &index, int role) const
+{
+    const int row = index.row();
+    if (row < 0 || row >= rowCount())
+        return QVariant();
+
+    switch (role)
+    {
+    case NameRole:
+        return activated_tools_.at(row)->name();
+    case UuidRole:
+        return activated_tools_.at(row)->uuid();
+    default:
+        return QVariant();
+    }
+}
+
+bool ActivatedTools::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    return QAbstractListModel::setData(index, value, role);
+}
+
+bool ActivatedTools::addToActivated(AbstractQuickTool *tool)
+{
+    if (tool == nullptr)
+        return false;
+    int row = static_cast<int>(activated_tools_.size());
+    activated_tools_.push_back(tool);
+    QModelIndex top_left = index(row, 0);
+    insertRow(row);
+    emit dataChanged(top_left, top_left, {});
+    return true;
+}
+
+bool ActivatedTools::removeFromActivated(AbstractQuickTool *tool)
+{
+    if (tool == nullptr)
+        return false;
+    int size = static_cast<int>(activated_tools_.size());
+    int offset{-1};
+    for (int i = 0; i < size; ++i)
+    {
+        if (tool == activated_tools_.at(i))
+        {
+            offset = i;
+            break;
+        }
+    }
+    if (offset == -1)
+        return false;
+    activated_tools_.erase(activated_tools_.begin() + offset);
+    removeRow(offset);
+    return true;
 }
 
 } // namespace quicktools::core

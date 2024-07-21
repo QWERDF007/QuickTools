@@ -1,4 +1,5 @@
 #include "core/QuickTool.h"
+#include "core/QuickToolManager.h"
 
 #include "common/Utils.h"
 #include "priv/Predefined.h"
@@ -24,7 +25,10 @@ AbstractQuickTool::AbstractQuickTool(QObject *parent)
     setAutoDelete(false);
 }
 
-AbstractQuickTool::~AbstractQuickTool() {}
+AbstractQuickTool::~AbstractQuickTool()
+{
+    QuickToolManager::getInstance()->removeFromActivated(this);
+}
 
 int AbstractQuickTool::init()
 {

@@ -2,18 +2,26 @@
 
 namespace quicktools::core {
 
-class ActivatedQuickToolsList : public QAbstractListModel
+class ActivatedTools : public QAbstractListModel
 {
 public:
-    ActivatedQuickToolsList(QObject *parent = nullptr) : QAbstractListModel(parent) {}
+    ActivatedTools(QObject *parent = nullptr)
+        : QAbstractListModel(parent)
+    {
+    }
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QHash<int, QByteArray> roleNames() const override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    bool     setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    bool addToActivated(AbstractQuickTool *tool);
+    bool removeFromActivated(AbstractQuickTool *tool);
+
+private:
+    std::vector<AbstractQuickTool *> activated_tools_;
 };
 
 class QUICKTOOLS_CORE_EXPORT QuickToolManager : public QObject
@@ -23,6 +31,7 @@ class QUICKTOOLS_CORE_EXPORT QuickToolManager : public QObject
     QML_SINGLETON
     // 声明在 QML 中通过 QuickToolManager 可访问本单例
     QML_NAMED_ELEMENT(QuickToolManager)
+    Q_PROPERTY(ActivatedTools *activatedTools READ activatedTools CONSTANT FINAL)
 public:
     using AbstractQuickToolCreator = std::function<AbstractQuickTool *(QObject *)>;
 
@@ -40,7 +49,16 @@ public:
      */
     static QuickToolManager *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
-    Q_INVOKABLE AbstractQuickTool *createQuickTool(const int type, QObject *parent = nullptr) const;
+    ActivatedTools *activatedTools()
+    {
+        return activated_tools;
+    }
+
+    bool addToActivted(AbstractQuickTool *tool);
+
+    bool removeFromActivated(AbstractQuickTool *tool);
+
+    Q_INVOKABLE AbstractQuickTool *createQuickTool(const int type, QObject *parent = nullptr);
 
     void registerQuickTool(const int type, AbstractQuickToolCreator creator);
 
@@ -55,10 +73,7 @@ protected:
 private:
     Q_DISABLE_COPY_MOVE(QuickToolManager)
 
-    explicit QuickToolManager(QObject *parent = nullptr)
-        : QObject(parent)
-    {
-    }
+    explicit QuickToolManager(QObject *parent = nullptr);
 
     /**
      * @brief 单例实例指针
@@ -69,16 +84,18 @@ private:
 
     std::map<int, QString> groups_uuid_;
     std::map<int, QString> tasks_uuid_;
+
+    ActivatedTools *activated_tools{nullptr};
 };
 
 } // namespace quicktools::core
 
-#define REGISTER_QUICKTOOL(tool_type, ClassName)                                                           \
-    inline ClassName *create##ClassName(QObject *parent = nullptr)                                         \
-    {                                                                                                      \
-        return new ClassName(parent);                                                                      \
-    }                                                                                                      \
-    inline void register##ClassName()                                                                      \
-    {                                                                                                      \
+#define REGISTER_QUICKTOOL(tool_type, ClassName)                                                            \
+    inline ClassName *create##ClassName(QObject *parent = nullptr)                                          \
+    {                                                                                                       \
+        return new ClassName(parent);                                                                       \
+    }                                                                                                       \
+    inline void register##ClassName()                                                                       \
+    {                                                                                                       \
         quicktools::core::QuickToolManager::getInstance()->registerQuickTool(tool_type, create##ClassName); \
     }

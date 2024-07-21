@@ -1,8 +1,22 @@
 import QtQuick
 import QtQuick.Controls
 
-import "../component"
+import QuickTools.ui
+import QuickTools.core
 
-T_Page {
 
+ListView {
+    model: QuickToolManager.activatedTools
+    delegate: Rectangle {
+        height: 32
+        width: childrenRect.width
+        Row {
+            QuickText {
+                text: model.name
+            }
+            QuickText {
+                text: model.uuid
+            }
+        }
+    }
 }

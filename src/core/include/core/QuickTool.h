@@ -8,7 +8,6 @@
 #include <QObject>
 #include <QString>
 #include <QtQml>
-#include <map>
 
 namespace quicktools::core {
 
