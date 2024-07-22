@@ -147,6 +147,26 @@ bool ActivatedTools::setData(const QModelIndex &index, const QVariant &value, in
     return QAbstractListModel::setData(index, value, role);
 }
 
+bool ActivatedTools::insertRows(int row, int count, const QModelIndex &parent)
+{
+    if (count < 1 || row < 0 || row > rowCount(parent))
+        return false;
+    beginInsertRows(QModelIndex(), row, row + count - 1);
+    // TODO
+    endInsertRows();
+    return true;
+}
+
+bool ActivatedTools::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if (count <= 0 || row < 0 || (row + count) > rowCount(parent))
+        return false;
+    beginRemoveRows(QModelIndex(), row, row + count - 1);
+    activated_tools_.erase(activated_tools_.begin() + row);
+    endRemoveRows();
+    return true;
+}
+
 bool ActivatedTools::addToActivated(AbstractQuickTool *tool)
 {
     if (tool == nullptr)
@@ -164,19 +184,18 @@ bool ActivatedTools::removeFromActivated(AbstractQuickTool *tool)
     if (tool == nullptr)
         return false;
     int size = static_cast<int>(activated_tools_.size());
-    int offset{-1};
+    int row{-1};
     for (int i = 0; i < size; ++i)
     {
         if (tool == activated_tools_.at(i))
         {
-            offset = i;
+            row = i;
             break;
         }
     }
-    if (offset == -1)
+    if (row == -1)
         return false;
-    activated_tools_.erase(activated_tools_.begin() + offset);
-    removeRow(offset);
+    removeRow(row);
     return true;
 }
 

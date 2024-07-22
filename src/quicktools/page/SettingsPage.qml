@@ -4,7 +4,10 @@ import QtQuick.Controls
 import QuickTools.ui
 import QuickTools.core
 
-ToolSettingsView {
-    settingsModel: GlobalSettings
-    buttonFlags: QuickDialogButtonFlag.PositiveButton
+QuickContentPage {
+    ToolSettingsView {
+        anchors.fill: parent
+        settingsModel: GlobalSettings
+        buttonFlags: QuickDialogButtonFlag.PositiveButton
+    }
 }
