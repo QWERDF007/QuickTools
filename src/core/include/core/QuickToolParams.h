@@ -113,6 +113,8 @@ protected:
     QQmlPropertyMap                    property_data_; // QML 中可直接访问和修改对应 key 的属性
 
 private:
+    bool setVisible(const QModelIndex &index, const QVariant &value);
+    bool setValue(const QModelIndex &index, const QVariant &value);
     bool is_init_{false};
 
 private slots:

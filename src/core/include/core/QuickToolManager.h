@@ -27,6 +27,11 @@ public:
     bool addToActivated(AbstractQuickTool *tool);
     bool removeFromActivated(AbstractQuickTool *tool);
 
+    const std::vector<AbstractQuickTool *> getActivatedTools() const
+    {
+        return activated_tools_;
+    }
+
 private:
     std::vector<AbstractQuickTool *> activated_tools_;
 };

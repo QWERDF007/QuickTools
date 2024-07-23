@@ -1,7 +1,9 @@
 #include "core/CVToolSettings.h"
+
 #include "core/GlobalSettings.h"
 
 #include <QColor>
+
 
 namespace quicktools::core {
 

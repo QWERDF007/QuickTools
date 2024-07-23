@@ -1,7 +1,7 @@
 #include "core/QuickTool.h"
-#include "core/QuickToolManager.h"
 
 #include "common/Utils.h"
+#include "core/QuickToolManager.h"
 #include "priv/Predefined.h"
 
 #include <spdlog/spdlog.h>
@@ -73,13 +73,18 @@ QString pythonErrorHandle(const pybind11::error_already_set &e)
 
 void AbstractQuickTool::run()
 {
+    running_ = true;
     if (!preprocess())
+    {
+        running_ = false;
         return;
+    }
     auto start_time  = std::chrono::high_resolution_clock::now();
     auto res         = process();
     auto end_time    = std::chrono::high_resolution_clock::now();
     wall_clock_time_ = std::chrono::duration<double, std::milli>(end_time - start_time).count();
     postprocess(res);
+    running_ = false;
 }
 
 bool AbstractQuickTool::setProgress(const double v)

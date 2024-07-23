@@ -276,46 +276,50 @@ QVariant AbstractQuickToolParams::data(const QString &name, int role) const
     return QVariant();
 }
 
+bool AbstractQuickToolParams::setVisible(const QModelIndex &index, const QVariant &value)
+{
+    const QString &param_name = params_names_[index.row()];
+    if (value == params_data_[param_name][QuickToolParamRole::ParamVisibleRole])
+        return false;
+    params_data_[param_name][QuickToolParamRole::ParamVisibleRole] = value;
+
+    const bool is_property = params_data_[param_name][QuickToolParamRole::ParamIsPropertyRole].toBool();
+    if (is_property)
+        property_data_.insert(param_name, value);
+
+    emit dataChanged(index, index, {QuickToolParamRole::ParamVisibleRole});
+    return true;
+}
+
+bool AbstractQuickToolParams::setValue(const QModelIndex &index, const QVariant &value)
+{
+    const QString &param_name = params_names_[index.row()];
+    if (value == params_data_[param_name][QuickToolParamRole::ParamValueRole])
+        return false;
+    params_data_[param_name][QuickToolParamRole::ParamValueRole] = value;
+
+    const bool is_property = params_data_[param_name][QuickToolParamRole::ParamIsPropertyRole].toBool();
+    if (is_property)
+        property_data_.insert(param_name, value);
+
+    const bool run_after_changed = params_data_[param_name][QuickToolParamRole::RunAfterParamChangedRole].toBool();
+    if (run_after_changed)
+        emit runAfterChanged();
+
+    emit dataChanged(index, index, {QuickToolParamRole::ParamValueRole, QuickToolParamRole::ParamDisplayRole});
+    return true;
+}
+
 bool AbstractQuickToolParams::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (!index.isValid())
-        return false;
     if (index.row() < 0 || index.row() >= rowCount())
         return false;
     switch (role)
     {
     case QuickToolParamRole::ParamVisibleRole:
-    {
-        const QString &param_name      = params_names_[index.row()];
-        params_data_[param_name][role] = value;
-        const bool is_property         = params_data_[param_name][QuickToolParamRole::ParamIsPropertyRole].toBool();
-        if (is_property)
-        {
-            property_data_.insert(param_name, value);
-        }
-        emit dataChanged(index, index, {QuickToolParamRole::ParamVisibleRole});
-        return true;
-        break;
-    }
+        return setVisible(index, value);
     case QuickToolParamRole::ParamValueRole:
-    {
-        const QString &param_name      = params_names_[index.row()];
-        params_data_[param_name][role] = value;
-        const bool is_property         = params_data_[param_name][QuickToolParamRole::ParamIsPropertyRole].toBool();
-        if (is_property)
-        {
-            property_data_.insert(param_name, value);
-        }
-        emit dataChanged(index, index, {QuickToolParamRole::ParamValueRole, QuickToolParamRole::ParamDisplayRole});
-
-        const bool run_after_changed = params_data_[param_name][QuickToolParamRole::RunAfterParamChangedRole].toBool();
-        if (run_after_changed)
-        {
-            emit runAfterChanged();
-        }
-        return true;
-        break;
-    }
+        return setValue(index, value);
     default:
         break;
     }

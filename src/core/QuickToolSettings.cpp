@@ -1,8 +1,5 @@
 #include "core/QuickToolSettings.h"
 
-#include "core/PythonManager.h"
-#include "priv/Predefined.h"
-
 #include <sqlpp11/sqlite3/sqlite3.h>
 #include <sqlpp11/sqlpp11.h>
 
@@ -57,19 +54,18 @@ QVariant AbstractQuickToolSettings::data(const QModelIndex &index, int role) con
 
 bool AbstractQuickToolSettings::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (!index.isValid())
-        return false;
     if (index.row() < 0 || index.row() >= rowCount())
         return false;
     const QString &setting_name = settings_names_[index.row()];
     if (settings_data_[setting_name].find(role) == settings_data_[setting_name].end())
         return false;
-    if (role == SettingsRole::ValueRole)
+    if (role == SettingsRole::ValueRole && value != settings_data_[setting_name][role])
     {
         settings_data_[setting_name][role] = value;
         property_data_->insert(setting_name, value);
         emit dataChanged(index, index, {role});
         emit settingChanged(setting_name, value);
+        return true;
     }
     return false;
 }
@@ -251,7 +247,7 @@ void AbstractQuickToolSettings::onPropertyValueChanged(const QString &key, const
 {
     int row = settings_names_.indexOf(key);
     if (row != -1)
-        setData(createIndex(row, 0), value, SettingsRole::ValueRole);
+        setData(index(row), value, SettingsRole::ValueRole);
 }
 
 } // namespace quicktools::core

@@ -1,8 +1,12 @@
 #include "core/GlobalSettings.h"
 
 #include "core/PythonManager.h"
+#include "core/QuickToolManager.h"
 #include "priv/Predefined.h"
 
+#include <spdlog/spdlog.h>
+
+using namespace std::chrono_literals;
 
 namespace quicktools::core {
 
@@ -29,8 +33,26 @@ void GlobalSettings::onSettingChanged(const QString &key, const QVariant &value)
 {
     if (key == Predefined::PYTHON_HOME)
     {
-        Q_UNUSED(value)
-        // TODO: 设置 PYTHON_HOME
+        QString python_home = value.toString();
+        spdlog::warn("修改 PYTHON_HOME: {} -> {}", PythonManager::getInstance()->pythonHome().toUtf8().constData(),
+                     python_home.toUtf8().constData());
+        auto func = [python_home]()
+        {
+            std::vector<AbstractQuickTool *> python_tools;
+            for (auto tool : QuickToolManager::getInstance()->activatedTools()->getActivatedTools())
+            {
+                if (!tool->hasPython())
+                    continue;
+                python_tools.push_back(tool);
+                while (tool->isRunning()) std::this_thread::sleep_for(100ms);
+            }
+            qInfo() << __FUNCTION__ << __LINE__ << python_home;
+            PythonManager::getInstance()->setPythonHome(python_home);
+            for (auto tool : python_tools) tool->setIsInit(false);
+        };
+        QThreadPool::globalInstance()->start(func);
+//        std::thread t(func);
+//        t.detach();
     }
 }
 

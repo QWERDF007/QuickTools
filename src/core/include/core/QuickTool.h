@@ -174,6 +174,26 @@ public:
     };
     Q_ENUM(InfoLevel)
 
+    /**
+     * @brief 获取工具是否正在运行
+     * @return
+     */
+    bool isRunning() const
+    {
+        return running_;
+    }
+
+    /**
+     * @brief 获取工具初始化的状态
+     * @return 工具初始化的状态
+     */
+    bool isInit() const;
+
+    /**
+     * @brief 设置工具初始化的状态
+     */
+    void setIsInit(bool);
+
 protected:
     /**
      * @brief 初始化输入参数
@@ -195,17 +215,6 @@ protected:
      * @retval 0 初始化成功
      */
     virtual int initSettings();
-
-    /**
-     * @brief 获取工具初始化的状态
-     * @return 工具初始化的状态
-     */
-    bool isInit() const;
-
-    /**
-     * @brief 设置工具初始化的状态
-     */
-    void setIsInit(bool);
 
     /**
      * @brief 子类在初始化中额外的初始化
@@ -303,6 +312,8 @@ private:
 
     /// 工具实例唯一标识
     QString uuid_;
+
+    std::atomic<bool> running_{false};
 
 signals:
     /**
