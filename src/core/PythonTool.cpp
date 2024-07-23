@@ -80,5 +80,4 @@ void AbstractPythonTool::reloadModule()
     emit showMessage(status == 0 ? InfoLevel::Success : InfoLevel::Error, msg);
 }
 
-
 } // namespace quicktools::core

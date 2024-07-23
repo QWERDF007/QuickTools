@@ -3,7 +3,6 @@
 #include "CVToolROI.h"
 #include "QuickToolParams.h"
 
-
 namespace quicktools::core {
 
 class QUICKTOOLS_CORE_EXPORT CVInputParams : public InputParams
