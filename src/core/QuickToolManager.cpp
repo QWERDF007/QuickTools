@@ -111,31 +111,61 @@ int ActivatedTools::rowCount(const QModelIndex &parent) const
     return static_cast<int>(activated_tools_.size());
 }
 
+int ActivatedTools::columnCount(const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return 0;
+    return rowCount() == 0 ? 0 : 2;
+}
+
 enum ActivatedQuickToolRoles
 {
-    NameRole = Qt::UserRole + 1,
-    UuidRole,
+    NameColumn = 0,
+    UuidColumn,
 };
 
 QHash<int, QByteArray> ActivatedTools::roleNames() const
 {
     return {
-        {NameRole, "name"},
-        {UuidRole, "uuid"},
+        {Qt::DisplayRole, "display"}
     };
+}
+
+QVariant ActivatedTools::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (role != Qt::DisplayRole)
+        return QVariant();
+    if (orientation == Qt::Horizontal)
+    {
+        switch (section)
+        {
+        case NameColumn:
+            return "name";
+        case UuidColumn:
+            return "uuid";
+        default:
+            return QVariant();
+        }
+    }
+    else
+    {
+        return section;
+    }
 }
 
 QVariant ActivatedTools::data(const QModelIndex &index, int role) const
 {
     const int row = index.row();
-    if (row < 0 || row >= rowCount())
+    const int col = index.column();
+    if (row < 0 || row >= rowCount() || col < 0 || col >= columnCount())
         return QVariant();
-
-    switch (role)
+    if (role != Qt::DisplayRole)
+        return QVariant();
+    switch (col)
     {
-    case NameRole:
+    case NameColumn:
         return activated_tools_.at(row)->name();
-    case UuidRole:
+    case UuidColumn:
         return activated_tools_.at(row)->uuid();
     default:
         return QVariant();
@@ -144,7 +174,7 @@ QVariant ActivatedTools::data(const QModelIndex &index, int role) const
 
 bool ActivatedTools::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    return QAbstractListModel::setData(index, value, role);
+    return QAbstractTableModel::setData(index, value, role);
 }
 
 bool ActivatedTools::insertRows(int row, int count, const QModelIndex &parent)

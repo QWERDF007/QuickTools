@@ -41,6 +41,8 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
     Q_PROPERTY(double progress READ progress WRITE setProgress NOTIFY progressChanged)
     /// 工具实例唯一标识
     Q_PROPERTY(QString uuid READ uuid CONSTANT FINAL)
+    /// 工具是否包含 python
+    Q_PROPERTY(bool hasPython READ hasPython CONSTANT FINAL)
 public:
     AbstractQuickTool(QObject *parent = nullptr);
     virtual ~AbstractQuickTool();
@@ -143,6 +145,15 @@ public:
     QuickToolHelper *helper()
     {
         return helper_;
+    }
+
+    /**
+     * @brief 工具是否包含 python, 默认 false, 具有 python 的工具重写此函数
+     * @return
+     */
+    virtual bool hasPython() const
+    {
+        return false;
     }
 
     /**

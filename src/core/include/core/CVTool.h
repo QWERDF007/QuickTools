@@ -29,6 +29,11 @@ public:
 
     Q_INVOKABLE void reloadModule();
 
+    bool hasPython() const override
+    {
+        return true;
+    }
+
 protected:
     int doInInit() override;
 };

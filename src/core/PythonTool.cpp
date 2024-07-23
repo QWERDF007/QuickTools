@@ -2,6 +2,8 @@
 
 #include "core/PythonManager.h"
 
+#include <spdlog/spdlog.h>
+
 #include <QDebug>
 #include <QString>
 #include <QThread>
@@ -12,8 +14,6 @@ AbstractPythonInterface::AbstractPythonInterface() {}
 
 AbstractPythonInterface::~AbstractPythonInterface()
 {
-    qInfo() << __FUNCTION__ << this;
-
     if (module_)
     {
         pybind11::gil_scoped_acquire acquire;
@@ -23,7 +23,6 @@ AbstractPythonInterface::~AbstractPythonInterface()
 
 int AbstractPythonInterface::init()
 {
-    qInfo() << __FUNCTION__;
     int ret = 0;
     if (!PythonManager::getInstance()->isInit())
         ret = PythonManager::getInstance()->init();
@@ -32,21 +31,21 @@ int AbstractPythonInterface::init()
     try
     {
         pybind11::gil_scoped_acquire acquire;
-        qInfo() << __FUNCTION__ << __LINE__ << "import module:" << importModule();
+        spdlog::debug("import python module: {}", importModule().toUtf8().constData());
         module_ = pybind11::module_::import(importModule().toLocal8Bit().constData());
         return 0;
     }
     catch (const pybind11::error_already_set &e)
     {
-        qCritical() << __FUNCTION__ << __LINE__ << "failed to import module:" << importModule() << "\n" << e.what();
+        spdlog::error("failed to import module: {}", e.what());
     }
     catch (const std::exception &e)
     {
-        qCritical() << __FUNCTION__ << __LINE__ << "failed to import module:" << importModule() << "\n" << e.what();
+        spdlog::error("failed to import module: {}", e.what());
     }
     catch (...)
     {
-        qCritical() << __FUNCTION__ << __LINE__ << "failed to import module with unknown exception.";
+        spdlog::error("failed to import module with unknown exception!");
     }
     return -1;
 }

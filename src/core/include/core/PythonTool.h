@@ -18,11 +18,6 @@ public:
     int                      init();
     std::tuple<int, QString> reloadModule();
 
-    bool hasPython() const
-    {
-        return true;
-    }
-
 protected:
     virtual QString importModule() const = 0;
 
@@ -34,7 +29,6 @@ class QUICKTOOLS_CORE_EXPORT AbstractPythonTool
     , public AbstractPythonInterface
 {
     Q_OBJECT
-    Q_PROPERTY(bool hasPython READ hasPython CONSTANT FINAL)
 public:
     AbstractPythonTool(QObject *parent = nullptr)
         : AbstractTool(parent)
@@ -45,6 +39,11 @@ public:
     virtual ~AbstractPythonTool() {}
 
     Q_INVOKABLE void reloadModule();
+
+    bool hasPython() const override
+    {
+        return true;
+    }
 
 protected:
     int doInInit() override

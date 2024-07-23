@@ -19,7 +19,7 @@ ApplicationWindow {
     property QuickToolSettings toolSettings: quicktool ? quicktool.settings : null
     property InputParams inputParams: quicktool ? quicktool.inputParams : null
     property OutputParams outputParams: quicktool ? quicktool.outputParams : null
-    property bool hasPython: quicktool ? quicktool.hasOwnProperty("hasPython") && quicktool.hasPython : false
+    property bool hasPython: quicktool ? quicktool.hasPython : false
     property real progress: quicktool ? quicktool.progress : 0
 
     property bool enabled: true
