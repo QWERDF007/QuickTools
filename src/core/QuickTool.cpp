@@ -15,38 +15,7 @@
 
 namespace quicktools::core {
 
-AbstractQuickTool::AbstractQuickTool(QObject *parent)
-    : QObject{parent}
-    , helper_(new QuickToolHelper(this))
-    , uuid_(common::uuid())
-{
-    // If auto-deletion is enabled, QThreadPool will automatically
-    // delete this runnable after calling run();
-    setAutoDelete(false);
-}
-
-AbstractQuickTool::~AbstractQuickTool()
-{
-    QuickToolManager::getInstance()->removeFromActivated(this);
-}
-
-int AbstractQuickTool::init()
-{
-    int ret = checkParams();
-    if (ret == 0)
-        ret = checkSettings();
-    if (ret == 0)
-        ret = doInInit();
-    if (ret == 0)
-        setIsInit(true);
-    return ret;
-}
-
-int AbstractQuickTool::doInInit()
-{
-    return 0;
-}
-
+namespace {
 QString pythonErrorHandle(const pybind11::error_already_set &e)
 {
     try
@@ -69,6 +38,50 @@ QString pythonErrorHandle(const pybind11::error_already_set &e)
         msg += e.what();
         return msg;
     }
+}
+} // namespace
+
+AbstractQuickTool::AbstractQuickTool(QObject *parent)
+    : QObject{parent}
+    , helper_(new QuickToolHelper(this))
+    , uuid_(common::uuid())
+{
+    // If auto-deletion is enabled, QThreadPool will automatically
+    // delete this runnable after calling run();
+    setAutoDelete(false);
+}
+
+AbstractQuickTool::~AbstractQuickTool()
+{
+    QuickToolManager::getInstance()->removeFromActivated(this);
+}
+
+bool AbstractQuickTool::isInit() const
+{
+    return is_init_;
+}
+
+int AbstractQuickTool::init()
+{
+    spdlog::info("初始化工具: {}, uuid: {}", name().toUtf8().constData(), uuid().toUtf8().constData());
+    int ret = checkParams();
+    if (ret == 0)
+        ret = checkSettings();
+    if (ret == 0)
+        ret = doInInit();
+    if (ret == 0)
+        setIsInit(true);
+    return ret;
+}
+
+int AbstractQuickTool::doInInit()
+{
+    return 0;
+}
+
+void AbstractQuickTool::setIsInit(bool is_init)
+{
+    is_init_ = is_init;
 }
 
 void AbstractQuickTool::run()
@@ -111,16 +124,6 @@ void AbstractQuickTool::submit()
 int AbstractQuickTool::initSettings()
 {
     return 0;
-}
-
-bool AbstractQuickTool::isInit() const
-{
-    return is_init_;
-}
-
-void AbstractQuickTool::setIsInit(bool is_init)
-{
-    is_init_ = is_init;
 }
 
 int AbstractQuickTool::checkParams()
@@ -182,7 +185,7 @@ bool AbstractQuickTool::preprocess()
     if (ret != 0)
     {
         emit showMessage(InfoLevel::Error, tr("运行失败, 初始化失败"));
-        spdlog::error("运行失败, 初始化失败: {}", name().toUtf8().constData());
+        spdlog::error("运行失败, 初始化失败: {}, uuid: {}", name().toUtf8().constData(), uuid().toUtf8().constData());
         return false;
     }
     clearAlgorithmTime();
@@ -231,21 +234,22 @@ void AbstractQuickTool::postprocess(const std::tuple<int, QString> &res)
     emit finished();
     emit showMessage(ret == 0 ? InfoLevel::Success : InfoLevel::Error, error_msg);
     if (ret == 0)
-        spdlog::info("运行成功: {}", name().toUtf8().constData());
+        spdlog::info("运行成功: {}, uuid: {}", name().toUtf8().constData(), uuid().toUtf8().constData());
     else
-        spdlog::error("运行失败: {}, error: {}", name().toUtf8().constData(), error_msg.toUtf8().constData());
+        spdlog::error("运行失败: {}, uuid: {}, error: {}", name().toUtf8().constData(), uuid().toUtf8().constData(),
+                      error_msg.toUtf8().constData());
 }
 
-void AbstractQuickTool::onRunAfterChanged()
+void AbstractQuickTool::onRunAfterInputParamChanged()
 {
-    if (run_after_changed)
+    if (run_after_input_changed)
         submit();
 }
 
-void AbstractQuickTool::onSettingChanged(const QString &key, const QVariant &value)
+void AbstractQuickTool::onSettingChange(const QString &key, const QVariant &value)
 {
-    if (key == Predefined::RUN_AFTER_CHANGED)
-        run_after_changed = value.toBool();
+    if (key == Predefined::RUN_TOOL_AFTER_CHANGED)
+        run_after_input_changed = value.toBool();
 }
 
 } // namespace quicktools::core

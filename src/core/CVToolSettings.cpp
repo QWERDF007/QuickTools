@@ -4,7 +4,6 @@
 
 #include <QColor>
 
-
 namespace quicktools::core {
 
 CVToolSettings::CVToolSettings(QObject *parent)

@@ -63,8 +63,8 @@ bool AbstractQuickToolSettings::setData(const QModelIndex &index, const QVariant
     {
         settings_data_[setting_name][role] = value;
         property_data_->insert(setting_name, value);
+        emit settingChange(setting_name, value);
         emit dataChanged(index, index, {role});
-        emit settingChanged(setting_name, value);
         return true;
     }
     return false;

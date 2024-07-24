@@ -31,21 +31,21 @@ int AbstractPythonInterface::init()
     try
     {
         pybind11::gil_scoped_acquire acquire;
-        spdlog::debug("import python module: {}", importModule().toUtf8().constData());
+        spdlog::debug("导入 python 模块: {}", importModule().toUtf8().constData());
         module_ = pybind11::module_::import(importModule().toLocal8Bit().constData());
         return 0;
     }
     catch (const pybind11::error_already_set &e)
     {
-        spdlog::error("failed to import module: {}", e.what());
+        spdlog::error("导入 python 模块失败: {}", e.what());
     }
     catch (const std::exception &e)
     {
-        spdlog::error("failed to import module: {}", e.what());
+        spdlog::error("导入 python 模块失败: {}", e.what());
     }
     catch (...)
     {
-        spdlog::error("failed to import module with unknown exception!");
+        spdlog::error("导入 python 模块失败, 未知错误!");
     }
     return -1;
 }

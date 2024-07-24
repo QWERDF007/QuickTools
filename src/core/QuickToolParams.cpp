@@ -302,9 +302,10 @@ bool AbstractQuickToolParams::setValue(const QModelIndex &index, const QVariant 
     if (is_property)
         property_data_.insert(param_name, value);
 
-    const bool run_after_changed = params_data_[param_name][QuickToolParamRole::RunAfterParamChangedRole].toBool();
-    if (run_after_changed)
-        emit runAfterChanged();
+    const bool run_tool_after_param_changed
+        = params_data_[param_name][QuickToolParamRole::RunToolAfterParamChangedRole].toBool();
+    if (run_tool_after_param_changed)
+        emit runToolAfterParamChanged();
 
     emit dataChanged(index, index, {QuickToolParamRole::ParamValueRole, QuickToolParamRole::ParamDisplayRole});
     return true;
@@ -346,25 +347,25 @@ bool AbstractQuickToolParams::setData(const QString &name, const QVariant &value
 
 bool AbstractQuickToolParams::addParam(const QString &name, const QString &display_name, const QString &desc,
                                        const int type, const QVariant &value, const QVariant &additional,
-                                       const bool editable, const bool is_property, const bool run_after_changed,
-                                       const bool &visible)
+                                       const bool editable, const bool is_property,
+                                       const bool run_tool_after_param_changed, const bool &visible)
 {
     if (params_names_.contains(name))
         return false;
     params_names_.append(name);
     QMap<int, QVariant> param{
-        {          QuickToolParamRole::ParamIndexRole, params_data_.size()},
-        {           QuickToolParamRole::ParamNameRole,                name},
-        {    QuickToolParamRole::ParamDisplayNameRole,        display_name},
-        {           QuickToolParamRole::ParamDescRole,                desc},
-        {           QuickToolParamRole::ParamTypeRole,                type},
-        {       QuickToolParamRole::ParamTypeNameRole,   getTypeName(type)},
-        {        QuickToolParamRole::ParamVisibleRole,             visible},
-        {          QuickToolParamRole::ParamValueRole,               value},
-        {     QuickToolParamRole::ParamAdditionalRole,          additional},
-        {     QuickToolParamRole::ParamIsPropertyRole,         is_property},
-        {       QuickToolParamRole::ParamEditableRole,            editable},
-        {QuickToolParamRole::RunAfterParamChangedRole,   run_after_changed},
+        {              QuickToolParamRole::ParamIndexRole,          params_data_.size()},
+        {               QuickToolParamRole::ParamNameRole,                         name},
+        {        QuickToolParamRole::ParamDisplayNameRole,                 display_name},
+        {               QuickToolParamRole::ParamDescRole,                         desc},
+        {               QuickToolParamRole::ParamTypeRole,                         type},
+        {           QuickToolParamRole::ParamTypeNameRole,            getTypeName(type)},
+        {            QuickToolParamRole::ParamVisibleRole,                      visible},
+        {              QuickToolParamRole::ParamValueRole,                        value},
+        {         QuickToolParamRole::ParamAdditionalRole,                   additional},
+        {         QuickToolParamRole::ParamIsPropertyRole,                  is_property},
+        {           QuickToolParamRole::ParamEditableRole,                     editable},
+        {QuickToolParamRole::RunToolAfterParamChangedRole, run_tool_after_param_changed},
     };
     params_data_.insert(name, param);
     if (is_property)

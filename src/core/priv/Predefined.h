@@ -6,7 +6,7 @@ namespace quicktools::core {
 class Predefined
 {
 public:
-    static const QString RUN_AFTER_CHANGED;
+    static const QString RUN_TOOL_AFTER_CHANGED;
     static const QString PYTHON_HOME;
 };
 

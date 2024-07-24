@@ -47,7 +47,7 @@ enum QuickToolParamRole
     ParamAdditionalRole,
     ParamIsPropertyRole,
     ParamEditableRole,
-    RunAfterParamChangedRole,
+    RunToolAfterParamChangedRole,
 };
 
 } // namespace paramtypes
@@ -78,7 +78,8 @@ public:
 
     bool addParam(const QString &name, const QString &display_name, const QString &desc, const int type,
                   const QVariant &value, const QVariant &additional = QVariant(), const bool editable = false,
-                  const bool is_property = false, const bool run_after_changed = true, const bool &visible = true);
+                  const bool is_property = false, const bool run_tool_after_param_changed = true,
+                  const bool &visible = true);
 
     QQmlPropertyMap *pdata()
     {
@@ -121,7 +122,7 @@ private slots:
     void onPropertyValueChanged(const QString &key, const QVariant &value);
 
 signals:
-    void runAfterChanged();
+    void runToolAfterParamChanged();
 };
 
 class QUICKTOOLS_CORE_EXPORT InputParams : public AbstractQuickToolParams

@@ -133,7 +133,7 @@ private slots:
     void onPropertyValueChanged(const QString &key, const QVariant &value);
 
 signals:
-    void settingChanged(const QString &key, const QVariant &value);
+    void settingChange(const QString &key, const QVariant &value);
 };
 
 class QUICKTOOLS_CORE_EXPORT QuickToolSettings : public AbstractQuickToolSettings

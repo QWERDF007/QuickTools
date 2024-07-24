@@ -63,13 +63,6 @@ public:
     virtual QString doc() const = 0;
 
     /**
-     * @brief 初始化工具, 检查输入、输出参数是否初始化, 检查设置项是否初始化, 执行 @ref doInInit, 设置初始化状态
-     * @return 初始化结果状态码
-     * @retval 0 初始化成功
-     */
-    int init();
-
-    /**
      * @brief 获取工具实例的唯一识别码
      * @return 工具实例的唯一识别码
      * @see common::uuid()
@@ -78,6 +71,24 @@ public:
     {
         return uuid_;
     }
+
+    /**
+     * @brief 获取工具初始化的状态
+     * @return 工具初始化的状态
+     */
+    bool isInit() const;
+
+    /**
+     * @brief 初始化工具, 检查输入、输出参数是否初始化, 检查设置项是否初始化, 执行 @ref doInInit, 设置初始化状态
+     * @return 初始化结果状态码
+     * @retval 0 初始化成功
+     */
+    int init();
+
+    /**
+     * @brief 设置工具初始化的状态
+     */
+    void setIsInit(bool);
 
     /**
      * @brief 运行工具, 依次调用 @ref preprocess, @ref process, @ref postprocess
@@ -161,7 +172,7 @@ public:
      */
     Q_INVOKABLE void submit();
 
-    /*
+    /**
      * @brief 通知级别
      */
     enum InfoLevel
@@ -182,17 +193,6 @@ public:
     {
         return running_;
     }
-
-    /**
-     * @brief 获取工具初始化的状态
-     * @return 工具初始化的状态
-     */
-    bool isInit() const;
-
-    /**
-     * @brief 设置工具初始化的状态
-     */
-    void setIsInit(bool);
 
 protected:
     /**
@@ -231,16 +231,17 @@ protected:
 
 protected slots:
     /**
-     * @brief 工具输入参数改变后发出信号, 根据设置项 `RunAfterChanged` 决定是否运行工具
+     * @brief 链接工具输入参数改变后发出的信号 @ref AbstractQuickToolParams::runToolAfterParamChanged,
+     *        根据设置项 `RunToolAfterChanged` 决定是否运行工具
      */
-    void onRunAfterChanged();
+    void onRunAfterInputParamChanged();
 
     /**
-     * @brief 工具设置项改变后发出信号, 本处只对 `RunAfterChanged` 进行赋值处理
+     * @brief 工具设置项改变后发出信号, 本处只对 @ref run_after_input_changed 进行赋值处理
      * @param [in] key 设置项名称
      * @param [in] value 设置项值
      */
-    void onSettingChanged(const QString &key, const QVariant &value);
+    void onSettingChange(const QString &key, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AbstractQuickTool)
@@ -297,14 +298,15 @@ private:
     /// 工具每部分算法运行时间 (ms)
     QList<double> algorithm_time_array_;
 
-    /// 是否在参数改变后运行工具
-    bool run_after_changed{true};
+    /// 是否在输入参数改变后运行工具，通过设置项 `RunToolAfterChanged` 修改
+    bool run_after_input_changed{true};
 
     QQmlEngine *qmlEngine_{nullptr};
     QJSEngine  *jsEngine_{nullptr};
 
     QuickToolHelper *helper_{nullptr};
 
+    /// 工具是否初始化
     bool is_init_{false};
 
     /// 工具运行进度
@@ -313,6 +315,7 @@ private:
     /// 工具实例唯一标识
     QString uuid_;
 
+    /// 工具是否正在运行中
     std::atomic<bool> running_{false};
 
 signals:
@@ -345,8 +348,8 @@ signals:
 };
 
 /**
- * @brief 模板类, 继承 AbstractQuickTool, 根据传入输入、输出参数、设置类型实例化
- *        链接 @ref InputParams::runAfterChanged 和 @ref AbstractQuickToolSettings::settingChanged 信号
+ * @brief 模板类, 继承 @ref AbstractQuickTool, 根据传入输入、输出参数、设置类型实例化
+ *        链接 @ref InputParams::runToolAfterChanged 和 @ref AbstractQuickToolSettings::settingChange 信号
  */
 template<class _InputParams, class _OutputParams, class _Settings>
 class QUICKTOOLS_CORE_EXPORT AbstractTool : public AbstractQuickTool
@@ -359,45 +362,74 @@ class QUICKTOOLS_CORE_EXPORT AbstractTool : public AbstractQuickTool
                   "Settings must be subclass of AbstractQuickToolSettings");
 
 public:
+    /**
+     * @brief 构造函数, 实例化具体类别的输入参数、输出参数、设置,
+     *        链接 @ref InputParams::runToolAfterChanged 和 @ref AbstractQuickToolSettings::settingChange 信号
+     * @param parent[in]
+     */
     AbstractTool(QObject *parent = nullptr)
         : AbstractQuickTool(parent)
     {
         input_params_  = new _InputParams(this);
         output_params_ = new _OutputParams(this);
         settings_      = new _Settings(this);
-        connect(input_params_, &InputParams::runAfterChanged, this,
-                &AbstractTool<_InputParams, _OutputParams, _Settings>::onRunAfterChanged);
-        connect(settings_, &AbstractQuickToolSettings::settingChanged, this,
-                &AbstractTool<_InputParams, _OutputParams, _Settings>::onSettingChanged);
+        connect(input_params_, &InputParams::runToolAfterParamChanged, this,
+                &AbstractTool<_InputParams, _OutputParams, _Settings>::onRunAfterInputParamChanged);
+        connect(settings_, &AbstractQuickToolSettings::settingChange, this,
+                &AbstractTool<_InputParams, _OutputParams, _Settings>::onSettingChange);
     }
 
     virtual ~AbstractTool() {}
 
+    /**
+     * @brief 返回输入参数, 返回抽象类 @ref InputParams 的指针
+     * @return
+     */
     InputParams *inputParams() override
     {
         return getInputParams();
     }
 
+    /**
+     * @brief 返回输入参数, 返回子类的指针
+     * @return
+     */
     _InputParams *getInputParams()
     {
         return input_params_;
     }
 
+    /**
+     * @brief 返回输出参数, 返回抽象类 @ref OutputParams 的指针
+     * @return
+     */
     OutputParams *outputParams() override
     {
         return getOutputParams();
     }
 
+    /**
+     * @brief 返回输出参数, 返回子类的指针
+     * @return
+     */
     _OutputParams *getOutputParams()
     {
         return output_params_;
     }
 
+    /**
+     * @brief 返回设置, 返回抽象类 @ref AbstractQuickToolSettings 的指针
+     * @return
+     */
     AbstractQuickToolSettings *settings() override
     {
         return settings_;
     }
 
+    /**
+     * @brief 返回设置, 返回子类的指针
+     * @return
+     */
     _Settings getSettings()
     {
         return settings_;
