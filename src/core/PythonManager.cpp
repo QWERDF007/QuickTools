@@ -13,7 +13,7 @@ namespace quicktools::core {
 PythonManager::PythonManager(QObject *parent)
     : QObject(parent)
 {
-    connect(this, &PythonManager::pythonHomeChanged, this, &PythonManager::initializeInterpreter);
+    connect(this, &PythonManager::pythonHomeChange, this, &PythonManager::initializeInterpreter);
 }
 
 PythonManager::~PythonManager()
@@ -32,16 +32,18 @@ bool PythonManager::isInit() const
     return Py_IsInitialized();
 }
 
-int PythonManager::initializeInterpreter()
+int PythonManager::initializeInterpreter(const QString &python_home)
 {
     try
     {
-        //        qInfo() << __FUNCTION__ << __LINE__ << "The GIL state is" << PyGILState_Check();
-        if (!QFile::exists(GetPythonExecutable(python_home_)))
-            return -1;
         finalizeInterpreter();
+        if (!IsPythonHomeValid(python_home))
+        {
+            spdlog::error("初始化 python 环境失败, python 环境 {} 不合法!", python_home.toUtf8().constData());
+            return -1;
+        }
 #if (PY_MAJOR_VERSION == 3) && (PY_MINOR_VERSION < 11)
-        Py_SetPythonHome(Py_DecodeLocale(python_home_.toLocal8Bit().constData(), nullptr));
+        Py_SetPythonHome(Py_DecodeLocale(python_home.toLocal8Bit().constData(), nullptr));
         pybind11::initialize_interpreter();
 #else
         PyConfig config;
@@ -52,25 +54,27 @@ int PythonManager::initializeInterpreter()
 #endif
         {
             pybind11::object sys = pybind11::module_::import("sys");
-            //            qInfo() << __FUNCTION__ << __LINE__ << getPythonVersion(python_home_);
             sys.attr("path").attr("append")(DefaultPythonCodeHome().toLocal8Bit().toStdString());
-            //        pybind11::exec("import sys;print(sys.path, flush=True);");
         }
         // 释放 gil
         gil_release_ = new pybind11::gil_scoped_release();
+        python_home_ = python_home;
+        emit pythonHomeChanged();
+        spdlog::info("初始化 python 环境: {}, 版本: {}", QDir(python_home_).dirName().toUtf8().constData(),
+                     getPythonVersion(python_home_).toUtf8().constData());
         return 0;
     }
     catch (const pybind11::error_already_set &e)
     {
-        spdlog::error("Failed to set initialize interpreter: {}", e.what());
+        spdlog::error("初始化 python 解释器失败: {}", e.what());
     }
     catch (const std::exception &e)
     {
-        spdlog::error("Failed to set initialize interpreter: {}", e.what());
+        spdlog::error("初始化 python 解释器失败: {}", e.what());
     }
     catch (...)
     {
-        spdlog::error("Failed to set initialize interpreter with unknown exception!");
+        spdlog::error("初始化 python 解释器失败, 未知错误!");
     }
     return -1;
 }
@@ -85,6 +89,8 @@ void PythonManager::finalizeInterpreter()
     if (Py_IsInitialized())
     {
         pybind11::finalize_interpreter();
+        spdlog::info("释放 python 环境: {}, 版本: {}", python_home_.toUtf8().constData(),
+                     getPythonVersion(python_home_).toUtf8().constData());
     }
 }
 
@@ -110,10 +116,7 @@ bool PythonManager::setPythonHome(const QString &python_home)
     spdlog::info("设置 PYTHON_HOME: {}", python_home.toUtf8().constData());
     if (python_home_ == python_home)
         return true;
-    if (GetPythonExecutable(python_home).isEmpty())
-        return false;
-    python_home_ = python_home;
-    emit pythonHomeChanged();
+    emit pythonHomeChange(python_home);
     return true;
 }
 
@@ -127,6 +130,11 @@ QString PythonManager::GetPythonExecutable(const QString &python_home)
     if (!QFile::exists(python_executable))
         return QString();
     return python_executable;
+}
+
+bool PythonManager::IsPythonHomeValid(const QString &python_home)
+{
+    return QFile::exists(GetPythonExecutable(python_home));
 }
 
 QString PythonManager::getPythonVersion(const QString &python_home)
