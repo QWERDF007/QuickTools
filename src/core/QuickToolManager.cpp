@@ -140,7 +140,7 @@ QVariant ActivatedTools::headerData(int section, Qt::Orientation orientation, in
         switch (section)
         {
         case NameColumn:
-            return "name";
+            return tr("工具名称");
         case UuidColumn:
             return "uuid";
         default:
