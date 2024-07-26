@@ -46,6 +46,20 @@ public:
     void finalizeInterpreter();
 
     /**
+     * @brief 获取当前的 python 环境
+     * @return 当前的 python 环境
+     */
+    QString pythonHome() const;
+
+    /**
+     * @brief 设置 python 环境
+     * @param[in] python_home python 环境目录
+     */
+    void setPythonHome(const QString &python_home);
+
+public:
+
+    /**
      * @brief 默认的 python 环境
      * @return
      */
@@ -65,31 +79,18 @@ public:
     static QString GetPythonExecutable(const QString &python_home);
 
     /**
+     * @brief 获取指定 python 环境的 python 版本
+     * @param[in] python_home python 环境目录
+     * @return python 版本
+     */
+    static QString GetPythonVersion(const QString &python_home);
+
+    /**
      * @brief 判断 python 环境是否有效
      * @param[in] python_home python 环境目录
      * @return
      */
     static bool IsPythonHomeValid(const QString &python_home);
-
-    /**
-     * @brief 获取当前的 python 环境
-     * @return 当前的 python 环境
-     */
-    QString pythonHome() const;
-
-    /**
-     * @brief 设置 python 环境
-     * @param[in] python_home python 环境目录
-     * @return
-     */
-    bool setPythonHome(const QString &python_home);
-
-    /**
-     * @brief 获取指定 python 环境的 python 版本
-     * @param[in] python_home python 环境目录
-     * @return python 版本
-     */
-    QString getPythonVersion(const QString &python_home);
 
 private:
     explicit PythonManager(QObject *parent = nullptr);
@@ -98,7 +99,7 @@ private:
     /// 当前 python 环境
     QString python_home_;
 
-    /// 实例化后会在当前作用域内释放释放 python 全局锁, 直到此实例析构
+    /// 实例化后会在当前作用域内释放释放 python 全局锁, 即在主线程释放 gil, 直到此实例析构
     pybind11::gil_scoped_release *gil_release_{nullptr};
 
 signals:
@@ -107,6 +108,28 @@ signals:
      * @brief python 环境改变
      */
     void pythonHomeChange(const QString &);
+
+    /**
+     * @brief python 环境已经改变
+     */
     void pythonHomeChanged();
 };
+
+inline int PythonManager::init()
+{
+    setPythonHome(DefaultPythonHome());
+    return isInit();
+}
+
+inline bool PythonManager::isInit() const
+{
+    return Py_IsInitialized();
+}
+
+inline QString PythonManager::pythonHome() const
+{
+    return python_home_;
+}
+
+
 } // namespace quicktools::core

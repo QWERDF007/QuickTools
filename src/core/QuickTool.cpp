@@ -56,11 +56,6 @@ AbstractQuickTool::~AbstractQuickTool()
     QuickToolManager::getInstance()->removeFromActivated(this);
 }
 
-bool AbstractQuickTool::isInit() const
-{
-    return is_init_;
-}
-
 int AbstractQuickTool::init()
 {
     spdlog::info("初始化工具: {}, uuid: {}", name().toUtf8().constData(), uuid().toUtf8().constData());
@@ -74,22 +69,12 @@ int AbstractQuickTool::init()
     return ret;
 }
 
-int AbstractQuickTool::doInInit()
-{
-    return 0;
-}
-
-void AbstractQuickTool::setIsInit(bool is_init)
-{
-    is_init_ = is_init;
-}
-
 void AbstractQuickTool::run()
 {
-    running_ = true;
+    setRunning(true);
     if (!preprocess())
     {
-        running_ = false;
+        setRunning(false);
         return;
     }
     auto start_time  = std::chrono::high_resolution_clock::now();
@@ -97,7 +82,7 @@ void AbstractQuickTool::run()
     auto end_time    = std::chrono::high_resolution_clock::now();
     wall_clock_time_ = std::chrono::duration<double, std::milli>(end_time - start_time).count();
     postprocess(res);
-    running_ = false;
+    setRunning(false);
 }
 
 bool AbstractQuickTool::setProgress(const double v)
@@ -119,11 +104,6 @@ void AbstractQuickTool::submit()
 {
     emit start();
     QThreadPool::globalInstance()->start(this);
-}
-
-int AbstractQuickTool::initSettings()
-{
-    return 0;
 }
 
 int AbstractQuickTool::checkParams()

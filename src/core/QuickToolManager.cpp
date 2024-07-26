@@ -27,9 +27,10 @@ QuickToolManager *QuickToolManager::getInstance()
 
 QuickToolManager::QuickToolManager(QObject *parent)
     : QObject(parent)
-    , activated_tools(new ActivatedTools(this))
+    , activated_tools_(new ActivatedTools(this))
 {
 }
+
 
 QuickToolManager *QuickToolManager::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 {
@@ -40,16 +41,16 @@ QuickToolManager *QuickToolManager::create(QQmlEngine *qmlEngine, QJSEngine *jsE
 
 bool QuickToolManager::addToActivted(AbstractQuickTool *tool)
 {
-    if (activated_tools == nullptr)
+    if (activated_tools_ == nullptr)
         return false;
-    return activated_tools->addToActivated(tool);
+    return activated_tools_->addToActivated(tool);
 }
 
 bool QuickToolManager::removeFromActivated(AbstractQuickTool *tool)
 {
-    if (activated_tools == nullptr)
+    if (activated_tools_ == nullptr)
         return false;
-    return activated_tools->removeFromActivated(tool);
+    return activated_tools_->removeFromActivated(tool);
 }
 
 AbstractQuickTool *QuickToolManager::createQuickTool(const int tool_type, QObject *parent)
@@ -115,19 +116,20 @@ int ActivatedTools::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    return rowCount() == 0 ? 0 : 2;
+    return rowCount() == 0 ? 0 : 3;
 }
 
-enum ActivatedQuickToolRoles
+enum TableColumns
 {
     NameColumn = 0,
     UuidColumn,
+    RunningColumn,
 };
 
 QHash<int, QByteArray> ActivatedTools::roleNames() const
 {
     return {
-        {Qt::DisplayRole, "display"}
+        {Qt::DisplayRole, "display"},
     };
 }
 
@@ -143,6 +145,8 @@ QVariant ActivatedTools::headerData(int section, Qt::Orientation orientation, in
             return tr("工具名称");
         case UuidColumn:
             return "uuid";
+        case RunningColumn:
+            return tr("运行状态");
         default:
             return QVariant();
         }
@@ -167,6 +171,8 @@ QVariant ActivatedTools::data(const QModelIndex &index, int role) const
         return activated_tools_.at(row)->name();
     case UuidColumn:
         return activated_tools_.at(row)->uuid();
+    case RunningColumn:
+        return activated_tools_.at(row)->running();
     default:
         return QVariant();
     }
@@ -206,6 +212,7 @@ bool ActivatedTools::addToActivated(AbstractQuickTool *tool)
     QModelIndex top_left = index(row, 0);
     insertRow(row);
     emit dataChanged(top_left, top_left, {});
+    connect(tool, &AbstractQuickTool::runningChanged, this, &ActivatedTools::onToolRunningChanged);
     return true;
 }
 
@@ -226,7 +233,27 @@ bool ActivatedTools::removeFromActivated(AbstractQuickTool *tool)
     if (row == -1)
         return false;
     removeRow(row);
+    disconnect(tool, &AbstractQuickTool::runningChanged, this, &ActivatedTools::onToolRunningChanged);
     return true;
+}
+
+void ActivatedTools::onToolRunningChanged()
+{
+    AbstractQuickTool* tool = qobject_cast<AbstractQuickTool*>(sender());
+    int size = static_cast<int>(activated_tools_.size());
+    int row{-1};
+    for (int i = 0; i < size; ++i)
+    {
+        if (tool == activated_tools_.at(i))
+        {
+            row = i;
+            break;
+        }
+    }
+    if (row == -1)
+        return;
+    QModelIndex top_left = index(row, 2);
+    emit dataChanged(top_left, top_left, {Qt::DisplayRole});
 }
 
 } // namespace quicktools::core

@@ -43,6 +43,8 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
     Q_PROPERTY(QString uuid READ uuid CONSTANT FINAL)
     /// 工具是否包含 python
     Q_PROPERTY(bool hasPython READ hasPython CONSTANT FINAL)
+    /// 工具是否正在运行
+    Q_PROPERTY(bool running READ running NOTIFY runningChanged)
 public:
     AbstractQuickTool(QObject *parent = nullptr);
     virtual ~AbstractQuickTool();
@@ -51,10 +53,7 @@ public:
      * @brief 获取工具名称
      * @return 工具名称
      */
-    virtual QString name() const
-    {
-        return "AbstractQuickTool";
-    }
+    virtual QString name() const;
 
     /**
      * @brief 获取工具说明文档
@@ -67,10 +66,7 @@ public:
      * @return 工具实例的唯一识别码
      * @see common::uuid()
      */
-    QString uuid() const
-    {
-        return uuid_;
-    }
+    QString uuid() const;
 
     /**
      * @brief 获取工具初始化的状态
@@ -88,7 +84,7 @@ public:
     /**
      * @brief 设置工具初始化的状态
      */
-    void setIsInit(bool);
+    void setIsInit(bool is_init);
 
     /**
      * @brief 运行工具, 依次调用 @ref preprocess, @ref process, @ref postprocess
@@ -117,10 +113,7 @@ public:
      * @brief 获取工具的运行进度
      * @return [0,1]
      */
-    double progress() const
-    {
-        return progress_;
-    }
+    double progress() const;
 
     /**
      * @brief 设置运行进度条
@@ -133,18 +126,12 @@ public:
      * @brief 添加一个算法运行时间 (ms)
      * @param [in] algorithm_time 算法时间
      */
-    void addAlgorithmTime(const double algorithm_time)
-    {
-        algorithm_time_array_.append(algorithm_time);
-    }
+    void addAlgorithmTime(const double algorithm_time);
 
     /**
      * @brief 清除算法运行时间，执行算法之前被调用
      */
-    void clearAlgorithmTime()
-    {
-        algorithm_time_array_.clear();
-    }
+    void clearAlgorithmTime();
 
     /**
      * @brief 绑定界面 engine，用于后续创建 ImageProvider
@@ -153,19 +140,13 @@ public:
      */
     void setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
-    QuickToolHelper *helper()
-    {
-        return helper_;
-    }
+    QuickToolHelper *helper();
 
     /**
      * @brief 工具是否包含 python, 默认 false, 具有 python 的工具重写此函数
      * @return
      */
-    virtual bool hasPython() const
-    {
-        return false;
-    }
+    virtual bool hasPython() const;
 
     /**
      * @brief 向 Qt 的线程池中提交本工具的运行任务
@@ -189,11 +170,13 @@ public:
      * @brief 获取工具是否正在运行
      * @return
      */
-    bool isRunning() const
-    {
-        return running_;
-    }
+    bool running() const;
 
+    void setRunning(bool running)
+    {
+        running_ = running;
+        emit runningChanged();
+    }
 protected:
     /**
      * @brief 初始化输入参数
@@ -330,6 +313,11 @@ signals:
     void started();
 
     /**
+     * @brief 运行状态改变信号
+     */
+    void runningChanged();
+
+    /**
      * @brief 工具运行结束信号, 后处理完成后发出
      */
     void finished();
@@ -346,6 +334,66 @@ signals:
      */
     void showMessage(int, const QString &);
 };
+
+inline QString AbstractQuickTool::name() const
+{
+    return "AbstractQuickTool";
+}
+
+inline QString AbstractQuickTool::uuid() const
+{
+    return uuid_;
+}
+
+inline bool AbstractQuickTool::isInit() const
+{
+    return is_init_;
+}
+
+inline void AbstractQuickTool::setIsInit(bool is_init)
+{
+    is_init_ = is_init;
+}
+
+inline double AbstractQuickTool::progress() const
+{
+    return progress_;
+}
+
+inline void AbstractQuickTool::addAlgorithmTime(const double algorithm_time)
+{
+    algorithm_time_array_.append(algorithm_time);
+}
+
+inline void AbstractQuickTool::clearAlgorithmTime()
+{
+    algorithm_time_array_.clear();
+}
+
+inline QuickToolHelper *AbstractQuickTool::helper()
+{
+    return helper_;
+}
+
+inline bool AbstractQuickTool::hasPython() const
+{
+    return false;
+}
+
+inline bool AbstractQuickTool::running() const
+{
+    return running_;
+}
+
+inline int AbstractQuickTool::initSettings()
+{
+    return 0;
+}
+
+inline int AbstractQuickTool::doInInit()
+{
+    return 0;
+}
 
 /**
  * @brief 模板类, 继承 @ref AbstractQuickTool, 根据传入输入、输出参数、设置类型实例化

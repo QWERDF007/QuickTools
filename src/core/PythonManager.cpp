@@ -21,22 +21,13 @@ PythonManager::~PythonManager()
     finalizeInterpreter();
 }
 
-int PythonManager::init()
-{
-    bool ok = setPythonHome(DefaultPythonHome());
-    return ok ? 0 : -1;
-}
-
-bool PythonManager::isInit() const
-{
-    return Py_IsInitialized();
-}
-
 int PythonManager::initializeInterpreter(const QString &python_home)
 {
     try
     {
         finalizeInterpreter();
+        python_home_ = python_home;
+        emit pythonHomeChanged();
         if (!IsPythonHomeValid(python_home))
         {
             spdlog::error("初始化 python 环境失败, python 环境 {} 不合法!", python_home.toUtf8().constData());
@@ -58,10 +49,8 @@ int PythonManager::initializeInterpreter(const QString &python_home)
         }
         // 释放 gil
         gil_release_ = new pybind11::gil_scoped_release();
-        python_home_ = python_home;
-        emit pythonHomeChanged();
         spdlog::info("初始化 python 环境: {}, 版本: {}", QDir(python_home_).dirName().toUtf8().constData(),
-                     getPythonVersion(python_home_).toUtf8().constData());
+                     GetPythonVersion(python_home_).toUtf8().constData());
         return 0;
     }
     catch (const pybind11::error_already_set &e)
@@ -90,8 +79,16 @@ void PythonManager::finalizeInterpreter()
     {
         pybind11::finalize_interpreter();
         spdlog::info("释放 python 环境: {}, 版本: {}", python_home_.toUtf8().constData(),
-                     getPythonVersion(python_home_).toUtf8().constData());
+                     GetPythonVersion(python_home_).toUtf8().constData());
     }
+}
+
+void PythonManager::setPythonHome(const QString &python_home)
+{
+    spdlog::info("设置 PYTHON_HOME: {}", python_home.toUtf8().constData());
+    if (python_home_ == python_home)
+        return;
+    emit pythonHomeChange(python_home);
 }
 
 QString PythonManager::DefaultPythonHome()
@@ -106,20 +103,6 @@ QString PythonManager::DefaultPythonCodeHome()
     return QDir::cleanPath(QDir::currentPath() + "/py_module");
 }
 
-QString PythonManager::pythonHome() const
-{
-    return python_home_;
-}
-
-bool PythonManager::setPythonHome(const QString &python_home)
-{
-    spdlog::info("设置 PYTHON_HOME: {}", python_home.toUtf8().constData());
-    if (python_home_ == python_home)
-        return true;
-    emit pythonHomeChange(python_home);
-    return true;
-}
-
 QString PythonManager::GetPythonExecutable(const QString &python_home)
 {
 #ifdef _WIN32
@@ -132,12 +115,7 @@ QString PythonManager::GetPythonExecutable(const QString &python_home)
     return python_executable;
 }
 
-bool PythonManager::IsPythonHomeValid(const QString &python_home)
-{
-    return QFile::exists(GetPythonExecutable(python_home));
-}
-
-QString PythonManager::getPythonVersion(const QString &python_home)
+QString PythonManager::GetPythonVersion(const QString &python_home)
 {
     const QString python_executable = GetPythonExecutable(python_home);
     if (!QFile::exists(python_executable))
@@ -147,6 +125,11 @@ QString PythonManager::getPythonVersion(const QString &python_home)
     p.waitForFinished();
     const QString python_version = p.readAllStandardOutput().trimmed() /*.split(' ')[1]*/;
     return python_version;
+}
+
+bool PythonManager::IsPythonHomeValid(const QString &python_home)
+{
+    return QFile::exists(GetPythonExecutable(python_home));
 }
 
 } // namespace quicktools::core

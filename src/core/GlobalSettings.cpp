@@ -44,7 +44,7 @@ void GlobalSettings::onSettingChange(const QString &key, const QVariant &value)
                     if (!tool->hasPython())
                         continue;
                     python_tools.push_back(tool);
-                    while (tool->isRunning()) std::this_thread::sleep_for(100ms);
+                    while (tool->running()) std::this_thread::sleep_for(100ms);
                 }
                 PythonManager::getInstance()->setPythonHome(python_home);
                 for (auto tool : python_tools) tool->setIsInit(false);

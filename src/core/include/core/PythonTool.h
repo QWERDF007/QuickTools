@@ -15,7 +15,7 @@ public:
     AbstractPythonInterface();
     virtual ~AbstractPythonInterface();
 
-    int                      init();
+    int init();
     std::tuple<int, QString> reloadModule();
 
 protected:
@@ -40,16 +40,20 @@ public:
 
     Q_INVOKABLE void reloadModule();
 
-    bool hasPython() const override
-    {
-        return true;
-    }
+    bool hasPython() const override;
 
 protected:
-    int doInInit() override
-    {
-        return AbstractPythonInterface::init();
-    }
+    int doInInit() override;
 };
+
+inline bool AbstractPythonTool::hasPython() const
+{
+    return true;
+}
+
+inline int AbstractPythonTool::doInInit()
+{
+    return AbstractPythonInterface::init();
+}
 
 } // namespace quicktools::core

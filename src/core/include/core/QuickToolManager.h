@@ -27,14 +27,18 @@ public:
     bool addToActivated(AbstractQuickTool *tool);
     bool removeFromActivated(AbstractQuickTool *tool);
 
-    const std::vector<AbstractQuickTool *> getActivatedTools() const
-    {
-        return activated_tools_;
-    }
+    const std::vector<AbstractQuickTool *> getActivatedTools() const;
 
 private:
+    void onToolRunningChanged();
+
     std::vector<AbstractQuickTool *> activated_tools_;
 };
+
+inline const std::vector<AbstractQuickTool *> ActivatedTools::getActivatedTools() const
+{
+    return activated_tools_;
+}
 
 class QUICKTOOLS_CORE_EXPORT QuickToolManager : public QObject
 {
@@ -63,7 +67,7 @@ public:
 
     ActivatedTools *activatedTools()
     {
-        return activated_tools;
+        return activated_tools_;
     }
 
     bool addToActivted(AbstractQuickTool *tool);
@@ -97,7 +101,7 @@ private:
     std::map<int, QString> groups_uuid_;
     std::map<int, QString> tasks_uuid_;
 
-    ActivatedTools *activated_tools{nullptr};
+    ActivatedTools *activated_tools_{nullptr};
 };
 
 } // namespace quicktools::core
