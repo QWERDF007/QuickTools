@@ -1,4 +1,4 @@
-#include "ImageHistogram.h"
+#include "imgproc/ImageHistogram.h"
 
 #include "core/QuickToolSettings.h"
 
@@ -81,8 +81,8 @@ std::tuple<int, QString> ImageHistogram::doInProcess()
     QVariantList        hists_min;
     QVariantList        hists_max;
     // for (const cv::Mat &ch : chs)
-    size_t size = chs.size();
-    double step = 0.4 / size;
+    size_t              size = chs.size();
+    double              step = 0.4 / size;
     for (size_t i = 0; i < size; ++i)
     {
         cv::Mat hist;
@@ -108,7 +108,7 @@ std::tuple<int, QString> ImageHistogram::doInProcess()
         hists_data.append(hist_data);
         hists_min.append(min_value);
         hists_max.append(max_value);
-        setProgress(0.5 + (i+1) * step);
+        setProgress(0.5 + (i + 1) * step);
     }
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
     auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();

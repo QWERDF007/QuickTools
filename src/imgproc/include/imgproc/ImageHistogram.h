@@ -1,12 +1,13 @@
 #pragma once
 
 #include "core/CVTool.h"
-#include "core/QuickToolType.h"
 #include "core/QuickToolManager.h"
+#include "core/QuickToolType.h"
 
 #include <opencv2/core.hpp>
 
 #include <QObject>
+
 
 namespace quicktools::imgproc {
 
