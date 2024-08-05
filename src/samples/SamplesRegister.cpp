@@ -1,13 +1,14 @@
 #include "samples/SamplesRegister.h"
 
-#include "PyTest/PyTest.h"
+#include "samples/PyTest.h"
+
 
 namespace quicktools::samples {
 
 void registerTools()
 {
     core::QuickToolManager::getInstance()->registerGroupAndTask(core::quicktoolgrouptype::SamplesGroup,
-                                                               core::quicktooltasktype::EmptyTask);
+                                                                core::quicktooltasktype::EmptyTask);
     registerPyTest();
 }
 

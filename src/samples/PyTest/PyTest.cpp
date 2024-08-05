@@ -1,6 +1,4 @@
-#include "PyTest.h"
-
-#include <iostream>
+#include "samples/PyTest.h"
 
 namespace quicktools::samples {
 
@@ -35,16 +33,6 @@ std::tuple<int, QString> PyTest::doInProcess()
         now   = QString::fromStdString(current_time.cast<std::string>());
         value = v.cast<double>();
     }
-    //    if (object_)
-    //    {
-    //        pybind11::object res = object_.attr("get_current_time")();
-    //        result = QString::fromStdString(res.cast<std::string>());
-    //    }
-    //    else
-    //    {
-    //        status = -1;
-    //        msg = tr("模块未初始化: ") + importModule();
-    //    }
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
     auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
     addAlgorithmTime(algorithm_time);
