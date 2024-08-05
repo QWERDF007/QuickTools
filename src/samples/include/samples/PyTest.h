@@ -1,15 +1,14 @@
 #pragma once
-#include "core/PythonTool.h"
+#include "core/QuickTool.h"
 #include "core/QuickToolManager.h"
 #include "core/QuickToolType.h"
 
 namespace quicktools::samples {
 
-class PyTest : public core::AbstractPythonTool
+class PyTest : public core::AbstractTool<core::InputParams, core::OutputParams, core::QuickToolSettings>
 {
 public:
     PyTest(QObject *parent = nullptr);
-    ~PyTest() = default;
 
     QString name() const override
     {
@@ -27,8 +26,6 @@ protected:
     int initInputParams() override;
     int initOutputParams() override;
     int initSettings() override;
-
-    QString importModule() const override;
 
 private:
 };

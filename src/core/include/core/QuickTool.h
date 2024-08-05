@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreGlobal.h"
+#include "PythonInterface.h"
 #include "QuickToolHelper.h"
 #include "QuickToolParams.h"
 #include "QuickToolSettings.h"
@@ -172,11 +173,10 @@ public:
      */
     bool running() const;
 
-    void setRunning(bool running)
-    {
-        running_ = running;
-        emit runningChanged();
-    }
+    void setRunning(bool running);
+
+    Q_INVOKABLE void reloadModule();
+
 protected:
     /**
      * @brief 初始化输入参数
@@ -200,17 +200,12 @@ protected:
     virtual int initSettings();
 
     /**
-     * @brief 子类在初始化中额外的初始化
-     * @return 初始化结果
-     * @retval 0 初始化成功
-     */
-    virtual int doInInit();
-
-    /**
      * @brief 工具具体的运行处理, 由每个工具子类实现
      * @return 运行处理结果 [status, msg]
      */
     virtual std::tuple<int, QString> doInProcess() = 0;
+
+    AbstractPythonInterface *python_interface_{nullptr};
 
 protected slots:
     /**
@@ -377,7 +372,7 @@ inline QuickToolHelper *AbstractQuickTool::helper()
 
 inline bool AbstractQuickTool::hasPython() const
 {
-    return false;
+    return python_interface_ != nullptr;
 }
 
 inline bool AbstractQuickTool::running() const
@@ -385,12 +380,22 @@ inline bool AbstractQuickTool::running() const
     return running_;
 }
 
-inline int AbstractQuickTool::initSettings()
+inline void AbstractQuickTool::setRunning(bool running)
 {
-    return 0;
+    running_ = running;
+    emit runningChanged();
 }
 
-inline int AbstractQuickTool::doInInit()
+inline void AbstractQuickTool::reloadModule()
+{
+    if (python_interface_)
+    {
+        const auto &[ret, msg] = python_interface_->reloadModule();
+        emit showMessage(InfoLevel::Info, msg);
+    }
+}
+
+inline int AbstractQuickTool::initSettings()
 {
     return 0;
 }
@@ -400,7 +405,7 @@ inline int AbstractQuickTool::doInInit()
  *        链接 @ref InputParams::runToolAfterChanged 和 @ref AbstractQuickToolSettings::settingChange 信号
  */
 template<class _InputParams, class _OutputParams, class _Settings>
-class QUICKTOOLS_CORE_EXPORT AbstractTool : public AbstractQuickTool
+class AbstractTool : public AbstractQuickTool
 {
     static_assert(std::is_base_of<InputParams, _InputParams>::value,
                   "_InputParams must be subclass of AbstractInputParams");

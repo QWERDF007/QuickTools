@@ -1,13 +1,31 @@
 #include "samples/PyTest.h"
 
+#include "core/PythonInterface.h"
+
 namespace quicktools::samples {
 
 using core::paramtypes::QuickToolParamRole;
 using core::paramtypes::QuickToolParamType;
 
-PyTest::PyTest(QObject *parent)
-    : core::AbstractPythonTool(parent)
+class PyTestPythonInterface : public core::AbstractPythonInterface
 {
+public:
+    PyTestPythonInterface(QObject *parent = nullptr)
+        : core::AbstractPythonInterface(parent)
+    {
+    }
+
+protected:
+    QString importModule() const override
+    {
+        return "pytest";
+    }
+};
+
+PyTest::PyTest(QObject *parent)
+    : AbstractTool(parent)
+{
+    python_interface_ = new PyTestPythonInterface(this);
 }
 
 std::tuple<int, QString> PyTest::doInProcess()
@@ -25,10 +43,8 @@ std::tuple<int, QString> PyTest::doInProcess()
 
     pybind11::gil_scoped_acquire acquire;
     {
-        pybind11::module_ module = pybind11::module_::import(importModule().toLocal8Bit().constData());
-        module.reload();
-        pybind11::object current_time = module.attr("get_current_time")();
-        pybind11::object v            = module.attr(key.toStdString().c_str());
+        pybind11::object current_time = python_interface_->module.attr("get_current_time")();
+        pybind11::object v            = python_interface_->module.attr(key.toStdString().c_str());
 
         now   = QString::fromStdString(current_time.cast<std::string>());
         value = v.cast<double>();
@@ -66,11 +82,6 @@ int PyTest::initOutputParams()
 int PyTest::initSettings()
 {
     return 0;
-}
-
-QString PyTest::importModule() const
-{
-    return "pytest";
 }
 
 } // namespace quicktools::samples

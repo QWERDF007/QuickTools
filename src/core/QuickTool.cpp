@@ -62,8 +62,11 @@ int AbstractQuickTool::init()
     int ret = checkParams();
     if (ret == 0)
         ret = checkSettings();
-    if (ret == 0)
-        ret = doInInit();
+    if (ret == 0 && python_interface_)
+    {
+        const auto [status, msg] = python_interface_->init();
+        ret                      = status;
+    }
     if (ret == 0)
         setIsInit(true);
     return ret;

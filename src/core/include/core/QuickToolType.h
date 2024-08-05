@@ -8,7 +8,7 @@ Q_NAMESPACE
 
 enum QuickToolGroupType
 {
-    EmptyGroup = 0,
+    EmptyGroup = 0,    //!< 空分组
     ImageProcessGroup, //!< 图像处理分组
     DeepLearningGroup, //!< 深度学习分组
     SamplesGroup,      //!< 示例分组
@@ -22,7 +22,8 @@ Q_NAMESPACE
 
 enum QuickToolTaskType
 {
-    EmptyTask = 0,
+    EmptyTask = 0, //!< 空任务
+    DetectionTask, //!< 检测任务
 };
 Q_ENUM_NS(QuickToolTaskType)
 QML_NAMED_ELEMENT(QuickToolTaskType)
@@ -33,8 +34,9 @@ Q_NAMESPACE
 
 enum QuickToolType
 {
-    EmptyTool          = 0,
-    ImageHistogramTool = 1, //!< 图像直方图
+    EmptyTool = 0,      //!< 空工具
+    ImageHistogramTool, //!< 图像直方图
+    Yolov8,
     PyTestTool,
 };
 Q_ENUM_NS(QuickToolType)
