@@ -48,10 +48,12 @@ std::tuple<int, std::tuple<float, float>> getHistSizeAndRange(const QString &col
 std::tuple<int, QString> ImageHistogram::doInProcess()
 {
     auto algorithm_start_time = std::chrono::high_resolution_clock::now();
-    auto input_params         = getInputParams();
-    auto output_params        = getOutputParams();
+
+    auto input_params  = getInputParams();
+    auto output_params = getOutputParams();
     if (input_params == nullptr || output_params == nullptr)
         return {-1, tr("输入/输出参数为空指针")};
+
     const QString image_path = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
     if (image_path.isEmpty())
         return {-1, tr("输入图像路径为空")};
@@ -110,13 +112,14 @@ std::tuple<int, QString> ImageHistogram::doInProcess()
         hists_max.append(max_value);
         setProgress(0.5 + (i + 1) * step);
     }
+
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
     auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
     auto read_time      = std::chrono::duration<double, std::milli>(read_end_time - read_start_time).count();
+
     addAlgorithmTime(algorithm_time);
     addAlgorithmTime(read_time);
     addAlgorithmTime(algorithm_time - read_time);
-
     output_params->setData("Channels", image.channels());
     output_params->setData("Hist", QVariant::fromValue(hists_data));
     output_params->setData("HistMin", QVariant::fromValue(hists_min));

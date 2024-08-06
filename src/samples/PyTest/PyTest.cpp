@@ -30,13 +30,16 @@ PyTest::PyTest(QObject *parent)
 
 std::tuple<int, QString> PyTest::doInProcess()
 {
-    auto    algorithm_start_time = std::chrono::high_resolution_clock::now();
-    int     status               = 0;
-    QString msg                  = tr("运行成功");
-    auto    input_params         = getInputParams();
-    auto    output_params        = getOutputParams();
+    auto algorithm_start_time = std::chrono::high_resolution_clock::now();
+
+    int     status = 0;
+    QString msg    = tr("运行成功");
+
+    auto input_params  = getInputParams();
+    auto output_params = getOutputParams();
     if (input_params == nullptr || output_params == nullptr)
         return {-1, tr("输入/输出参数为空指针")};
+
     QString key = input_params->data("Key", QuickToolParamRole::ParamValueRole).toString();
     QString now;
     double  value{0};
@@ -49,11 +52,14 @@ std::tuple<int, QString> PyTest::doInProcess()
         now   = QString::fromStdString(current_time.cast<std::string>());
         value = v.cast<double>();
     }
+
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
     auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
+
     addAlgorithmTime(algorithm_time);
     output_params->setData("Now", now);
     output_params->setData("Var", value);
+
     return {status, msg};
 }
 
