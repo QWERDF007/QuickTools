@@ -56,20 +56,27 @@ AbstractQuickTool::~AbstractQuickTool()
     QuickToolManager::getInstance()->removeFromActivated(this);
 }
 
-int AbstractQuickTool::init()
+std::tuple<int, QString> AbstractQuickTool::init()
 {
     spdlog::info("初始化工具: {}, uuid: {}", name().toUtf8().constData(), uuid().toUtf8().constData());
-    int ret = checkParams();
-    if (ret == 0)
-        ret = checkSettings();
-    if (ret == 0 && python_interface_)
+    int     ret{0};
+    QString msg{"初始化成功"};
+    ret = checkParams();
+    if (ret != 0)
+        return {ret, "初始化输入/输出参数失败"};
+    ret = checkSettings();
+    if (ret != 0)
+        return {ret, "初始化设置失败"};
+    if (python_interface_)
     {
-        const auto [status, msg] = python_interface_->init();
-        ret                      = status;
+        const auto &[_ret, _msg] = python_interface_->init();
+
+        ret = _ret;
+        msg = _msg;
     }
     if (ret == 0)
         setIsInit(true);
-    return ret;
+    return {ret, msg};
 }
 
 void AbstractQuickTool::run()
@@ -162,14 +169,16 @@ int AbstractQuickTool::checkSettings()
 
 bool AbstractQuickTool::preprocess()
 {
-    int ret = 0;
     if (!isInit())
-        ret = init();
-    if (ret != 0)
     {
-        emit showMessage(InfoLevel::Error, tr("运行失败, 初始化失败"));
-        spdlog::error("运行失败, 初始化失败: {}, uuid: {}", name().toUtf8().constData(), uuid().toUtf8().constData());
-        return false;
+        const auto &[ret, msg] = init();
+        if (ret != 0)
+        {
+            emit showMessage(InfoLevel::Error, msg);
+            spdlog::error(": {}, uuid: {}", msg.toUtf8().constData(), name().toUtf8().constData(),
+                          uuid().toUtf8().constData());
+            return false;
+        }
     }
     clearAlgorithmTime();
     setProgress(0);

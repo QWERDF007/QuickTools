@@ -80,7 +80,7 @@ public:
      * @return 初始化结果状态码
      * @retval 0 初始化成功
      */
-    int init();
+    std::tuple<int, QString> init();
 
     /**
      * @brief 设置工具初始化的状态
