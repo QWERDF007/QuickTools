@@ -31,7 +31,7 @@ QuickObject {
     }
 
     QuickPaneItem {
-        title: "图像处理"
+        title: qsTr("图像处理")
         group: QuickToolManager.getGroupUUID(QuickToolGroupType.ImageProcessGroup)
         iconVisible: true
         icon: QuickFontIcon.QRCode
@@ -46,21 +46,27 @@ QuickObject {
         icon: QuickFontIcon.ReportHacked
         group: QuickToolManager.getGroupUUID(QuickToolGroupType.DeepLearningGroup)
         QuickPaneItem {
-            title: "图像分类"
-            url: "qrc:/qt/qml/QuickTools/page/ImageClassificationPage.qml"
+            title: qsTr("图像分类")
+            url: "qrc:/qt/qml/QuickTools/page/ClassificationPage.qml"
             onTap: { navigationView.push(url) }
             group: dlgroup.group
         }
         QuickPaneItem {
-            title: "语义分割"
-            url: "qrc:/qt/qml/QuickTools/page/ImageSegmentationPage.qml"
+            title: qsTr("目标检测")
+            url: "qrc:/qt/qml/QuickTools/page/DetectionPage.qml"
+            onTap: { navigationView.push(url) }
+            group: dlgroup.group
+        }
+        QuickPaneItem {
+            title: qsTr("语义分割")
+            url: "qrc:/qt/qml/QuickTools/page/SegmentationPage.qml"
             onTap: { navigationView.push(url) }
             group: dlgroup.group
         }
     }
 
     QuickPaneItem {
-        title: "示例工具"
+        title: qsTr("示例工具")
         group: QuickToolManager.getGroupUUID(QuickToolGroupType.SamplesGroup)
         iconVisible: true
         icon: QuickFontIcon.Emoji2

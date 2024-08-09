@@ -4,5 +4,5 @@ import QtQuick.Controls
 import "../global"
 
 T_Page {
-    items: SamplesItems
+    items: DetectionItems
 }

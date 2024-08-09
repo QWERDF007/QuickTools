@@ -8,6 +8,7 @@ QuickObject {
     property var pages: [
         ImageProcessItems,
         SamplesItems,
+        DetectionItems,
     ]
     function getRecentlyAddedData() {
         var data = []

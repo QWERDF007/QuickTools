@@ -5,6 +5,7 @@
 #include "core/PythonManager.h"
 #include "imgproc/ImgprocRegister.h"
 #include "samples/SamplesRegister.h"
+#include "deeplearning/DeepLearningRegister.h"
 
 #include <QApplication>
 #include <QQmlApplicationEngine>
@@ -41,6 +42,7 @@ int main(int argc, char *argv[])
 
     quicktools::imgproc::registerTools();
     quicktools::samples::registerTools();
+    quicktools::dl::registerTools();
     quicktools::core::PythonManager::getInstance()->init();
 
     qDebug() << "qml import path list" << engine.importPathList();
