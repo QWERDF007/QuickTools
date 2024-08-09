@@ -58,7 +58,6 @@ public:
     void setPythonHome(const QString &python_home);
 
 public:
-
     /**
      * @brief 默认的 python 环境
      * @return
@@ -130,6 +129,5 @@ inline QString PythonManager::pythonHome() const
 {
     return python_home_;
 }
-
 
 } // namespace quicktools::core

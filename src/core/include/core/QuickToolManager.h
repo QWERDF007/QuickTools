@@ -1,3 +1,5 @@
+#pragma once
+
 #include "QuickTool.h"
 
 #include <QAbstractTableModel>

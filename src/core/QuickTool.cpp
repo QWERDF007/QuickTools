@@ -43,7 +43,6 @@ QString pythonErrorHandle(const pybind11::error_already_set &e)
 
 AbstractQuickTool::AbstractQuickTool(QObject *parent)
     : QObject{parent}
-    , helper_(new QuickToolHelper(this))
     , uuid_(common::uuid())
 {
     // If auto-deletion is enabled, QThreadPool will automatically

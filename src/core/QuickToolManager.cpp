@@ -31,7 +31,6 @@ QuickToolManager::QuickToolManager(QObject *parent)
 {
 }
 
-
 QuickToolManager *QuickToolManager::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 {
     qmlEngine_ = qmlEngine;
@@ -239,7 +238,8 @@ bool ActivatedTools::removeFromActivated(AbstractQuickTool *tool)
 
 void ActivatedTools::onToolRunningChanged()
 {
-    AbstractQuickTool* tool = qobject_cast<AbstractQuickTool*>(sender());
+    AbstractQuickTool *tool = qobject_cast<AbstractQuickTool *>(sender());
+
     int size = static_cast<int>(activated_tools_.size());
     int row{-1};
     for (int i = 0; i < size; ++i)
@@ -253,6 +253,7 @@ void ActivatedTools::onToolRunningChanged()
     if (row == -1)
         return;
     QModelIndex top_left = index(row, 2);
+
     emit dataChanged(top_left, top_left, {Qt::DisplayRole});
 }
 

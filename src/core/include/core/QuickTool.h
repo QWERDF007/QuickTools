@@ -2,7 +2,6 @@
 
 #include "CoreGlobal.h"
 #include "PythonInterface.h"
-#include "QuickToolHelper.h"
 #include "QuickToolParams.h"
 #include "QuickToolSettings.h"
 
@@ -33,7 +32,6 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
     Q_PROPERTY(OutputParams *outputParams READ outputParams CONSTANT FINAL)
     /// 工具设置项
     Q_PROPERTY(AbstractQuickToolSettings *settings READ settings CONSTANT FINAL)
-    Q_PROPERTY(QuickToolHelper *helper READ helper CONSTANT FINAL)
     /// 工具名称
     Q_PROPERTY(QString name READ name CONSTANT FINAL) // FINAL 表明该属性不会被派生类覆盖
     /// 工具文档
@@ -140,8 +138,6 @@ public:
      * @param [in] jsEngine
      */
     void setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
-
-    QuickToolHelper *helper();
 
     /**
      * @brief 工具是否包含 python, 默认 false, 具有 python 的工具重写此函数
@@ -282,8 +278,6 @@ private:
     QQmlEngine *qmlEngine_{nullptr};
     QJSEngine  *jsEngine_{nullptr};
 
-    QuickToolHelper *helper_{nullptr};
-
     /// 工具是否初始化
     bool is_init_{false};
 
@@ -363,11 +357,6 @@ inline void AbstractQuickTool::addAlgorithmTime(const double algorithm_time)
 inline void AbstractQuickTool::clearAlgorithmTime()
 {
     algorithm_time_array_.clear();
-}
-
-inline QuickToolHelper *AbstractQuickTool::helper()
-{
-    return helper_;
 }
 
 inline bool AbstractQuickTool::hasPython() const

@@ -1,5 +1,7 @@
 #include "imgproc/ImgprocRegister.h"
 
+#include "core/QuickToolManager.h"
+#include "core/QuickToolType.h"
 #include "imgproc/ImageHistogram.h"
 
 namespace quicktools::imgproc {

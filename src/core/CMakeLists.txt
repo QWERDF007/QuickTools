@@ -76,7 +76,7 @@ string(TOUPPER ${TARGET_NAME} TARGET_NAME_UPPER)
 set(TARGET_EXPORTS "${TARGET_NAME_UPPER}_LIBRARY")
 # 添加一个宏定义, 配合动态库导出函数、类
 # https://stackoverflow.com/a/67923443
-add_compile_definitions(${TARGET_NAME} PRIVATE ${TARGET_EXPORTS})
+target_compile_definitions(${TARGET_NAME} PRIVATE ${TARGET_EXPORTS})
 
 # 添加接口头文件，链接目标后可以include, 无需另外包含头文件目录
 set(PLUGIN_HEADER "${PROJECT_NAME}_${PLUGIN_NAME}_headers")

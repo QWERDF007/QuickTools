@@ -27,6 +27,8 @@ enum QuickToolParamType
     Int2DArrayParamType,
     Double2DArrayParamType,
     Text2DArrayParamType,
+    FileParamType,         //!< 文件
+    FolderParamType,       //!< 目录
     ImageParamType = 4000, //!< 图像
     AudioParamType = 6000, //!< 音频
 };

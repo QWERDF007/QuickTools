@@ -1,4 +1,5 @@
 #pragma once
+
 #include <QtQml>
 
 namespace quicktools::core {
@@ -36,7 +37,7 @@ enum QuickToolType
 {
     EmptyTool = 0,      //!< 空工具
     ImageHistogramTool, //!< 图像直方图
-    Yolov8,
+    Yolov8DetectionTool,
     PyTestTool,
 };
 Q_ENUM_NS(QuickToolType)

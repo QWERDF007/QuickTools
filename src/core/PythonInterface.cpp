@@ -25,9 +25,11 @@ std::tuple<int, QString> AbstractPythonInterface::init()
     int     ret = 0;
     QString msg{"初始化成功"};
     if (!PythonManager::getInstance()->isInit())
-        return {ret, "Python 环境未初始化"};
+        return {-1, "Python 环境未初始化"};
     try
     {
+        if (importModule().isEmpty())
+            return {ret, msg};
         pybind11::gil_scoped_acquire acquire;
         module = pybind11::module_::import(importModule().toLocal8Bit().constData());
         spdlog::debug("导入 python 模块: {}", importModule().toUtf8().constData());
