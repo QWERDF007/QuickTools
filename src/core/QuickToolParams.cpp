@@ -215,6 +215,11 @@ QVariant imageParamDisplay(const QVariant &value)
     return value;
 }
 
+QVariant fileFolderParamDisplay(const QVariant &value)
+{
+    return value;
+}
+
 QVariant getParamsDisplay(const int param_type, const QVariant &data)
 {
     static std::map<int, std::function<QVariant(const QVariant &)>> func_map{
@@ -229,7 +234,9 @@ QVariant getParamsDisplay(const int param_type, const QVariant &data)
         {   QuickToolParamType::Int2DArrayParamType,    int2DArrayParamDisplay},
         {QuickToolParamType::Double2DArrayParamType, double2DArrayParamDisplay},
         {  QuickToolParamType::Text2DArrayParamType,   text2DArrayParamDisplay},
-        {        QuickToolParamType::ImageParamType,         imageParamDisplay},
+        {   QuickToolParamType::InputImageParamType,         imageParamDisplay},
+        {    QuickToolParamType::InputFileParamType,    fileFolderParamDisplay},
+        {  QuickToolParamType::InputFolderParamType,    fileFolderParamDisplay},
     };
     if (data.isNull())
         return "";
@@ -390,7 +397,9 @@ QString AbstractQuickToolParams::getTypeName(const int type)
         {   QuickToolParamType::Int2DArrayParamType,    "2D Int Array"},
         {QuickToolParamType::Double2DArrayParamType, "2D Double Array"},
         {  QuickToolParamType::Text2DArrayParamType,   "2D Text Array"},
-        {        QuickToolParamType::ImageParamType,           "Image"},
+        {   QuickToolParamType::InputImageParamType,     "Input Image"},
+        {    QuickToolParamType::InputFileParamType,      "Input File"},
+        {  QuickToolParamType::InputFolderParamType,    "Input Folder"},
     };
     auto found = typeNamesMap.find(type);
     return found == typeNamesMap.end() ? "undefined" : found.value();
@@ -433,6 +442,28 @@ bool OutputParams::setToolTime(const double wall_clock_time, const QList<double>
 bool OutputParams::setStatus(const int status, const QString &msg)
 {
     return setData("Status", QVariantList{status, msg});
+}
+
+bool InputParams::addComboBox(const QString &name, const QString &display_name, const QString &desc,
+                              const QVariant &value, const QVariantList &model, const bool is_property,
+                              const bool &visible)
+{
+    QVariantMap additional{
+        {"model", model},
+    };
+    return AbstractQuickToolParams::addParam(name, display_name, desc, QuickToolParamType::ComboBoxParamType, value,
+                                             additional, false, is_property, true, visible);
+}
+
+bool InputParams::addInputImage(const QString &name, const QString &display_name, const QString &desc,
+                                const QVariant &value, const bool open_folder, const bool is_property,
+                                const bool &visible)
+{
+    QVariantMap additional{
+        {"openFolder", open_folder},
+    };
+    return AbstractQuickToolParams::addParam(name, display_name, desc, QuickToolParamType::InputImageParamType, value,
+                                             additional, true, is_property, true, visible);
 }
 
 } // namespace quicktools::core

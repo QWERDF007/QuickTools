@@ -158,12 +158,40 @@ Rectangle {
         InputImageParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
             }
         }
     }
+    Component {
+        id: inputFileParamItem
+
+        InputFileParamItem {
+            paramDisplay: paramItemDelegate.paramDisplay
+            paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            
+            onValueChanged: function (value) {
+                paramItemDelegate.valueChanged(value)
+            }
+        }
+    }
+    Component {
+        id: inputFolderParamItem
+
+        InputFolderParamItem {
+            paramDisplay: paramItemDelegate.paramDisplay
+            paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+
+            onValueChanged: function (value) {
+                paramItemDelegate.valueChanged(value)
+            }
+        }
+    }
+
     Component {
         id: comboBoxParamItem
 
@@ -243,11 +271,16 @@ Rectangle {
                     return double2DArrayParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParamType.Text2DArrayParamType) {
                     return text2DArrayParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParamType.ImageParamType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.InputImageParamType) {
                     return inputImageParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParamType.ComboBoxParamType) {
                     return comboBoxParamItem
+                } else if (paramItemDelegate.paramType === QuickToolParamType.InputFileParamType) {
+                    return inputFileParamItem
+                } else if (paramItemDelegate.paramType === QuickToolParamType.InputFolderParamType) {
+                    return inputFolderParamItem
                 }
+
                 return undefined
             }
             width: parent.width

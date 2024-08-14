@@ -7,7 +7,7 @@ import QuickTools.ui
 import QuickTools.core
 
 T_ParamItem {
-    id: inputImageItem
+    id: fileItem
 
     displayText: _content.text
     tooltipText: _content.text
@@ -30,38 +30,21 @@ T_ParamItem {
             verticalAlignment: Text.AlignVCenter
         }
         QuickToolButton {
-            id: imageBtn
-            icon.source: "/icons/image"
+            id: fileBtn
+            icon.source: "/icons/file"
             implicitHeight: Math.min(parent.width, parent.height)
             implicitWidth: Math.min(parent.width, parent.height)
 
             onClicked: {
-                if (paramAdditional && paramAdditional.openFolder) {
-                    folderDialog.open()
-                } else {
-                    fileDialog.open()
-                }
+                folderDialog.open()
             }
             QuickToolTip{
-                text: qsTr("选择图像")
-                visible: imageBtn.hovered
+                text: qsTr("选择文件")
+                visible: fileBtn.hovered
                 delay: 200
             }
         }
     }
-
-    FileDialog {
-        id: fileDialog
-
-        folder: StandardPaths.writableLocation(StandardPaths.PicturesLocation)
-        nameFilters: ["Image files (*.jpg *.jpeg *.png *.bmp)"]
-
-        onAccepted: {
-            var path = fileDialog.file.toString().toLowerCase().slice(8);
-            valueChanged(path);
-        }
-    }
-
     FolderDialog  {
         id: folderDialog
 

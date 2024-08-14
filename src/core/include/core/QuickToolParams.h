@@ -11,10 +11,13 @@ namespace quicktools::core {
 namespace paramtypes {
 Q_NAMESPACE
 
+/**
+ * @brief 参数类型枚举
+ */
 enum QuickToolParamType
 {
-    StatusParamType = 0,
-    TimeParamType,
+    StatusParamType = 0,    //!< 状态
+    TimeParamType,          //!< 运行时间
     TextParamType,          //!< 文本参数
     IntSpinBoxParamType,    //!< 整型旋钮
     DoubleSpinBoxParamType, //!< 浮点旋钮
@@ -27,14 +30,17 @@ enum QuickToolParamType
     Int2DArrayParamType,
     Double2DArrayParamType,
     Text2DArrayParamType,
-    FileParamType,         //!< 文件
-    FolderParamType,       //!< 目录
-    ImageParamType = 4000, //!< 图像
-    AudioParamType = 6000, //!< 音频
+    InputFileParamType,         //!< 输入文件
+    InputFolderParamType,       //!< 输入目录
+    InputImageParamType = 4000, //!< 输入图像
+    InputAudioParamType = 6000, //!< 输入音频
 };
 Q_ENUM_NS(QuickToolParamType) // 向元对象系统注册枚举类型 QuickToolParamType，必须在 Q_NAMESPACE 宏声明的命名空间中
 QML_NAMED_ELEMENT(QuickToolParamType) // 声明命名空间在 QML 中可用，以 QuickToolParam 进行访问
 
+/**
+ * @brief 参数数据的角色枚举
+ */
 enum QuickToolParamRole
 {
     ParamIndexRole = Qt::UserRole + 1,
@@ -78,46 +84,97 @@ public:
 
     bool setData(const QString &name, const QVariant &value);
 
+    /**
+     * @brief 添加参数
+     * @param[in] name 参数名称
+     * @param[in] display_name 参数展示名称
+     * @param[in] desc 参数描述
+     * @param[in] type 参数类型 @ref QuickToolParamType
+     * @param[in] value 参数数据
+     * @param[in] additional 参数附加数据
+     * @param[in] editable 参数是否可编辑
+     * @param[in] is_property 参数是否作为属性被界面访问
+     * @param[in] run_tool_after_param_changed 是否在参数发生变化后运行工具
+     * @param[in] visible 参数是否可见
+     * @return
+     */
     bool addParam(const QString &name, const QString &display_name, const QString &desc, const int type,
                   const QVariant &value, const QVariant &additional = QVariant(), const bool editable = false,
                   const bool is_property = false, const bool run_tool_after_param_changed = true,
                   const bool &visible = true);
 
+    /**
+     * @brief 属性指针, 用于界面直接访问参数的数据
+     * @return
+     */
     QQmlPropertyMap *pdata()
     {
         return &property_data_;
     }
 
+    /**
+     * @brief 获取参数的数量
+     * @return
+     */
     int size() const
     {
         return rowCount();
     }
 
+    /**
+     * @brief 获取参数是否为空
+     * @return
+     */
     bool empty() const
     {
         return size() <= 0;
     }
 
+    /**
+     * @brief 获取参数类型的名称
+     * @param[in] type 参数类型 @ref QuickToolParamType
+     * @return 参数类型的名称
+     */
     static QString getTypeName(const int type);
 
+    /**
+     * @brief 获取参数是否初始化
+     * @return
+     */
     bool isInit() const
     {
         return is_init_;
     }
 
+    /**
+     * @brief 设置参数的初始化状态
+     * @param is_init
+     */
     void setIsInit(const bool is_init)
     {
         is_init_ = is_init;
     }
 
 protected:
-    QList<QString>                     params_names_;  // [name]
-    QMap<QString, QMap<int, QVariant>> params_data_;   // [name, [key, value]]
-    QQmlPropertyMap                    property_data_; // QML 中可直接访问和修改对应 key 的属性
+    /**
+     * @brief 参数的名称
+     */
+    QList<QString> params_names_; // [name]
+
+    /**
+     * @brief 参数的数据, 每个参数包含多个数据 @ref QuickToolParamRole
+     */
+    QMap<QString, QMap<int, QVariant>> params_data_; // [name, [key, value]]
+
+    /**
+     * @brief 界面通过属性访问参数数据
+     */
+    QQmlPropertyMap property_data_; // QML 中可直接访问和修改对应 key 的属性
 
 private:
     bool setVisible(const QModelIndex &index, const QVariant &value);
     bool setValue(const QModelIndex &index, const QVariant &value);
+
     bool is_init_{false};
 
 private slots:
@@ -146,6 +203,34 @@ public:
     {
         return "InputParams";
     }
+
+    /**
+     * @brief 添加下拉框参数
+     * @param[in] name 参数名称
+     * @param[in] display_name 参数展示名称
+     * @param[in] desc 参数描述
+     * @param[in] value 参数数据
+     * @param[in] model 下拉列表模型
+     * @param[in] is_property 参数是否作为属性被界面访问
+     * @param[in] visible 参数是否可见
+     * @return
+     */
+    bool addComboBox(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
+                     const QVariantList &model, const bool is_property = false, const bool &visible = true);
+
+    /**
+     * @brief 添加输入图像参数
+     * @param[in] name 参数名称
+     * @param[in] display_name 参数展示名称
+     * @param[in] desc 参数描述
+     * @param[in] value 参数数据
+     * @param[in] open_folder 是否打开目录, 而不是单个图像文件
+     * @param[in] is_property 参数是否作为属性被界面访问
+     * @param[in] visible 参数是否可见
+     * @return
+     */
+    bool addInputImage(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
+                       const bool open_folder = false, const bool is_property = false, const bool &visible = true);
 };
 
 class QUICKTOOLS_CORE_EXPORT OutputParams : public AbstractQuickToolParams
@@ -163,11 +248,36 @@ public:
         return "OutputParams";
     }
 
+    /**
+     * @brief 添加输出参数
+     * @param[in] name 参数名称
+     * @param[in] display_name 参数展示名称
+     * @param[in] desc 参数描述
+     * @param[in] type 参数类型 @ref QuickToolParamType
+     * @param[in] value 参数数据
+     * @param[in] additional 参数附加数据
+     * @param[in] is_property 参数是否作为属性被界面访问
+     * @param[in] visible 参数是否可见
+     * @return
+     */
     bool addParam(const QString &name, const QString &display_name, const QString &desc, const int type,
                   const QVariant &value, const QVariant &additional = QVariant(), const bool is_property = false,
                   const bool &visible = true);
 
+    /**
+     * @brief 设置工具运行时间
+     * @param[in] wall_clock_time 工具整体运行时间
+     * @param[in] algorithm_time 工具每个部分的运行时间
+     * @return
+     */
     bool setToolTime(const double wall_clock_time, const QList<double> &algorithm_time);
+
+    /**
+     * @brief 设置工具运行状态 @ref Error::Code
+     * @param[in] status 工具运行状态
+     * @param[in] msg 状态信息
+     * @return
+     */
     bool setStatus(const int status, const QString &msg);
 };
 

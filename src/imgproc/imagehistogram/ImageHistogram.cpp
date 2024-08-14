@@ -186,11 +186,9 @@ int ImageHistogram::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addParam("Image", tr("图像"), tr("输入图像的路径"), QuickToolParamType::ImageParamType,
-                                QVariant(), QVariant(), true, true, true, true);
-        input_params_->addParam("ColorSpace", tr("色彩空间"), tr("将输入图像转换到对应的色彩空间"),
-                                QuickToolParamType::ComboBoxParamType, COLOR_SPACES[0], COLOR_SPACES, false, false,
-                                true, true);
+        input_params_->addInputImage("Image", tr("图像"), tr("输入图像的路径"), QVariant(), false, true, true);
+        input_params_->addComboBox("ColorSpace", tr("色彩空间"), tr("将输入图像转换到对应的色彩空间"), COLOR_SPACES[0],
+                                   COLOR_SPACES, false, true);
     }
     return 0;
 }
