@@ -21,6 +21,7 @@
         <file alias="refresh">icons/refresh.svg</file>
         <file alias="reset">icons/reset.svg</file>
         <file alias="folder">icons/folder.svg</file>
+        <file alias="file">icons/file.svg</file>
     </qresource>
     <qresource prefix="/Font">
         <file alias="Icons.ttf">Font/Segoe_Fluent_Icons.ttf</file>
