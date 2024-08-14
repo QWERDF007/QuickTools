@@ -11,7 +11,7 @@ T_CVWindow {
 
     acceptedShapes: QuickShape.Rectangle
     activateItem: image
-    quicktool: QuickToolManager.createQuickTool(QuickToolType.Yolov8, yolov8Win)
+    quicktool: QuickToolManager.createQuickTool(QuickToolType.Yolov8DetectionTool, yolov8Win)
 
     Item {
         id: imageContainer

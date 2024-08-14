@@ -7,10 +7,10 @@ namespace quicktools::dl::detection {
 using core::paramtypes::QuickToolParamRole;
 using core::paramtypes::QuickToolParamType;
 
-class Yolov8PythonInterface : public core::AbstractPythonInterface
+class Yolov8DetectionPythonInterface : public core::AbstractPythonInterface
 {
 public:
-    Yolov8PythonInterface(QObject *parent = nullptr)
+    Yolov8DetectionPythonInterface(QObject *parent = nullptr)
         : core::AbstractPythonInterface(parent)
     {
     }
@@ -18,13 +18,14 @@ public:
 protected:
     QString importModule() const override
     {
-        return "";
+        return "yolov8_detection";
     }
 };
 
 Yolov8Detection::Yolov8Detection(QObject *parent)
     : core::AbstractCVTool(parent)
 {
+    python_interface_ = new Yolov8DetectionPythonInterface(this);
 }
 
 std::tuple<int, QString> Yolov8Detection::doInProcess()
@@ -55,9 +56,16 @@ int Yolov8Detection::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addParam("Image", tr("图像"), tr("输入图像的路径"), QuickToolParamType::ImageParamType,
+        input_params_->addParam("Image", tr("图像"), tr("输入图像的路径"), QuickToolParamType::InputImageParamType,
                                 QVariant(), QVariant(), true, true, true, true);
-        input_params_->addParam("Image", tr("图像"), tr("输入图像的路径"), QuickToolParamType::ImageParamType,
+        input_params_->addParam("Model", tr("模型文件"), tr("模型文件的路径"), QuickToolParamType::InputFileParamType,
+                                QVariant(), QVariant(), true, true, true, true);
+        input_params_->addParam("Imgsz", tr("图像大小"), tr("模型的输入图像大小"),
+                                QuickToolParamType::IntSpinBoxParamType, QVariant(), QVariant(), true, true, true,
+                                true);
+        input_params_->addParam("ConfidenceThreshold", tr("置信度阈值"), "", QuickToolParamType::DoubleSpinBoxParamType,
+                                QVariant(), QVariant(), true, true, true, true);
+        input_params_->addParam("IouThreshold", tr("iou阈值"), "", QuickToolParamType::DoubleSpinBoxParamType,
                                 QVariant(), QVariant(), true, true, true, true);
     }
     return Error::Success;
@@ -67,6 +75,12 @@ int Yolov8Detection::initOutputParams()
 {
     if (output_params_)
     {
+        output_params_->addParam("Rects", tr("矩形框"), tr("模型预测的矩形框"),
+                                 QuickToolParamType::Double2DArrayParamType, QVariant(), QVariant(), false, true);
+        output_params_->addParam("Classes", tr("类别"), tr("模型预测的矩形框的类别"),
+                                 QuickToolParamType::Int1DArrayParamType, QVariant(), QVariant(), false, true);
+        output_params_->addParam("Confidences", tr("置信度"), tr("模型预测的矩形框的置信度"),
+                                 QuickToolParamType::Double1DArrayParamType, QVariant(), QVariant(), false, true);
     }
     return Error::Success;
 }
