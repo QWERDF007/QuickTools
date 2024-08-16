@@ -2,6 +2,8 @@
 
 #include "core/Error.h"
 
+#include <pybind11/pybind11.h>
+
 namespace quicktools::dl::detection {
 
 using core::paramtypes::QuickToolParamRole;
@@ -39,7 +41,12 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
     auto output_params = getOutputParams();
     if (input_params == nullptr || output_params == nullptr)
         return {-1, tr("输入/输出参数为空指针")};
-
+    pybind11::gil_scoped_acquire acquire;
+    {
+        if (!python_interface_->obj)
+            python_interface_->obj = python_interface_->module.attr("Yolov8Detection")("", 640, "cuda:0");
+        python_interface_->obj.attr("detect")("img");
+    }
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
     auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
     addAlgorithmTime(algorithm_time);
