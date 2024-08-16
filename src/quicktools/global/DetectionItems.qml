@@ -8,7 +8,7 @@ import "../component"
 
 ToolsList {
     id: list
-    group: QuickToolManager.getGroupUUID(QuickToolGroupType.SamplesGroup)
+    group: QuickToolManager.getGroupUUID(QuickToolGroupType.DeepLearningGroup)
     ToolItem {
         title: "Yolov8 Detection"
         desc: qsTr("Yolov8 目标检测工具")
