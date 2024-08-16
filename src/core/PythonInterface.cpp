@@ -13,11 +13,7 @@ AbstractPythonInterface::AbstractPythonInterface(QObject *parent)
 
 AbstractPythonInterface::~AbstractPythonInterface()
 {
-    if (module)
-    {
-        pybind11::gil_scoped_acquire acquire;
-        module.release();
-    }
+    release();
 }
 
 std::tuple<int, QString> AbstractPythonInterface::init()
@@ -62,6 +58,17 @@ std::tuple<int, QString> AbstractPythonInterface::reloadModule()
         spdlog::error("重新加载模块: {}, 失败: {}", importModule().toUtf8().constData(), e.what());
     }
     return {ret, msg};
+}
+
+void AbstractPythonInterface::release()
+{
+    pybind11::gil_scoped_acquire acquire;
+    {
+        if (module)
+            module.release();
+        if (obj)
+            obj.release();
+    }
 }
 
 } // namespace quicktools::core

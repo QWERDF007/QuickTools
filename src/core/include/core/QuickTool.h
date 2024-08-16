@@ -140,7 +140,7 @@ public:
     void setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
     /**
-     * @brief 工具是否包含 python, 默认 false, 具有 python 的工具重写此函数
+     * @brief 工具是否包含 python, 默认 false, 具有 python 的工具实例化 @ref python_interface_ 以返回 True
      * @return
      */
     virtual bool hasPython() const;
@@ -171,7 +171,16 @@ public:
 
     void setRunning(bool running);
 
+    /**
+     * @brief 重新加载工具的 python 模块
+     * @see AbstractPythonInterface::reloadModule
+     */
     Q_INVOKABLE void reloadModule();
+
+    /**
+     * @brief 释放 python 模块, 一般在切换 Python 环境时调用
+     */
+    void releasePythonModule();
 
 protected:
     /**
@@ -201,6 +210,9 @@ protected:
      */
     virtual std::tuple<int, QString> doInProcess() = 0;
 
+    /**
+     * @brief 访问 python 的接口, 调用 pybind11 来实现
+     */
     AbstractPythonInterface *python_interface_{nullptr};
 
 protected slots:

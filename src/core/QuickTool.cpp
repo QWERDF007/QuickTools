@@ -115,6 +115,13 @@ void AbstractQuickTool::submit()
     QThreadPool::globalInstance()->start(this);
 }
 
+void AbstractQuickTool::releasePythonModule()
+{
+    if (python_interface_ == nullptr)
+        return;
+    python_interface_->release();
+}
+
 int AbstractQuickTool::checkParams()
 {
     int ret = checkInputParams();

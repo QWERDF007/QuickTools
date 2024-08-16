@@ -38,6 +38,7 @@ void GlobalSettings::onSettingChange(const QString &key, const QVariant &value)
             [this, python_home]()
             {
                 emit changeStarted();
+
                 std::vector<AbstractQuickTool *> python_tools;
                 for (auto tool : QuickToolManager::getInstance()->activatedTools()->getActivatedTools())
                 {
@@ -46,8 +47,13 @@ void GlobalSettings::onSettingChange(const QString &key, const QVariant &value)
                     python_tools.push_back(tool);
                     while (tool->running()) std::this_thread::sleep_for(100ms);
                 }
+                for (auto tool : python_tools)
+                {
+                    tool->releasePythonModule();
+                    tool->setIsInit(false);
+                }
                 PythonManager::getInstance()->setPythonHome(python_home);
-                for (auto tool : python_tools) tool->setIsInit(false);
+
                 emit changeFinished();
             });
     }
