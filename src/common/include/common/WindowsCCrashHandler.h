@@ -2,6 +2,7 @@
 
 // https://www.codeproject.com/Articles/207464/Exception-Handling-in-Visual-Cplusplus
 
+#include <functional>
 #include <string>
 
 #if defined(_WIN32)
@@ -16,7 +17,9 @@ public:
     explicit WindowsCCrashHandler() = default;
     ~WindowsCCrashHandler()         = default;
 
-    void setup();
+    void setup(std::function<void()> func = nullptr);
+
+    static std::function<void()> crash_callback;
 
 private:
 #if defined(_WIN32)

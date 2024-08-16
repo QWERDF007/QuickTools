@@ -309,6 +309,9 @@ void WindowsCCrashHandler::HandleAccessViolation(HANDLE process, LPEXCEPTION_POI
     auto msg = sout.str();
     CreateMiniDump("crashdump.dmp", exception, msg);
     std::cerr << msg << std::endl;
+
+    if (crash_callback)
+        crash_callback();
 }
 
 void WindowsCCrashHandler::HandleCommonException(HANDLE process, LPEXCEPTION_POINTERS exception,
@@ -327,6 +330,9 @@ void WindowsCCrashHandler::HandleCommonException(HANDLE process, LPEXCEPTION_POI
     auto msg = sout.str();
     CreateMiniDump("crashdump.dmp", exception, msg);
     std::cerr << msg << std::endl;
+
+    if (crash_callback)
+        crash_callback();
 }
 
 LONG WINAPI WindowsCCrashHandler::UnhandledExceptionHandler(LPEXCEPTION_POINTERS exception)
@@ -549,8 +555,11 @@ void WindowsCCrashHandler::SetThreadExceptionHandlder()
 
 #endif
 
-void WindowsCCrashHandler::setup()
+std::function<void()> WindowsCCrashHandler::crash_callback = nullptr;
+
+void WindowsCCrashHandler::setup(std::function<void()> func)
 {
+    crash_callback = func;
 #if defined(_WIN32)
     SetProcessExceptionHandlder();
     SetThreadExceptionHandlder();
