@@ -9,6 +9,8 @@ namespace quicktools::dl::detection {
 using core::paramtypes::QuickToolParamRole;
 using core::paramtypes::QuickToolParamType;
 
+using core::PythonHelper;
+
 class Yolov8DetectionPythonInterface : public core::AbstractPythonInterface
 {
 public:
@@ -46,21 +48,24 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
     auto output_params = getOutputParams();
     if (output_params == nullptr)
         return {-1, tr("输出参数为空指针")};
-
+    cv::Mat image = cv::imread(detection_params_.image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
     pybind11::gil_scoped_acquire acquire;
     {
+        // 初始化
         if (!python_interface_->obj)
         {
             python_interface_->obj = python_interface_->module.attr("Yolov8Detection")(
-                detection_params_.model_path, detection_params_.imgsz, detection_params_.device);
+                detection_params_.model_path.toUtf8().constData(), detection_params_.imgsz, detection_params_.device.toUtf8().constData());
             detection_params_.is_init = true;
         }
-        if (detection_params_.is_init)
+        // 重新初始化模型
+        if (!detection_params_.is_init)
         {
             python_interface_->obj.attr("init_model")(
                 detection_params_.model_path, detection_params_.imgsz, detection_params_.device);
         }
-        python_interface_->obj.attr("detect")("img");
+        //  检测
+        pybind11::object res = python_interface_->obj.attr("detect")(PythonHelper::toNumpy<uint8_t>(image));
     }
 
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
@@ -124,13 +129,19 @@ int Yolov8Detection::checkInput()
     if (input_params == nullptr)
         return Error::InputParamsEmpty;
     DetectionParams_t new_params;
+    new_params.image_path = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
+    if (new_params.image_path.isEmpty())
+        return Error::InputImageEmpty;
     new_params.model_path = input_params->data("Model", QuickToolParamRole::ParamValueRole).toString();
     if (new_params.model_path.isEmpty())
         return Error::ModelFileEmpty;
     new_params.imgsz = input_params->data("Imgsz", QuickToolParamRole::ParamValueRole).toInt();
     new_params.device = input_params->data("Device", QuickToolParamRole::ParamValueRole).toString();
+    // 不相等则拷贝新参数, is_init = false
     if (new_params != detection_params_)
         detection_params_ = new_params;
+    else
+        detection_params_.image_path = new_params.image_path;
     return Error::Success;
 }
 

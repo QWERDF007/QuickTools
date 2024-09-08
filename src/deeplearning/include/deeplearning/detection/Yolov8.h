@@ -12,7 +12,7 @@ public:
 
     QString name() const override
     {
-        return "yolov8";
+        return "Yolov8Detection";
     }
 
     QString doc() const override;
@@ -26,6 +26,7 @@ private:
 
     struct DetectionParams_t{
         QString model_path;
+        QString image_path;
         int imgsz{0};
         QString device{"cpu"};
         bool is_init{false};
