@@ -49,6 +49,13 @@ std::tuple<int, QString> AbstractPythonInterface::reloadModule()
         {
             pybind11::gil_scoped_acquire acquire;
             module.reload();
+            if (obj)
+                obj.release();
+        }
+        else
+        {
+            ret = -1;
+            msg = "module 为空";
         }
     }
     catch (const std::exception &e)
@@ -62,6 +69,8 @@ std::tuple<int, QString> AbstractPythonInterface::reloadModule()
 
 void AbstractPythonInterface::release()
 {
+    if (!Py_IsInitialized())
+        return;
     pybind11::gil_scoped_acquire acquire;
     {
         if (module)

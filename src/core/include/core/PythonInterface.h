@@ -79,15 +79,15 @@ public:
      * @return
      */
     template<typename T>
-    static typename std::enable_if_t<is_float_or_uint8<T>::value, pybind11::array_t<T>> toNDArray(const cv::Mat &img)
+    static typename std::enable_if_t<is_float_or_uint8<T>::value, pybind11::array_t<T>> toNumpy(const cv::Mat &img)
     {
         const size_t rows = img.rows;
         const size_t cols = img.cols;
         const size_t chs  = img.channels();
+        const size_t item_size = img.elemSize1();
 
         bool single_channel = chs == 1;
 
-        const size_t      item_size = img.elemSize1();
         const std::string format    = pybind11::format_descriptor<T>::format();
         pybind11::ssize_t ndim      = single_channel ? 2 : 3;
 
@@ -98,6 +98,30 @@ public:
                                                     : pybind11::array::ShapeContainer{img.step[0], img.step[1], item_size};
 
         return pybind11::array_t<T>(pybind11::buffer_info(img.data, item_size, format, ndim, shape, strides));
+    }
+
+
+    /**
+     * @brief 将 pybind11::array_t 转换成 cv::Mat
+     * @param obj
+     * @return
+     */
+    template<typename T>
+    static typename std::enable_if_t<is_float_or_uint8<T>::value, cv::Mat> fromNumpy(const pybind11::object &obj)
+    {
+        if (!obj.is_none() && pybind11::isinstance<pybind11::array_t<T>>(obj))
+        {
+            pybind11::array_t<T>  buf  = obj;
+            pybind11::buffer_info info = buf.request();
+
+            int rows = info.shape[0];
+            int cols = info.shape[1];
+            int chs  = info.shape.size() == 2 ? 1 : info.shape[2];
+            int type = info.format == "B" ? CV_8UC(chs) : CV_32FC(chs);
+
+            return cv::Mat(rows, cols, type, info.ptr);
+        }
+        return cv::Mat();
     }
 };
 

@@ -8,6 +8,7 @@ std::map<int, QString> ErrorGenerator::error_msg_maps_ = {
     {   InternalError, "发生内部错误"},
     {InputParamsEmpty, "输入参数为空"},
     {    FileNotFound,    "找不到文件"},
+    { InputImageEmpty, "输入图像为空" },
 
     // DeepLearning
     {  ModelFileEmpty, "模型文件为空"},

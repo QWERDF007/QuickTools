@@ -392,7 +392,7 @@ inline void AbstractQuickTool::reloadModule()
     if (python_interface_)
     {
         const auto &[ret, msg] = python_interface_->reloadModule();
-        emit showMessage(InfoLevel::Info, msg);
+        emit showMessage(ret == 0 ? InfoLevel::Info : InfoLevel::Error, msg);
     }
 }
 

@@ -23,6 +23,7 @@ enum Code
     InternalError    = -2, //!< 发生内部错误
     InputParamsEmpty = -3, //!< 输入参数为空
     FileNotFound     = -4, //!< 找不到文件
+    InputImageEmpty  = -5, //!< 输入图像为空
 
     // DeepLearning
     ModelFileEmpty   = -1000, //!< 模型文件为空
