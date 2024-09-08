@@ -37,16 +37,32 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
     int     ret{0};
     QString msg{"运行成功"};
 
-    auto input_params  = getInputParams();
+    ret = checkInput();
+    if (ret != Error::Success)
+    {
+        msg = Error::ErrorGenerator::getErrorString(ret);
+        return {ret, msg};
+    }
     auto output_params = getOutputParams();
-    if (input_params == nullptr || output_params == nullptr)
-        return {-1, tr("输入/输出参数为空指针")};
+    if (output_params == nullptr)
+        return {-1, tr("输出参数为空指针")};
+
     pybind11::gil_scoped_acquire acquire;
     {
         if (!python_interface_->obj)
-            python_interface_->obj = python_interface_->module.attr("Yolov8Detection")("", 640, "cuda:0");
+        {
+            python_interface_->obj = python_interface_->module.attr("Yolov8Detection")(
+                detection_params_.model_path, detection_params_.imgsz, detection_params_.device);
+            detection_params_.is_init = true;
+        }
+        if (detection_params_.is_init)
+        {
+            python_interface_->obj.attr("init_model")(
+                detection_params_.model_path, detection_params_.imgsz, detection_params_.device);
+        }
         python_interface_->obj.attr("detect")("img");
     }
+
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
     auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
     addAlgorithmTime(algorithm_time);
@@ -70,10 +86,12 @@ int Yolov8Detection::initInputParams()
         input_params_->addParam("Imgsz", tr("图像大小"), tr("模型的输入图像大小"),
                                 QuickToolParamType::IntSpinBoxParamType, QVariant(), QVariant(), true, true, true,
                                 true);
+        // TODO: 获取推理设备列表
+        input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), "cpu", QVariantList(), false, true);
         input_params_->addParam("ConfidenceThreshold", tr("置信度阈值"), "", QuickToolParamType::DoubleSpinBoxParamType,
-                                QVariant(), QVariant(), true, true, true, true);
-        input_params_->addParam("IouThreshold", tr("iou阈值"), "", QuickToolParamType::DoubleSpinBoxParamType,
-                                QVariant(), QVariant(), true, true, true, true);
+                                0.5, QVariant(), true, true, true, true);
+        input_params_->addParam("IouThreshold", tr("iou阈值"), "", QuickToolParamType::DoubleSpinBoxParamType, 0.5,
+                                QVariant(), true, true, true, true);
     }
     return Error::Success;
 }
@@ -98,6 +116,32 @@ int Yolov8Detection::initSettings()
     {
     }
     return Error::Success;
+}
+
+int Yolov8Detection::checkInput()
+{
+    auto input_params = getInputParams();
+    if (input_params == nullptr)
+        return Error::InputParamsEmpty;
+    DetectionParams_t new_params;
+    new_params.model_path = input_params->data("Model", QuickToolParamRole::ParamValueRole).toString();
+    if (new_params.model_path.isEmpty())
+        return Error::ModelFileEmpty;
+    new_params.imgsz = input_params->data("Imgsz", QuickToolParamRole::ParamValueRole).toInt();
+    new_params.device = input_params->data("Device", QuickToolParamRole::ParamValueRole).toString();
+    if (new_params != detection_params_)
+        detection_params_ = new_params;
+    return Error::Success;
+}
+
+bool Yolov8Detection::DetectionParams_t::operator==(const DetectionParams_t &other) const
+{
+    return other.model_path == model_path && other.imgsz == imgsz && other.device == device;
+}
+
+bool Yolov8Detection::DetectionParams_t::operator!=(const DetectionParams_t &other) const
+{
+    return operator==(other);
 }
 
 } // namespace quicktools::dl::detection

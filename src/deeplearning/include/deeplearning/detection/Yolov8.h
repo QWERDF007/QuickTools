@@ -22,6 +22,19 @@ private:
     int initOutputParams() override;
     int initSettings() override;
 
+    int checkInput();
+
+    struct DetectionParams_t{
+        QString model_path;
+        int imgsz{0};
+        QString device{"cpu"};
+        bool is_init{false};
+        bool operator==(const DetectionParams_t& other) const;
+        bool operator!=(const DetectionParams_t& other) const;
+    };
+
+    DetectionParams_t detection_params_;
+
     static QString doc_;
 };
 

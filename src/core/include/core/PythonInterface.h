@@ -5,8 +5,11 @@
 #include <QObject>
 #include <QStringList>
 
+#include <opencv2/highgui.hpp>
+
 #undef slots
 #include <pybind11/embed.h>
+#include <pybind11/numpy.h>
 #define slots Q_SLOTS
 
 namespace quicktools::core {
@@ -55,6 +58,47 @@ protected:
      * @return
      */
     virtual QString importModule() const = 0;
+};
+
+class PythonHelper
+{
+public:
+    /**
+     * @brief 检查模板类型是否为 float 或 uint8_t
+     *
+     * @tparam T
+     */
+    template<typename T>
+    using is_float_or_uint8 = std::conditional_t<std::is_same<T, float>::value || std::is_same<T, uint8_t>::value,
+                                                 std::true_type, std::false_type>;
+
+    /**
+     * @brief 将 cv::Mat 转换成 pybind11 的 pybind11::array_t,
+     *        pybind11 传递给 python 时转换为 numpy.ndarray
+     * @param img
+     * @return
+     */
+    template<typename T>
+    static typename std::enable_if_t<is_float_or_uint8<T>::value, pybind11::array_t<T>> toNDArray(const cv::Mat &img)
+    {
+        const size_t rows = img.rows;
+        const size_t cols = img.cols;
+        const size_t chs  = img.channels();
+
+        bool single_channel = chs == 1;
+
+        const size_t      item_size = img.elemSize1();
+        const std::string format    = pybind11::format_descriptor<T>::format();
+        pybind11::ssize_t ndim      = single_channel ? 2 : 3;
+
+        pybind11::array::ShapeContainer shape   = single_channel ? pybind11::array::ShapeContainer{rows, cols}
+                                                                 : pybind11::array::ShapeContainer{rows, cols, chs};
+        pybind11::array::ShapeContainer strides = single_channel
+                                                    ? pybind11::array::ShapeContainer{img.step[0], item_size}
+                                                    : pybind11::array::ShapeContainer{img.step[0], img.step[1], item_size};
+
+        return pybind11::array_t<T>(pybind11::buffer_info(img.data, item_size, format, ndim, shape, strides));
+    }
 };
 
 } // namespace quicktools::core

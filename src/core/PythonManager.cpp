@@ -39,7 +39,7 @@ int PythonManager::initializeInterpreter(const QString &python_home)
 #else
         PyConfig config;
         PyConfig_InitPythonConfig(&config);
-        PyConfig_SetBytesString(&config, &config.home, python_home_.toLocal8Bit().constData());
+        PyConfig_SetBytesString(&config, &config.home, python_home.toLocal8Bit().constData());
         pybind11::initialize_interpreter(&config);
         PyConfig_Clear(&config);
 #endif
