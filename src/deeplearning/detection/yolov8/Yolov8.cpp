@@ -54,7 +54,7 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
         // 初始化
         if (!python_interface_->obj)
         {
-            python_interface_->obj = python_interface_->module.attr("Yolov8Detection")(
+            python_interface_->obj = python_interface_->module.attr("Yolov8DetectionPredictor")(
                 detection_params_.model_path.toUtf8().constData(), detection_params_.imgsz,
                 detection_params_.device.toUtf8().constData());
             detection_params_.is_init = true;
@@ -66,7 +66,7 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
                                                       detection_params_.device);
         }
         //  检测
-        pybind11::object res = python_interface_->obj.attr("detect")(PythonHelper::toNumpy<uint8_t>(image),
+        python_interface_->obj.attr("predict")(PythonHelper::toNumpy<uint8_t>(image),
                                                                      detection_params_.conf, detection_params_.iou);
     }
 
