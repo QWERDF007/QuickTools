@@ -27,8 +27,10 @@ private:
     struct DetectionParams_t{
         QString model_path;
         QString image_path;
-        int imgsz{0};
-        QString device{"cpu"};
+        int imgsz{640};
+        QString device{"cuda:0"};
+        double conf{0.25};
+        double iou{0.7};
         bool is_init{false};
         bool operator==(const DetectionParams_t& other) const;
         bool operator!=(const DetectionParams_t& other) const;
