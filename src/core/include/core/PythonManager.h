@@ -95,6 +95,17 @@ private:
     explicit PythonManager(QObject *parent = nullptr);
     ~PythonManager();
 
+    /**
+     * @brief 添加 `PYTHON_HOME` 和 `PYTHON_HOME/Library/bin` 到环境变量 $PATH
+     * @note 非常重要, 否则在导入一些 python 模块时会报 `_call_with_frames_removed` 之类的错误
+     */
+    void addEnv();
+
+    /**
+     * @brief 清除 $PATH 中的 `PYTHON_HOME` 相关内容
+     */
+    void clearEnv();
+
     /// 当前 python 环境
     QString python_home_;
 

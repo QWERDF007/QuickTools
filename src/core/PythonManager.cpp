@@ -21,6 +21,34 @@ PythonManager::~PythonManager()
     finalizeInterpreter();
 }
 
+void PythonManager::addEnv()
+{
+    char *pval;
+    size_t len;
+    errno_t err = _dupenv_s(&pval, &len, "PATH");
+    if (err == 0)
+    {
+        QString s(pval);
+        s = python_home_ + ";" + s;
+        s = python_home_ + "/Library/bin;" + s;
+        _putenv_s("PATH", s.toLocal8Bit().constData());
+    }
+}
+
+void PythonManager::clearEnv()
+{
+    char *pval;
+    size_t len;
+    errno_t err = _dupenv_s(&pval, &len, "PATH");
+    if (err == 0)
+    {
+        QString s(pval);
+        s.replace(python_home_ + "/Library/bin;", "");
+        s.replace(python_home_ + ";", "");
+        _putenv_s("PATH", s.toLocal8Bit().constData());
+    }
+}
+
 int PythonManager::initializeInterpreter(const QString &python_home)
 {
     try
@@ -33,6 +61,7 @@ int PythonManager::initializeInterpreter(const QString &python_home)
             spdlog::error("初始化 python 环境失败, python 环境 {} 不合法!", python_home.toUtf8().constData());
             return -1;
         }
+        addEnv();
 #if (PY_MAJOR_VERSION == 3) && (PY_MINOR_VERSION < 11)
         Py_SetPythonHome(Py_DecodeLocale(python_home.toLocal8Bit().constData(), nullptr));
         pybind11::initialize_interpreter();
@@ -43,6 +72,7 @@ int PythonManager::initializeInterpreter(const QString &python_home)
         pybind11::initialize_interpreter(&config);
         PyConfig_Clear(&config);
 #endif
+
         {
             pybind11::object sys = pybind11::module_::import("sys");
             sys.attr("path").attr("append")(DefaultPythonCodeHome().toLocal8Bit().toStdString());
@@ -78,6 +108,7 @@ void PythonManager::finalizeInterpreter()
     if (Py_IsInitialized())
     {
         pybind11::finalize_interpreter();
+        clearEnv();
         spdlog::info("释放 python 环境: {}, 版本: {}", python_home_.toUtf8().constData(),
                      GetPythonVersion(python_home_).toUtf8().constData());
     }
@@ -88,13 +119,14 @@ void PythonManager::setPythonHome(const QString &python_home)
     spdlog::info("设置 PYTHON_HOME: {}", python_home.toUtf8().constData());
     if (python_home_ == python_home)
         return;
-    emit pythonHomeChange(python_home);
+    initializeInterpreter(python_home);
+//    emit pythonHomeChange(python_home);
 }
 
 QString PythonManager::DefaultPythonHome()
 {
     //    QString python_home = QDir::homePath() + QDir::separator() + "test";
-    QString python_home = "D:/Software/anaconda3/envs/test2";
+    QString python_home = "D:/Software/anaconda3/envs/AD";
     return python_home;
 }
 

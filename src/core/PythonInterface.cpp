@@ -25,7 +25,7 @@ std::tuple<int, QString> AbstractPythonInterface::init()
     try
     {
         if (importModule().isEmpty())
-            return {ret, msg};
+            return {ret, "模块为空"};
         pybind11::gil_scoped_acquire acquire;
         module = pybind11::module_::import(importModule().toLocal8Bit().constData());
         spdlog::debug("导入 python 模块: {}", importModule().toUtf8().constData());
