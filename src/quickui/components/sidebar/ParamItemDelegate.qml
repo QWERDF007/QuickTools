@@ -206,6 +206,22 @@ Rectangle {
             }
         }
     }
+
+    Component {
+        id: intSpinBoxParamItem
+
+        IntSpinBoxParamItem {
+            paramDisplay: paramItemDelegate.paramDisplay
+            paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+
+            onValueChanged: function (value) {
+                paramItemDelegate.valueChanged(value)
+            }
+        }
+    }
+
     Column {
         anchors.bottomMargin: 2
         anchors.fill: parent
@@ -248,6 +264,7 @@ Rectangle {
             id: loader
 
             height: 24
+            width: parent.width
             sourceComponent: {
                 if (paramItemDelegate.paramType === QuickToolParamType.StatusParamType) {
                     return statusParamItem
@@ -279,11 +296,11 @@ Rectangle {
                     return inputFileParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParamType.InputFolderParamType) {
                     return inputFolderParamItem
+                } else if (paramItemDelegate.paramType === QuickToolParamType.IntSpinBoxParamType) {
+                    return intSpinBoxParamItem
                 }
-
                 return undefined
             }
-            width: parent.width
         }
     }
 }
