@@ -94,10 +94,12 @@ int Yolov8Detection::initInputParams()
                                 QuickToolParamType::IntSpinBoxParamType, 640, QVariant(), true, true, true, true);
         // TODO: 获取推理设备列表
         input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), "cuda:0", QVariantList(), false, true);
-        input_params_->addParam("ConfidenceThreshold", tr("置信度阈值"), "", QuickToolParamType::DoubleSpinBoxParamType,
-                                0.25, QVariant(), true, true, true, true);
-        input_params_->addParam("IouThreshold", tr("iou阈值"), "", QuickToolParamType::DoubleSpinBoxParamType, 0.7,
-                                QVariant(), true, true, true, true);
+//        input_params_->addParam("ConfidenceThreshold", tr("置信度阈值"), "", QuickToolParamType::DoubleSpinBoxParamType,
+//                                0.25, QVariant(), true, true, true, true);
+        input_params_->addDoubleSpinBox("ConfidenceThreshold", tr("置信度阈值"), "", 0.25, 0, 1, 0.05, true, true);
+//        input_params_->addParam("IouThreshold", tr("iou阈值"), "", QuickToolParamType::DoubleSpinBoxParamType, 0.7,
+//                                QVariant(), true, true, true, true);
+        input_params_->addDoubleSpinBox("IouThreshold", tr("iou阈值"), "", 0.7, 0, 1, 0.05, 2, true, true);
     }
     return Error::Success;
 }
