@@ -72,7 +72,6 @@ int PythonManager::initializeInterpreter(const QString &python_home)
         pybind11::initialize_interpreter(&config);
         PyConfig_Clear(&config);
 #endif
-
         {
             pybind11::object sys = pybind11::module_::import("sys");
             sys.attr("path").attr("append")(DefaultPythonCodeHome().toLocal8Bit().toStdString());
@@ -85,10 +84,6 @@ int PythonManager::initializeInterpreter(const QString &python_home)
         spdlog::info("初始化 python 环境: {}, 版本: {}", QDir(python_home_).dirName().toUtf8().constData(),
                      GetPythonVersion(python_home_).toUtf8().constData());
         return 0;
-    }
-    catch (const pybind11::error_already_set &e)
-    {
-        spdlog::error("初始化 python 解释器失败: {}", e.what());
     }
     catch (const std::exception &e)
     {

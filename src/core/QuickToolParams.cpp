@@ -446,7 +446,7 @@ bool OutputParams::setStatus(const int status, const QString &msg)
 
 bool InputParams::addComboBox(const QString &name, const QString &display_name, const QString &desc,
                               const QVariant &value, const QVariantList &model, const bool is_property,
-                              const bool &visible)
+                              const bool visible)
 {
     QVariantMap additional{
         {"model", model},
@@ -455,9 +455,9 @@ bool InputParams::addComboBox(const QString &name, const QString &display_name, 
                                              additional, false, is_property, true, visible);
 }
 
-bool InputParams::addIntSpinBox(const QString &name, const QString &display_name, const QString &desc,
-                                const QVariant &value, const QVariant &from, const QVariant &to, const QVariant &step,
-                                const bool is_property, const bool &visible)
+bool InputParams::addIntSpinBox(const QString &name, const QString &display_name, const QString &desc, const int value,
+                                const int from, const int to, const int step, const bool is_property,
+                                const bool visible)
 {
     QVariantMap additional{
         {    "from", from},
@@ -469,9 +469,8 @@ bool InputParams::addIntSpinBox(const QString &name, const QString &display_name
 }
 
 bool InputParams::addDoubleSpinBox(const QString &name, const QString &display_name, const QString &desc,
-                                   const QVariant &value, const QVariant &from, const QVariant &to,
-                                   const QVariant &step, const QVariant &decimal, const bool is_property,
-                                   const bool &visible)
+                                   const double value, const double from, const double to, const double step,
+                                   const int decimal, const bool is_property, const bool visible)
 {
     QVariantMap additional{
         {    "from",    from},
@@ -485,7 +484,7 @@ bool InputParams::addDoubleSpinBox(const QString &name, const QString &display_n
 
 bool InputParams::addInputImage(const QString &name, const QString &display_name, const QString &desc,
                                 const QVariant &value, const bool open_folder, const bool is_property,
-                                const bool &visible)
+                                const bool visible)
 {
     QVariantMap additional{
         {"openFolder", open_folder},

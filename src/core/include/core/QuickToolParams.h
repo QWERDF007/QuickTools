@@ -216,7 +216,7 @@ public:
      * @return
      */
     bool addComboBox(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
-                     const QVariantList &model, const bool is_property = false, const bool &visible = true);
+                     const QVariantList &model, const bool is_property = false, const bool visible = true);
 
     /**
      * @brief 添加整型旋钮
@@ -231,9 +231,9 @@ public:
      * @param[in] visible 参数是否可见
      * @return
      */
-    bool addIntSpinBox(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
-                       const QVariant &from = 0, const QVariant &to = 100, const QVariant &step = 1,
-                       const bool is_property = false, const bool &visible = true);
+    bool addIntSpinBox(const QString &name, const QString &display_name, const QString &desc, const int value,
+                       const int from = 0, const int to = 100, const int step = 1, const bool is_property = false,
+                       const bool visible = true);
 
     /**
      * @brief 添加浮点型旋钮
@@ -249,9 +249,9 @@ public:
      * @param[in] visible 参数是否可见
      * @return
      */
-    bool addDoubleSpinBox(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
-                          const QVariant &from = 0, const QVariant &to = 1, const QVariant &step = 0.1,
-                          const QVariant &decimal = 2, const bool is_property = false, const bool &visible = true);
+    bool addDoubleSpinBox(const QString &name, const QString &display_name, const QString &desc, const double value,
+                          const double from = 0, const double to = 1, const double step = 0.1, const int decimal = 2,
+                          const bool is_property = false, const bool visible = true);
 
     /**
      * @brief 添加输入图像参数
@@ -265,7 +265,7 @@ public:
      * @return
      */
     bool addInputImage(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
-                       const bool open_folder = false, const bool is_property = false, const bool &visible = true);
+                       const bool open_folder = false, const bool is_property = false, const bool visible = true);
 };
 
 class QUICKTOOLS_CORE_EXPORT OutputParams : public AbstractQuickToolParams
