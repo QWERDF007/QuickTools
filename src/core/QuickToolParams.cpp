@@ -237,6 +237,8 @@ QVariant getParamsDisplay(const int param_type, const QVariant &data)
         {   QuickToolParamType::InputImageParamType,         imageParamDisplay},
         {    QuickToolParamType::InputFileParamType,    fileFolderParamDisplay},
         {  QuickToolParamType::InputFolderParamType,    fileFolderParamDisplay},
+        {   QuickToolParamType::IntSpinBoxParamType,           intParamDisplay},
+        {QuickToolParamType::DoubleSpinBoxParamType,        doubleParamDisplay},
     };
     if (data.isNull())
         return "";
