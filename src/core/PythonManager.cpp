@@ -76,6 +76,9 @@ int PythonManager::initializeInterpreter(const QString &python_home)
         {
             pybind11::object sys = pybind11::module_::import("sys");
             sys.attr("path").attr("append")(DefaultPythonCodeHome().toLocal8Bit().toStdString());
+            // 重要 (踩坑), 避免 c++ 调用 python 脚本中用到 sys.executable 出错
+            // 此处不修改则 sys.executable 会使用 QuickTools.exe
+            sys.attr("executable") = GetPythonExecutable(python_home_).toLocal8Bit().toStdString();
         }
         // 释放 gil
         gil_release_ = new pybind11::gil_scoped_release();
