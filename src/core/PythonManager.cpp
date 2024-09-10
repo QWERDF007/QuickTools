@@ -23,8 +23,8 @@ PythonManager::~PythonManager()
 
 void PythonManager::addEnv()
 {
-    char *pval;
-    size_t len;
+    char   *pval;
+    size_t  len;
     errno_t err = _dupenv_s(&pval, &len, "PATH");
     if (err == 0)
     {
@@ -37,8 +37,8 @@ void PythonManager::addEnv()
 
 void PythonManager::clearEnv()
 {
-    char *pval;
-    size_t len;
+    char   *pval;
+    size_t  len;
     errno_t err = _dupenv_s(&pval, &len, "PATH");
     if (err == 0)
     {
@@ -123,7 +123,7 @@ void PythonManager::setPythonHome(const QString &python_home)
     if (python_home_ == python_home)
         return;
     initializeInterpreter(python_home);
-//    emit pythonHomeChange(python_home);
+    //    emit pythonHomeChange(python_home);
 }
 
 QString PythonManager::DefaultPythonHome()

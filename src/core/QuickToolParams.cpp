@@ -455,6 +455,34 @@ bool InputParams::addComboBox(const QString &name, const QString &display_name, 
                                              additional, false, is_property, true, visible);
 }
 
+bool InputParams::addIntSpinBox(const QString &name, const QString &display_name, const QString &desc,
+                                const QVariant &value, const QVariant &from, const QVariant &to, const QVariant &step,
+                                const bool is_property, const bool &visible)
+{
+    QVariantMap additional{
+        {    "from", from},
+        {      "to",   to},
+        {"stepSize", step},
+    };
+    return AbstractQuickToolParams::addParam(name, display_name, desc, QuickToolParamType::IntSpinBoxParamType, value,
+                                             additional, true, is_property, true, visible);
+}
+
+bool InputParams::addDoubleSpinBox(const QString &name, const QString &display_name, const QString &desc,
+                                   const QVariant &value, const QVariant &from, const QVariant &to,
+                                   const QVariant &step, const QVariant &decimal, const bool is_property,
+                                   const bool &visible)
+{
+    QVariantMap additional{
+        {    "from",    from},
+        {      "to",      to},
+        {"stepSize",    step},
+        { "decimal", decimal},
+    };
+    return AbstractQuickToolParams::addParam(name, display_name, desc, QuickToolParamType::DoubleSpinBoxParamType,
+                                             value, additional, true, is_property, true, visible);
+}
+
 bool InputParams::addInputImage(const QString &name, const QString &display_name, const QString &desc,
                                 const QVariant &value, const bool open_folder, const bool is_property,
                                 const bool &visible)

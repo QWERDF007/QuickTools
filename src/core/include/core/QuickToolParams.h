@@ -219,6 +219,41 @@ public:
                      const QVariantList &model, const bool is_property = false, const bool &visible = true);
 
     /**
+     * @brief 添加整型旋钮
+     * @param[in] name 参数名称
+     * @param[in] display_name 参数展示名称
+     * @param[in] desc 参数描述
+     * @param[in] value 参数数据
+     * @param[in] from 参数下限
+     * @param[in] to 参数上限
+     * @param[in] step 参数调整步长
+     * @param[in] is_property 参数是否作为属性被界面访问
+     * @param[in] visible 参数是否可见
+     * @return
+     */
+    bool addIntSpinBox(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
+                       const QVariant &from = 0, const QVariant &to = 100, const QVariant &step = 1,
+                       const bool is_property = false, const bool &visible = true);
+
+    /**
+     * @brief 添加浮点型旋钮
+     * @param[in] name 参数名称
+     * @param[in] display_name 参数展示名称
+     * @param[in] desc 参数描述
+     * @param[in] value 参数数据
+     * @param[in] from 参数下限
+     * @param[in] to 参数上限
+     * @param[in] step 参数调整步长
+     * @param[in] decimal 参数展示小数位数
+     * @param[in] is_property 参数是否作为属性被界面访问
+     * @param[in] visible 参数是否可见
+     * @return
+     */
+    bool addDoubleSpinBox(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
+                          const QVariant &from = 0, const QVariant &to = 1, const QVariant &step = 0.1,
+                          const QVariant &decimal = 2, const bool is_property = false, const bool &visible = true);
+
+    /**
      * @brief 添加输入图像参数
      * @param[in] name 参数名称
      * @param[in] display_name 参数展示名称
