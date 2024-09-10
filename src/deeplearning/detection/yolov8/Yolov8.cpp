@@ -62,12 +62,13 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
         // 重新初始化模型
         if (!detection_params_.is_init)
         {
-            python_interface_->obj.attr("init_model")(detection_params_.model_path.toUtf8().constData(), detection_params_.imgsz,
+            python_interface_->obj.attr("init_model")(detection_params_.model_path.toUtf8().constData(),
+                                                      detection_params_.imgsz,
                                                       detection_params_.device.toUtf8().constData());
         }
         //  检测
-        python_interface_->obj.attr("predict")(PythonHelper::toNumpy<uint8_t>(image),
-                                                                     detection_params_.conf, detection_params_.iou);
+        python_interface_->obj.attr("predict")(PythonHelper::toNumpy<uint8_t>(image), detection_params_.conf,
+                                               detection_params_.iou);
     }
 
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
@@ -90,15 +91,11 @@ int Yolov8Detection::initInputParams()
                                 QVariant(), QVariant(), true, true, true, true);
         input_params_->addParam("Model", tr("模型文件"), tr("模型文件的路径"), QuickToolParamType::InputFileParamType,
                                 QVariant(), QVariant(), true, true, true, true);
-        input_params_->addParam("Imgsz", tr("图像大小"), tr("模型的输入图像大小"),
-                                QuickToolParamType::IntSpinBoxParamType, 640, QVariant(), true, true, true, true);
+        input_params_->addIntSpinBox("Imgsz", tr("图像大小"), tr("模型的输入图像大小"), 640, 0, 10000, 1, true, true);
         // TODO: 获取推理设备列表
-        input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), "cuda:0", QVariantList(), false, true);
-//        input_params_->addParam("ConfidenceThreshold", tr("置信度阈值"), "", QuickToolParamType::DoubleSpinBoxParamType,
-//                                0.25, QVariant(), true, true, true, true);
+        input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), "cuda:0", QVariantList(), false,
+                                   true);
         input_params_->addDoubleSpinBox("ConfidenceThreshold", tr("置信度阈值"), "", 0.25, 0, 1, 0.05, true, true);
-//        input_params_->addParam("IouThreshold", tr("iou阈值"), "", QuickToolParamType::DoubleSpinBoxParamType, 0.7,
-//                                QVariant(), true, true, true, true);
         input_params_->addDoubleSpinBox("IouThreshold", tr("iou阈值"), "", 0.7, 0, 1, 0.05, 2, true, true);
     }
     return Error::Success;

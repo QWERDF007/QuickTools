@@ -122,7 +122,7 @@ T.SpinBox {
                 if(control.down.hovered){
                     return control.hoverColor
                 }
-                return normalColor
+                return control.normalColor
             }
         }
         Rectangle {

@@ -8,20 +8,21 @@ T_ParamItem {
 
     displayText: _content.value
 
+    SpinBox {
+
+    }
+
     QuickSpinBox {
         id: _content
-
         anchors.fill: parent
-        anchors.leftMargin: 2
-        content.leftPadding: 5
-        from: paramAdditional && paramAdditional.from ? paramAdditional.from : 0
-        to: paramAdditional && paramAdditional.to ? paramAdditional.to : 0
-        stepSize: paramAdditional && paramAdditional.stepSize ? paramAdditional.stepSize : 1
-        value: paramValue ? paramValue : 0
-
+        editable: paramEditable
+        from: paramAdditional.from
+        to: paramAdditional.to
+        stepSize: paramAdditional.stepSize
+        value: paramValue
 
         onValueModified: {
-            valueChanged(_content.value);
+            intSpinBoxItem.valueChanged(_content.value);
         }
     }
 }

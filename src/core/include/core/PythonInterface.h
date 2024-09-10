@@ -2,10 +2,11 @@
 
 #include "CoreGlobal.h"
 
+#include <opencv2/highgui.hpp>
+
 #include <QObject>
 #include <QStringList>
 
-#include <opencv2/highgui.hpp>
 
 #undef slots
 #include <pybind11/embed.h>
@@ -81,25 +82,24 @@ public:
     template<typename T>
     static typename std::enable_if_t<is_float_or_uint8<T>::value, pybind11::array_t<T>> toNumpy(const cv::Mat &img)
     {
-        const size_t rows = img.rows;
-        const size_t cols = img.cols;
-        const size_t chs  = img.channels();
+        const size_t rows      = img.rows;
+        const size_t cols      = img.cols;
+        const size_t chs       = img.channels();
         const size_t item_size = img.elemSize1();
 
         bool single_channel = chs == 1;
 
-        const std::string format    = pybind11::format_descriptor<T>::format();
-        pybind11::ssize_t ndim      = single_channel ? 2 : 3;
+        const std::string format = pybind11::format_descriptor<T>::format();
+        pybind11::ssize_t ndim   = single_channel ? 2 : 3;
 
-        pybind11::array::ShapeContainer shape   = single_channel ? pybind11::array::ShapeContainer{rows, cols}
-                                                                 : pybind11::array::ShapeContainer{rows, cols, chs};
-        pybind11::array::ShapeContainer strides = single_channel
-                                                    ? pybind11::array::ShapeContainer{img.step[0], item_size}
-                                                    : pybind11::array::ShapeContainer{img.step[0], img.step[1], item_size};
+        pybind11::array::ShapeContainer shape = single_channel ? pybind11::array::ShapeContainer{rows, cols}
+                                                               : pybind11::array::ShapeContainer{rows, cols, chs};
+        pybind11::array::ShapeContainer strides
+            = single_channel ? pybind11::array::ShapeContainer{img.step[0], item_size}
+                             : pybind11::array::ShapeContainer{img.step[0], img.step[1], item_size};
 
         return pybind11::array_t<T>(pybind11::buffer_info(img.data, item_size, format, ndim, shape, strides));
     }
-
 
     /**
      * @brief 将 pybind11::array_t 转换成 cv::Mat

@@ -19,7 +19,7 @@ T_ParamItem {
         bg.border.width: 0
         // leftPadding: 0
         content.leftPadding: 5
-        model: paramAdditional && paramAdditional.model ? paramAdditional.model : null
+        model: paramAdditional.model
 
         onActivated: function (index) {
             valueChanged(_content.displayText);
