@@ -62,8 +62,8 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
         // 重新初始化模型
         if (!detection_params_.is_init)
         {
-            python_interface_->obj.attr("init_model")(detection_params_.model_path, detection_params_.imgsz,
-                                                      detection_params_.device);
+            python_interface_->obj.attr("init_model")(detection_params_.model_path.toUtf8().constData(), detection_params_.imgsz,
+                                                      detection_params_.device.toUtf8().constData());
         }
         //  检测
         python_interface_->obj.attr("predict")(PythonHelper::toNumpy<uint8_t>(image),
@@ -93,7 +93,7 @@ int Yolov8Detection::initInputParams()
         input_params_->addParam("Imgsz", tr("图像大小"), tr("模型的输入图像大小"),
                                 QuickToolParamType::IntSpinBoxParamType, 640, QVariant(), true, true, true, true);
         // TODO: 获取推理设备列表
-        input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), "cpu", QVariantList(), false, true);
+        input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), "cuda:0", QVariantList(), false, true);
         input_params_->addParam("ConfidenceThreshold", tr("置信度阈值"), "", QuickToolParamType::DoubleSpinBoxParamType,
                                 0.25, QVariant(), true, true, true, true);
         input_params_->addParam("IouThreshold", tr("iou阈值"), "", QuickToolParamType::DoubleSpinBoxParamType, 0.7,
