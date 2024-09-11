@@ -190,21 +190,17 @@ int AbstractQuickTool::checkSettings()
 
 bool AbstractQuickTool::preprocess()
 {
-    if (!isInit())
-    {
-        const auto &[ret, msg] = init();
-        if (ret != 0)
-        {
-            emit showMessage(InfoLevel::Error, msg);
-            spdlog::error(": {}, uuid: {}", msg.toUtf8().constData(), name().toUtf8().constData(),
-                          uuid().toUtf8().constData());
-            return false;
-        }
-    }
+    emit started();
     clearAlgorithmTime();
     setProgress(0);
-    emit started();
-    return true;
+    if (isInit())
+        return true;
+    const auto &[ret, msg] = init();
+    if (ret == Error::Success)
+        return true;
+    emit showMessage(InfoLevel::Error, msg);
+    spdlog::error(": {}, uuid: {}", msg.toUtf8().constData(), name().toUtf8().constData(), uuid().toUtf8().constData());
+    return false;
 }
 
 std::tuple<int, QString> AbstractQuickTool::process()

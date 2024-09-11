@@ -315,7 +315,7 @@ signals:
     void start();
 
     /**
-     * @brief 工具运行已经开始信号, 预处理完成后发出
+     * @brief 工具运行已经开始信号, 预处理开始后发出
      */
     void started();
 
