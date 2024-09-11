@@ -48,7 +48,13 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
     auto output_params = getOutputParams();
     if (output_params == nullptr)
         return {-1, tr("输出参数为空指针")};
+
     cv::Mat image = cv::imread(detection_params_.image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
+
+    QVariantList        cls;
+    QVariantList        conf;
+    QList<QVariantList> boxes;
+
     pybind11::gil_scoped_acquire acquire;
     {
         // 初始化
@@ -67,13 +73,32 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
                                                       detection_params_.device.toUtf8().constData());
         }
         //  检测
-        python_interface_->obj.attr("predict")(PythonHelper::toNumpy<uint8_t>(image), detection_params_.conf,
-                                               detection_params_.iou);
+        pybind11::object res = python_interface_->obj.attr("predict")(PythonHelper::toNumpy<uint8_t>(image),
+                                                                      detection_params_.conf, detection_params_.iou);
+        for (auto c : res["cls"])
+        {
+            cls.append(c.cast<int>());
+        }
+        for (auto v : res["conf"])
+        {
+            conf.append(v.cast<double>());
+        }
+        for (auto box : res["boxes"])
+        {
+            QVariantList _box;
+            for (auto v : box)
+            {
+                _box.append(v.cast<double>());
+            }
+            boxes.append(_box);
+        }
     }
 
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
     auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
     addAlgorithmTime(algorithm_time);
+    output_params->setData("Classes", cls);
+    output_params->setData("Confidences", conf);
 
     return {ret, msg};
 }

@@ -126,8 +126,13 @@ void AbstractQuickTool::setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 
 void AbstractQuickTool::submit()
 {
-    emit start();
-    QThreadPool::globalInstance()->start(this);
+    emit        start();
+    //    QThreadPool::globalInstance()->start(this);
+    // TODO: 使用 std::thread 的线程池
+    // Qt 线程池和 pytorch 一起使用有不知名的 BUG
+    // 导入模块只能在主线程或者 std::thread, 否则会异常崩溃
+    std::thread t([this]() { run(); });
+    t.detach();
 }
 
 void AbstractQuickTool::releasePythonModule()
