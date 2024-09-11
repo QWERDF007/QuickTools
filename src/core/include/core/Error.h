@@ -38,7 +38,7 @@ public:
      * @param[in] code 错误码 @ref Error::Code
      * @return
      */
-    static QString getErrorString(const int code, const QString& additional_msg = "");
+    static QString getErrorString(const int code, const QString &additional_msg = "");
 
     static std::map<int, QString> error_msg_maps_;
 };

@@ -7,7 +7,6 @@
 #include <QObject>
 #include <QStringList>
 
-
 #undef slots
 #include <pybind11/embed.h>
 #include <pybind11/numpy.h>
