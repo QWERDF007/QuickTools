@@ -73,6 +73,10 @@ int PythonManager::initializeInterpreter(const QString &python_home)
         PyConfig_Clear(&config);
 #endif
         {
+            // https://stackoverflow.com/a/36108675
+            // 避免使用 std::thread 在程序结束时 python threading 报 AssertionError, 虽然正常结束
+            pybind11::module_::import("threading");
+            // 将 python 代码目录添加到 sys.path
             pybind11::object sys = pybind11::module_::import("sys");
             sys.attr("path").attr("append")(DefaultPythonCodeHome().toLocal8Bit().toStdString());
             // 重要 (踩坑), 避免 c++ 调用 python 脚本中用到 sys.executable 出错
