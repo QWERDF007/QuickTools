@@ -1,6 +1,7 @@
 #include "core/QuickTool.h"
 
 #include "common/Utils.h"
+#include "core/Error.h"
 #include "core/QuickToolManager.h"
 #include "priv/Predefined.h"
 
@@ -58,8 +59,8 @@ AbstractQuickTool::~AbstractQuickTool()
 std::tuple<int, QString> AbstractQuickTool::init()
 {
     spdlog::info("初始化工具: {}, uuid: {}", name().toUtf8().constData(), uuid().toUtf8().constData());
-    int     ret{0};
-    QString msg{"初始化成功"};
+    int     ret{Error::Success};
+    QString msg;
     ret = checkParams();
     if (ret != 0)
         return {ret, "初始化输入/输出参数失败"};
@@ -76,6 +77,20 @@ std::tuple<int, QString> AbstractQuickTool::init()
     if (ret == 0)
         setIsInit(true);
     return {ret, msg};
+}
+
+bool AbstractQuickTool::initUI()
+{
+    int ret = initInputParams();
+    if (ret == 0)
+        inputParams()->setIsInit(true);
+    ret = initOutputParams();
+    if (ret == 0)
+        outputParams()->setIsInit(true);
+    ret = initSettings();
+    if (ret == 0)
+        settings()->setIsInit(true);
+    return ret == Error::Success;
 }
 
 void AbstractQuickTool::run()

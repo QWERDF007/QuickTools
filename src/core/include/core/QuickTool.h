@@ -81,6 +81,12 @@ public:
     std::tuple<int, QString> init();
 
     /**
+     * @brief 初始化UI界面相关的, 输入/输出参数, 设置参数
+     * @return
+     */
+    bool initUI();
+
+    /**
      * @brief 设置工具初始化的状态
      */
     void setIsInit(bool is_init);
