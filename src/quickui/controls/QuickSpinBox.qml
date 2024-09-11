@@ -82,12 +82,12 @@ T.SpinBox {
             anchors.fill: parent
             color: {
                 if(control.up.pressed){
-                    return control.pressedColor
+                    return enabled ? control.pressedColor : Qt.rgba(216/255,216/255,216/255,1)
                 }
                 if(control.up.hovered){
-                    return control.hoverColor
+                    return enabled ? control.hoverColor : Qt.rgba(224/255,224/255,224/255,1)
                 }
-                return control.normalColor
+                return enabled ? control.normalColor : Qt.rgba(232/255,232/255,232/255,1)
             }
         }
         Rectangle {
@@ -117,12 +117,12 @@ T.SpinBox {
             anchors.fill: parent
             color: {
                 if(control.down.pressed){
-                    return control.pressedColor
+                    return enabled ? control.pressedColor : Qt.rgba(216/255,216/255,216/255,1)
                 }
                 if(control.down.hovered){
-                    return control.hoverColor
+                    return enabled ? control.hoverColor : Qt.rgba(224/255,224/255,224/255,1)
                 }
-                return control.normalColor
+                return enabled ? control.normalColor : Qt.rgba(232/255,232/255,232/255,1)
             }
         }
         Rectangle {
