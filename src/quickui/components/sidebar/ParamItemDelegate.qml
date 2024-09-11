@@ -34,6 +34,13 @@ Rectangle {
         StatusParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
+
+            onValueChanged: function (value) {
+                paramItemDelegate.valueChanged(value)
+            }
         }
     }
     Component {
@@ -42,6 +49,13 @@ Rectangle {
         TimeParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
+
+            onValueChanged: function (value) {
+                paramItemDelegate.valueChanged(value)
+            }
         }
     }
     Component {
@@ -50,6 +64,9 @@ Rectangle {
         IntParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -62,6 +79,9 @@ Rectangle {
         DoubleParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -74,7 +94,10 @@ Rectangle {
         TextParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
             paramEditable: paramItemDelegate.paramEditable
+
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
             }
@@ -86,6 +109,9 @@ Rectangle {
         Int1DArrayParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -98,6 +124,9 @@ Rectangle {
         Double1DArrayParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -110,6 +139,9 @@ Rectangle {
         Text1DArrayParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -122,6 +154,9 @@ Rectangle {
         Int2DArrayParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -134,6 +169,9 @@ Rectangle {
         Double2DArrayParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -146,6 +184,9 @@ Rectangle {
         Text2DArrayParamItem {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -159,6 +200,8 @@ Rectangle {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
             paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -172,6 +215,8 @@ Rectangle {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
             paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
             
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -185,6 +230,8 @@ Rectangle {
             paramDisplay: paramItemDelegate.paramDisplay
             paramName: paramItemDelegate.paramName
             paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -200,6 +247,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
             paramAdditional: paramItemDelegate.paramAdditional
             paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
@@ -215,6 +263,7 @@ Rectangle {
             paramName: paramItemDelegate.paramName
             paramAdditional: paramItemDelegate.paramAdditional
             paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
 
             onValueChanged: function (value) {
                 paramItemDelegate.valueChanged(value)
