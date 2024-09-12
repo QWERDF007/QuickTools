@@ -58,17 +58,7 @@ T_Window {
         if (!inputROI) {
             return
         }
-        if (shapeType === QuickShape.NoShape) {
-            inputROI.roiType = CVToolROI.NoROI
-            inputROI.data = data
-        } else if (shapeType === QuickShape.Rectangle) {
-            inputROI.roiType = CVToolROI.Rectangle
-            inputROI.data = data
-        } else if (shapeType === QuickShape.Circle) {
-            inputROI.roiType = CVToolROI.Circle
-            inputROI.data = data
-        } else if (shapeType === QuickShape.Polygon) {
-
-        }
+        inputROI.shapeType = shapeType
+        inputROI.data = data
     }
 }

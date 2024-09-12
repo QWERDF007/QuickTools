@@ -2,11 +2,12 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QuickTools.ui
+import QuickTools.core
 
 T_Header {
-    property int acceptedShapes: QuickShape.AllShapes
+    property int acceptedShapes: ShapeType.AllShapes
     property var activateItem
-    property int checkedShape: QuickShape.NoShape
+    property int checkedShape: ShapeType.NoShape
 
     toolbarButtons: Component {
         RowLayout {
@@ -17,7 +18,7 @@ T_Header {
 
                 checkable: true
                 disableColor: itemDisableColor
-                enabled: header.acceptedShapes & QuickShape.Rectangle
+                enabled: header.acceptedShapes & ShapeType.Rectangle
                 icon.color: checked ? "#009688" : palette.buttonText
                 icon.source: "/icons/square"
                 implicitHeight: 32
@@ -26,9 +27,10 @@ T_Header {
                 onToggled: {
                     circleBtn.checked = false;
                     polygonBtn.checked = false;
-                    checkedShape = checked ? QuickShape.Rectangle : QuickShape.NoShape;
+                    checkedShape = checked ? ShapeType.Rectangle : ShapeType.NoShape;
                     if (activateItem instanceof QuickScalableImage) {
-                        activateItem.shapeType = checked ? QuickShape.Rectangle : QuickShape.NoShape;
+                        activateItem.shapeType = checked ? ShapeType.Rectangle : ShapeType.NoShape;
+                        console.log("activateItem.shapeType", activateItem.shapeType)
                     }
                 }
             }
@@ -37,7 +39,7 @@ T_Header {
 
                 checkable: true
                 disableColor: itemDisableColor
-                enabled: header.acceptedShapes & QuickShape.Circle
+                enabled: header.acceptedShapes & ShapeType.Circle
                 icon.color: checked ? "#009688" : palette.buttonText
                 icon.source: "/icons/circle"
                 implicitHeight: 32
@@ -46,9 +48,9 @@ T_Header {
                 onToggled: {
                     rectangleBtn.checked = false;
                     polygonBtn.checked = false;
-                    checkedShape = checked ? QuickShape.Circle : QuickShape.NoShape;
+                    checkedShape = checked ? ShapeType.Circle : ShapeType.NoShape;
                     if (activateItem instanceof QuickScalableImage) {
-                        activateItem.shapeType = checked ? QuickShape.Circle : QuickShape.NoShape;
+                        activateItem.shapeType = checked ? ShapeType.Circle : ShapeType.NoShape;
                     }
                 }
             }
@@ -57,7 +59,7 @@ T_Header {
 
                 checkable: true
                 disableColor: itemDisableColor
-                enabled: header.acceptedShapes & QuickShape.Polygon
+                enabled: header.acceptedShapes & ShapeType.Polygon
                 icon.color: checked ? "#009688" : palette.buttonText
                 icon.source: "/icons/polygon"
                 implicitHeight: 32
@@ -66,9 +68,9 @@ T_Header {
                 onToggled: {
                     rectangleBtn.checked = false;
                     circleBtn.checked = false;
-                    checkedShape = checked ? QuickShape.Polygon : QuickShape.NoShape;
+                    checkedShape = checked ? ShapeType.Polygon : ShapeType.NoShape;
                     if (activateItem instanceof QuickScalableImage) {
-                        activateItem.shapeType = checked ? QuickShape.Polygon : QuickShape.NoShape;
+                        activateItem.shapeType = checked ? ShapeType.Polygon : ShapeType.NoShape;
                     }
                 }
             }

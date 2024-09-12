@@ -6,7 +6,7 @@ namespace quicktools::core {
 
 CVToolROI::CVToolROI(QObject *parent)
     : QObject(parent)
-    , roi_type_(ROITYpe::NoROI)
+    , shape_type_(ShapeType::NoShape)
 {
 }
 
@@ -17,42 +17,53 @@ QList<qreal> CVToolROI::data() const
 
 void CVToolROI::setData(const QList<qreal> &data)
 {
-    data_ = data;
+    if (shape_type_ == ShapeType::Rectangle && data.size() == 4)
+        data_ = data;
+    else if (shape_type_ == ShapeType::Circle && data.size() == 3)
+        data_ = data;
+    else if (shape_type_ == ShapeType::Polygon && data.size() >= 3)
+        data_ = data;
+    else
+    {
+        shape_type_ = ShapeType::NoShape;
+        data_.clear();
+        emit shapeTypeChanged();
+    }
     emit dataChanged();
 }
 
 bool CVToolROI::empty() const
 {
-    return roi_type_ == ROITYpe::NoROI || data_.size() == 0;
+    return shape_type_ == ShapeType::NoShape || data_.size() == 0;
 }
 
-CVToolROI::ROITYpe CVToolROI::roiType() const
+int CVToolROI::shapeType() const
 {
-    return roi_type_;
+    return shape_type_;
 }
 
-void CVToolROI::setROIType(const ROITYpe roi_type)
+void CVToolROI::setShapeType(const int shape_type)
 {
-    if (roi_type == roi_type_)
+    if (shape_type == shape_type_)
         return;
-    roi_type_ = roi_type;
-    emit roiTypeChanged();
+    shape_type_ = shape_type;
+    emit shapeTypeChanged();
 }
 
 cv::Mat CVToolROI::toMask(const int width, const int height, const int fill_value) const
 {
     cv::Mat mask;
-    if (roi_type_ == ROITYpe::Rectangle && data_.size() >= 4)
+    if (shape_type_ == ShapeType::Rectangle && data_.size() >= 4)
     {
         mask = cv::Mat(height, width, CV_8UC1, cv::Scalar(0));
         cv::rectangle(mask, cv::Rect(data_[0], data_[1], data_[2], data_[3]), cv::Scalar(fill_value), cv::FILLED);
     }
-    else if (roi_type_ == ROITYpe::Circle && data_.size() >= 3)
+    else if (shape_type_ == ShapeType::Circle && data_.size() >= 3)
     {
         mask = cv::Mat(height, width, CV_8UC1, cv::Scalar(0));
         cv::circle(mask, cv::Point(data_[0], data_[1]), data_[2], cv::Scalar(fill_value), cv::FILLED);
     }
-    else if (roi_type_ == ROITYpe::Polygon)
+    else if (shape_type_ == ShapeType::Polygon)
     {
         // TODO
     }

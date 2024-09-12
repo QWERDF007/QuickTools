@@ -44,4 +44,19 @@ Q_ENUM_NS(QuickToolType)
 QML_NAMED_ELEMENT(QuickToolType)
 } // namespace quicktooltype
 
+namespace shapetype {
+Q_NAMESPACE
+
+enum ShapeType
+{
+    NoShape   = 0x00000000, //!< 没有任何形状
+    Rectangle = 0x00000001, //!< 矩形
+    Circle    = 0x00000002, //!< 圆形
+    Polygon   = 0x00000004, //!< 多边形
+    AllShapes = 0x07ffffff, //!< 所有形状
+};
+Q_ENUM_NS(ShapeType)
+QML_NAMED_ELEMENT(ShapeType)
+} // namespace shapetype
+
 } // namespace quicktools::core

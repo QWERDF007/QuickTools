@@ -54,7 +54,7 @@ class QuickShape : public QQuickPaintedItem
     Q_OBJECT
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QuickPen *border READ border CONSTANT FINAL)
-    Q_PROPERTY(QuickShapeType shapeType READ shapeType CONSTANT FINAL)
+    Q_PROPERTY(int shapeType READ shapeType CONSTANT FINAL)
     QML_NAMED_ELEMENT(QuickShape)
     QML_UNCREATABLE("Can't not create a QuickShape directly")
 public:
@@ -65,17 +65,7 @@ public:
 
     QuickPen *border();
 
-    enum QuickShapeType
-    {
-        NoShape   = 0x00000000,
-        Rectangle = 0x00000001,
-        Circle    = 0x00000002,
-        Polygon   = 0x00000004,
-        AllShapes = 0x07ffffff,
-    };
-    Q_ENUM(QuickShapeType)
-
-    virtual QuickShapeType shapeType() const = 0;
+    virtual int shapeType() const = 0;
 
 protected:
     QColor    color_{Qt::white};
@@ -96,10 +86,7 @@ public:
     qreal radius() const;
     void  setRadius(qreal radius);
 
-    QuickShapeType shapeType() const override
-    {
-        return QuickShapeType::Rectangle;
-    }
+    int shapeType() const override;
 
     void paint(QPainter *painter) override;
 
@@ -159,10 +146,7 @@ public:
     bool centerVisible() const;
     void setCenterVisible(const bool);
 
-    QuickShapeType shapeType() const override
-    {
-        return QuickShapeType::Circle;
-    }
+    int shapeType() const override;
 
     void paint(QPainter *painter) override;
 
@@ -194,10 +178,7 @@ public:
     QList<QPointF> points() const;
     void           setPoints(const QList<QPointF> &points);
 
-    QuickShapeType shapeType() const override
-    {
-        return QuickShapeType::Polygon;
-    }
+    int shapeType() const override;
 
     void paint(QPainter *painter) override;
 
