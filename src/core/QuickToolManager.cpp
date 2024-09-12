@@ -61,7 +61,7 @@ AbstractQuickTool *QuickToolManager::createQuickTool(const int tool_type, QObjec
         AbstractQuickTool *quick_tool = callable(parent);
         if (quick_tool)
         {
-            quick_tool->initUI();
+            quick_tool->init();
             quick_tool->setEngine(qmlEngine_, jsEngine_);
             addToActivted(quick_tool);
             spdlog::info("创建工具: {}, uuid: {}", quick_tool->name().toUtf8().constData(),

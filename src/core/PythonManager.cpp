@@ -75,7 +75,8 @@ int PythonManager::initializeInterpreter(const QString &python_home)
         {
             // https://stackoverflow.com/a/36108675
             // 避免使用 std::thread 在程序结束时 python threading 报 AssertionError, 虽然正常结束
-            pybind11::module_::import("threading");
+            // 主线程导入 py 模块则不会有问题, 但轻微阻塞 UI
+            // pybind11::module_::import("threading");
             // 将 python 代码目录添加到 sys.path
             pybind11::object sys = pybind11::module_::import("sys");
             sys.attr("path").attr("append")(DefaultPythonCodeHome().toLocal8Bit().toStdString());
