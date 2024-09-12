@@ -55,6 +55,9 @@ Item {
     property var roiItem: roiLoader.item
     signal roiDataChanged(int shapeType, var data)
 
+    // 输出形状, 显示区域的 model
+    property alias shapes: _shapes.model
+
     MouseArea {
         id: mouseArea
         enabled: scalableImage.visible && scalableImage.status === Image.Ready
@@ -221,6 +224,19 @@ Item {
 
         onScaleChanged: {
             scalableImage.updateImageRect()
+        }
+
+        Repeater {
+            id: _shapes
+            delegate: QuickRectangle {
+                x: modelData[0]
+                y: modelData[1]
+                width: modelData[2]
+                height: modelData[3]
+                color: "transparent"
+                border.color: "yellow"
+                border.width: 3
+            }
         }
 
         QuickLoader {

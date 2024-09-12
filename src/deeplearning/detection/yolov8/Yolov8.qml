@@ -40,6 +40,8 @@ T_CVWindow {
                 onRoiDataChanged: function (shapeType, data) {
                     updateROI(shapeType, data)
                 }
+
+                shapes: outputParams.pdata.Rects
             }
             //        DropImageArea {
             //            anchors.fill: parent
@@ -50,32 +52,32 @@ T_CVWindow {
             //            }
             //        }
         }
-        Item {
-            id: outputImageContainer
+//        Item {
+//            id: outputImageContainer
 
-            SplitView.fillHeight: true
-            SplitView.fillWidth: true
-            SplitView.minimumWidth: 160
-            implicitWidth: sv1.width / 2
-            clip: true
-            visible: outputParams.pdata.Status && outputParams.pdata.Status[0] === 0 ? true : false
+//            SplitView.fillHeight: true
+//            SplitView.fillWidth: true
+//            SplitView.minimumWidth: 160
+//            implicitWidth: sv1.width / 2
+//            clip: true
+//            visible: outputParams.pdata.Status && outputParams.pdata.Status[0] === 0 ? true : false
 
-            QuickScalableImage {
+//            QuickScalableImage {
 
-                anchors.fill: parent
-                drawingColor: yolov8Win.drawingColor
-                drawingBorderColor: yolov8Win.drawingBorderColor
-                image.source: {
-                    if (inputParams.pdata.Image) {
-                        return "file:///" + inputParams.pdata.Image
-                    }
-                    return ""
-                }
+//                anchors.fill: parent
+//                drawingColor: yolov8Win.drawingColor
+//                drawingBorderColor: yolov8Win.drawingBorderColor
+//                image.source: {
+//                    if (inputParams.pdata.Image) {
+//                        return "file:///" + inputParams.pdata.Image
+//                    }
+//                    return ""
+//                }
 
-                onRoiDataChanged: function (shapeType, data) {
-                    updateROI(shapeType, data)
-                }
-            }
-        }
+//                onRoiDataChanged: function (shapeType, data) {
+//                    updateROI(shapeType, data)
+//                }
+//            }
+//        }
     }
 }

@@ -50,10 +50,11 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
         return {-1, tr("输出参数为空指针")};
 
     cv::Mat image = cv::imread(detection_params_.image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
+    setProgress(0.2);
 
     QVariantList        cls;
     QVariantList        conf;
-    QList<QVariantList> boxes;
+    QList<QVariantList> rects;
 
     pybind11::gil_scoped_acquire acquire;
     {
@@ -72,6 +73,7 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
                                                       detection_params_.imgsz,
                                                       detection_params_.device.toUtf8().constData());
         }
+        setProgress(0.5);
         //  检测
         pybind11::object res = python_interface_->obj.attr("predict")(PythonHelper::toNumpy<uint8_t>(image),
                                                                       detection_params_.conf, detection_params_.iou);
@@ -85,20 +87,27 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
         }
         for (auto box : res["boxes"])
         {
-            QVariantList _box;
+            QVariantList rect;
             for (auto v : box)
             {
-                _box.append(v.cast<double>());
+                rect.append(v.cast<double>());
             }
-            boxes.append(_box);
+            if (rect.size() >= 4)
+            {
+                rect[2] = rect[2].toDouble() - rect[0].toDouble();
+                rect[3] = rect[3].toDouble() - rect[1].toDouble();
+            }
+            rects.append(rect);
         }
     }
+    setProgress(0.9);
 
     auto algorithm_end_time = std::chrono::high_resolution_clock::now();
     auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
     addAlgorithmTime(algorithm_time);
     output_params->setData("Classes", cls);
     output_params->setData("Confidences", conf);
+    output_params->setData("Rects", QVariant::fromValue(rects));
 
     return {ret, msg};
 }
@@ -131,7 +140,7 @@ int Yolov8Detection::initOutputParams()
     if (output_params_)
     {
         output_params_->addParam("Rects", tr("矩形框"), tr("模型预测的矩形框"),
-                                 QuickToolParamType::Double2DArrayParamType, QVariant(), QVariant(), false, true);
+                                 QuickToolParamType::Double2DArrayParamType, QVariant(), QVariant(), true, true);
         output_params_->addParam("Classes", tr("类别"), tr("模型预测的矩形框的类别"),
                                  QuickToolParamType::Int1DArrayParamType, QVariant(), QVariant(), false, true);
         output_params_->addParam("Confidences", tr("置信度"), tr("模型预测的矩形框的置信度"),
