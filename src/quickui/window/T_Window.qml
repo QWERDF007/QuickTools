@@ -78,14 +78,6 @@ ApplicationWindow {
             from: 0
             to: 1
             value: window.progress
-
-            states: [
-                State {
-                    name: "finished"
-                    when: outputParams && outputParams.pdata.Status ? outputParams.pdata.Status[0] !== 0 : false
-                    PropertyChanges { target: progressbar; color: "red" }
-                }
-            ]
         }
     }
 
