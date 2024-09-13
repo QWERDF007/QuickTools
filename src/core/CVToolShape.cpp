@@ -1,21 +1,15 @@
-#include "core/CVToolROI.h"
-
+#include "core/CVToolShape.h"
 #include <opencv2/imgproc.hpp>
 
 namespace quicktools::core {
 
-CVToolROI::CVToolROI(QObject *parent)
+CVToolShape::CVToolShape(QObject *parent)
     : QObject(parent)
     , shape_type_(ShapeType::NoShape)
 {
 }
 
-QList<qreal> CVToolROI::data() const
-{
-    return data_;
-}
-
-void CVToolROI::setData(const QList<qreal> &data)
+void CVToolShape::setData(const QList<qreal> &data)
 {
     if (shape_type_ == ShapeType::Rectangle && data.size() == 4)
         data_ = data;
@@ -32,22 +26,10 @@ void CVToolROI::setData(const QList<qreal> &data)
     emit dataChanged();
 }
 
-bool CVToolROI::empty() const
+CVToolROI::CVToolROI(QObject *parent)
+    : CVToolShape(parent)
 {
-    return shape_type_ == ShapeType::NoShape || data_.size() == 0;
-}
 
-int CVToolROI::shapeType() const
-{
-    return shape_type_;
-}
-
-void CVToolROI::setShapeType(const int shape_type)
-{
-    if (shape_type == shape_type_)
-        return;
-    shape_type_ = shape_type;
-    emit shapeTypeChanged();
 }
 
 cv::Mat CVToolROI::toMask(const int width, const int height, const int fill_value) const
