@@ -79,9 +79,9 @@ std::tuple<int, QString> ImageHistogram::doInProcess()
     std::vector<cv::Mat> chs;
     cv::split(dst, chs);
 
-    QList<QVariantList> hists_data;
-    QVariantList        hists_min;
-    QVariantList        hists_max;
+    QList<QList<QVariant>> hists_data;
+    QList<QList<QVariant>> hists_min;
+    QList<QList<QVariant>> hists_max;
     // for (const cv::Mat &ch : chs)
     size_t              size = chs.size();
     double              step = 0.4 / size;
@@ -107,9 +107,13 @@ std::tuple<int, QString> ImageHistogram::doInProcess()
         }
         max_value = std::abs(max_value - std::numeric_limits<float>::min()) < 1e-3 ? 1. : max_value;
         min_value = std::abs(min_value - std::numeric_limits<float>::max()) < 1e-3 ? 1. : min_value;
+        QList<QVariant> min_values;
+        min_values.append(min_value);
+        QList<QVariant> max_values;
+        max_values.append(max_value);
         hists_data.append(hist_data);
-        hists_min.append(min_value);
-        hists_max.append(max_value);
+        hists_min.append(min_values);
+        hists_max.append(max_values);
         setProgress(0.5 + (i + 1) * step);
     }
 
@@ -201,9 +205,9 @@ int ImageHistogram::initOutputParams()
                                  QVariant(), false, true);
         output_params_->addParam("Hist", tr("直方图"), "", QuickToolParamType::Double2DArrayParamType, QVariant(),
                                  QVariant(), true, true);
-        output_params_->addParam("HistMin", tr("直方图最小值"), "", QuickToolParamType::Double1DArrayParamType,
+        output_params_->addParam("HistMin", tr("直方图最小值"), "", QuickToolParamType::Double2DArrayParamType,
                                  QVariant(), QVariant(), true, true);
-        output_params_->addParam("HistMax", tr("直方图最大值"), "", QuickToolParamType::Double1DArrayParamType,
+        output_params_->addParam("HistMax", tr("直方图最大值"), "", QuickToolParamType::Double2DArrayParamType,
                                  QVariant(), QVariant(), true, true);
     }
     return 0;

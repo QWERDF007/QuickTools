@@ -25,7 +25,8 @@ class Yolov8DetectionPredictor:
             'msg': 'ok',
             'boxes': boxes.xyxy.tolist(),
             'cls': boxes.cls.int().tolist(),
-            'conf': boxes.conf.tolist()
+            'conf': boxes.conf.tolist(),
+            'format': 'xyxy',
         }
         print(ret, flush=True)
         return ret

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreGlobal.h"
+
 #include <opencv2/core.hpp>
 
 #include <QObject>
@@ -17,17 +18,21 @@ class QUICKTOOLS_CORE_EXPORT CVToolShape : public QObject
     Q_PROPERTY(ShapeType shapeType READ shapeType WRITE setShapeType NOTIFY shapeTypeChanged FINAL)
 public:
     explicit CVToolShape(QObject *parent = nullptr);
+    CVToolShape(const CVToolShape &other);
+    CVToolShape &operator=(const CVToolShape &other);
 
     QList<qreal> data() const
     {
         return data_;
     }
+
     void setData(const QList<qreal> &data);
 
     bool empty() const
     {
         return shape_type_ == ShapeType::NoShape || data_.size() == 0;
     }
+
     bool isEmpty() const
     {
         return empty();
@@ -43,7 +48,7 @@ public:
     };
     Q_ENUM(ShapeType)
 
-    ShapeType  shapeType() const
+    ShapeType shapeType() const
     {
         return shape_type_;
     }

@@ -103,51 +103,7 @@ Rectangle {
             }
         }
     }
-    Component {
-        id: int1DArrayParamItem
 
-        Int1DArrayParamItem {
-            paramDisplay: paramItemDelegate.paramDisplay
-            paramName: paramItemDelegate.paramName
-            paramAdditional: paramItemDelegate.paramAdditional
-            paramValue: paramItemDelegate.paramValue
-            paramEditable: paramItemDelegate.paramEditable
-
-            onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value)
-            }
-        }
-    }
-    Component {
-        id: double1DArrayParamItem
-
-        Double1DArrayParamItem {
-            paramDisplay: paramItemDelegate.paramDisplay
-            paramName: paramItemDelegate.paramName
-            paramAdditional: paramItemDelegate.paramAdditional
-            paramValue: paramItemDelegate.paramValue
-            paramEditable: paramItemDelegate.paramEditable
-
-            onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value)
-            }
-        }
-    }
-    Component {
-        id: text1DArrayParamItem
-
-        Text1DArrayParamItem {
-            paramDisplay: paramItemDelegate.paramDisplay
-            paramName: paramItemDelegate.paramName
-            paramAdditional: paramItemDelegate.paramAdditional
-            paramValue: paramItemDelegate.paramValue
-            paramEditable: paramItemDelegate.paramEditable
-
-            onValueChanged: function (value) {
-                paramItemDelegate.valueChanged(value)
-            }
-        }
-    }
     Component {
         id: int2DArrayParamItem
 
@@ -325,12 +281,6 @@ Rectangle {
                     return doubleParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParamType.TextParamType) {
                     return textParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParamType.Int1DArrayParamType) {
-                    return int1DArrayParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParamType.Double1DArrayParamType) {
-                    return double1DArrayParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParamType.Text1DArrayParamType) {
-                    return text1DArrayParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParamType.Int2DArrayParamType) {
                     return int2DArrayParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParamType.Double2DArrayParamType) {
@@ -347,7 +297,10 @@ Rectangle {
                     return inputFolderParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParamType.IntSpinBoxParamType) {
                     return intSpinBoxParamItem
+                } else if (paramItemDelegate.paramType === QuickToolParamType.Shape2DArrayParamType) {
+                    return double2DArrayParamItem
                 }
+
                 return undefined
             }
         }

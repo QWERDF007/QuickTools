@@ -1,5 +1,7 @@
 #include "core/QuickToolParams.h"
 
+#include "core/CVToolShape.h"
+
 #include <QStringBuilder>
 
 namespace quicktools::core {
@@ -63,48 +65,27 @@ QVariant timeParamDisplay(const QVariant &value)
     return display;
 }
 
-QVariant intParamDisplay(const QVariant &value)
+/**
+ * @brief int, double, QString 显示直接返回值
+ * @param value
+ * @return
+ */
+QVariant valueParamDisplay(const QVariant &value)
 {
     return value;
-}
-
-QVariant doubleParamDisplay(const QVariant &value)
-{
-    return value;
-}
-
-QVariant textParamDisplay(const QVariant &value)
-{
-    return value;
-}
-
-QVariant int1DArrayParamDisplay(const QVariant &value)
-{
-    const QVariantList &data = value.toList();
-    if (data.empty())
-        return "";
-    const int size             = data.size();
-    const int array_last_index = size - 1;
-    QString   array_text       = "[";
-    for (int i = 0; i < size; ++i)
-    {
-        array_text += i < array_last_index ? QString("%1, ").arg(data[i].toInt()) : QString::number(data[i].toInt());
-    }
-    array_text += "]";
-    return array_text;
 }
 
 QVariant int2DArrayParamDisplay(const QVariant &value)
 {
-    const QVariantList &dataArray = value.toList();
-    if (dataArray.empty())
+    const QVariantList &data_array = value.toList();
+    if (data_array.empty())
         return "";
-    const int rows             = dataArray.size();
+    const int rows             = data_array.size();
     const int array_last_index = rows - 1;
     QString   array_text       = "[";
     for (int i = 0; i < rows; ++i)
     {
-        const QVariantList &data = dataArray[i].toList();
+        const QVariantList &data = data_array[i].toList();
         if (data.empty())
             continue;
         const int cols                 = data.size();
@@ -122,34 +103,17 @@ QVariant int2DArrayParamDisplay(const QVariant &value)
     return array_text;
 }
 
-QVariant double1DArrayParamDisplay(const QVariant &value)
-{
-    const QVariantList &data = value.toList();
-    if (data.empty())
-        return "";
-    const int size             = data.size();
-    const int array_last_index = size - 1;
-    QString   array_text       = "[";
-    for (int i = 0; i < size; ++i)
-    {
-        array_text += i < array_last_index ? QString("%1, ").arg(data[i].toDouble(), 0, 'g', 4)
-                                           : QString("%1").arg(data[i].toDouble(), 0, 'g', 4);
-    }
-    array_text += "]";
-    return array_text;
-}
-
 QVariant double2DArrayParamDisplay(const QVariant &value)
 {
-    const QVariantList &dataArray = value.toList();
-    if (dataArray.empty())
+    const QVariantList &data_array = value.toList();
+    if (data_array.empty())
         return "";
-    const int rows             = dataArray.size();
+    const int rows             = data_array.size();
     const int array_last_index = rows - 1;
     QString   array_text       = "[";
     for (int i = 0; i < rows; ++i)
     {
-        const QVariantList &data = dataArray[i].toList();
+        const QVariantList &data = data_array[i].toList();
         if (data.empty())
             continue;
         const int cols                 = data.size();
@@ -167,33 +131,17 @@ QVariant double2DArrayParamDisplay(const QVariant &value)
     return array_text;
 }
 
-QVariant text1DArrayParamDisplay(const QVariant &value)
-{
-    const QVariantList &data = value.toList();
-    if (data.empty())
-        return "";
-    const int size             = data.size();
-    const int array_last_index = size - 1;
-    QString   array_text       = "[";
-    for (int i = 0; i < size; ++i)
-    {
-        array_text += i < array_last_index ? QString("%1, ").arg(data[i].toString()) : data[i].toString();
-    }
-    array_text += "]";
-    return array_text;
-}
-
 QVariant text2DArrayParamDisplay(const QVariant &value)
 {
-    const QVariantList &dataArray = value.toList();
-    if (dataArray.empty())
+    const QVariantList &data_array = value.toList();
+    if (data_array.empty())
         return "";
-    const int rows             = dataArray.size();
+    const int rows             = data_array.size();
     const int array_last_index = rows - 1;
     QString   array_text       = "[";
     for (int i = 0; i < rows; ++i)
     {
-        const QVariantList &data = dataArray[i].toList();
+        const QVariantList &data = data_array[i].toList();
         if (data.empty())
             continue;
         const int cols                 = data.size();
@@ -215,9 +163,33 @@ QVariant imageParamDisplay(const QVariant &value)
     return value;
 }
 
-QVariant fileFolderParamDisplay(const QVariant &value)
+QVariant shape2DArrayParamDisplay(const QVariant &value)
 {
-    return value;
+    const QList<CVToolShape> &shape_array = value.value<QList<CVToolShape>>();
+    if (shape_array.empty())
+        return "";
+    const int rows             = shape_array.size();
+    const int array_last_index = rows - 1;
+    QString   array_text       = "[";
+    for (int i = 0; i < rows; ++i)
+    {
+        const CVToolShape &shape = shape_array[i];
+        if (shape.empty())
+            continue;
+        const QList<qreal> &data                 = shape.data();
+        const int           cols                 = data.size();
+        const int           sub_array_last_index = cols - 1;
+        QString             sub_array_text       = "[";
+        for (int j = 0; j < cols; ++j)
+        {
+            sub_array_text += j < sub_array_last_index ? QString("%1, ").arg(data[j], 0, 'g', 4)
+                                                       : QString("%1").arg(data[j], 0, 'g', 4);
+        }
+        sub_array_text += "]";
+        array_text += i < array_last_index ? sub_array_text + ", " : sub_array_text;
+    }
+    array_text += "]";
+    return array_text;
 }
 
 QVariant getParamsDisplay(const int param_type, const QVariant &data)
@@ -225,20 +197,18 @@ QVariant getParamsDisplay(const int param_type, const QVariant &data)
     static std::map<int, std::function<QVariant(const QVariant &)>> func_map{
         {       QuickToolParamType::StatusParamType,        statusParamDisplay},
         {         QuickToolParamType::TimeParamType,          timeParamDisplay},
-        {          QuickToolParamType::IntParamType,           intParamDisplay},
-        {       QuickToolParamType::DoubleParamType,        doubleParamDisplay},
-        {         QuickToolParamType::TextParamType,          textParamDisplay},
-        {   QuickToolParamType::Int1DArrayParamType,    int1DArrayParamDisplay},
-        {QuickToolParamType::Double1DArrayParamType, double1DArrayParamDisplay},
-        {  QuickToolParamType::Text1DArrayParamType,   text1DArrayParamDisplay},
+        {          QuickToolParamType::IntParamType,         valueParamDisplay},
+        {       QuickToolParamType::DoubleParamType,         valueParamDisplay},
+        {         QuickToolParamType::TextParamType,         valueParamDisplay},
         {   QuickToolParamType::Int2DArrayParamType,    int2DArrayParamDisplay},
         {QuickToolParamType::Double2DArrayParamType, double2DArrayParamDisplay},
         {  QuickToolParamType::Text2DArrayParamType,   text2DArrayParamDisplay},
         {   QuickToolParamType::InputImageParamType,         imageParamDisplay},
-        {    QuickToolParamType::InputFileParamType,    fileFolderParamDisplay},
-        {  QuickToolParamType::InputFolderParamType,    fileFolderParamDisplay},
-        {   QuickToolParamType::IntSpinBoxParamType,           intParamDisplay},
-        {QuickToolParamType::DoubleSpinBoxParamType,        doubleParamDisplay},
+        {    QuickToolParamType::InputFileParamType,         valueParamDisplay},
+        {  QuickToolParamType::InputFolderParamType,         valueParamDisplay},
+        {   QuickToolParamType::IntSpinBoxParamType,         valueParamDisplay},
+        {QuickToolParamType::DoubleSpinBoxParamType,         valueParamDisplay},
+        { QuickToolParamType::Shape2DArrayParamType,  shape2DArrayParamDisplay},
     };
     if (data.isNull())
         return "";
@@ -393,15 +363,13 @@ QString AbstractQuickToolParams::getTypeName(const int type)
         {          QuickToolParamType::IntParamType,             "Int"},
         {       QuickToolParamType::DoubleParamType,          "Double"},
         {         QuickToolParamType::TextParamType,            "Text"},
-        {   QuickToolParamType::Int1DArrayParamType,    "1D Int Array"},
-        {QuickToolParamType::Double1DArrayParamType, "1D Double Array"},
-        {  QuickToolParamType::Text1DArrayParamType,   "1D Text Array"},
         {   QuickToolParamType::Int2DArrayParamType,    "2D Int Array"},
         {QuickToolParamType::Double2DArrayParamType, "2D Double Array"},
         {  QuickToolParamType::Text2DArrayParamType,   "2D Text Array"},
         {   QuickToolParamType::InputImageParamType,     "Input Image"},
         {    QuickToolParamType::InputFileParamType,      "Input File"},
         {  QuickToolParamType::InputFolderParamType,    "Input Folder"},
+        { QuickToolParamType::Shape2DArrayParamType,        "2D Shape"},
     };
     auto found = typeNamesMap.find(type);
     return found == typeNamesMap.end() ? "undefined" : found.value();

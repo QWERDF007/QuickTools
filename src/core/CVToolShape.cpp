@@ -1,4 +1,5 @@
 #include "core/CVToolShape.h"
+
 #include <opencv2/imgproc.hpp>
 
 namespace quicktools::core {
@@ -7,6 +8,19 @@ CVToolShape::CVToolShape(QObject *parent)
     : QObject(parent)
     , shape_type_(ShapeType::NoShape)
 {
+}
+
+CVToolShape::CVToolShape(const CVToolShape &other)
+    : data_(other.data_)
+    , shape_type_(other.shape_type_)
+{
+}
+
+CVToolShape &CVToolShape::operator=(const CVToolShape &other)
+{
+    data_       = other.data_;
+    shape_type_ = other.shape_type_;
+    return *this;
 }
 
 void CVToolShape::setData(const QList<qreal> &data)
@@ -29,7 +43,6 @@ void CVToolShape::setData(const QList<qreal> &data)
 CVToolROI::CVToolROI(QObject *parent)
     : CVToolShape(parent)
 {
-
 }
 
 cv::Mat CVToolROI::toMask(const int width, const int height, const int fill_value) const
