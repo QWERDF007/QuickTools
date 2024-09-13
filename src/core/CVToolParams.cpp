@@ -15,6 +15,7 @@ CVToolROI *CVInputParams::roi()
 
 CVOutputParams::CVOutputParams(QObject *parent)
     : OutputParams(parent)
+    , shapes_list_(new CVToolShapeListModel(this))
 {
 }
 

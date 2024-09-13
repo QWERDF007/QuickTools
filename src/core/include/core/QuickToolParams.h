@@ -30,7 +30,7 @@ enum QuickToolParamType
     InputFileParamType,         //!< 输入文件
     InputFolderParamType,       //!< 输入目录
     InputImageParamType = 4000, //!< 输入图像
-    Shape2DArrayParamType,      //!< 2D 形状
+    ShapesListParamType,        //!< 2D 形状
     InputAudioParamType = 6000, //!< 输入音频
 };
 Q_ENUM_NS(QuickToolParamType) // 向元对象系统注册枚举类型 QuickToolParamType，必须在 Q_NAMESPACE 宏声明的命名空间中

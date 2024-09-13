@@ -65,4 +65,57 @@ cv::Mat CVToolROI::toMask(const int width, const int height, const int fill_valu
     return mask;
 }
 
+CVToolShapeListModel::CVToolShapeListModel(QObject *parent)
+    : QAbstractListModel(parent)
+{
+}
+
+CVToolShapeListModel::~CVToolShapeListModel()
+{
+    qInfo() << __FUNCTION__ << this;
+}
+
+int CVToolShapeListModel::rowCount(const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return 0;
+    return shapes_.size();
+}
+
+QVariant CVToolShapeListModel::data(const QModelIndex &index, int role) const
+{
+    if (index.row() < 0 || index.row() >= rowCount())
+        return QVariant();
+    if (role == Role::ShapeType)
+        return shapes_.at(index.row()).shapeType();
+    else if (role == Role::ShapeData)
+        return QVariant::fromValue(shapes_.at(index.row()).data());
+    return QVariant();
+}
+
+bool CVToolShapeListModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    // if (index.row() < 0 || index.row() >= rowCount())
+    //     return false;
+    Q_UNUSED(index)
+    Q_UNUSED(value)
+    Q_UNUSED(role)
+    return false;
+}
+
+void CVToolShapeListModel::setShapes(const QList<CVToolShape> &shapes)
+{
+    beginResetModel();
+    shapes_ = shapes;
+    endResetModel();
+}
+
+QHash<int, QByteArray> CVToolShapeListModel::roleNames() const
+{
+    return {
+        {Role::ShapeType, "shapeType"},
+        {Role::ShapeData, "shapeData"},
+    };
+}
+
 } // namespace quicktools::core

@@ -163,17 +163,20 @@ QVariant imageParamDisplay(const QVariant &value)
     return value;
 }
 
-QVariant shape2DArrayParamDisplay(const QVariant &value)
+QVariant shapesListParamDisplay(const QVariant &value)
 {
-    const QList<CVToolShape> &shape_array = value.value<QList<CVToolShape>>();
-    if (shape_array.empty())
+    CVToolShapeListModel *shapes_list = value.value<CVToolShapeListModel *>();
+    if (shapes_list->empty())
         return "";
-    const int rows             = shape_array.size();
+
+    const QList<CVToolShape> &shapes = shapes_list->shapes();
+
+    const int rows             = shapes.size();
     const int array_last_index = rows - 1;
     QString   array_text       = "[";
     for (int i = 0; i < rows; ++i)
     {
-        const CVToolShape &shape = shape_array[i];
+        const CVToolShape &shape = shapes[i];
         if (shape.empty())
             continue;
         const QList<qreal> &data                 = shape.data();
@@ -208,7 +211,7 @@ QVariant getParamsDisplay(const int param_type, const QVariant &data)
         {  QuickToolParamType::InputFolderParamType,         valueParamDisplay},
         {   QuickToolParamType::IntSpinBoxParamType,         valueParamDisplay},
         {QuickToolParamType::DoubleSpinBoxParamType,         valueParamDisplay},
-        { QuickToolParamType::Shape2DArrayParamType,  shape2DArrayParamDisplay},
+        {   QuickToolParamType::ShapesListParamType,    shapesListParamDisplay},
     };
     if (data.isNull())
         return "";
@@ -369,7 +372,7 @@ QString AbstractQuickToolParams::getTypeName(const int type)
         {   QuickToolParamType::InputImageParamType,     "Input Image"},
         {    QuickToolParamType::InputFileParamType,      "Input File"},
         {  QuickToolParamType::InputFolderParamType,    "Input Folder"},
-        { QuickToolParamType::Shape2DArrayParamType,        "2D Shape"},
+        {   QuickToolParamType::ShapesListParamType,      "Shape List"},
     };
     auto found = typeNamesMap.find(type);
     return found == typeNamesMap.end() ? "undefined" : found.value();

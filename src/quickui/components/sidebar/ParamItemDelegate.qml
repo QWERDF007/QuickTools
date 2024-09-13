@@ -297,7 +297,7 @@ Rectangle {
                     return inputFolderParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParamType.IntSpinBoxParamType) {
                     return intSpinBoxParamItem
-                } else if (paramItemDelegate.paramType === QuickToolParamType.Shape2DArrayParamType) {
+                } else if (paramItemDelegate.paramType === QuickToolParamType.ShapesListParamType) {
                     return double2DArrayParamItem
                 }
 

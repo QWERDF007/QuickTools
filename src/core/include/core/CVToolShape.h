@@ -4,6 +4,7 @@
 
 #include <opencv2/core.hpp>
 
+#include <QMetaType>
 #include <QObject>
 #include <QtQml>
 
@@ -12,8 +13,9 @@ namespace quicktools::core {
 class QUICKTOOLS_CORE_EXPORT CVToolShape : public QObject
 {
     Q_OBJECT
-    QML_NAMED_ELEMENT(CVToolShape)
-    QML_UNCREATABLE("Can't not create a CVToolShape directly")
+    // QML_NAMED_ELEMENT(CVToolShape)
+    // QML_UNCREATABLE("Can't not create a CVToolShape directly")
+    QML_ANONYMOUS
     Q_PROPERTY(QList<qreal> data READ data WRITE setData NOTIFY dataChanged FINAL)
     Q_PROPERTY(ShapeType shapeType READ shapeType WRITE setShapeType NOTIFY shapeTypeChanged FINAL)
 public:
@@ -68,6 +70,43 @@ protected:
 signals:
     void dataChanged();
     void shapeTypeChanged();
+};
+
+class QUICKTOOLS_CORE_EXPORT CVToolShapeListModel : public QAbstractListModel
+{
+    Q_OBJECT
+    QML_ANONYMOUS
+public:
+    CVToolShapeListModel(QObject *parent = nullptr);
+    ~CVToolShapeListModel();
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+
+    bool empty() const
+    {
+        return rowCount() <= 0;
+    }
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    bool     setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+
+    void setShapes(const QList<CVToolShape> &shapes);
+
+    enum Role
+    {
+        ShapeType = Qt::UserRole + 1,
+        ShapeData,
+    };
+
+    QHash<int, QByteArray> roleNames() const override;
+
+    const QList<CVToolShape> &shapes() const
+    {
+        return shapes_;
+    }
+
+private:
+    QList<CVToolShape> shapes_;
 };
 
 class QUICKTOOLS_CORE_EXPORT CVToolROI : public CVToolShape

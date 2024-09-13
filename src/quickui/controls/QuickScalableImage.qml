@@ -226,17 +226,8 @@ Item {
             scalableImage.updateImageRect()
         }
 
-        Repeater {
+        QuickShapeRepeater {
             id: _shapes
-            delegate: QuickRectangle {
-                x: modelData[0]
-                y: modelData[1]
-                width: modelData[2]
-                height: modelData[3]
-                color: "transparent"
-                border.color: "yellow"
-                border.width: 3
-            }
         }
 
         QuickLoader {
