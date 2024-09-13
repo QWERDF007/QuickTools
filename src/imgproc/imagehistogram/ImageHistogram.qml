@@ -9,7 +9,7 @@ import QuickTools.ui
 T_CVWindow {
     id: imageHistogramWin
 
-    acceptedShapes: ShapeType.Rectangle | ShapeType.Circle
+    acceptedShapes: QuickShape.Rectangle | QuickShape.Circle
     activateItem: image
     quicktool: QuickToolManager.createQuickTool(QuickToolType.ImageHistogramTool, imageHistogramWin)
 

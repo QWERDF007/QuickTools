@@ -9,7 +9,7 @@ import QuickTools.ui
 T_CVWindow {
     id: yolov8Win
 
-    acceptedShapes: ShapeType.Rectangle
+    acceptedShapes: QuickShapeType.Rectangle
     activateItem: image
     quicktool: QuickToolManager.createQuickTool(QuickToolType.Yolov8DetectionTool, yolov8Win)
 

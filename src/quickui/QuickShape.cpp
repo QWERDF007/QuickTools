@@ -1,12 +1,8 @@
 #include "ui/QuickShape.h"
 
-#include "core/QuickToolType.h"
-
 #include <QPainter>
 
 namespace quicktools::ui {
-
-using core::shapetype::ShapeType;
 
 QuickPen::QuickPen(QObject *parent)
     : QObject(parent)
@@ -126,11 +122,6 @@ void QuickRectangle::setRadius(qreal radius)
         setAntialiasing(true);
     update();
     emit radiusChanged();
-}
-
-int QuickRectangle::shapeType() const
-{
-    return ShapeType::Rectangle;
 }
 
 void QuickRectangle::paint(QPainter *painter)
@@ -270,11 +261,6 @@ void QuickCircle::setCenterVisible(const bool visible)
     emit centerVisibleChanged();
 }
 
-int QuickCircle::shapeType() const
-{
-    return ShapeType::Circle;
-}
-
 void QuickCircle::paint(QPainter *painter)
 {
     if (antialiasing())
@@ -335,11 +321,6 @@ void QuickPolygon::setPoints(const QList<QPointF> &points)
     points_ = points;
     update();
     emit pointsChanged();
-}
-
-int QuickPolygon::shapeType() const
-{
-    return ShapeType::Polygon;
 }
 
 void QuickPolygon::paint(QPainter *painter) {}

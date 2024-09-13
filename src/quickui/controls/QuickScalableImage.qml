@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import QuickTools.ui
-import QuickTools.core
 
 Item {
     id: scalableImage
@@ -52,7 +51,7 @@ Item {
     property color drawingBorderColor: "red"
     property bool drawing: false
 
-    property int shapeType: ShapeType.NoShape
+    property int shapeType: QuickShape.NoShape
     property var roiItem: roiLoader.item
     signal roiDataChanged(int shapeType, var data)
 
@@ -103,11 +102,11 @@ Item {
                     if (roiItem) { // != null && != undefined
                         roiItem.setCursorShape(roiItem.selected ? Qt.SizeAllCursor : Qt.ArrowCursor)
                     }
-                    scalableImage.setCursorShape(scalableImage.shapeType !== ShapeType.NoShape ? Qt.CrossCursor : Qt.ArrowCursor)
+                    scalableImage.setCursorShape(scalableImage.shapeType !== QuickShape.NoShape ? Qt.CrossCursor : Qt.ArrowCursor)
                 }
             } else if (mouse.button === Qt.LeftButton) {
                 if (scalableImage.drawing) {
-                    if (scalableImage.shapeType !== ShapeType.NoShape) {
+                    if (scalableImage.shapeType !== QuickShape.NoShape) {
                         roiItem.updateByPos(mapToItem(_image, mouse.x, mouse.y))
                     }
                     scalableImage.drawing = false
@@ -116,7 +115,7 @@ Item {
         }
 
         onPositionChanged: function (mouse) {
-            if (scalableImage.drawing && scalableImage.shapeType !== ShapeType.NoShape) {
+            if (scalableImage.drawing && scalableImage.shapeType !== QuickShape.NoShape) {
                 scalableImage.setCursorShape(Qt.CrossCursor)
                 roiItem.setCursorShape(Qt.CrossCursor)
                 roiItem.updateByPos(mapToItem(_image, mouse.x, mouse.y))
@@ -149,7 +148,7 @@ Item {
 
     Keys.onReleased: function(event) {
         if (event.key === Qt.Key_Control && !mouseArea.containsPress) {
-            scalableImage.setCursorShape(scalableImage.shapeType !== ShapeType.NoShape ? Qt.CrossCursor : Qt.ArrowCursor)
+            scalableImage.setCursorShape(scalableImage.shapeType !== QuickShape.NoShape ? Qt.CrossCursor : Qt.ArrowCursor)
         }
     }
 
@@ -182,17 +181,16 @@ Item {
     }
 
     onShapeTypeChanged: {
-        console.log("image shaep type changed", scalableImage.shapeType)
-        if (scalableImage.shapeType === ShapeType.Rectangle && roiLoader.sourceComponent !== roi_rect) {
+        if (scalableImage.shapeType === QuickShape.Rectangle && roiLoader.sourceComponent !== roi_rect) {
             roiLoader.sourceComponent = roi_rect
-            scalableImage.roiDataChanged(ShapeType.NoShape, [])
-        } else if (scalableImage.shapeType === ShapeType.Circle && roiLoader.sourceComponent !== roi_circle) {
-            scalableImage.roiDataChanged(ShapeType.NoShape, [])
+            scalableImage.roiDataChanged(QuickShape.NoShape, [])
+        } else if (scalableImage.shapeType === QuickShape.Circle && roiLoader.sourceComponent !== roi_circle) {
+            scalableImage.roiDataChanged(QuickShape.NoShape, [])
             roiLoader.sourceComponent = roi_circle
-        } else if (scalableImage.shapeType === ShapeType.Polygon) {
+        } else if (scalableImage.shapeType === QuickShape.Polygon) {
 
         }
-        if (scalableImage.shapeType !== ShapeType.NoShape && scalableImage.status === Image.Ready) {
+        if (scalableImage.shapeType !== QuickShape.NoShape && scalableImage.status === Image.Ready) {
             scalableImage.setCursorShape(Qt.CrossCursor)
         } else {
             scalableImage.setCursorShape(Qt.ArrowCursor)

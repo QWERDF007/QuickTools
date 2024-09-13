@@ -52,7 +52,6 @@ target_compile_definitions(${TARGET_NAME}
 target_link_libraries(${TARGET_NAME} 
     PRIVATE  
         Qt6::Core Qt6::Gui Qt6::Quick
-        QuickTools_core QuickTools_core_headers
         QuickTools_common QuickTools_common_headers
 )
 
