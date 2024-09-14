@@ -68,6 +68,7 @@ cv::Mat CVToolROI::toMask(const int width, const int height, const int fill_valu
 CVToolShapeListModel::CVToolShapeListModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+    connect(this, &CVToolShapeListModel::shapesChanged, this, &CVToolShapeListModel::onShapesChanged);
 }
 
 CVToolShapeListModel::~CVToolShapeListModel()
@@ -105,9 +106,7 @@ bool CVToolShapeListModel::setData(const QModelIndex &index, const QVariant &val
 
 void CVToolShapeListModel::setShapes(const QList<CVToolShape> &shapes)
 {
-    beginResetModel();
-    shapes_ = shapes;
-    endResetModel();
+    emit shapesChanged(shapes);
 }
 
 QHash<int, QByteArray> CVToolShapeListModel::roleNames() const
@@ -116,6 +115,13 @@ QHash<int, QByteArray> CVToolShapeListModel::roleNames() const
         {Role::ShapeType, "shapeType"},
         {Role::ShapeData, "shapeData"},
     };
+}
+
+void CVToolShapeListModel::onShapesChanged(QList<CVToolShape> shapes)
+{
+    beginResetModel();
+    shapes_ = shapes;
+    endResetModel();
 }
 
 } // namespace quicktools::core

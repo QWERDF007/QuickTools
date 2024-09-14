@@ -42,13 +42,13 @@ public:
         return "CVOutputParams";
     }
 
-    CVToolShapeListModel *shapesList()
+    CVToolShapeListModel *shapesListModel()
     {
-        return shapes_list_;
+        return shapes_list_model_;
     }
 
 private:
-    CVToolShapeListModel *shapes_list_;
+    CVToolShapeListModel *shapes_list_model_;
 };
 
 } // namespace quicktools::core

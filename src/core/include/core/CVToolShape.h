@@ -107,6 +107,12 @@ public:
 
 private:
     QList<CVToolShape> shapes_;
+
+private slots:
+    void onShapesChanged(QList<CVToolShape> shapes);
+
+signals:
+    void shapesChanged(QList<CVToolShape>);
 };
 
 class QUICKTOOLS_CORE_EXPORT CVToolROI : public CVToolShape

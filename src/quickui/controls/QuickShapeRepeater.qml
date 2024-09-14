@@ -27,16 +27,59 @@ Repeater {
         return str;
     }
 
+    Component {
+        id: rect_com
+        QuickRectangle {
+            x: shapeData[0]
+            y: shapeData[1]
+            width: shapeData[2]
+            height: shapeData[3]
+            color: control.color
+            border.color: control.borderColor
+            border.width: 3
+        }
+    }
+
+    Component {
+        id: cricle_com
+        QuickCircle {
+            center.x: shapeData[0]
+            center.y: shapeData[1]
+            radius: shapeData[2]
+            color: control.color
+            border.color: control.borderColor
+            border.width: 3
+        }
+    }
+
+    Component {
+        id: polygon_com
+        QuickCircle {
+            center.x: shapeData[0]
+            center.y: shapeData[1]
+            radius: shapeData[2]
+            color: control.color
+            border.color: control.borderColor
+            border.width: 3
+        }
+    }
+
+
     property color color: "transparent"
     property color borderColor: "yellow"
-    delegate: QuickRectangle {
-        property var data: model.shapeData
-        x: data[0]
-        y: data[1]
-        width: data[2]
-        height: data[3]
-        color: control.color
-        border.color: control.borderColor
-        border.width: 3
+    delegate: QuickLoader {
+//        anchors.fill: parent
+        property var shapeData: model.shapeData
+        property var shapeType: model.shapeType
+        sourceComponent: {
+            if (shapeType === QuickShape.Rectangle) {
+                return rect_com
+            } else if (shapeType === QuickShape.Circle) {
+                return circle_com
+            } else if (shapeType === QuickShape.Polygon) {
+                return polygon_com
+            }
+            return undefined
+        }
     }
 }

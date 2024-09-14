@@ -118,8 +118,8 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
     addAlgorithmTime(algorithm_time);
     output_params->setData("Classes", QVariant::fromValue(cls));
     output_params->setData("Confidences", QVariant::fromValue(conf));
-    output_params->shapesList()->setShapes(rects);
-    output_params->setData("Rects", QVariant::fromValue(output_params->shapesList()));
+    output_params->shapesListModel()->setShapes(rects);
+    output_params->setData("Rects", QVariant::fromValue(output_params->shapesListModel()));
 
     return {ret, msg};
 }
