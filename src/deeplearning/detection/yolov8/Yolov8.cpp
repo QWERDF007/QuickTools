@@ -118,7 +118,7 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
     addAlgorithmTime(algorithm_time);
     output_params->setData("Classes", QVariant::fromValue(cls));
     output_params->setData("Confidences", QVariant::fromValue(conf));
-    output_params->shapesListModel()->setShapes(rects);
+    output_params->shapesListModel()->setShapes(rects); // 注意只能在主线程修改 model 的数据, 否则报错
     output_params->setData("Rects", QVariant::fromValue(output_params->shapesListModel()));
 
     return {ret, msg};
@@ -136,7 +136,7 @@ int Yolov8Detection::initInputParams()
         input_params_->addParam("Image", tr("图像"), tr("输入图像的路径"), QuickToolParamType::InputImageParamType,
                                 QVariant(), QVariant(), true, true, true, true);
         input_params_->addParam("Model", tr("模型文件"), tr("模型文件的路径"), QuickToolParamType::InputFileParamType,
-                                "d:/models/yolov8/yolov8s.pt", QVariant(), true, true, true, true);
+                                QVariant(), QVariant(), true, true, true, true);
         input_params_->addIntSpinBox("Imgsz", tr("图像大小"), tr("模型的输入图像大小"), 640, 0, 10000, 1, true, true);
         // TODO: 获取推理设备列表
         input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), "cuda:0", QVariantList(), false,
