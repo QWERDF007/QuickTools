@@ -6,6 +6,14 @@ import QuickTools.ui
 
 T.SpinBox {
     id: control
+    property int decimals: 2
+    readonly property int decimalFactor: Math.pow(10, decimals)
+    property real realFrom: 0
+    property real realTo: 0
+    property real realValue: 0
+    from: decimalToInt(realFrom)
+    to: decimalToInt(realTo)
+    value: realValue * decimalFactor
     property alias content: _content
     property bool disabled: false
     property color normalColor: Qt.rgba(232/255,232/255,232/255,1)
@@ -19,11 +27,29 @@ T.SpinBox {
     leftPadding: padding + (control.mirrored ? (up.indicator ? up.indicator.width : 0) : (down.indicator ? down.indicator.width : 0))
     rightPadding: padding + (control.mirrored ? (down.indicator ? down.indicator.width : 0) : (up.indicator ? up.indicator.width : 0))
     enabled: !disabled
-    validator: IntValidator {
-        locale: control.locale.name
-        bottom: Math.min(control.from, control.to)
-        top: Math.max(control.from, control.to)
+    validator: DoubleValidator {
+        bottom: Math.min(control.realFrom, control.realTo)
+        top: Math.max(control.realFrom, control.realTo)
+        decimals: control.decimals
+        notation: DoubleValidator.StandardNotation
     }
+
+    onValueChanged: {
+        realValue = value / control.decimalFactor
+    }
+
+    function decimalToInt(decimal) {
+        return decimal * decimalFactor
+    }
+
+    textFromValue: function(value, locale) {
+        return Number(value / control.decimalFactor).toLocaleString(locale, 'f', control.decimals)
+    }
+    valueFromText: function(text, locale) {
+        return Math.round(Number.fromLocaleString(locale, text) * control.decimalFactor)
+    }
+
+
     font: QuickFont.Body
 
     contentItem: TextInput {

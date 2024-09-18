@@ -137,12 +137,12 @@ int Yolov8Detection::initInputParams()
                                 QVariant(), QVariant(), true, true, true, true);
         input_params_->addParam("Model", tr("模型文件"), tr("模型文件的路径"), QuickToolParamType::InputFileParamType,
                                 QVariant(), QVariant(), true, true, true, true);
-        input_params_->addIntSpinBox("Imgsz", tr("图像大小"), tr("模型的输入图像大小"), 640, 0, 10000, 1, true, true);
+        input_params_->addIntSpinBox("Imgsz", tr("图像大小"), tr("模型的输入图像大小"), 640, 0, 10000, true, true);
         // TODO: 获取推理设备列表
         input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), "cuda:0", QVariantList(), false,
                                    true);
-        input_params_->addDoubleSpinBox("ConfidenceThreshold", tr("置信度阈值"), "", 0.25, 0, 1, 0.05, true, true);
-        input_params_->addDoubleSpinBox("IouThreshold", tr("iou阈值"), "", 0.7, 0, 1, 0.05, 2, true, true);
+        input_params_->addDoubleSpinBox("ConfidenceThreshold", tr("置信度阈值"), "", 0.25, 0, 1, 2, true, true);
+        input_params_->addDoubleSpinBox("IouThreshold", tr("iou阈值"), "", 0.7, 0, 1, 2, true, true);
     }
     return Error::Success;
 }

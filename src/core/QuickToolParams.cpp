@@ -429,27 +429,24 @@ bool InputParams::addComboBox(const QString &name, const QString &display_name, 
 }
 
 bool InputParams::addIntSpinBox(const QString &name, const QString &display_name, const QString &desc, const int value,
-                                const int from, const int to, const int step, const bool is_property,
-                                const bool visible)
+                                const int from, const int to, const bool is_property, const bool visible)
 {
     QVariantMap additional{
-        {    "from", from},
-        {      "to",   to},
-        {"stepSize", step},
+        {"from", from},
+        {  "to",   to},
     };
     return AbstractQuickToolParams::addParam(name, display_name, desc, QuickToolParamType::IntSpinBoxParamType, value,
                                              additional, true, is_property, true, visible);
 }
 
 bool InputParams::addDoubleSpinBox(const QString &name, const QString &display_name, const QString &desc,
-                                   const double value, const double from, const double to, const double step,
-                                   const int decimal, const bool is_property, const bool visible)
+                                   const double value, const double from, const double to, const int decimals,
+                                   const bool is_property, const bool visible)
 {
     QVariantMap additional{
-        {    "from",    from},
-        {      "to",      to},
-        {"stepSize",    step},
-        { "decimal", decimal},
+        {    "from",     from},
+        {      "to",       to},
+        {"decimals", decimals},
     };
     return AbstractQuickToolParams::addParam(name, display_name, desc, QuickToolParamType::DoubleSpinBoxParamType,
                                              value, additional, true, is_property, true, visible);

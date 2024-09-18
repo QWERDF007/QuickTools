@@ -8,10 +8,6 @@ T_ParamItem {
 
     displayText: _content.value
 
-    SpinBox {
-
-    }
-
     QuickSpinBox {
         id: _content
         anchors.fill: parent
@@ -21,11 +17,10 @@ T_ParamItem {
 //        pressedColor: Qt.lighter(normalColor, 1.2)
         from: paramAdditional.from
         to: paramAdditional.to
-        stepSize: paramAdditional.stepSize
         value: paramValue
 
         onValueModified: {
-            intSpinBoxItem.valueChanged(_content.value);
+            intSpinBoxItem.valueChanged(_content.value)
         }
     }
 }

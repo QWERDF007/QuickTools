@@ -227,6 +227,22 @@ Rectangle {
         }
     }
 
+    Component {
+        id: doubleSpinBoxParamItem
+
+        DoubleSpinBoxParamItem {
+            paramDisplay: paramItemDelegate.paramDisplay
+            paramName: paramItemDelegate.paramName
+            paramAdditional: paramItemDelegate.paramAdditional
+            paramValue: paramItemDelegate.paramValue
+            paramEditable: paramItemDelegate.paramEditable
+
+            onValueChanged: function (value) {
+                paramItemDelegate.valueChanged(value)
+            }
+        }
+    }
+
     Column {
         anchors.bottomMargin: 2
         anchors.fill: parent
@@ -297,6 +313,8 @@ Rectangle {
                     return inputFolderParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParamType.IntSpinBoxParamType) {
                     return intSpinBoxParamItem
+                } else if (paramItemDelegate.paramType === QuickToolParamType.DoubleSpinBoxParamType) {
+                    return doubleSpinBoxParamItem
                 } else if (paramItemDelegate.paramType === QuickToolParamType.ShapesListParamType) {
                     return double2DArrayParamItem
                 }

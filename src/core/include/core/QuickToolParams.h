@@ -224,13 +224,12 @@ public:
      * @param[in] value 参数数据
      * @param[in] from 参数下限
      * @param[in] to 参数上限
-     * @param[in] step 参数调整步长
      * @param[in] is_property 参数是否作为属性被界面访问
      * @param[in] visible 参数是否可见
      * @return
      */
     bool addIntSpinBox(const QString &name, const QString &display_name, const QString &desc, const int value,
-                       const int from = 0, const int to = 100, const int step = 1, const bool is_property = false,
+                       const int from = 0, const int to = 100, const bool is_property = false,
                        const bool visible = true);
 
     /**
@@ -241,14 +240,13 @@ public:
      * @param[in] value 参数数据
      * @param[in] from 参数下限
      * @param[in] to 参数上限
-     * @param[in] step 参数调整步长
-     * @param[in] decimal 参数展示小数位数
+     * @param[in] decimals 参数展示小数位数
      * @param[in] is_property 参数是否作为属性被界面访问
      * @param[in] visible 参数是否可见
      * @return
      */
     bool addDoubleSpinBox(const QString &name, const QString &display_name, const QString &desc, const double value,
-                          const double from = 0, const double to = 1, const double step = 0.1, const int decimal = 2,
+                          const double from = 0, const double to = 1, const int decimals = 2,
                           const bool is_property = false, const bool visible = true);
 
     /**
