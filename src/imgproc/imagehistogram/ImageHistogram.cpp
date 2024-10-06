@@ -83,8 +83,8 @@ std::tuple<int, QString> ImageHistogram::doInProcess()
     QList<QList<QVariant>> hists_min;
     QList<QList<QVariant>> hists_max;
     // for (const cv::Mat &ch : chs)
-    size_t              size = chs.size();
-    double              step = 0.4 / size;
+    size_t                 size = chs.size();
+    double                 step = 0.4 / size;
     for (size_t i = 0; i < size; ++i)
     {
         cv::Mat hist;
@@ -190,7 +190,7 @@ int ImageHistogram::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addInputImage("Image", tr("图像"), tr("输入图像的路径"), QVariant(), false, true, true);
+        input_params_->addInputImage("Image", tr("图像"), tr("输入图像的路径"), QVariant(), true, true);
         input_params_->addComboBox("ColorSpace", tr("色彩空间"), tr("将输入图像转换到对应的色彩空间"), COLOR_SPACES[0],
                                    COLOR_SPACES, false, true);
     }

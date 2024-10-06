@@ -133,8 +133,7 @@ int Yolov8Detection::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addParam("Image", tr("图像"), tr("输入图像的路径"), QuickToolParamType::InputImageParamType,
-                                QVariant(), QVariant(), true, true, true, true);
+        input_params_->addInputImage("Image", tr("图像"), tr("输入图像的路径"), QVariant(), true, true);
         input_params_->addParam("Model", tr("模型文件"), tr("模型文件的路径"), QuickToolParamType::InputFileParamType,
                                 QVariant(), QVariant(), true, true, true, true);
         input_params_->addIntSpinBox("Imgsz", tr("图像大小"), tr("模型的输入图像大小"), 640, 0, 10000, true, true);

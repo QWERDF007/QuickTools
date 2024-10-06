@@ -453,14 +453,10 @@ bool InputParams::addDoubleSpinBox(const QString &name, const QString &display_n
 }
 
 bool InputParams::addInputImage(const QString &name, const QString &display_name, const QString &desc,
-                                const QVariant &value, const bool open_folder, const bool is_property,
-                                const bool visible)
+                                const QVariant &value, const bool is_property, const bool visible)
 {
-    QVariantMap additional{
-        {"openFolder", open_folder},
-    };
     return AbstractQuickToolParams::addParam(name, display_name, desc, QuickToolParamType::InputImageParamType, value,
-                                             additional, true, is_property, true, visible);
+                                             QVariant(), true, is_property, true, visible);
 }
 
 } // namespace quicktools::core

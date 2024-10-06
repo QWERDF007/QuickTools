@@ -36,15 +36,26 @@ T_ParamItem {
             implicitWidth: Math.min(parent.width, parent.height)
 
             onClicked: {
-                if (paramAdditional && paramAdditional.openFolder) {
-                    folderDialog.open()
-                } else {
-                    fileDialog.open()
-                }
+                fileDialog.open()
             }
             QuickToolTip{
-                text: qsTr("选择图像")
+                text: qsTr("打开图像")
                 visible: imageBtn.hovered
+                delay: 200
+            }
+        }
+        QuickToolButton {
+            id: folderBtn
+            icon.source: "/icons/folder"
+            implicitHeight: Math.min(parent.width, parent.height)
+            implicitWidth: Math.min(parent.width, parent.height)
+
+            onClicked: {
+                folderDialog.open()
+            }
+            QuickToolTip{
+                text: qsTr("打开文件夹")
+                visible: folderBtn.hovered
                 delay: 200
             }
         }

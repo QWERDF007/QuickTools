@@ -255,13 +255,12 @@ public:
      * @param[in] display_name 参数展示名称
      * @param[in] desc 参数描述
      * @param[in] value 参数数据
-     * @param[in] open_folder 是否打开目录, 而不是单个图像文件
      * @param[in] is_property 参数是否作为属性被界面访问
      * @param[in] visible 参数是否可见
      * @return
      */
     bool addInputImage(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
-                       const bool open_folder = false, const bool is_property = false, const bool visible = true);
+                       const bool is_property = false, const bool visible = true);
 };
 
 class QUICKTOOLS_CORE_EXPORT OutputParams : public AbstractQuickToolParams
