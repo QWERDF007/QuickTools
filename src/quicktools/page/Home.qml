@@ -7,7 +7,6 @@ import QuickTools.core
 import "../global"
 
 QuickScrollablePage {
-    property int count: 0
     Component { // 工具卡片
         id:com_item
         Item{
@@ -124,9 +123,5 @@ QuickScrollablePage {
         interactive: false
         model: QuickToolManager.getRecentlyUpdatedToolsConfig()
         delegate: com_item
-    }
-
-    Component.onCompleted: {
-        count = recentlyAddedToolsView.count + recentlyUpdatedToolsView.count
     }
 }

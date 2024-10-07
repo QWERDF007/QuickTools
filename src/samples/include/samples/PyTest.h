@@ -52,7 +52,7 @@ public:
 
     QString icon() const override
     {
-        return QString();
+        return "/icons/testing";
     }
 
     QVariantMap extra() const override

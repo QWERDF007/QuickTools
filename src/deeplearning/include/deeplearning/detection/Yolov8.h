@@ -64,7 +64,7 @@ public:
 
     QString icon() const override
     {
-        return "/icons/bar";
+        return "/icons/detection";
     }
 
     QVariantMap extra() const override
