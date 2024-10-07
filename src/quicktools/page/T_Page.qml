@@ -4,26 +4,10 @@ import QtQuick.Layouts
 
 import QuickTools.ui
 
-import "../component"
-
-
 QuickScrollablePage { // 工具卡片列表页面, 可滚动
     id: page
-    property ToolsList items
 
-    Item {
-        id: d
-        function handleItems() {
-            var data = []
-            if (items) {
-                for (var i=0;i<items.children.length;i++) {
-                    var item = items.children[i]
-                    data.push(item)
-                }
-            }
-            return data
-        }
-    }
+    property alias model: gridview.model
 
     Component { // 工具卡片
         id:com_item
@@ -111,8 +95,6 @@ QuickScrollablePage { // 工具卡片列表页面, 可滚动
         id: gridview
         Layout.fillWidth: true
         Layout.preferredHeight: contentHeight
-//        anchors.fill: parent
-        model: d.handleItems()
         cellHeight: 120
         cellWidth: 320
         interactive: false
@@ -120,7 +102,7 @@ QuickScrollablePage { // 工具卡片列表页面, 可滚动
     }
 
     QuickText {
-        visible: items == null
+        visible: gridview.count <= 0
         Layout.fillHeight: true
         Layout.fillWidth: true
         text: qsTr("这个人很懒, 啥也没做")

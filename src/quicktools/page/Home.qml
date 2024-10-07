@@ -2,11 +2,12 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QuickTools.ui
+import QuickTools.core
+
 import "../global"
 
 QuickScrollablePage {
-
-
+    property int count: 0
     Component { // 工具卡片
         id:com_item
         Item{
@@ -97,11 +98,12 @@ QuickScrollablePage {
 
 
     GridView{
+        id: recentlyAddedToolsView
         Layout.fillWidth: true
         Layout.preferredHeight: contentHeight
         cellHeight: 120
         cellWidth: 320
-        model: RecentlyItems.getRecentlyAddedData()
+        model: QuickToolManager.getRecentlyAddedToolsConfig()
         interactive: false
         delegate: com_item
     }
@@ -114,14 +116,17 @@ QuickScrollablePage {
     }
 
     GridView{
+        id: recentlyUpdatedToolsView
         Layout.fillWidth: true
         Layout.preferredHeight: contentHeight
         cellHeight: 120
         cellWidth: 320
         interactive: false
-        model: RecentlyItems.getRecentlyUpdatedData()
+        model: QuickToolManager.getRecentlyUpdatedToolsConfig()
         delegate: com_item
     }
 
-
+    Component.onCompleted: {
+        count = recentlyAddedToolsView.count + recentlyUpdatedToolsView.count
+    }
 }

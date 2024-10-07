@@ -1,6 +1,7 @@
 #include "deeplearning/detection/Yolov8.h"
 
 #include "core/Error.h"
+#include "core/PythonInterface.h"
 
 #include <pybind11/pybind11.h>
 

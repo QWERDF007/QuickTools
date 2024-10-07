@@ -1,7 +1,9 @@
 #pragma once
 #include "core/QuickTool.h"
+#include "core/QuickToolConfig.h"
 #include "core/QuickToolManager.h"
 #include "core/QuickToolType.h"
+
 
 namespace quicktools::samples {
 
@@ -30,5 +32,47 @@ protected:
 private:
 };
 
-REGISTER_QUICKTOOL(core::quicktooltype::PyTestTool, PyTest)
+class PyTestConfig : public core::AbstractQuickToolConfig
+{
+public:
+    QString title() const override
+    {
+        return "PyTest";
+    }
+
+    QString url() const override
+    {
+        return "qrc:/qt/qml/QuickTools/samples/PyTest/PyTest.qml";
+    }
+
+    QString desc() const override
+    {
+        return QString("Python 测试工具");
+    }
+
+    QString icon() const override
+    {
+        return QString();
+    }
+
+    QVariantMap extra() const override
+    {
+        return {
+            {"recentlyUpdated", true},
+            {  "recentlyAdded", true},
+        };
+    }
+
+    int task() const override
+    {
+        return core::quicktooltasktype::QuickToolTaskType::EmptyTask;
+    }
+
+    int group() const override
+    {
+        return core::quicktoolgrouptype::QuickToolGroupType::SamplesGroup;
+    }
+};
+
+REGISTER_QUICKTOOL(core::quicktooltype::PyTestTool, PyTest, PyTestConfig)
 } // namespace quicktools::samples

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreGlobal.h"
-#include "PythonInterface.h"
 #include "QuickToolParams.h"
 #include "QuickToolSettings.h"
 
@@ -10,6 +9,8 @@
 #include <QtQml>
 
 namespace quicktools::core {
+
+class AbstractPythonInterface;
 
 // Template classes not supported by Q_OBJECT
 
@@ -391,15 +392,6 @@ inline void AbstractQuickTool::setRunning(bool running)
 {
     running_ = running;
     emit runningChanged();
-}
-
-inline void AbstractQuickTool::reloadModule()
-{
-    if (python_interface_)
-    {
-        const auto &[ret, msg] = python_interface_->reloadModule();
-        emit showMessage(ret == 0 ? InfoLevel::Info : InfoLevel::Error, msg);
-    }
 }
 
 inline int AbstractQuickTool::initSettings()

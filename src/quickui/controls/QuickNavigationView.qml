@@ -8,6 +8,7 @@ import QuickTools.ui
 import QuickTools.core
 
 Item {
+    property alias contentLoader: loader_content
     property url logo
     property string title: ""
     property QuickObject items

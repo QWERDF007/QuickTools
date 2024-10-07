@@ -1,6 +1,2 @@
 singleton QuickToolsItems 1.0 QuickToolsItems.qml
 singleton QuickToolsFooter 1.0 QuickToolsFooter.qml
-singleton RecentlyItems 1.0 RecentlyItems.qml
-singleton ImageProcessItems 1.0 ImageProcessItems.qml
-singleton SamplesItems 1.0 SamplesItems.qml
-singleton DetectionItems 1.0 DetectionItems.qml

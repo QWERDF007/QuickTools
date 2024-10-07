@@ -2,6 +2,7 @@
 
 #include "common/Utils.h"
 #include "core/Error.h"
+#include "core/PythonInterface.h"
 #include "core/QuickToolManager.h"
 #include "priv/Predefined.h"
 
@@ -265,6 +266,15 @@ void AbstractQuickTool::onSettingChange(const QString &key, const QVariant &valu
 {
     if (key == Predefined::RUN_TOOL_AFTER_CHANGED)
         run_after_input_changed = value.toBool();
+}
+
+void quicktools::core::AbstractQuickTool::reloadModule()
+{
+    if (python_interface_)
+    {
+        const auto &[ret, msg] = python_interface_->reloadModule();
+        emit showMessage(ret == 0 ? InfoLevel::Info : InfoLevel::Error, msg);
+    }
 }
 
 } // namespace quicktools::core

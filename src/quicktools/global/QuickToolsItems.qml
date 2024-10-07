@@ -14,7 +14,7 @@ QuickObject {
 
     QuickPaneItem {
         id:item_home
-        count: RecentlyItems.getRecentlyAddedData().length + RecentlyItems.getRecentlyUpdatedData().length
+        count: QuickToolManager.getRecentlyChangedToolsCount()
         title: "Home"
         //        menuDelegate: paneItemMenu
         infoBadge: QuickBadge {
@@ -35,8 +35,8 @@ QuickObject {
         group: QuickToolManager.getGroupUUID(QuickToolGroupType.ImageProcessGroup)
         iconVisible: true
         icon: QuickFontIcon.QRCode
-        url: "qrc:/qt/qml/QuickTools/page/ImageProcessPage.qml"
-        onTap: { navigationView.push(url) }
+        url: "qrc:/qt/qml/QuickTools/page/T_Page.qml"
+        onTap: { navigationView.push(url); navigationView.contentLoader.item.model = QuickToolManager.getToolsConfig(group, task); }
     }
 
     QuickPaneItemExpander {
@@ -47,31 +47,33 @@ QuickObject {
         group: QuickToolManager.getGroupUUID(QuickToolGroupType.DeepLearningGroup)
         QuickPaneItem {
             title: qsTr("图像分类")
-            url: "qrc:/qt/qml/QuickTools/page/ClassificationPage.qml"
-            onTap: { navigationView.push(url) }
+            url: "qrc:/qt/qml/QuickTools/page/T_Page.qml"
+            onTap: { navigationView.push(url); navigationView.contentLoader.item.model = QuickToolManager.getToolsConfig(group, task); }
             group: dlgroup.group
         }
         QuickPaneItem {
             title: qsTr("目标检测")
-            url: "qrc:/qt/qml/QuickTools/page/DetectionPage.qml"
-            onTap: { navigationView.push(url) }
+            url: "qrc:/qt/qml/QuickTools/page/T_Page.qml"
             group: dlgroup.group
+            task: QuickToolManager.getTaskUUID(QuickToolTaskType.DetectionTask)
+            onTap: { navigationView.push(url); navigationView.contentLoader.item.model = QuickToolManager.getToolsConfig(group, task); }
         }
         QuickPaneItem {
             title: qsTr("语义分割")
-            url: "qrc:/qt/qml/QuickTools/page/SegmentationPage.qml"
-            onTap: { navigationView.push(url) }
+            url: "qrc:/qt/qml/QuickTools/page/T_Page.qml"
             group: dlgroup.group
+            task: QuickToolManager.getTaskUUID(QuickToolTaskType.EmptyTask)
+            onTap: { navigationView.push(url); navigationView.contentLoader.item.model = QuickToolManager.getToolsConfig(group, task); }
         }
     }
 
     QuickPaneItem {
         title: qsTr("示例工具")
-        group: QuickToolManager.getGroupUUID(QuickToolGroupType.SamplesGroup)
         iconVisible: true
         icon: QuickFontIcon.Emoji2
-        url: "qrc:/qt/qml/QuickTools/page/SamplesPage.qml"
-        onTap: { navigationView.push(url) }
+        url: "qrc:/qt/qml/QuickTools/page/T_Page.qml"
+        group: QuickToolManager.getGroupUUID(QuickToolGroupType.SamplesGroup)
+        onTap: { navigationView.push(url); navigationView.contentLoader.item.model = QuickToolManager.getToolsConfig(group, task); }
     }
 
     function startPageByItem(data){

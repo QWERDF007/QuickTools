@@ -1,6 +1,8 @@
 #include "core/QuickToolManager.h"
 
 #include "common/Utils.h"
+#include "core/Error.h"
+#include "core/QuickToolConfig.h"
 
 #include <spdlog/spdlog.h>
 
@@ -38,6 +40,12 @@ QuickToolManager *QuickToolManager::create(QQmlEngine *qmlEngine, QJSEngine *jsE
     return getInstance();
 }
 
+int QuickToolManager::init()
+{
+    QuickToolManager::getInstance()->registerGroupAndTask(quicktoolgrouptype::EmptyGroup, quicktooltasktype::EmptyTask);
+    return Error::Success;
+}
+
 bool QuickToolManager::addToActivted(AbstractQuickTool *tool)
 {
     if (activated_tools_ == nullptr)
@@ -73,11 +81,32 @@ AbstractQuickTool *QuickToolManager::createQuickTool(const int tool_type, QObjec
     return nullptr;
 }
 
-void QuickToolManager::registerQuickTool(const int tool_type, AbstractQuickToolCreator creator)
+void QuickToolManager::registerQuickTool(const int tool_type, AbstractQuickToolCreator tool_creator,
+                                         AbstractQuickToolConfigCreator config_creator)
 {
     auto found = tool_creators_.find(tool_type);
     assert(found == tool_creators_.end() && "This type is already registered");
-    tool_creators_.emplace(tool_type, creator);
+    tool_creators_.emplace(tool_type, tool_creator);
+
+    AbstractQuickToolConfig *config     = config_creator();
+    QString                  group_uuid = config->groupUUID();
+    QString                  task_uuid  = config->taskUUID();
+    assert(!group_uuid.isEmpty() && "No such group");
+    assert(!task_uuid.isEmpty() && "No such task");
+    auto found_group = tools_config_.find(group_uuid);
+    if (found_group == tools_config_.end())
+        tools_config_[group_uuid] = std::map<QString, std::map<int, QVariantMap>>();
+    auto found_task = tools_config_[group_uuid].find(task_uuid);
+    if (found_task == tools_config_[group_uuid].end())
+        tools_config_[group_uuid][task_uuid] = std::map<int, QVariantMap>();
+    QVariantMap tool_config                         = config->toMap();
+    tools_config_[group_uuid][task_uuid][tool_type] = tool_config;
+    QVariantMap extra                               = config->extra();
+    if (extra.contains("recentlyUpdated") && extra["recentlyUpdated"].toBool())
+        recently_updated_tools_config_[tool_type] = tool_config;
+    if (extra.contains("recentlyAdded") && extra["recentlyAdded"].toBool())
+        recently_added_tools_config_[tool_type] = tool_config;
+    delete config;
 }
 
 QString QuickToolManager::getGroupUUID(const int group)
@@ -102,6 +131,49 @@ void QuickToolManager::registerGroupAndTask(const int group, const int task)
         groups_uuid_.emplace(group, common::uuid());
     if (tasks_uuid_.find(task) == tasks_uuid_.end())
         tasks_uuid_.emplace(task, common::uuid());
+}
+
+QList<QVariantMap> QuickToolManager::getToolsConfig(const QString &group_uuid, const QString &task_uuid) const
+{
+    QList<QVariantMap> configs;
+    if (group_uuid.isEmpty())
+        return configs;
+    auto found_group_configs = tools_config_.find(group_uuid);
+    if (found_group_configs == tools_config_.end())
+        return configs;
+    auto found_task_configs = found_group_configs->second.find(task_uuid);
+    if (found_task_configs == found_group_configs->second.end())
+        return configs;
+    for (const auto &[_, config] : found_task_configs->second)
+    {
+        configs.append(config);
+    }
+    return configs;
+}
+
+QList<QVariantMap> QuickToolManager::getRecentlyAddedToolsConfig() const
+{
+    QList<QVariantMap> configs;
+    for (const auto &[tool_type, config] : recently_added_tools_config_)
+    {
+        configs.append(config);
+    }
+    return configs;
+}
+
+QList<QVariantMap> QuickToolManager::getRecentlyUpdatedToolsConfig() const
+{
+    QList<QVariantMap> configs;
+    for (const auto &[tool_type, config] : recently_updated_tools_config_)
+    {
+        configs.append(config);
+    }
+    return configs;
+}
+
+int QuickToolManager::getRecentlyChangedToolsCount()
+{
+    return static_cast<int>(recently_added_tools_config_.size() + recently_updated_tools_config_.size());
 }
 
 int ActivatedTools::rowCount(const QModelIndex &parent) const

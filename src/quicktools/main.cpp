@@ -3,6 +3,7 @@
 #include "common/Logger.h"
 #include "core/Logger.h"
 #include "core/PythonManager.h"
+#include "core/QuickToolManager.h"
 #include "imgproc/ImgprocRegister.h"
 #include "samples/SamplesRegister.h"
 #include "deeplearning/DeepLearningRegister.h"
@@ -39,7 +40,7 @@ int main(int argc, char *argv[])
 
     QApplication          app(argc, argv);
     QQmlApplicationEngine engine;
-
+    quicktools::core::QuickToolManager::getInstance()->init();
     quicktools::imgproc::registerTools();
     quicktools::samples::registerTools();
     quicktools::dl::registerTools();

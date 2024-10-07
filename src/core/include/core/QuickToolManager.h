@@ -1,10 +1,13 @@
 #pragma once
 
 #include "QuickTool.h"
+#include "QuickToolType.h"
 
 #include <QAbstractTableModel>
 
 namespace quicktools::core {
+
+class AbstractQuickToolConfig;
 
 class ActivatedTools : public QAbstractTableModel
 {
@@ -51,7 +54,8 @@ class QUICKTOOLS_CORE_EXPORT QuickToolManager : public QObject
     QML_NAMED_ELEMENT(QuickToolManager)
     Q_PROPERTY(ActivatedTools *activatedTools READ activatedTools CONSTANT FINAL)
 public:
-    using AbstractQuickToolCreator = std::function<AbstractQuickTool *(QObject *)>;
+    using AbstractQuickToolCreator       = std::function<AbstractQuickTool *(QObject *)>;
+    using AbstractQuickToolConfigCreator = std::function<AbstractQuickToolConfig *(void)>;
 
     /**
      * @brief 获取单例实例的指针
@@ -67,6 +71,8 @@ public:
      */
     static QuickToolManager *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
+    int init();
+
     ActivatedTools *activatedTools()
     {
         return activated_tools_;
@@ -78,11 +84,17 @@ public:
 
     Q_INVOKABLE AbstractQuickTool *createQuickTool(const int type, QObject *parent = nullptr);
 
-    void registerQuickTool(const int type, AbstractQuickToolCreator creator);
+    void registerQuickTool(const int type, AbstractQuickToolCreator tool_creator,
+                           AbstractQuickToolConfigCreator config_creator);
 
     Q_INVOKABLE QString getGroupUUID(const int group);
     Q_INVOKABLE QString getTaskUUID(const int task);
     void                registerGroupAndTask(const int group, const int task);
+
+    Q_INVOKABLE QList<QVariantMap> getToolsConfig(const QString &group_uuid, const QString &task_uuid) const;
+    Q_INVOKABLE QList<QVariantMap> getRecentlyAddedToolsConfig() const;
+    Q_INVOKABLE QList<QVariantMap> getRecentlyUpdatedToolsConfig() const;
+    Q_INVOKABLE int                getRecentlyChangedToolsCount();
 
 protected:
     static QQmlEngine *qmlEngine_;
@@ -103,17 +115,27 @@ private:
     std::map<int, QString> groups_uuid_;
     std::map<int, QString> tasks_uuid_;
 
+    std::map<QString, std::map<QString, std::map<int, QVariantMap>>> tools_config_; // group, task, tool
+
+    std::map<int, QVariantMap> recently_updated_tools_config_;
+    std::map<int, QVariantMap> recently_added_tools_config_;
+
     ActivatedTools *activated_tools_{nullptr};
 };
 
 } // namespace quicktools::core
 
-#define REGISTER_QUICKTOOL(tool_type, ClassName)                                                            \
-    inline ClassName *create##ClassName(QObject *parent = nullptr)                                          \
-    {                                                                                                       \
-        return new ClassName(parent);                                                                       \
-    }                                                                                                       \
-    inline void register##ClassName()                                                                       \
-    {                                                                                                       \
-        quicktools::core::QuickToolManager::getInstance()->registerQuickTool(tool_type, create##ClassName); \
+#define REGISTER_QUICKTOOL(tool_type, ClassName, ConfigClassName)                                          \
+    inline ClassName *create##ClassName(QObject *parent = nullptr)                                         \
+    {                                                                                                      \
+        return new ClassName(parent);                                                                      \
+    }                                                                                                      \
+    inline ConfigClassName *create##ConfigClassName()                                                      \
+    {                                                                                                      \
+        return new ConfigClassName();                                                                      \
+    }                                                                                                      \
+    inline void register##ClassName()                                                                      \
+    {                                                                                                      \
+        quicktools::core::QuickToolManager::getInstance()->registerQuickTool(tool_type, create##ClassName, \
+                                                                             create##ConfigClassName);     \
     }
