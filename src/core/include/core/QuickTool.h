@@ -222,6 +222,9 @@ protected:
      */
     AbstractPythonInterface *python_interface_{nullptr};
 
+    QQmlEngine *qmlEngine_{nullptr};
+    QJSEngine  *jsEngine_{nullptr};
+
 protected slots:
     /**
      * @brief 链接工具输入参数改变后发出的信号 @ref AbstractQuickToolParams::runToolAfterParamChanged,
@@ -293,9 +296,6 @@ private:
 
     /// 是否在输入参数改变后运行工具，通过设置项 `RunToolAfterChanged` 修改
     bool run_after_input_changed{true};
-
-    QQmlEngine *qmlEngine_{nullptr};
-    QJSEngine  *jsEngine_{nullptr};
 
     /// 工具是否初始化
     bool is_init_{false};

@@ -61,9 +61,12 @@ std::tuple<int, QString> ImageHistogram::doInProcess()
         return {-1, tr("输入图像路径不存在")};
     QString color_space = input_params->data("ColorSpace", QuickToolParamRole::ParamValueRole).toString();
 
-    auto    read_start_time = std::chrono::high_resolution_clock::now();
-    cv::Mat image           = cv::imread(image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
-    auto    read_end_time   = std::chrono::high_resolution_clock::now();
+    auto read_start_time = std::chrono::high_resolution_clock::now();
+
+    cv::Mat image = cv::imread(image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
+    image_provider_.setImage(image);
+
+    auto read_end_time = std::chrono::high_resolution_clock::now();
 
     setProgress(0.5);
 
@@ -190,6 +193,8 @@ int ImageHistogram::initInputParams()
 {
     if (input_params_)
     {
+        qInfo() << __FUNCTION__ << __LINE__ << "addImageProvider" << uuid();
+        qmlEngine_->addImageProvider(uuid(), &image_provider_);
         input_params_->addInputImage("Image", tr("图像"), tr("输入图像的路径"), QVariant(), true, true);
         input_params_->addComboBox("ColorSpace", tr("色彩空间"), tr("将输入图像转换到对应的色彩空间"), COLOR_SPACES[0],
                                    COLOR_SPACES, false, true);

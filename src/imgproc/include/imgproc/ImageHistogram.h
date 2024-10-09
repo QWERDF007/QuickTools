@@ -1,9 +1,9 @@
 #pragma once
 
 #include "core/CVTool.h"
+#include "core/ImageProvider.h"
 #include "core/QuickToolConfig.h"
 #include "core/QuickToolManager.h"
-#include "core/QuickToolType.h"
 
 #include <opencv2/core.hpp>
 
@@ -36,6 +36,8 @@ private:
     int cvtColor(const cv::Mat &src, cv::Mat &dst, const QString &color_space);
 
     static QString doc_;
+
+    core::ImageProvider image_provider_;
 };
 
 class ImageHistogramConfig : public core::AbstractQuickToolConfig

@@ -2,6 +2,7 @@
 
 #include "common/Utils.h"
 #include "core/Error.h"
+#include "core/QuickTool.h"
 #include "core/QuickToolConfig.h"
 
 #include <spdlog/spdlog.h>
@@ -69,8 +70,8 @@ AbstractQuickTool *QuickToolManager::createQuickTool(const int tool_type, QObjec
         AbstractQuickTool *quick_tool = callable(parent);
         if (quick_tool)
         {
-            quick_tool->init();
             quick_tool->setEngine(qmlEngine_, jsEngine_);
+            quick_tool->init();
             addToActivted(quick_tool);
             spdlog::info("创建工具: {}, uuid: {}", quick_tool->name().toUtf8().constData(),
                          quick_tool->uuid().toUtf8().constData());

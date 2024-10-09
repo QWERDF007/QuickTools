@@ -1,12 +1,14 @@
 #pragma once
 
-#include "QuickTool.h"
-#include "QuickToolType.h"
+#include "CoreGlobal.h"
 
 #include <QAbstractTableModel>
+#include <QtQml>
+
 
 namespace quicktools::core {
 
+class AbstractQuickTool;
 class AbstractQuickToolConfig;
 
 class ActivatedTools : public QAbstractTableModel

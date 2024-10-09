@@ -36,7 +36,8 @@ T_CVWindow {
                     if (inputParams.pdata.Image === null || inputParams.pdata.Image === undefined) {
                         return ""
                     }
-                    return "file:///" + inputParams.pdata.Image
+                    // return "file:///" + inputParams.pdata.Image
+                    return "image://" + quicktool.uuid + "/this is id"
                 }
 
                 onRoiDataChanged: function (shapeType, data) {

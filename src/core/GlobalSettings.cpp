@@ -1,6 +1,7 @@
 #include "core/GlobalSettings.h"
 
 #include "core/PythonManager.h"
+#include "core/QuickTool.h"
 #include "core/QuickToolManager.h"
 #include "priv/Predefined.h"
 

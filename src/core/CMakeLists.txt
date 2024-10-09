@@ -54,7 +54,7 @@ target_compile_definitions(${TARGET_NAME}
 
 target_link_libraries(${TARGET_NAME}
     PRIVATE
-        Qt6::Core Qt6::Gui
+        Qt6::Core Qt6::Gui Qt6::Quick
         opencv_core
         sqlpp11::sqlite3
         spdlog::spdlog
