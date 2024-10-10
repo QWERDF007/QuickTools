@@ -10,7 +10,7 @@ namespace quicktools::samples {
 class PyTest : public core::AbstractTool<core::InputParams, core::OutputParams, core::QuickToolSettings>
 {
 public:
-    PyTest(QObject *parent = nullptr);
+    PyTest(QObject *parent = nullptr, QQmlEngine * qml_engine = nullptr, QJSEngine* js_engine = nullptr);
 
     QString name() const override
     {

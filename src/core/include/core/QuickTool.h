@@ -46,7 +46,7 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
     /// 工具是否正在运行
     Q_PROPERTY(bool running READ running NOTIFY runningChanged)
 public:
-    AbstractQuickTool(QObject *parent = nullptr);
+    AbstractQuickTool(QObject *parent = nullptr, QQmlEngine * qml_engine = nullptr, QJSEngine* js_engine = nullptr);
     virtual ~AbstractQuickTool();
 
     /**
@@ -140,13 +140,6 @@ public:
     void clearAlgorithmTime();
 
     /**
-     * @brief 绑定界面 engine，用于后续创建 ImageProvider
-     * @param [in] qmlEngine
-     * @param [in] jsEngine
-     */
-    void setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
-
-    /**
      * @brief 工具是否包含 python, 默认 false, 具有 python 的工具实例化 @ref python_interface_ 以返回 True
      * @return
      */
@@ -222,8 +215,8 @@ protected:
      */
     AbstractPythonInterface *python_interface_{nullptr};
 
-    QQmlEngine *qmlEngine_{nullptr};
-    QJSEngine  *jsEngine_{nullptr};
+    QQmlEngine *qml_engine_{nullptr};
+    QJSEngine  *js_engine_{nullptr};
 
 protected slots:
     /**
@@ -419,11 +412,11 @@ public:
      *        链接 @ref InputParams::runToolAfterChanged 和 @ref AbstractQuickToolSettings::settingChange 信号
      * @param parent[in]
      */
-    AbstractTool(QObject *parent = nullptr)
-        : AbstractQuickTool(parent)
+    AbstractTool(QObject *parent = nullptr, QQmlEngine * qml_engine = nullptr, QJSEngine* js_engine = nullptr)
+        : AbstractQuickTool(parent, qml_engine, js_engine)
     {
-        input_params_  = new _InputParams(this);
-        output_params_ = new _OutputParams(this);
+        input_params_  = new _InputParams(this, qml_engine, js_engine);
+        output_params_ = new _OutputParams(this, qml_engine, js_engine);
         settings_      = new _Settings(this);
         connect(input_params_, &InputParams::runToolAfterParamChanged, this,
                 &AbstractTool<_InputParams, _OutputParams, _Settings>::onRunAfterInputParamChanged);

@@ -27,8 +27,8 @@ protected:
     }
 };
 
-Yolov8Detection::Yolov8Detection(QObject *parent)
-    : core::AbstractCVTool(parent)
+Yolov8Detection::Yolov8Detection(QObject *parent, QQmlEngine * qml_engine, QJSEngine* js_engine)
+    : core::AbstractCVTool(parent, qml_engine, js_engine)
 {
     python_interface_ = new Yolov8DetectionPythonInterface(this);
 }
@@ -134,7 +134,7 @@ int Yolov8Detection::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addInputImage("Image", tr("图像"), tr("输入图像的路径"), QVariant(), true, true);
+        input_params_->addImage("Image", tr("图像"), tr("输入图像的路径"), QVariant(), true, true);
         input_params_->addParam("Model", tr("模型文件"), tr("模型文件的路径"), QuickToolParamType::InputFileParamType,
                                 QVariant(), QVariant(), true, true, true, true);
         input_params_->addIntSpinBox("Imgsz", tr("图像大小"), tr("模型的输入图像大小"), 640, 0, 10000, true, true);

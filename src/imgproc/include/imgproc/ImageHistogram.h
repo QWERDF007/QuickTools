@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/CVTool.h"
-#include "core/ImageProvider.h"
+#include "core/CVToolImage.h"
 #include "core/QuickToolConfig.h"
 #include "core/QuickToolManager.h"
 
@@ -15,7 +15,7 @@ class ImageHistogram : public core::AbstractCVTool
 {
     Q_OBJECT
 public:
-    ImageHistogram(QObject *parent = nullptr);
+    ImageHistogram(QObject *parent = nullptr, QQmlEngine * qml_engine = nullptr, QJSEngine* js_engine = nullptr);
 
     ~ImageHistogram() = default;
 
@@ -37,7 +37,7 @@ private:
 
     static QString doc_;
 
-    core::ImageProvider image_provider_;
+    core::CVToolImage* image_{nullptr};
 };
 
 class ImageHistogramConfig : public core::AbstractQuickToolConfig

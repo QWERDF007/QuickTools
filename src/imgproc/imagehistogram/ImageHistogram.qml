@@ -32,12 +32,18 @@ T_CVWindow {
                 anchors.fill: parent
                 drawingColor: imageHistogramWin.drawingColor
                 drawingBorderColor: imageHistogramWin.drawingBorderColor
-                image.source: {
-                    if (inputParams.pdata.Image === null || inputParams.pdata.Image === undefined) {
-                        return ""
+
+                Connections {
+                    target: {
+                        console.log("target", inputParams.pdata.Image)
+                        return inputParams.pdata.Image
                     }
-                    // return "file:///" + inputParams.pdata.Image
-                    return "image://" + quicktool.uuid + "/this is id"
+
+                    function onImageChanged() {
+                        console.log("image changed")
+                        image.source = ""
+                        image.source = inputParams.pdata.Image.url
+                    }
                 }
 
                 onRoiDataChanged: function (shapeType, data) {
@@ -49,7 +55,8 @@ T_CVWindow {
                 dropBtnAreaVisible: image.status === Image.Null
 
                 onPathChanged: function (path) {
-                    inputParams.pdata.Image = path
+                    if (inputParams.pdata.Image)
+                        inputParams.pdata.Image.path = path
                 }
             }
         }

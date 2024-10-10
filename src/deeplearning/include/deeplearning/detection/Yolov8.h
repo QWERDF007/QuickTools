@@ -8,7 +8,7 @@ namespace quicktools::dl::detection {
 class Yolov8Detection : public core::AbstractCVTool
 {
 public:
-    Yolov8Detection(QObject *parent = nullptr);
+    Yolov8Detection(QObject *parent = nullptr, QQmlEngine * qml_engine = nullptr, QJSEngine* js_engine = nullptr);
     std::tuple<int, QString> doInProcess() override;
 
     QString name() const override

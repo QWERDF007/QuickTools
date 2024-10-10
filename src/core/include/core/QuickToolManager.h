@@ -5,7 +5,6 @@
 #include <QAbstractTableModel>
 #include <QtQml>
 
-
 namespace quicktools::core {
 
 class AbstractQuickTool;
@@ -56,7 +55,7 @@ class QUICKTOOLS_CORE_EXPORT QuickToolManager : public QObject
     QML_NAMED_ELEMENT(QuickToolManager)
     Q_PROPERTY(ActivatedTools *activatedTools READ activatedTools CONSTANT FINAL)
 public:
-    using AbstractQuickToolCreator       = std::function<AbstractQuickTool *(QObject *)>;
+    using AbstractQuickToolCreator       = std::function<AbstractQuickTool *(QObject *, QQmlEngine *, QJSEngine *)>;
     using AbstractQuickToolConfigCreator = std::function<AbstractQuickToolConfig *(void)>;
 
     /**
@@ -99,8 +98,8 @@ public:
     Q_INVOKABLE int                getRecentlyChangedToolsCount();
 
 protected:
-    static QQmlEngine *qmlEngine_;
-    static QJSEngine  *jsEngine_;
+    static QQmlEngine *qml_engine_;
+    static QJSEngine  *js_engine_;
 
 private:
     Q_DISABLE_COPY_MOVE(QuickToolManager)
@@ -128,9 +127,10 @@ private:
 } // namespace quicktools::core
 
 #define REGISTER_QUICKTOOL(tool_type, ClassName, ConfigClassName)                                          \
-    inline ClassName *create##ClassName(QObject *parent = nullptr)                                         \
+    inline ClassName *create##ClassName(QObject *parent = nullptr, QQmlEngine *qml_engine = nullptr,       \
+                                        QJSEngine *js_engine = nullptr)                                    \
     {                                                                                                      \
-        return new ClassName(parent);                                                                      \
+        return new ClassName(parent, qml_engine, js_engine);                                               \
     }                                                                                                      \
     inline ConfigClassName *create##ConfigClassName()                                                      \
     {                                                                                                      \

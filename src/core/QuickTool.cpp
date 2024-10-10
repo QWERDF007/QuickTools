@@ -43,8 +43,10 @@ QString pythonErrorHandle(const pybind11::error_already_set &e)
 }
 } // namespace
 
-AbstractQuickTool::AbstractQuickTool(QObject *parent)
+AbstractQuickTool::AbstractQuickTool(QObject *parent, QQmlEngine *qml_engine, QJSEngine *js_engine)
     : QObject{parent}
+    , qml_engine_(qml_engine)
+    , js_engine_(js_engine)
     , uuid_(common::uuid())
 {
     // If auto-deletion is enabled, QThreadPool will automatically
@@ -117,12 +119,6 @@ bool AbstractQuickTool::setProgress(const double v)
     progress_ = v;
     emit progressChanged();
     return true;
-}
-
-void AbstractQuickTool::setEngine(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
-{
-    qmlEngine_ = qmlEngine;
-    jsEngine_  = jsEngine;
 }
 
 void AbstractQuickTool::submit()

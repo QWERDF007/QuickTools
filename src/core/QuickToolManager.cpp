@@ -9,9 +9,9 @@
 
 namespace quicktools::core {
 
-QuickToolManager *QuickToolManager::instance_  = nullptr;
-QQmlEngine       *QuickToolManager::qmlEngine_ = nullptr;
-QJSEngine        *QuickToolManager::jsEngine_  = nullptr;
+QuickToolManager *QuickToolManager::instance_   = nullptr;
+QQmlEngine       *QuickToolManager::qml_engine_ = nullptr;
+QJSEngine        *QuickToolManager::js_engine_  = nullptr;
 
 /**
  * @note: 不能使用返回静态局部变量的指针, 否则结束时会报错 _CrtlsValidHeapPointer(block),
@@ -36,8 +36,8 @@ QuickToolManager::QuickToolManager(QObject *parent)
 
 QuickToolManager *QuickToolManager::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 {
-    qmlEngine_ = qmlEngine;
-    jsEngine_  = jsEngine;
+    qml_engine_ = qmlEngine;
+    js_engine_  = jsEngine;
     return getInstance();
 }
 
@@ -67,10 +67,9 @@ AbstractQuickTool *QuickToolManager::createQuickTool(const int tool_type, QObjec
     if (found != tool_creators_.end())
     {
         auto               callable   = found->second;
-        AbstractQuickTool *quick_tool = callable(parent);
+        AbstractQuickTool *quick_tool = callable(parent, qml_engine_, js_engine_);
         if (quick_tool)
         {
-            quick_tool->setEngine(qmlEngine_, jsEngine_);
             quick_tool->init();
             addToActivted(quick_tool);
             spdlog::info("创建工具: {}, uuid: {}", quick_tool->name().toUtf8().constData(),

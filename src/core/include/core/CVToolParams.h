@@ -12,7 +12,7 @@ class QUICKTOOLS_CORE_EXPORT CVInputParams : public InputParams
     QML_UNCREATABLE("Can't not create a CVInputParams directly")
     Q_PROPERTY(CVToolROI *roi READ roi CONSTANT FINAL)
 public:
-    CVInputParams(QObject *parent = nullptr);
+    CVInputParams(QObject *parent = nullptr, QQmlEngine * qml_engine = nullptr, QJSEngine* js_engine = nullptr);
 
     virtual ~CVInputParams() {}
 
@@ -33,7 +33,7 @@ class QUICKTOOLS_CORE_EXPORT CVOutputParams : public OutputParams
     QML_NAMED_ELEMENT(CVOutputParams)
     QML_UNCREATABLE("Can't not create a CVOutputParams directly")
 public:
-    CVOutputParams(QObject *parent = nullptr);
+    CVOutputParams(QObject *parent = nullptr, QQmlEngine * qml_engine = nullptr, QJSEngine* js_engine = nullptr);
 
     virtual ~CVOutputParams() {}
 
