@@ -1,7 +1,6 @@
 #include "core/QuickToolParams.h"
 
 #include "core/CVToolShape.h"
-#include "core/CVToolImage.h"
 
 #include <QStringBuilder>
 
@@ -10,7 +9,7 @@ namespace quicktools::core {
 using paramtypes::QuickToolParamRole;
 using paramtypes::QuickToolParamType;
 
-AbstractQuickToolParams::AbstractQuickToolParams(QObject *parent, QQmlEngine * qml_engine, QJSEngine* js_engine)
+AbstractQuickToolParams::AbstractQuickToolParams(QObject *parent, QQmlEngine *qml_engine, QJSEngine *js_engine)
     : QAbstractListModel(parent)
     , qml_engine_(qml_engine)
     , js_engine_(js_engine)
@@ -163,10 +162,7 @@ QVariant text2DArrayParamDisplay(const QVariant &value)
 
 QVariant imageParamDisplay(const QVariant &value)
 {
-    CVToolImage* image = value.value<CVToolImage*>();
-    if (image == nullptr)
-        return "";
-    return image->path();
+    return value;
 }
 
 QVariant shapesListParamDisplay(const QVariant &value)
@@ -282,41 +278,20 @@ bool AbstractQuickToolParams::setVisible(const QModelIndex &index, const QVarian
 bool AbstractQuickToolParams::setValue(const QModelIndex &index, const QVariant &value)
 {
     const QString &param_name = params_names_[index.row()];
-    const int param_type = params_data_[param_name][QuickToolParamRole::ParamTypeRole].toInt();
-    qInfo() << __FUNCTION__ << __LINE__ << param_type << QuickToolParamType::InputImageParamType << bool(param_type == QuickToolParamType::InputImageParamType);
-    if (param_type == QuickToolParamType::InputImageParamType)
-    {
-        return setImageValue(param_name, index, value);
-    }
-    else
-    {
-        if (value == params_data_[param_name][QuickToolParamRole::ParamValueRole])
-            return false;
-        params_data_[param_name][QuickToolParamRole::ParamValueRole] = value;
-
-        const bool is_property = params_data_[param_name][QuickToolParamRole::ParamIsPropertyRole].toBool();
-        if (is_property)
-            property_data_.insert(param_name, value);
-
-        const bool run_tool_after_param_changed
-            = params_data_[param_name][QuickToolParamRole::RunToolAfterParamChangedRole].toBool();
-        if (run_tool_after_param_changed)
-            emit runToolAfterParamChanged();
-
-        emit dataChanged(index, index, {QuickToolParamRole::ParamValueRole, QuickToolParamRole::ParamDisplayRole});
-        return true;
-    }
-}
-
-bool AbstractQuickToolParams::setImageValue(const QString &param_name, const QModelIndex &index, const QVariant &value)
-{
-    CVToolImage* image = params_data_[param_name][QuickToolParamRole::ParamValueRole].value<CVToolImage*>();
-    if (image == nullptr)
+    // const int param_type = params_data_[param_name][QuickToolParamRole::ParamTypeRole].toInt();
+    if (value == params_data_[param_name][QuickToolParamRole::ParamValueRole])
         return false;
-    QString path = value.toString();
-    if (path == image->path())
-        return false;
-    image->setPath(path);
+    params_data_[param_name][QuickToolParamRole::ParamValueRole] = value;
+
+    const bool is_property = params_data_[param_name][QuickToolParamRole::ParamIsPropertyRole].toBool();
+    if (is_property)
+        property_data_.insert(param_name, value);
+
+    const bool run_tool_after_param_changed
+        = params_data_[param_name][QuickToolParamRole::RunToolAfterParamChangedRole].toBool();
+    if (run_tool_after_param_changed)
+        emit runToolAfterParamChanged();
+
     emit dataChanged(index, index, {QuickToolParamRole::ParamValueRole, QuickToolParamRole::ParamDisplayRole});
     return true;
 }
@@ -408,11 +383,10 @@ QString AbstractQuickToolParams::getTypeName(const int type)
 
 void AbstractQuickToolParams::onPropertyValueChanged(const QString &key, const QVariant &value)
 {
-    qInfo() << __FUNCTION__ << __LINE__ << key << value;
     setData(key, value);
 }
 
-OutputParams::OutputParams(QObject *parent, QQmlEngine * qml_engine, QJSEngine* js_engine)
+OutputParams::OutputParams(QObject *parent, QQmlEngine *qml_engine, QJSEngine *js_engine)
     : AbstractQuickToolParams(parent, qml_engine, js_engine)
 {
     addParam("Status", tr("运行状态"), tr("工具的运行状态"), QuickToolParamType::StatusParamType, QVariant(),
@@ -481,8 +455,8 @@ bool InputParams::addDoubleSpinBox(const QString &name, const QString &display_n
                                              value, additional, true, is_property, true, visible);
 }
 
-bool InputParams::addImage(const QString &name, const QString &display_name, const QString &desc,
-                                const QVariant &value, const bool is_property, const bool visible)
+bool InputParams::addImage(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
+                           const bool is_property, const bool visible)
 {
     return AbstractQuickToolParams::addParam(name, display_name, desc, QuickToolParamType::InputImageParamType, value,
                                              QVariant(), true, is_property, true, visible);

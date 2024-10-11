@@ -71,10 +71,7 @@ CVToolShapeListModel::CVToolShapeListModel(QObject *parent)
     connect(this, &CVToolShapeListModel::shapesChanged, this, &CVToolShapeListModel::onShapesChanged);
 }
 
-CVToolShapeListModel::~CVToolShapeListModel()
-{
-    qInfo() << __FUNCTION__ << this;
-}
+CVToolShapeListModel::~CVToolShapeListModel() {}
 
 int CVToolShapeListModel::rowCount(const QModelIndex &parent) const
 {

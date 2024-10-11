@@ -34,15 +34,18 @@ T_CVWindow {
                 drawingBorderColor: imageHistogramWin.drawingBorderColor
 
                 Connections {
+                    enabled: quicktool.providersList.size > 0
                     target: {
-                        console.log("target", inputParams.pdata.Image)
-                        return inputParams.pdata.Image
+                        console.log("target", quicktool.providersList.size, quicktool.providersList.providers[0])
+                        return quicktool.providersList.providers[0]
                     }
 
                     function onImageChanged() {
                         console.log("image changed")
                         image.source = ""
-                        image.source = inputParams.pdata.Image.url
+                        var url = quicktool.providersList.providers[0].url
+                        console.log("url", url)
+                        image.source = url
                     }
                 }
 
@@ -56,7 +59,7 @@ T_CVWindow {
 
                 onPathChanged: function (path) {
                     if (inputParams.pdata.Image)
-                        inputParams.pdata.Image.path = path
+                        inputParams.pdata.Image = path
                 }
             }
         }

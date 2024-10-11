@@ -64,7 +64,8 @@ class QUICKTOOLS_CORE_EXPORT AbstractQuickToolParams : public QAbstractListModel
     Q_PROPERTY(QString name READ name CONSTANT FINAL) // FINAL 表明该属性不会被派生类覆盖
     Q_PROPERTY(QQmlPropertyMap *pdata READ pdata CONSTANT FINAL)
 public:
-    AbstractQuickToolParams(QObject *parent = nullptr, QQmlEngine * qml_engine = nullptr, QJSEngine* js_engine = nullptr);
+    AbstractQuickToolParams(QObject *parent = nullptr, QQmlEngine *qml_engine = nullptr,
+                            QJSEngine *js_engine = nullptr);
 
     virtual ~AbstractQuickToolParams();
 
@@ -175,7 +176,6 @@ protected:
 private:
     bool setVisible(const QModelIndex &index, const QVariant &value);
     bool setValue(const QModelIndex &index, const QVariant &value);
-    bool setImageValue(const QString & param_name, const QModelIndex &index, const QVariant &value);
 
     bool is_init_{false};
 
@@ -194,7 +194,7 @@ class QUICKTOOLS_CORE_EXPORT InputParams : public AbstractQuickToolParams
     // 声明对象不能在 QML 中创建
     QML_UNCREATABLE("Can't not create a InputParams directly")
 public:
-    InputParams(QObject *parent = nullptr, QQmlEngine * qml_engine = nullptr, QJSEngine* js_engine = nullptr)
+    InputParams(QObject *parent = nullptr, QQmlEngine *qml_engine = nullptr, QJSEngine *js_engine = nullptr)
         : AbstractQuickToolParams(parent, qml_engine, js_engine)
     {
     }
@@ -264,7 +264,7 @@ public:
      * @return
      */
     bool addImage(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
-                       const bool is_property = false, const bool visible = true);
+                  const bool is_property = false, const bool visible = true);
 };
 
 class QUICKTOOLS_CORE_EXPORT OutputParams : public AbstractQuickToolParams
@@ -273,7 +273,7 @@ class QUICKTOOLS_CORE_EXPORT OutputParams : public AbstractQuickToolParams
     QML_NAMED_ELEMENT(OutputParams)
     QML_UNCREATABLE("Can't not create a AbstractOutputParams directly")
 public:
-    OutputParams(QObject *parent = nullptr, QQmlEngine * qml_engine = nullptr, QJSEngine* js_engine = nullptr);
+    OutputParams(QObject *parent = nullptr, QQmlEngine *qml_engine = nullptr, QJSEngine *js_engine = nullptr);
 
     virtual ~OutputParams() {}
 
