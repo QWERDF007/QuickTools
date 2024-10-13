@@ -46,6 +46,10 @@ Item {
         var pt2 = mapToItem(_image, scalableImage.width, scalableImage.height)
         imageRect = [pt1.x, pt1.y, pt2.x - pt1.x, pt2.y - pt1.y]
     }
+    onSourceChanged: {
+        if (roiItem)
+            roiItem.clear()
+    }
 
     property color drawingColor: "lightblue"
     property color drawingBorderColor: "red"
