@@ -58,8 +58,7 @@ T_CVWindow {
                 dropBtnAreaVisible: image.status === Image.Null
 
                 onPathChanged: function (path) {
-                    if (inputParams.pdata.Image)
-                        inputParams.pdata.Image = path
+                    inputParams.pdata.Image = path
                 }
             }
         }
