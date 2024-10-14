@@ -36,6 +36,8 @@ T_ParamItem {
             implicitWidth: Math.min(parent.width, parent.height)
 
             onClicked: {
+                if (paramDisplay)
+                    fileDialog.folder = UITools.getDirectory(paramDisplay)
                 fileDialog.open()
             }
             QuickToolTip{
@@ -51,6 +53,8 @@ T_ParamItem {
             implicitWidth: Math.min(parent.width, parent.height)
 
             onClicked: {
+                if (paramDisplay)
+                    fileDialog.folder = UITools.getDirectory(paramDisplay)
                 folderDialog.open()
             }
             QuickToolTip{
@@ -65,7 +69,7 @@ T_ParamItem {
         id: fileDialog
 
         folder: StandardPaths.writableLocation(StandardPaths.PicturesLocation)
-        nameFilters: ["Image files (*.jpg *.jpeg *.png *.bmp)"]
+        nameFilters: ["Image files (*.jpg *.jpeg *.png *.bmp *.webp)"]
 
         onAccepted: {
             var path = fileDialog.file.toString().toLowerCase().slice(8);
@@ -76,10 +80,10 @@ T_ParamItem {
     FolderDialog  {
         id: folderDialog
 
-        folder: StandardPaths.writableLocation(StandardPaths.HomeLocation)
+        folder: StandardPaths.writableLocation(StandardPaths.PicturesLocation)
 
         onAccepted: {
-            var path = folderDialog.file.toString().toLowerCase().slice(8)
+            var path = folderDialog.folder.toString().toLowerCase().slice(8)
             valueChanged(path)
         }
     }

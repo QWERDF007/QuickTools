@@ -1,7 +1,9 @@
 #include "common/Utils.h"
 
-#include <QUuid>
+#include <QDir>
+#include <QFileInfo>
 #include <QStringList>
+#include <QUuid>
 
 namespace quicktools::common {
 
@@ -10,7 +12,7 @@ QString uuid()
     return QUuid::createUuid().toString().remove('-').remove('{').remove('}');
 }
 
-QString toQString(const QStringList & str_list, const QString &sep, Qt::SplitBehavior behavior)
+QString toQString(const QStringList &str_list, const QString &sep, Qt::SplitBehavior behavior)
 {
     QString str;
     if (str_list.isEmpty())
@@ -61,6 +63,100 @@ std::wstring stringToWchar(const std::string &str)
     MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &wstr[0], len);
 
     return wstr;
+}
+
+QString getDirectory(const QString &path)
+{
+    QFileInfo fileinfo(path);
+    if (fileinfo.isFile() || fileinfo.isDir())
+        return fileinfo.dir().path();
+    else
+        return path;
+}
+
+std::vector<QString> getFiles(const QString &path, const QStringList &name_filters, bool recursive)
+{
+    QFileInfo fileinfo(path);
+    if (fileinfo.isFile())
+    {
+        return {path};
+    }
+    else if (fileinfo.isDir())
+    {
+        QDir dir(path);
+        dir.setNameFilters(name_filters);
+        dir.setFilter(recursive ? QDir::Files : QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+        dir.setSorting(QDir::Name);
+        std::vector<QString> files;
+        for (const auto &entry_info : dir.entryInfoList())
+        {
+            if (entry_info.isFile())
+            {
+                files.emplace_back(entry_info.absoluteFilePath());
+            }
+            else if (recursive && entry_info.isDir())
+            {
+                std::vector<QString> tmp_files = getFiles(entry_info.absoluteFilePath(), name_filters, recursive);
+                files.insert(files.end(), tmp_files.begin(), tmp_files.end());
+            }
+        }
+        return files;
+    }
+    else
+    {
+        return {};
+    }
+}
+
+std::vector<QString> getDirectories(const QString &path, bool recursive)
+{
+    QFileInfo fileinfo(path);
+    if (fileinfo.isDir())
+    {
+        QDir dir(path);
+        dir.setFilter(recursive ? QDir::Dirs : QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+        dir.setSorting(QDir::Name);
+        std::vector<QString> dirs;
+        for (const auto &entry_info : dir.entryInfoList())
+        {
+            if (entry_info.isDir())
+            {
+                const QString &tmp_path = entry_info.absoluteFilePath();
+                dirs.emplace_back(tmp_path);
+                if (recursive)
+                {
+                    std::vector<QString> tmp_dirs = getDirectories(tmp_path);
+                    dirs.insert(dirs.end(), tmp_dirs.begin(), tmp_dirs.end());
+                }
+            }
+        }
+        return dirs;
+    }
+    else
+    {
+        return {};
+    }
+}
+
+const QString FileReader::read(const QString &root, bool recursive, bool circular)
+{
+    QString path;
+    if (root_ != root)
+    {
+        root_  = root;
+        cur_   = 0;
+        paths_ = getFiles(root, name_filters_, recursive);
+    }
+    if (paths_.empty())
+        return path;
+    qInfo() << __FUNCTION__ << __LINE__ << "paths:";
+    qInfo() << paths_;
+    path = paths_[cur_];
+    if (circular)
+        cur_ = (cur_ + 1) % size();
+    else
+        cur_ = std::min<int>(size() - 1, cur_ + 1);
+    return path;
 }
 
 #endif // _WIN32

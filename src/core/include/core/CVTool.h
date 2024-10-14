@@ -5,7 +5,6 @@
 #include "ImageProvider.h"
 #include "QuickTool.h"
 
-
 namespace quicktools::core {
 
 class QUICKTOOLS_CORE_EXPORT AbstractCVTool : public AbstractTool<CVInputParams, CVOutputParams, CVToolSettings>

@@ -12,15 +12,20 @@ UITools::UITools(QObject *parent)
 {
 }
 
-QColor UITools::withOpacity(const QColor &color, qreal opacity)
+QColor UITools::withOpacity(const QColor &color, qreal opacity) const
 {
     int alpha = qRound(opacity * 255) & 0xff;
     return QColor::fromRgba((alpha << 24) | (color.rgba() & 0xffffff));
 }
 
-QString UITools::uuid()
+QString UITools::uuid() const
 {
     return common::uuid();
+}
+
+QString UITools::getDirectory(const QString &path) const
+{
+    return common::getDirectory(path);
 }
 
 } // namespace quicktools::ui

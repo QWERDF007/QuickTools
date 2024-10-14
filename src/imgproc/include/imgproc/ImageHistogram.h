@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/Utils.h"
 #include "core/CVTool.h"
 #include "core/QuickToolConfig.h"
 #include "core/QuickToolManager.h"
@@ -7,6 +8,7 @@
 #include <opencv2/core.hpp>
 
 #include <QObject>
+
 
 namespace quicktools::imgproc {
 
@@ -35,6 +37,8 @@ private:
     int cvtColor(const cv::Mat &src, cv::Mat &dst, const QString &color_space);
 
     static QString doc_;
+
+    common::FileReader reader_;
 };
 
 class ImageHistogramConfig : public core::AbstractQuickToolConfig

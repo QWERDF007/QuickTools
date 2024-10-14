@@ -32,9 +32,10 @@ QString getMarkdown()
 
 QString ImageHistogram::doc_ = getMarkdown();
 
-ImageHistogram::ImageHistogram(QObject *parent, QQmlEngine * qml_engine, QJSEngine* js_engine)
+ImageHistogram::ImageHistogram(QObject *parent, QQmlEngine *qml_engine, QJSEngine *js_engine)
     : core::AbstractCVTool(parent, qml_engine, js_engine)
 {
+    reader_.setNameFilters(common::FileReader::ImageFilters);
 }
 
 std::tuple<int, std::tuple<float, float>> getHistSizeAndRange(const QString &color_space, const int ch)
@@ -54,11 +55,12 @@ std::tuple<int, QString> ImageHistogram::doInProcess()
     if (input_params == nullptr || output_params == nullptr)
         return {-1, tr("输入/输出参数为空指针")};
 
-    const QString image_path = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
+    const QString root       = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
+    const QString image_path = reader_.read(root, true, true);
     if (image_path.isEmpty())
         return {-1, tr("输入图像路径为空")};
     if (!QFile::exists(image_path))
-        return {-1, tr("输入图像路径不存在")};
+        return {-1, tr("输入图像路径不存在: ") + image_path};
     QString color_space = input_params->data("ColorSpace", QuickToolParamRole::ParamValueRole).toString();
 
     auto read_start_time = std::chrono::high_resolution_clock::now();

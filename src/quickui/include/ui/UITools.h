@@ -13,9 +13,11 @@ class UITools : public QObject
 public:
     QT_QML_SINGLETON(UITools)
 
-    Q_INVOKABLE QColor withOpacity(const QColor &color, qreal opacity);
+    Q_INVOKABLE QColor withOpacity(const QColor &color, qreal opacity) const;
 
-    Q_INVOKABLE QString uuid();
+    Q_INVOKABLE QString uuid() const;
+
+    Q_INVOKABLE QString getDirectory(const QString &path) const;
 
 private:
     explicit UITools(QObject *parent = nullptr);
