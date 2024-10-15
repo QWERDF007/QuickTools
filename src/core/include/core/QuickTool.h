@@ -11,6 +11,7 @@
 namespace quicktools::core {
 
 class AbstractPythonInterface;
+class RuntimeParams;
 
 // Template classes not supported by Q_OBJECT
 
@@ -214,6 +215,8 @@ protected:
      * @brief 访问 python 的接口, 调用 pybind11 来实现
      */
     AbstractPythonInterface *python_interface_{nullptr};
+
+    RuntimeParams *runtime_params_{nullptr};
 
     QQmlEngine *qml_engine_{nullptr};
     QJSEngine  *js_engine_{nullptr};

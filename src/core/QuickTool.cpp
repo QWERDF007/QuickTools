@@ -4,6 +4,7 @@
 #include "core/Error.h"
 #include "core/PythonInterface.h"
 #include "core/QuickToolManager.h"
+#include "core/RuntimeParams.h"
 #include "priv/Predefined.h"
 
 #include <spdlog/spdlog.h>
@@ -212,8 +213,20 @@ std::tuple<int, QString> AbstractQuickTool::process()
     QString error_msg;
     try
     {
+        if (runtime_params_)
+        {
+            runtime_params_->reset();
+            bool ok = runtime_params_->getInput(inputParams());
+            if (!ok)
+                return runtime_params_->returnError();
+        }
         const auto &[status, msg] = doInProcess();
-
+        if (runtime_params_)
+        {
+            bool ok = runtime_params_->genOutput(outputParams());
+            if (!ok)
+                return runtime_params_->returnError();
+        }
         ret       = status;
         error_msg = msg;
     }
