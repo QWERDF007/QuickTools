@@ -1,6 +1,5 @@
 #pragma once
 
-#include "common/Utils.h"
 #include "core/CVTool.h"
 #include "core/QuickToolConfig.h"
 #include "core/QuickToolManager.h"
@@ -8,7 +7,6 @@
 #include <opencv2/core.hpp>
 
 #include <QObject>
-
 
 namespace quicktools::imgproc {
 
@@ -18,7 +16,7 @@ class ImageHistogram : public core::AbstractCVTool
 public:
     ImageHistogram(QObject *parent = nullptr, QQmlEngine *qml_engine = nullptr, QJSEngine *js_engine = nullptr);
 
-    ~ImageHistogram() = default;
+    ~ImageHistogram();
 
     std::tuple<int, QString> doInProcess() override;
 
@@ -38,7 +36,12 @@ private:
 
     static QString doc_;
 
-    common::FileReader reader_;
+    inline static const QVariantList COLOR_SPACES{
+        "UNCHANGED",
+        "RGB",
+        "HSV",
+        "Gray",
+    };
 };
 
 class ImageHistogramConfig : public core::AbstractQuickToolConfig
