@@ -37,7 +37,7 @@ T_ParamItem {
 
             onClicked: {
                 if (paramDisplay)
-                    fileDialog.folder = UITools.getDirectory(paramDisplay)
+                    fileDialog.folder = "file:///" + UITools.getDirectory(paramDisplay)
                 fileDialog.open()
             }
             QuickToolTip{
@@ -54,7 +54,7 @@ T_ParamItem {
 
             onClicked: {
                 if (paramDisplay)
-                    fileDialog.folder = UITools.getDirectory(paramDisplay)
+                    fileDialog.folder = "file:///" + UITools.getDirectory(paramDisplay)
                 folderDialog.open()
             }
             QuickToolTip{
