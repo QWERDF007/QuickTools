@@ -149,8 +149,6 @@ const QString FileReader::read(const QString &root, bool recursive, bool circula
     }
     if (paths_.empty())
         return path;
-    qInfo() << __FUNCTION__ << __LINE__ << "paths:";
-    qInfo() << paths_;
     path = paths_[cur_];
     if (circular)
         cur_ = (cur_ + 1) % size();

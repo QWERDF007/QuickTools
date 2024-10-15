@@ -48,7 +48,7 @@ public:
         return static_cast<int>(paths_.size());
     }
 
-    inline static QStringList ImageFilters{"*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp"};
+    inline static const QStringList ImageFilters{"*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp"};
 
 private:
     QStringList          name_filters_;
