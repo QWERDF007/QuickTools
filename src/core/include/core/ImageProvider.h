@@ -58,11 +58,6 @@ public:
 
     ImageProvider *provider(const int index);
 
-    ImageProvider *operator[](const int index)
-    {
-        return provider(index);
-    }
-
     ImageProvider *at(const int index)
     {
         return provider(index);

@@ -110,9 +110,9 @@ bool ImageProviderList::addImageProvider(const QString &name, const QString &uui
         if (provider && provider->id() == id)
             return false;
     }
-    ImageProvider *provider = new ImageProvider(name, uuid);
-    if (qml_engine_ && provider)
+    if (qml_engine_)
     {
+        ImageProvider *provider = new ImageProvider(name, uuid);
         qml_engine_->addImageProvider(provider->id(), provider);
         providers_.append(provider);
         emit providersChanged();
