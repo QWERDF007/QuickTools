@@ -2,6 +2,7 @@
 
 #include "CoreGlobal.h"
 
+#include <QObject>
 #include <QString>
 #include <map>
 
@@ -17,20 +18,24 @@ namespace Error {
  */
 enum Code
 {
-    Success          = 0,  //!< 一切正常
-    Ok               = 0,  //!< Success 别名
-    InvalidArgument  = -1, //!< 无效的参数
-    InternalError    = -2, //!< 发生内部错误
-    InputParamsEmpty = -3, //!< 输入参数为空
-    FileNotFound     = -4, //!< 找不到文件
-    InputImageEmpty  = -5, //!< 输入图像为空
+    Success = 0,        //!< 一切正常
+    Ok      = 0,        //!< Success 别名
+    InvalidArgument,    //!< 无效的参数
+    InternalError,      //!< 发生内部错误
+    InputParamsEmpty,   //!< 输入参数为空
+    OutputParamsEmpty,  //!< 输出参数为空
+    RuntimeParamsEmpty, //!< 运行时参数为空
+    FilePathEmpty,      //!< 文件路径为空
+    FileNotFound,       //!< 找不到文件
+    ImageFilePathEmpty, //!< 图像路径为空
 
     // DeepLearning
-    ModelFileEmpty   = -1000, //!< 模型文件为空
-    ModelFileInvalid = -1001, //!< 模型文件无效
+    DeepLearningError = 1000, //!< 深度学习错误
+    ModelFilePathEmpty,       //!< 模型文件路径为空
+    ModelFileInvalid,         //!< 模型文件无效
 };
 
-class QUICKTOOLS_CORE_EXPORT ErrorGenerator
+class QUICKTOOLS_CORE_EXPORT ErrorGenerator : public QObject
 {
 public:
     /**
