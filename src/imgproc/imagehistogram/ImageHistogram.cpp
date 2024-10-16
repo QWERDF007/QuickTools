@@ -1,6 +1,7 @@
 #include "imgproc/ImageHistogram.h"
 
 #include "common/Utils.h"
+#include "core/Error.h"
 #include "core/QuickToolSettings.h"
 #include "core/RuntimeParams.h"
 
@@ -44,10 +45,10 @@ public:
         reader_.setNameFilters(common::FileReader::ImageFilters);
     }
 
+    void reset() override;
+
     bool getInput(core::InputParams *input_params) override;
     bool genOutput(core::OutputParams *output_params) override;
-
-    void reset() override;
 
     struct RuntimeInput
     {
@@ -76,19 +77,19 @@ bool ImageHistogramRuntimeParams::getInput(core::InputParams *input_params)
 {
     if (input_params == nullptr)
     {
-        setError(-1, tr("输入参数为空指针"));
+        setError(Error::InputParamsEmpty);
         return false;
     }
     const QString root = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
     input.image_path   = reader_.read(root, true, true);
     if (input.image_path.isEmpty())
     {
-        setError(-1, tr("输入图像路径为空"));
+        setError(Error::ImageFilePathEmpty);
         return false;
     }
     if (!QFile::exists(input.image_path))
     {
-        setError(-1, tr("输入图像路径不存在: ") + input.image_path);
+        setError(Error::FileNotFound, input.image_path);
         return false;
     }
     input.color_space = input_params->data("ColorSpace", QuickToolParamRole::ParamValueRole).toString();
@@ -99,7 +100,7 @@ bool ImageHistogramRuntimeParams::genOutput(core::OutputParams *output_params)
 {
     if (output_params == nullptr)
     {
-        setError(-1, tr("输出参数为空指针"));
+        setError(Error::OutputParamsEmpty);
         return false;
     }
     output_params->setData("ImagePath", input.image_path);

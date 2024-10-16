@@ -1,9 +1,13 @@
 #include "deeplearning/detection/Yolov8.h"
 
+#include "common/Utils.h"
 #include "core/Error.h"
 #include "core/PythonInterface.h"
+#include "core/RuntimeParams.h"
 
 #include <pybind11/pybind11.h>
+
+#include <QFile>
 
 namespace quicktools::dl::detection {
 
@@ -11,6 +15,8 @@ using core::paramtypes::QuickToolParamRole;
 using core::paramtypes::QuickToolParamType;
 
 using core::PythonHelper;
+
+namespace {
 
 class Yolov8DetectionPythonInterface : public core::AbstractPythonInterface
 {
@@ -27,107 +33,139 @@ protected:
     }
 };
 
-Yolov8Detection::Yolov8Detection(QObject *parent, QQmlEngine * qml_engine, QJSEngine* js_engine)
+class Yolov8DetectionRuntimeParams : public core::RuntimeParams
+{
+public:
+    Yolov8DetectionRuntimeParams(QObject *parent = nullptr)
+        : core::RuntimeParams(parent)
+    {
+        reader_.setNameFilters(common::FileReader::ImageFilters);
+    }
+
+    void reset() override;
+
+    bool getInput(core::InputParams *input_params) override;
+    bool genOutput(core::OutputParams *output_params) override;
+
+    struct RuntimeInput
+    {
+        QString model_path;
+        QString image_path;
+        int     imgsz{640};
+        QString device{"cuda:0"};
+        double  conf_threshold{0.25};
+        double  iou_threshold{0.7};
+        bool    is_init{false};
+
+        bool operator==(const RuntimeInput &other) const
+        {
+            return other.model_path == model_path && other.imgsz == imgsz && other.device == device;
+        }
+
+        bool operator!=(const RuntimeInput &other) const
+        {
+            return !operator==(other);
+        }
+    };
+
+    struct RuntimeOutput
+    {
+        QList<QList<QVariant>>   cls;
+        QList<QList<QVariant>>   conf;
+        QList<core::CVToolShape> rects;
+    };
+
+    RuntimeInput  input;
+    RuntimeOutput output;
+
+private:
+    common::FileReader reader_;
+
+    friend class ::quicktools::dl::detection::Yolov8Detection;
+};
+
+bool Yolov8DetectionRuntimeParams::getInput(core::InputParams *input_params)
+{
+    if (input_params == nullptr)
+    {
+        setError(Error::InputParamsEmpty);
+        return false;
+    }
+    RuntimeInput  new_input;
+    const QString root   = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
+    new_input.image_path = reader_.read(root, true, true);
+    if (new_input.image_path.isEmpty())
+    {
+        setError(Error::ImageFilePathEmpty);
+        return false;
+    }
+    if (!QFile::exists(new_input.image_path))
+    {
+        setError(Error::FileNotFound, new_input.image_path);
+        return false;
+    }
+    new_input.model_path = input_params->data("Model", QuickToolParamRole::ParamValueRole).toString();
+    if (new_input.model_path.isEmpty())
+    {
+        setError(Error::ModelFilePathEmpty);
+        return false;
+    }
+    if (!QFile::exists(new_input.model_path))
+    {
+        setError(Error::FileNotFound, new_input.model_path);
+        return false;
+    }
+    new_input.imgsz          = input_params->data("Imgsz", QuickToolParamRole::ParamValueRole).toInt();
+    new_input.device         = input_params->data("Device", QuickToolParamRole::ParamValueRole).toString();
+    new_input.conf_threshold = input_params->data("ConfidenceThreshold", QuickToolParamRole::ParamValueRole).toDouble();
+    new_input.iou_threshold  = input_params->data("IouThreshold", QuickToolParamRole::ParamValueRole).toDouble();
+
+    // 不相等则拷贝新参数, is_init = false
+    if (new_input == input)
+    {
+        input.image_path     = new_input.image_path;
+        input.conf_threshold = new_input.conf_threshold;
+        input.iou_threshold  = new_input.iou_threshold;
+    }
+    else
+    {
+        input = new_input;
+    }
+    return true;
+}
+
+bool Yolov8DetectionRuntimeParams::genOutput(core::OutputParams *output_params)
+{
+    if (output_params == nullptr)
+    {
+        setError(Error::OutputParamsEmpty);
+        return false;
+    }
+    output_params->setData("Classes", QVariant::fromValue(output.cls));
+    output_params->setData("Confidences", QVariant::fromValue(output.conf));
+    auto cv_output_params = dynamic_cast<core::CVOutputParams *>(output_params);
+    if (cv_output_params)
+    {
+        cv_output_params->shapesListModel()->setShapes(output.rects); // 注意只能在主线程修改 model 的数据, 否则报错
+        cv_output_params->setData("Rects", QVariant::fromValue(cv_output_params->shapesListModel()));
+    }
+    return true;
+}
+
+void Yolov8DetectionRuntimeParams::reset()
+{
+    output.cls.clear();
+    output.conf.clear();
+    output.rects.clear();
+}
+
+} // namespace
+
+Yolov8Detection::Yolov8Detection(QObject *parent, QQmlEngine *qml_engine, QJSEngine *js_engine)
     : core::AbstractCVTool(parent, qml_engine, js_engine)
 {
     python_interface_ = new Yolov8DetectionPythonInterface(this);
-}
-
-std::tuple<int, QString> Yolov8Detection::doInProcess()
-{
-    auto algorithm_start_time = std::chrono::high_resolution_clock::now();
-
-    int     ret{0};
-    QString msg{"运行成功"};
-
-    ret = checkInput();
-    if (ret != Error::Success)
-    {
-        msg = Error::ErrorGenerator::getErrorString(ret);
-        return {ret, msg};
-    }
-    auto output_params = getOutputParams();
-    if (output_params == nullptr)
-        return {-1, tr("输出参数为空指针")};
-
-    cv::Mat image = cv::imread(detection_params_.image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
-    setProgress(0.2);
-
-    QList<QList<QVariant>>   cls;
-    QList<QList<QVariant>>   conf;
-    QList<core::CVToolShape> rects;
-    // QList<QList<QVariant>> rects;
-
-    pybind11::gil_scoped_acquire acquire;
-    {
-        // 初始化
-        if (!python_interface_->obj)
-        {
-            python_interface_->obj = python_interface_->module.attr("Yolov8DetectionPredictor")(
-                detection_params_.model_path.toUtf8().constData(), detection_params_.imgsz,
-                detection_params_.device.toUtf8().constData());
-            detection_params_.is_init = true;
-        }
-        // 重新初始化模型
-        if (!detection_params_.is_init)
-        {
-            python_interface_->obj.attr("init_model")(detection_params_.model_path.toUtf8().constData(),
-                                                      detection_params_.imgsz,
-                                                      detection_params_.device.toUtf8().constData());
-        }
-        setProgress(0.5);
-        //  检测
-        pybind11::object res = python_interface_->obj.attr("predict")(PythonHelper::toNumpy<uint8_t>(image),
-                                                                      detection_params_.conf, detection_params_.iou);
-        QList<QVariant>  _cls;
-        for (auto c : res["cls"])
-        {
-            _cls.append(c.cast<int>());
-        }
-        cls.append(_cls);
-        QList<QVariant> _conf;
-        for (auto v : res["conf"])
-        {
-            _conf.append(v.cast<double>());
-        }
-        conf.append(_conf);
-        for (auto box : res["boxes"])
-        {
-            core::CVToolShape rect;
-            QList<qreal>      data;
-            // QList<QVariant> data;
-            for (auto v : box)
-            {
-                data.append(v.cast<double>());
-            }
-            if (data.size() >= 4 && res["format"].cast<std::string>() == "xyxy")
-            {
-                data[2] = data[2] - data[0];
-                data[3] = data[3] - data[1];
-                rect.setShapeType(core::CVToolShape::Rectangle);
-                rect.setData(data);
-                // data[2] = data[2].toDouble() - data[0].toDouble();
-                // data[3] = data[3].toDouble() - data[1].toDouble();
-            }
-            rects.append(rect);
-        }
-    }
-    setProgress(0.9);
-
-    auto algorithm_end_time = std::chrono::high_resolution_clock::now();
-    auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
-    addAlgorithmTime(algorithm_time);
-    output_params->setData("Classes", QVariant::fromValue(cls));
-    output_params->setData("Confidences", QVariant::fromValue(conf));
-    output_params->shapesListModel()->setShapes(rects); // 注意只能在主线程修改 model 的数据, 否则报错
-    output_params->setData("Rects", QVariant::fromValue(output_params->shapesListModel()));
-
-    return {ret, msg};
-}
-
-QString Yolov8Detection::doc() const
-{
-    return "no doc";
+    runtime_params_   = new Yolov8DetectionRuntimeParams(this);
 }
 
 int Yolov8Detection::initInputParams()
@@ -161,44 +199,99 @@ int Yolov8Detection::initOutputParams()
     return Error::Success;
 }
 
+std::tuple<int, QString> Yolov8Detection::doInProcess()
+{
+    auto algorithm_start_time = std::chrono::high_resolution_clock::now();
+
+    int     ret{0};
+    QString msg{"运行成功"};
+
+    Yolov8DetectionRuntimeParams *runtime = dynamic_cast<Yolov8DetectionRuntimeParams *>(runtime_params_);
+    if (runtime == nullptr)
+    {
+        ret = Error::RuntimeParamsEmpty;
+        msg = Error::ErrorGenerator::getErrorString(ret);
+        return {ret, msg};
+    }
+
+    cv::Mat image = cv::imread(runtime->input.image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
+
+    setProgress(0.2);
+
+    pybind11::gil_scoped_acquire acquire;
+    {
+        // 初始化
+        if (!python_interface_->obj)
+        {
+            python_interface_->obj = python_interface_->module.attr("Yolov8DetectionPredictor")(
+                runtime->input.model_path.toUtf8().constData(), runtime->input.imgsz,
+                runtime->input.device.toUtf8().constData());
+            runtime->input.is_init = true;
+        }
+        // 重新初始化模型
+        if (!runtime->input.is_init)
+        {
+            python_interface_->obj.attr("init_model")(runtime->input.model_path.toUtf8().constData(),
+                                                      runtime->input.imgsz, runtime->input.device.toUtf8().constData());
+        }
+        setProgress(0.5);
+        //  检测
+        pybind11::object res = python_interface_->obj.attr("predict")(
+            PythonHelper::toNumpy<uint8_t>(image), runtime->input.conf_threshold, runtime->input.iou_threshold);
+        QList<QVariant> _cls;
+        for (auto c : res["cls"])
+        {
+            _cls.append(c.cast<int>());
+        }
+        runtime->output.cls.append(_cls);
+
+        QList<QVariant> _conf;
+        for (auto v : res["conf"])
+        {
+            _conf.append(v.cast<double>());
+        }
+        runtime->output.conf.append(_conf);
+
+        for (auto box : res["boxes"])
+        {
+            core::CVToolShape rect;
+            QList<qreal>      data;
+            // QList<QVariant> data;
+            for (auto v : box)
+            {
+                data.append(v.cast<double>());
+            }
+            if (data.size() >= 4 && res["format"].cast<std::string>() == "xyxy")
+            {
+                data[2] = data[2] - data[0];
+                data[3] = data[3] - data[1];
+                rect.setShapeType(core::CVToolShape::Rectangle);
+                rect.setData(data);
+            }
+            runtime->output.rects.append(rect);
+        }
+    }
+
+    setProgress(0.9);
+
+    auto algorithm_end_time = std::chrono::high_resolution_clock::now();
+    auto algorithm_time = std::chrono::duration<double, std::milli>(algorithm_end_time - algorithm_start_time).count();
+    addAlgorithmTime(algorithm_time);
+
+    return {ret, msg};
+}
+
+QString Yolov8Detection::doc() const
+{
+    return "no doc";
+}
+
 int Yolov8Detection::initSettings()
 {
     if (settings_)
     {
     }
     return Error::Success;
-}
-
-int Yolov8Detection::checkInput()
-{
-    auto input_params = getInputParams();
-    if (input_params == nullptr)
-        return Error::InputParamsEmpty;
-    DetectionParams_t new_params;
-    new_params.image_path = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
-    if (new_params.image_path.isEmpty())
-        return Error::InputImageEmpty;
-    new_params.model_path = input_params->data("Model", QuickToolParamRole::ParamValueRole).toString();
-    if (new_params.model_path.isEmpty())
-        return Error::ModelFileEmpty;
-    new_params.imgsz  = input_params->data("Imgsz", QuickToolParamRole::ParamValueRole).toInt();
-    new_params.device = input_params->data("Device", QuickToolParamRole::ParamValueRole).toString();
-    // 不相等则拷贝新参数, is_init = false
-    if (new_params == detection_params_)
-        detection_params_.image_path = new_params.image_path;
-    else
-        detection_params_ = new_params;
-    return Error::Success;
-}
-
-bool Yolov8Detection::DetectionParams_t::operator==(const DetectionParams_t &other) const
-{
-    return other.model_path == model_path && other.imgsz == imgsz && other.device == device;
-}
-
-bool Yolov8Detection::DetectionParams_t::operator!=(const DetectionParams_t &other) const
-{
-    return !operator==(other);
 }
 
 } // namespace quicktools::dl::detection
