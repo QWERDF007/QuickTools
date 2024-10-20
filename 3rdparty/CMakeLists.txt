@@ -9,3 +9,10 @@ add_subdirectory(sqlpp11)
 
 # spdlog
 add_subdirectory(spdlog)
+
+# cpuinfo
+set(CPUINFO_BUILD_BENCHMARKS OFF CACHE BOOL "Not Build cpufino benchmarks")
+set(CPUINFO_BUILD_TOOLS OFF CACHE BOOL "Not Build cpufino commline tools")
+set(CPUINFO_BUILD_UNIT_TESTS OFF CACHE BOOL "Not Build cpufino unit tests")
+set(CPUINFO_BUILD_MOCK_TESTS OFF CACHE BOOL "Not Build cpufino mock tests")
+add_subdirectory(cpuinfo)
