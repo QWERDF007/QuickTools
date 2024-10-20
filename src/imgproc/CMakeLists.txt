@@ -54,6 +54,7 @@ target_link_libraries(${TARGET_NAME}
         Qt6::Core Qt6::Gui Qt6::Quick Qt6::Widgets Qt6::Charts
         QuickTools_core QuickTools_core_headers QuickTools_ui
         opencv_core
+
 )
 
 target_include_directories(${TARGET_NAME} 
