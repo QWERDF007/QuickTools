@@ -1,5 +1,6 @@
 #include "deeplearning/detection/Yolov8.h"
 
+#include "common/DeviceManager.h"
 #include "common/Utils.h"
 #include "core/Error.h"
 #include "core/PythonInterface.h"
@@ -115,18 +116,20 @@ bool Yolov8DetectionRuntimeParams::getInput(core::InputParams *input_params)
         setError(Error::FileNotFound, new_input.model_path);
         return false;
     }
-    new_input.imgsz          = input_params->data("Imgsz", QuickToolParamRole::ParamValueRole).toInt();
-    new_input.device         = input_params->data("Device", QuickToolParamRole::ParamValueRole).toString();
+    new_input.imgsz = input_params->data("Imgsz", QuickToolParamRole::ParamValueRole).toInt();
+    new_input.device
+        = common::DeviceManager::toYolo(input_params->data("Device", QuickToolParamRole::ParamValueRole).toString());
     new_input.conf_threshold = input_params->data("ConfidenceThreshold", QuickToolParamRole::ParamValueRole).toDouble();
     new_input.iou_threshold  = input_params->data("IouThreshold", QuickToolParamRole::ParamValueRole).toDouble();
 
-    // 不相等则拷贝新参数, is_init = false
+    // 相等只更新部分参数
     if (new_input == input)
     {
         input.image_path     = new_input.image_path;
         input.conf_threshold = new_input.conf_threshold;
         input.iou_threshold  = new_input.iou_threshold;
     }
+    // 不相等则拷贝新参数, is_init = false
     else
     {
         input = new_input;
@@ -176,9 +179,10 @@ int Yolov8Detection::initInputParams()
         input_params_->addParam("Model", tr("模型文件"), tr("模型文件的路径"), QuickToolParamType::InputFileParamType,
                                 QVariant(), QVariant(), true, true, true, true);
         input_params_->addIntSpinBox("Imgsz", tr("图像大小"), tr("模型的输入图像大小"), 640, 0, 10000, true, true);
-        // TODO: 获取推理设备列表
-        input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), "cuda:0", QVariantList(), false,
-                                   true);
+        QStringList all_devices    = common::DeviceManager::getInstance()->getAllDevicesNames();
+        QString     default_device = all_devices.isEmpty() ? "" : all_devices.first();
+        input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), default_device,
+                                   QVariant::fromValue(all_devices), false, true);
         input_params_->addDoubleSpinBox("ConfidenceThreshold", tr("置信度阈值"), "", 0.25, 0, 1, 2, true, true);
         input_params_->addDoubleSpinBox("IouThreshold", tr("iou阈值"), "", 0.7, 0, 1, 2, true, true);
     }

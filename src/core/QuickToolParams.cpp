@@ -421,8 +421,7 @@ bool OutputParams::setStatus(const int status, const QString &msg)
 }
 
 bool InputParams::addComboBox(const QString &name, const QString &display_name, const QString &desc,
-                              const QVariant &value, const QVariantList &model, const bool is_property,
-                              const bool visible)
+                              const QVariant &value, const QVariant &model, const bool is_property, const bool visible)
 {
     QVariantMap additional{
         {"model", model},

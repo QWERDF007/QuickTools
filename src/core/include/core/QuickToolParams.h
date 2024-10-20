@@ -218,7 +218,7 @@ public:
      * @return
      */
     bool addComboBox(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
-                     const QVariantList &model, const bool is_property = false, const bool visible = true);
+                     const QVariant &model, const bool is_property = false, const bool visible = true);
 
     /**
      * @brief 添加整型旋钮
