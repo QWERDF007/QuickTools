@@ -10,3 +10,7 @@
 	path = 3rdparty/spdlog
 	url = https://github.com/gabime/spdlog.git
 	branch = v1.x
+[submodule "3rdparty/cpuinfo"]
+	path = 3rdparty/cpuinfo
+	url = https://github.com/pytorch/cpuinfo.git
+	branch = main
