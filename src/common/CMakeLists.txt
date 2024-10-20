@@ -30,10 +30,13 @@ target_compile_definitions(${TARGET_NAME}
 )
 
 target_link_libraries(${TARGET_NAME}
-    PRIVATE
+    PUBLIC
         Qt6::Core
         spdlog::spdlog
         sqlpp11::sqlite3
+        CUDA::cudart CUDA::nvml
+        cpuinfo
+
 )
 
 target_include_directories(${TARGET_NAME} 
