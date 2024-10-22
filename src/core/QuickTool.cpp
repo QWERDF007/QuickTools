@@ -202,7 +202,9 @@ bool AbstractQuickTool::preprocess()
     const auto &[ret, msg] = init();
     if (ret == Error::Success)
         return true;
+    emit finished();
     emit showMessage(InfoLevel::Error, msg);
+    outputParams()->setStatus(ret, msg);
     spdlog::error(": {}, uuid: {}", msg.toUtf8().constData(), name().toUtf8().constData(), uuid().toUtf8().constData());
     return false;
 }
