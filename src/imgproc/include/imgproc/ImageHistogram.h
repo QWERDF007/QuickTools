@@ -25,6 +25,11 @@ public:
         return tr("图像直方图");
     }
 
+    int acceptedShapes() const override
+    {
+        return core::CVToolShape::Rectangle | core::CVToolShape::Circle;
+    }
+
     QString doc() const override;
 
 private:
