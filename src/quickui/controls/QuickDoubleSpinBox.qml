@@ -10,7 +10,7 @@ QuickSpinBox {
     property real realValue: 0
     from: decimalToInt(realFrom)
     to: decimalToInt(realTo)
-    value: realValue * decimalFactor
+    // value: realValue * decimalFactor
     validator: DoubleValidator {
         bottom: Math.min(control.realFrom, control.realTo)
         top: Math.max(control.realFrom, control.realTo)
@@ -34,4 +34,7 @@ QuickSpinBox {
         return decimal * decimalFactor
     }
 
+    Component.onCompleted: {
+        value = realValue * decimalFactor
+    }
 }
