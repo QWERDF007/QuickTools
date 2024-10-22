@@ -9,7 +9,6 @@ import QuickTools.ui
 T_CVWindow {
     id: imageHistogramWin
 
-    acceptedShapes: QuickShape.Rectangle | QuickShape.Circle
     activateItem: image
     quicktool: QuickToolManager.createQuickTool(QuickToolType.ImageHistogramTool, imageHistogramWin)
 
@@ -36,15 +35,12 @@ T_CVWindow {
                 Connections {
                     enabled: quicktool.providersList.size > 0
                     target: {
-                        console.log("target", quicktool.providersList.size, quicktool.providersList.providers[0])
                         return quicktool.providersList.providers[0]
                     }
 
                     function onImageChanged() {
-                        console.log("image changed")
                         image.source = ""
                         var url = quicktool.providersList.providers[0].url
-                        console.log("url", url)
                         image.source = url
                     }
                 }
