@@ -18,8 +18,8 @@ namespace quicktools::core {
 class QUICKTOOLS_CORE_EXPORT PythonManager : public QObject
 {
     Q_OBJECT
-public:
     SINGLETON(PythonManager)
+public:
 
     /**
      * @brief 初始化 python 环境
