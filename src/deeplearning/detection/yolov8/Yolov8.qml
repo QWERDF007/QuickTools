@@ -30,12 +30,20 @@ T_CVWindow {
                 anchors.fill: parent
                 drawingColor: yolov8Win.drawingColor
                 drawingBorderColor: yolov8Win.drawingBorderColor
-                image.source: {
-                    if (inputParams.pdata.Image) {
-                        return "file:///" + inputParams.pdata.Image
+
+                Connections {
+                    enabled: quicktool.providersList.size > 0
+                    target: {
+                        return quicktool.providersList.providers[0]
                     }
-                    return ""
+
+                    function onImageChanged() {
+                        image.source = ""
+                        var url = quicktool.providersList.providers[0].url
+                        image.source = url
+                    }
                 }
+
 
                 onRoiDataChanged: function (shapeType, data) {
                     updateROI(shapeType, data)

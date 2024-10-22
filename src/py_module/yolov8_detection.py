@@ -3,16 +3,24 @@ from ultralytics.models.yolo.detect import DetectionPredictor
 
 class Yolov8DetectionPredictor:
     def __init__(self, model_path, imgsz, device):
+        self.model = None
         self.init_model(model_path, imgsz, device)
     
     def init_model(self, model_path, imgsz, device):
         print(f"Loading YOLOv8 model from {model_path} on device {device}...", flush=True)
+        self.release()
         self.model_path = model_path
         self.imgsz = imgsz
         self.device = device
         cfg = {'batch': 1, 'model': self.model_path, 'conf': 0.25, 'iou': 0.7, 'imgsz': self.imgsz, 
                 'device': self.device,'save_txt': False, 'visualize': False, 'save': False, 'verbose': False}
         self.model = DetectionPredictor(overrides=cfg)
+
+    def release(self):
+        if self.model is not None:
+            del self.model
+            torch.cuda.empty_cache()
+            self.model = None
 
     @torch.no_grad()
     def predict(self, img, conf, iou):

@@ -176,15 +176,27 @@ int Yolov8Detection::initInputParams()
     if (input_params_)
     {
         input_params_->addImage("Image", tr("图像"), tr("输入图像的路径"), QVariant(), true, true);
+        if (providers_)
+        {
+            bool ok = providers_->addImageProvider("Image", uuid());
+            if (ok)
+            {
+                // DirectConnection slot 在 signal 发射后立即调用
+                connect(providers_->at(0), &core::ImageProvider::imageChanged, input_params_->roi(),
+                        &core::CVToolShape::clear, Qt::DirectConnection);
+            }
+        }
         input_params_->addParam("Model", tr("模型文件"), tr("模型文件的路径"), QuickToolParamType::InputFileParamType,
                                 QVariant(), QVariant(), true, true, true, true);
-        input_params_->addIntSpinBox("Imgsz", tr("图像大小"), tr("模型的输入图像大小"), 640, 0, 10000, true, true);
-        QStringList all_devices    = common::DeviceManager::getInstance()->getAllDevicesNames();
-        QString     default_device = all_devices.isEmpty() ? "" : all_devices.first();
+        input_params_->addIntSpinBox("Imgsz", tr("图像大小"), tr("模型的输入图像大小"), 640, 0, 10000, true, false,
+                                     true);
+        QStringList all_gpus       = common::DeviceManager::getInstance()->getAllGpusNames();
+        QStringList all_cpus       = common::DeviceManager::getInstance()->getAllCpusNames();
+        QString     default_device = all_gpus.isEmpty() ? all_cpus.first() : all_gpus.first();
         input_params_->addComboBox("Device", tr("推理设备"), tr("模型的推理设备"), default_device,
-                                   QVariant::fromValue(all_devices), false, true);
-        input_params_->addDoubleSpinBox("ConfidenceThreshold", tr("置信度阈值"), "", 0.25, 0, 1, 2, true, true);
-        input_params_->addDoubleSpinBox("IouThreshold", tr("iou阈值"), "", 0.7, 0, 1, 2, true, true);
+                                   QVariant::fromValue(all_cpus + all_gpus), false, true);
+        input_params_->addDoubleSpinBox("ConfidenceThreshold", tr("置信度阈值"), "", 0.25, 0, 1, 2, true, false, true);
+        input_params_->addDoubleSpinBox("IouThreshold", tr("iou阈值"), "", 0.7, 0, 1, 2, true, false, true);
     }
     return Error::Success;
 }
@@ -210,6 +222,8 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
     int     ret{0};
     QString msg{"运行成功"};
 
+    auto input_params = getInputParams();
+
     Yolov8DetectionRuntimeParams *runtime = dynamic_cast<Yolov8DetectionRuntimeParams *>(runtime_params_);
     if (runtime == nullptr)
     {
@@ -219,7 +233,11 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
     }
 
     cv::Mat image = cv::imread(runtime->input.image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
-
+    if (providers_ && providers_->size() > 0 && providers_->at(0))
+        providers_->at(0)->setImage(runtime->input.image_path, image);
+    cv::Rect roi;
+    if (input_params && input_params->roi())
+        roi = input_params->roi()->toRect();
     setProgress(0.2);
 
     pybind11::gil_scoped_acquire acquire;
@@ -240,8 +258,9 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
         }
         setProgress(0.5);
         //  检测
-        pybind11::object res = python_interface_->obj.attr("predict")(
-            PythonHelper::toNumpy<uint8_t>(image), runtime->input.conf_threshold, runtime->input.iou_threshold);
+        pybind11::object res
+            = python_interface_->obj.attr("predict")(PythonHelper::toNumpy<uint8_t>(roi.empty() ? image : image(roi)),
+                                                     runtime->input.conf_threshold, runtime->input.iou_threshold);
         QList<QVariant> _cls;
         for (auto c : res["cls"])
         {
@@ -256,6 +275,8 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
         }
         runtime->output.conf.append(_conf);
 
+        int offset_x = roi.empty() ? 0 : roi.x;
+        int offset_y = roi.empty() ? 0 : roi.y;
         for (auto box : res["boxes"])
         {
             core::CVToolShape rect;
@@ -269,6 +290,8 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
             {
                 data[2] = data[2] - data[0];
                 data[3] = data[3] - data[1];
+                data[0] = data[0] + offset_x;
+                data[1] = data[1] + offset_y;
                 rect.setShapeType(core::CVToolShape::Rectangle);
                 rect.setData(data);
             }
