@@ -32,7 +32,7 @@ void GlobalSettings::onSettingChange(const QString &key, const QVariant &value)
 {
     if (key == Predefined::PYTHON_HOME)
     {
-        QString python_home = value.toString();
+        QString python_home = QDir::cleanPath(value.toString());
         spdlog::info("修改 PYTHON_HOME: {} -> {}", PythonManager::getInstance()->pythonHome().toUtf8().constData(),
                      python_home.toUtf8().constData());
         QThreadPool::globalInstance()->start(
