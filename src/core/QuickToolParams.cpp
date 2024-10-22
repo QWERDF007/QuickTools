@@ -214,6 +214,7 @@ QVariant getParamsDisplay(const int param_type, const QVariant &data)
         {   QuickToolParamType::IntSpinBoxParamType,         valueParamDisplay},
         {QuickToolParamType::DoubleSpinBoxParamType,         valueParamDisplay},
         {   QuickToolParamType::ShapesListParamType,    shapesListParamDisplay},
+        {     QuickToolParamType::ComboBoxParamType,         valueParamDisplay},
     };
     if (data.isNull())
         return "";

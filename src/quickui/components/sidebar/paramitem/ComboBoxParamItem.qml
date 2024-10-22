@@ -24,5 +24,10 @@ T_ParamItem {
         onActivated: function (index) {
             valueChanged(_content.displayText);
         }
+
+        Component.onCompleted: {
+            console.log("paramDisplay", paramDisplay, indexOfValue(paramDisplay))
+            currentIndex = indexOfValue(paramDisplay)
+        }
     }
 }
