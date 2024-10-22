@@ -119,7 +119,7 @@ class QUICKTOOLS_CORE_EXPORT CVToolROI : public CVToolShape
 public:
     explicit CVToolROI(QObject *parent = nullptr);
 
-    cv::Mat toMask(const int width, const int height, const int fill_value = 255) const;
+    cv::Mat  toMask(const int width, const int height, const int fill_value = 255) const;
     cv::Rect toRect() const;
 };
 

@@ -22,7 +22,7 @@ protected:
     }
 };
 
-PyTest::PyTest(QObject *parent, QQmlEngine * qml_engine, QJSEngine* js_engine)
+PyTest::PyTest(QObject *parent, QQmlEngine *qml_engine, QJSEngine *js_engine)
     : AbstractTool(parent, qml_engine, js_engine)
 {
     python_interface_ = new PyTestPythonInterface(this);

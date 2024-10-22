@@ -20,7 +20,6 @@ class QUICKTOOLS_CORE_EXPORT PythonManager : public QObject
     Q_OBJECT
     SINGLETON(PythonManager)
 public:
-
     /**
      * @brief 初始化 python 环境
      * @return

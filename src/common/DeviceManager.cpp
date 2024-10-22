@@ -5,7 +5,6 @@
 
 #include <QRegularExpression>
 
-
 namespace quicktools::common {
 
 QStringList DeviceManager::getAllCpusNames()

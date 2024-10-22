@@ -2,7 +2,6 @@
 
 #include "samples/PyTest.h"
 
-
 namespace quicktools::samples {
 
 void registerTools()
