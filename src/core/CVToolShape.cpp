@@ -32,12 +32,23 @@ void CVToolShape::setData(const QList<qreal> &data)
     else if (shape_type_ == ShapeType::Polygon && data.size() >= 3)
         data_ = data;
     else
-    {
-        shape_type_ = ShapeType::NoShape;
-        data_.clear();
-        emit shapeTypeChanged();
-    }
+        clear();
     emit dataChanged();
+}
+
+void CVToolShape::setShapeType(const ShapeType shape_type)
+{
+    if (shape_type_ == shape_type)
+        return;
+    shape_type_ = shape_type;
+    emit shapeTypeChanged();
+}
+
+void CVToolShape::clear()
+{
+    shape_type_ = ShapeType::NoShape;
+    data_.clear();
+    emit shapeTypeChanged();
 }
 
 CVToolROI::CVToolROI(QObject *parent)
@@ -63,6 +74,15 @@ cv::Mat CVToolROI::toMask(const int width, const int height, const int fill_valu
         // TODO
     }
     return mask;
+}
+
+cv::Rect CVToolROI::toRect() const
+{
+    if (shape_type_ == ShapeType::Rectangle && data_.size() >= 4)
+    {
+        return cv::Rect(data_[0], data_[1], data_[2], data_[3]);
+    }
+    return cv::Rect();
 }
 
 CVToolShapeListModel::CVToolShapeListModel(QObject *parent)

@@ -26,7 +26,6 @@ T_ParamItem {
         }
 
         Component.onCompleted: {
-            console.log("paramDisplay", paramDisplay, indexOfValue(paramDisplay))
             currentIndex = indexOfValue(paramDisplay)
         }
     }

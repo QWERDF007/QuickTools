@@ -11,6 +11,7 @@ class QUICKTOOLS_CORE_EXPORT AbstractCVTool : public AbstractTool<CVInputParams,
 {
     Q_OBJECT
     Q_PROPERTY(ImageProviderList *providersList READ providersList CONSTANT FINAL)
+    Q_PROPERTY(int acceptedShapes READ acceptedShapes CONSTANT FINAL)
 public:
     AbstractCVTool(QObject *parent = nullptr, QQmlEngine *qml_engine = nullptr, QJSEngine *js_engine = nullptr);
 
@@ -19,6 +20,11 @@ public:
     ImageProviderList *providersList()
     {
         return providers_;
+    }
+
+    virtual int acceptedShapes() const
+    {
+        return CVToolShape::AllShapes;
     }
 
 protected:

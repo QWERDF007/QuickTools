@@ -55,13 +55,9 @@ public:
         return shape_type_;
     }
 
-    void setShapeType(const ShapeType shape_type)
-    {
-        if (shape_type_ == shape_type)
-            return;
-        shape_type_ = shape_type;
-        emit shapeTypeChanged();
-    }
+    void setShapeType(const ShapeType shape_type);
+
+    void clear();
 
 protected:
     QList<qreal> data_;
@@ -124,6 +120,7 @@ public:
     explicit CVToolROI(QObject *parent = nullptr);
 
     cv::Mat toMask(const int width, const int height, const int fill_value = 255) const;
+    cv::Rect toRect() const;
 };
 
 } // namespace quicktools::core

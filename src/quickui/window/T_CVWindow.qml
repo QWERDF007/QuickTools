@@ -9,13 +9,13 @@ import "../components/footer"
 T_Window {
     id: window
 
-    property alias acceptedShapes: _header.acceptedShapes
     property var activateItem
     property color drawingColor: toolSettings ? UITools.withOpacity(toolSettings.pdata.ROIColor, toolSettings.pdata.ROIColorAlpha) :
                                                 UITools.withOpacity("red", 0.5)
     property color drawingBorderColor: toolSettings ? toolSettings.pdata.ROIBorderColor : "red"
 
     property CVToolROI inputROI: inputParams ? inputParams.roi : null
+    property int acceptedShapes: quicktool && quicktool.hasOwnProperty("acceptedShapes") ? quicktool.acceptedShapes : QuickShape.NoShape
 
 
     signal fitInWindow
@@ -32,6 +32,7 @@ T_Window {
         width: window.width
         hasPython: window.hasPython
         activateItem: window.activateItem
+        acceptedShapes: window.acceptedShapes
         enabled: window.enabled
         onSettingsBtnClicked: window.openSettings()
         onStartBtnClicked: window.run()
