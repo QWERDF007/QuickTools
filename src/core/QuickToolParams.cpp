@@ -432,19 +432,20 @@ bool InputParams::addComboBox(const QString &name, const QString &display_name, 
 }
 
 bool InputParams::addIntSpinBox(const QString &name, const QString &display_name, const QString &desc, const int value,
-                                const int from, const int to, const bool is_property, const bool visible)
+                                const int from, const int to, const bool is_property,
+                                const bool run_tool_after_param_changed, const bool visible)
 {
     QVariantMap additional{
         {"from", from},
         {  "to",   to},
     };
     return AbstractQuickToolParams::addParam(name, display_name, desc, QuickToolParamType::IntSpinBoxParamType, value,
-                                             additional, true, is_property, true, visible);
+                                             additional, true, is_property, run_tool_after_param_changed, visible);
 }
 
 bool InputParams::addDoubleSpinBox(const QString &name, const QString &display_name, const QString &desc,
                                    const double value, const double from, const double to, const int decimals,
-                                   const bool is_property, const bool visible)
+                                   const bool is_property, const bool run_tool_after_param_changed, const bool visible)
 {
     QVariantMap additional{
         {    "from",     from},
@@ -452,7 +453,8 @@ bool InputParams::addDoubleSpinBox(const QString &name, const QString &display_n
         {"decimals", decimals},
     };
     return AbstractQuickToolParams::addParam(name, display_name, desc, QuickToolParamType::DoubleSpinBoxParamType,
-                                             value, additional, true, is_property, true, visible);
+                                             value, additional, true, is_property, run_tool_after_param_changed,
+                                             visible);
 }
 
 bool InputParams::addImage(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,

@@ -229,12 +229,13 @@ public:
      * @param[in] from 参数下限
      * @param[in] to 参数上限
      * @param[in] is_property 参数是否作为属性被界面访问
+     * @param[in] run_tool_after_param_changed 是否在参数发生变化后运行工具
      * @param[in] visible 参数是否可见
      * @return
      */
     bool addIntSpinBox(const QString &name, const QString &display_name, const QString &desc, const int value,
                        const int from = 0, const int to = 100, const bool is_property = false,
-                       const bool visible = true);
+                       const bool run_tool_after_param_changed = true, const bool visible = true);
 
     /**
      * @brief 添加浮点型旋钮
@@ -246,12 +247,14 @@ public:
      * @param[in] to 参数上限
      * @param[in] decimals 参数展示小数位数
      * @param[in] is_property 参数是否作为属性被界面访问
+     * @param[in] run_tool_after_param_changed 是否在参数发生变化后运行工具
      * @param[in] visible 参数是否可见
      * @return
      */
     bool addDoubleSpinBox(const QString &name, const QString &display_name, const QString &desc, const double value,
                           const double from = 0, const double to = 1, const int decimals = 2,
-                          const bool is_property = false, const bool visible = true);
+                          const bool is_property = false, const bool run_tool_after_param_changed = true,
+                          const bool visible = true);
 
     /**
      * @brief 添加输入图像参数
