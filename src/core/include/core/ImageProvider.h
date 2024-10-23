@@ -40,6 +40,56 @@ private:
     cv::Mat image_;
 };
 
+class QUICKTOOLS_CORE_EXPORT ImageProviderWrapper : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString url READ url CONSTANT FINAL)
+public:
+    ImageProviderWrapper(const QString &name, const QString &uuid, QObject *parent = nullptr,
+                         QQmlEngine *qml_engine = nullptr, QJSEngine *js_engine = nullptr);
+    ~ImageProviderWrapper();
+
+    QString url() const
+    {
+        if (image_provider_)
+            return image_provider_->url();
+        return "";
+    }
+
+    void setPath(const QString &path)
+    {
+        path_ = path;
+    }
+
+    QString path() const
+    {
+        return path_;
+    }
+
+    void setImage(const QString &path, const cv::Mat &image)
+    {
+        if (image_provider_)
+            image_provider_->setImage(path, image);
+    }
+
+    cv::Mat image()
+    {
+        if (image_provider_)
+            return image_provider_->image();
+        return cv::Mat();
+    }
+
+signals:
+    void imageChanged();
+
+private:
+    QQmlEngine *qml_engine_{nullptr};
+    QJSEngine  *js_engine_{nullptr};
+
+    QString        path_;
+    ImageProvider *image_provider_{nullptr};
+};
+
 class QUICKTOOLS_CORE_EXPORT ImageProviderList : public QObject
 {
     Q_OBJECT

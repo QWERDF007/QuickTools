@@ -8,6 +8,23 @@ CVInputParams::CVInputParams(QObject *parent, QQmlEngine *qml_engine, QJSEngine 
 {
 }
 
+ImageProviderWrapper *CVInputParams::addImage(const QString &name, const QString &uuid, const QString &display_name,
+                                              const QString &desc, const bool is_property, const bool visible)
+{
+    ImageProviderWrapper *provider = new ImageProviderWrapper(name, uuid, this, qml_engine_, js_engine_);
+
+    bool ok = AbstractQuickToolParams::addParam(
+        name, display_name, desc, paramtypes::QuickToolParamType::InputImageParamType, QVariant::fromValue(provider),
+        QVariant(), true, is_property, true, visible);
+    if (!ok)
+    {
+        delete provider;
+        provider = nullptr;
+    }
+
+    return provider;
+}
+
 CVToolROI *CVInputParams::roi()
 {
     return roi_;

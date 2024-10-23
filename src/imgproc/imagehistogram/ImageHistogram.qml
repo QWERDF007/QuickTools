@@ -33,14 +33,10 @@ T_CVWindow {
                 drawingBorderColor: imageHistogramWin.drawingBorderColor
 
                 Connections {
-                    enabled: quicktool.providersList.size > 0
-                    target: {
-                        return quicktool.providersList.providers[0]
-                    }
-
+                    target: inputParams.pdata.Image
                     function onImageChanged() {
                         image.source = ""
-                        var url = quicktool.providersList.providers[0].url
+                        var url = inputParams.pdata.Image.url
                         image.source = url
                     }
                 }
@@ -54,7 +50,8 @@ T_CVWindow {
                 dropBtnAreaVisible: image.status === Image.Null
 
                 onPathChanged: function (path) {
-                    inputParams.pdata.Image = path
+                    // inputParams.pdata.Image = path
+                    inputParams.setData("Image", path)
                 }
             }
         }

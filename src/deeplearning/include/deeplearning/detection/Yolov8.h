@@ -28,6 +28,8 @@ private:
     int initSettings() override;
 
     static QString doc_;
+
+    core::ImageProviderWrapper *image_provider_{nullptr};
 };
 
 class Yolov8DetectionConfig : public core::AbstractQuickToolConfig

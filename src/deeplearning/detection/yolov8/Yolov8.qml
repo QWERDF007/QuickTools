@@ -32,14 +32,11 @@ T_CVWindow {
                 drawingBorderColor: yolov8Win.drawingBorderColor
 
                 Connections {
-                    enabled: quicktool.providersList.size > 0
-                    target: {
-                        return quicktool.providersList.providers[0]
-                    }
+                    target: inputParams.pdata.Image
 
                     function onImageChanged() {
                         image.source = ""
-                        var url = quicktool.providersList.providers[0].url
+                        var url = inputParams.pdata.Image.url
                         image.source = url
                     }
                 }

@@ -4,7 +4,6 @@ namespace quicktools::core {
 
 AbstractCVTool::AbstractCVTool(QObject *parent, QQmlEngine *qml_engine, QJSEngine *js_engine)
     : AbstractTool(parent, qml_engine, js_engine)
-    , providers_(new ImageProviderList(this, qml_engine, js_engine))
 {
 }
 

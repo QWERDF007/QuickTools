@@ -47,6 +47,8 @@ private:
         "HSV",
         "Gray",
     };
+
+    core::ImageProviderWrapper *image_provider_{nullptr};
 };
 
 class ImageHistogramConfig : public core::AbstractQuickToolConfig

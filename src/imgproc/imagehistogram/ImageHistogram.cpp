@@ -80,8 +80,9 @@ bool ImageHistogramRuntimeParams::getInput(core::InputParams *input_params)
         setError(Error::InputParamsEmpty);
         return false;
     }
-    const QString root = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
-    input.image_path   = reader_.read(root, true, true);
+    auto ptr = input_params->data("Image", QuickToolParamRole::ParamValueRole).value<core::ImageProviderWrapper *>();
+    if (ptr)
+        input.image_path = reader_.read(ptr->path(), true, true);
     if (input.image_path.isEmpty())
     {
         setError(Error::ImageFilePathEmpty);
@@ -134,9 +135,12 @@ int ImageHistogram::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addImage("Image", tr("图像"), tr("输入图像的路径"), QVariant(), true, true);
-        if (providers_)
-            providers_->addImageProvider("Image", uuid());
+        image_provider_ = input_params_->addImage("Image", uuid(), tr("图像"), tr("输入图像的路径"), true, true);
+        if (image_provider_)
+        {
+            connect(image_provider_, &core::ImageProviderWrapper::imageChanged, input_params_->roi(),
+                    &core::CVToolShape::clear, Qt::DirectConnection);
+        }
         input_params_->addComboBox("ColorSpace", tr("色彩空间"), tr("将输入图像转换到对应的色彩空间"), COLOR_SPACES[0],
                                    COLOR_SPACES, false, true);
     }
@@ -174,10 +178,11 @@ std::tuple<int, QString> ImageHistogram::doInProcess()
 
     auto read_start_time = std::chrono::high_resolution_clock::now();
 
-    cv::Mat image       = cv::imread(runtime->input.image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
+    cv::Mat image = cv::imread(runtime->input.image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
+    if (image_provider_)
+        image_provider_->setImage(runtime->input.image_path, image);
+
     runtime->output.chs = image.channels();
-    if (providers_ && providers_->size() > 0 && providers_->at(0))
-        providers_->at(0)->setImage(runtime->input.image_path, image);
 
     auto read_end_time = std::chrono::high_resolution_clock::now();
 

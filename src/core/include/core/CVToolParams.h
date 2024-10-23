@@ -1,7 +1,9 @@
 #pragma once
 
 #include "CVToolShape.h"
+#include "ImageProvider.h"
 #include "QuickToolParams.h"
+
 
 namespace quicktools::core {
 
@@ -20,6 +22,19 @@ public:
     {
         return "CVInputParams";
     }
+
+    /**
+     * @brief 添加输入图像参数
+     * @param[in] name 参数名称
+     * @param[in] uuid 工具的 uuid
+     * @param[in] display_name 参数展示名称
+     * @param[in] desc 参数描述
+     * @param[in] is_property 参数是否作为属性被界面访问
+     * @param[in] visible 参数是否可见
+     * @return
+     */
+    ImageProviderWrapper *addImage(const QString &name, const QString &uuid, const QString &display_name,
+                                   const QString &desc, const bool is_property = false, const bool visible = true);
 
     CVToolROI *roi();
 

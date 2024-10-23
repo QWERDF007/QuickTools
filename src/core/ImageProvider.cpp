@@ -71,6 +71,27 @@ QString ImageProvider::url() const
     return QString("image://%1/this is id").arg(id());
 }
 
+ImageProviderWrapper::ImageProviderWrapper(const QString &name, const QString &uuid, QObject *parent,
+                                           QQmlEngine *qml_engine, QJSEngine *js_engine)
+    : QObject(parent)
+    , qml_engine_(qml_engine)
+    , js_engine_(js_engine)
+    , image_provider_(new ImageProvider(name, uuid))
+{
+    if (qml_engine_ && image_provider_)
+    {
+        qml_engine_->addImageProvider(image_provider_->id(), image_provider_);
+        connect(image_provider_, &ImageProvider::imageChanged, this, &ImageProviderWrapper::imageChanged,
+                Qt::DirectConnection);
+    }
+}
+
+ImageProviderWrapper::~ImageProviderWrapper()
+{
+    if (qml_engine_ && image_provider_)
+        qml_engine_->removeImageProvider(image_provider_->id());
+}
+
 ImageProviderList::ImageProviderList(QObject *parent, QQmlEngine *qml_engine, QJSEngine *js_engine)
     : QObject(parent)
     , qml_engine_(qml_engine)

@@ -81,7 +81,7 @@ public:
 
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
-    bool setData(const QString &name, const QVariant &value);
+    Q_INVOKABLE bool setData(const QString &name, const QVariant &value);
 
     /**
      * @brief 添加参数
@@ -176,6 +176,7 @@ protected:
 private:
     bool setVisible(const QModelIndex &index, const QVariant &value);
     bool setValue(const QModelIndex &index, const QVariant &value);
+    bool setImageValue(const QString &param_name, const QModelIndex &index, const QVariant &value);
 
     bool is_init_{false};
 
@@ -255,19 +256,6 @@ public:
                           const double from = 0, const double to = 1, const int decimals = 2,
                           const bool is_property = false, const bool run_tool_after_param_changed = true,
                           const bool visible = true);
-
-    /**
-     * @brief 添加输入图像参数
-     * @param[in] name 参数名称
-     * @param[in] display_name 参数展示名称
-     * @param[in] desc 参数描述
-     * @param[in] value 参数数据
-     * @param[in] is_property 参数是否作为属性被界面访问
-     * @param[in] visible 参数是否可见
-     * @return
-     */
-    bool addImage(const QString &name, const QString &display_name, const QString &desc, const QVariant &value,
-                  const bool is_property = false, const bool visible = true);
 };
 
 class QUICKTOOLS_CORE_EXPORT OutputParams : public AbstractQuickToolParams

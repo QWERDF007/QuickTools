@@ -92,9 +92,10 @@ bool Yolov8DetectionRuntimeParams::getInput(core::InputParams *input_params)
         setError(Error::InputParamsEmpty);
         return false;
     }
-    RuntimeInput  new_input;
-    const QString root   = input_params->data("Image", QuickToolParamRole::ParamValueRole).toString();
-    new_input.image_path = reader_.read(root, true, true);
+    RuntimeInput new_input;
+    auto ptr = input_params->data("Image", QuickToolParamRole::ParamValueRole).value<core::ImageProviderWrapper *>();
+    if (ptr)
+        new_input.image_path = reader_.read(ptr->path(), true, true);
     if (new_input.image_path.isEmpty())
     {
         setError(Error::ImageFilePathEmpty);
@@ -175,16 +176,12 @@ int Yolov8Detection::initInputParams()
 {
     if (input_params_)
     {
-        input_params_->addImage("Image", tr("图像"), tr("输入图像的路径"), QVariant(), true, true);
-        if (providers_)
+        image_provider_ = input_params_->addImage("Image", uuid(), tr("图像"), tr("输入图像的路径"), true, true);
+        if (image_provider_)
         {
-            bool ok = providers_->addImageProvider("Image", uuid());
-            if (ok)
-            {
-                // DirectConnection slot 在 signal 发射后立即调用
-                connect(providers_->at(0), &core::ImageProvider::imageChanged, input_params_->roi(),
-                        &core::CVToolShape::clear, Qt::DirectConnection);
-            }
+            // DirectConnection slot 在 signal 发射后立即调用
+            connect(image_provider_, &core::ImageProviderWrapper::imageChanged, input_params_->roi(),
+                    &core::CVToolShape::clear, Qt::DirectConnection);
         }
         input_params_->addParam("Model", tr("模型文件"), tr("模型文件的路径"), QuickToolParamType::InputFileParamType,
                                 QVariant(), QVariant(), true, true, true, true);
@@ -233,8 +230,8 @@ std::tuple<int, QString> Yolov8Detection::doInProcess()
     }
 
     cv::Mat image = cv::imread(runtime->input.image_path.toLocal8Bit().toStdString(), cv::IMREAD_UNCHANGED);
-    if (providers_ && providers_->size() > 0 && providers_->at(0))
-        providers_->at(0)->setImage(runtime->input.image_path, image);
+    if (image_provider_)
+        image_provider_->setImage(runtime->input.image_path, image);
     cv::Rect roi;
     if (input_params && input_params->roi())
         roi = input_params->roi()->toRect();
