@@ -65,6 +65,8 @@ std::wstring stringToWchar(const std::string &str)
     return wstr;
 }
 
+#endif // _WIN32
+
 QString getDirectory(const QString &path)
 {
     QFileInfo fileinfo(path);
@@ -156,7 +158,5 @@ const QString FileReader::read(const QString &root, bool recursive, bool circula
         cur_ = std::min<int>(size() - 1, cur_ + 1);
     return path;
 }
-
-#endif // _WIN32
 
 } // namespace quicktools::common
