@@ -56,7 +56,7 @@ target_link_libraries(${TARGET_NAME}
     PRIVATE
         Qt6::Core Qt6::Gui Qt6::Quick
     PUBLIC
-        QuickTools_common QuickTools_common_headers
+        QuickTools_common QuickTools_common_header
         opencv_core
         pybind11::embed
 )
@@ -77,8 +77,8 @@ set(TARGET_EXPORTS "${TARGET_NAME_UPPER}_LIBRARY")
 target_compile_definitions(${TARGET_NAME} PRIVATE ${TARGET_EXPORTS})
 
 # 添加接口头文件，链接目标后可以include, 无需另外包含头文件目录
-set(PLUGIN_HEADER "${PROJECT_NAME}_${PLUGIN_NAME}_headers")
-add_library(${PROJECT_NAME}_${PLUGIN_NAME}_headers INTERFACE)
+set(PLUGIN_HEADER "${PROJECT_NAME}_${PLUGIN_NAME}_header")
+add_library(${PROJECT_NAME}_${PLUGIN_NAME}_header INTERFACE)
 target_include_directories(${PLUGIN_HEADER}
     INTERFACE 
         ${CMAKE_CURRENT_SOURCE_DIR}/include 
