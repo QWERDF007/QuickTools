@@ -6,7 +6,7 @@
 
 namespace quicktools::core {
 
-class QUICKTOOLS_CORE_EXPORT AbstractCVTool : public AbstractTool<CVInputParams, CVOutputParams, CVToolSettings>
+class CORE_API AbstractCVTool : public AbstractTool<CVInputParams, CVOutputParams, CVToolSettings>
 {
     Q_OBJECT
     Q_PROPERTY(int acceptedShapes READ acceptedShapes CONSTANT FINAL)

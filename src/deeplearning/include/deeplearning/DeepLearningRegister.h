@@ -1,9 +1,9 @@
 #pragma once
 
-#include "DeepLearningGlobal.h"
+#include "DeepLearningExport.h"
 
 namespace quicktools::dl {
 
-void QUICKTOOLS_DEEPLEARNING_EXPORT registerTools();
+void DEEPLEARNING_API registerTools();
 
 } // namespace quicktools::dl

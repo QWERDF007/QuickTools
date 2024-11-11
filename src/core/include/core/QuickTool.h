@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreGlobal.h"
+#include "CoreExport.h"
 #include "QuickToolParams.h"
 #include "QuickToolSettings.h"
 
@@ -18,7 +18,7 @@ class RuntimeParams;
 /**
  * @brief QuickTools 抽象接口, 定义了界面可访问的属性、方法
  */
-class QUICKTOOLS_CORE_EXPORT AbstractQuickTool
+class CORE_API AbstractQuickTool
     : public QObject
     , public QRunnable
 {

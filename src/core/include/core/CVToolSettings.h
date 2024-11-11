@@ -4,7 +4,7 @@
 
 namespace quicktools::core {
 
-class QUICKTOOLS_CORE_EXPORT CVToolSettings : public AbstractQuickToolSettings
+class CORE_API CVToolSettings : public AbstractQuickToolSettings
 {
 public:
     CVToolSettings(QObject *parent = nullptr);

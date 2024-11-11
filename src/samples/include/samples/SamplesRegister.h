@@ -1,9 +1,9 @@
 #pragma once
 
-#include "SamplesGlobal.h"
+#include "SamplesExport.h"
 
 namespace quicktools::samples {
 
-void QUICKTOOLS_SAMPLES_EXPORT registerTools();
+void SAMPLES_API registerTools();
 
 } // namespace quicktools::samples

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreGlobal.h"
+#include "CoreExport.h"
 
 #include <opencv2/core.hpp>
 
@@ -10,7 +10,7 @@
 
 namespace quicktools::core {
 
-class QUICKTOOLS_CORE_EXPORT CVToolShape : public QObject
+class CORE_API CVToolShape : public QObject
 {
     Q_OBJECT
     // QML_NAMED_ELEMENT(CVToolShape)
@@ -68,7 +68,7 @@ signals:
     void shapeTypeChanged();
 };
 
-class QUICKTOOLS_CORE_EXPORT CVToolShapeListModel : public QAbstractListModel
+class CORE_API CVToolShapeListModel : public QAbstractListModel
 {
     Q_OBJECT
     QML_ANONYMOUS
@@ -111,7 +111,7 @@ signals:
     void shapesChanged(QList<CVToolShape>);
 };
 
-class QUICKTOOLS_CORE_EXPORT CVToolROI : public CVToolShape
+class CORE_API CVToolROI : public CVToolShape
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(CVToolROI)

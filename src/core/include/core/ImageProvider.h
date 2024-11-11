@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreGlobal.h"
+#include "CoreExport.h"
 
 #include <opencv2/core.hpp>
 
@@ -8,7 +8,7 @@
 
 namespace quicktools::core {
 
-class QUICKTOOLS_CORE_EXPORT ImageProvider : public QQuickImageProvider
+class CORE_API ImageProvider : public QQuickImageProvider
 {
     Q_OBJECT
     QML_ANONYMOUS
@@ -40,7 +40,7 @@ private:
     cv::Mat image_;
 };
 
-class QUICKTOOLS_CORE_EXPORT ImageProviderWrapper : public QObject
+class CORE_API ImageProviderWrapper : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString url READ url CONSTANT FINAL)
@@ -90,7 +90,7 @@ private:
     ImageProvider *image_provider_{nullptr};
 };
 
-class QUICKTOOLS_CORE_EXPORT ImageProviderList : public QObject
+class CORE_API ImageProviderList : public QObject
 {
     Q_OBJECT
     QML_ANONYMOUS

@@ -4,10 +4,9 @@
 #include "ImageProvider.h"
 #include "QuickToolParams.h"
 
-
 namespace quicktools::core {
 
-class QUICKTOOLS_CORE_EXPORT CVInputParams : public InputParams
+class CORE_API CVInputParams : public InputParams
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(CVInputParams)
@@ -42,7 +41,7 @@ private:
     CVToolROI *roi_{nullptr};
 };
 
-class QUICKTOOLS_CORE_EXPORT CVOutputParams : public OutputParams
+class CORE_API CVOutputParams : public OutputParams
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(CVOutputParams)

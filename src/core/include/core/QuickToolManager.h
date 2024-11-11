@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreGlobal.h"
+#include "CoreExport.h"
 
 #include <QAbstractTableModel>
 #include <QtQml>
@@ -46,7 +46,7 @@ inline const std::vector<AbstractQuickTool *> ActivatedTools::getActivatedTools(
     return activated_tools_;
 }
 
-class QUICKTOOLS_CORE_EXPORT QuickToolManager : public QObject
+class CORE_API QuickToolManager : public QObject
 {
     Q_OBJECT
     // 声明在 QML 本类为单例

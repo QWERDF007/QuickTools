@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreGlobal.h"
+#include "CoreExport.h"
 
 #include <QObject>
 #include <QString>
@@ -35,7 +35,7 @@ enum Code
     ModelFileInvalid,         //!< 模型文件无效
 };
 
-class QUICKTOOLS_CORE_EXPORT ErrorGenerator : public QObject
+class CORE_API ErrorGenerator : public QObject
 {
 public:
     /**

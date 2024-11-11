@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ImgprocGlobal.h"
+#include "ImgprocExport.h"
 
 namespace quicktools::imgproc {
 
-void QUICKTOOLS_IMGPROC_EXPORT registerTools();
+void IMGPROC_API registerTools();
 
 } // namespace quicktools::imgproc

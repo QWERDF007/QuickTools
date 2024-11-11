@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreGlobal.h"
+#include "CoreExport.h"
 
 #include <QAbstractListModel>
 #include <QQmlPropertyMap>
@@ -8,7 +8,7 @@
 
 namespace quicktools::core {
 
-class QUICKTOOLS_CORE_EXPORT AbstractQuickToolSettings : public QAbstractListModel
+class CORE_API AbstractQuickToolSettings : public QAbstractListModel
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(QuickToolSettings)
@@ -136,7 +136,7 @@ signals:
     void settingChange(const QString &key, const QVariant &value);
 };
 
-class QUICKTOOLS_CORE_EXPORT QuickToolSettings : public AbstractQuickToolSettings
+class CORE_API QuickToolSettings : public AbstractQuickToolSettings
 {
     Q_OBJECT
 public:

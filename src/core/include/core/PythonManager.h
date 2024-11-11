@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreGlobal.h"
+#include "CoreExport.h"
 #include "common/Singleton.h"
 
 #undef slots
@@ -15,7 +15,7 @@ namespace quicktools::core {
 /**
  * @brief Python 环境管理, 负责初始化/切换/释放 python 解释器
  */
-class QUICKTOOLS_CORE_EXPORT PythonManager : public QObject
+class CORE_API PythonManager : public QObject
 {
     Q_OBJECT
     SINGLETON(PythonManager)

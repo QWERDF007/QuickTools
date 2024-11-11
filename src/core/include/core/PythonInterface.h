@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreGlobal.h"
+#include "CoreExport.h"
 
 #include <opencv2/highgui.hpp>
 
@@ -14,7 +14,7 @@
 
 namespace quicktools::core {
 
-class QUICKTOOLS_CORE_EXPORT AbstractPythonInterface : public QObject
+class CORE_API AbstractPythonInterface : public QObject
 {
     Q_OBJECT
 public:

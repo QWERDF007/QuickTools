@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreGlobal.h"
+#include "CoreExport.h"
 
 #include <QAbstractListModel>
 #include <QQmlPropertyMap>
@@ -58,7 +58,7 @@ enum QuickToolParamRole
 
 } // namespace paramtypes
 
-class QUICKTOOLS_CORE_EXPORT AbstractQuickToolParams : public QAbstractListModel
+class CORE_API AbstractQuickToolParams : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name CONSTANT FINAL) // FINAL 表明该属性不会被派生类覆盖
@@ -187,7 +187,7 @@ signals:
     void runToolAfterParamChanged();
 };
 
-class QUICKTOOLS_CORE_EXPORT InputParams : public AbstractQuickToolParams
+class CORE_API InputParams : public AbstractQuickToolParams
 {
     Q_OBJECT
     // 声明 QML 中可用
@@ -258,7 +258,7 @@ public:
                           const bool visible = true);
 };
 
-class QUICKTOOLS_CORE_EXPORT OutputParams : public AbstractQuickToolParams
+class CORE_API OutputParams : public AbstractQuickToolParams
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(OutputParams)

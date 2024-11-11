@@ -71,7 +71,7 @@ target_include_directories(${TARGET_NAME}
 # 将名称转换为大写
 string(TOUPPER ${TARGET_NAME} TARGET_NAME_UPPER)
 # 设置额外编译定义
-set(TARGET_EXPORTS "${TARGET_NAME_UPPER}_LIBRARY")
+set(TARGET_EXPORTS "${TARGET_NAME_UPPER}_BUILD_SHARED_LIBS")
 # 添加一个宏定义, 配合动态库导出函数、类
 # https://stackoverflow.com/a/67923443
 target_compile_definitions(${TARGET_NAME} PRIVATE ${TARGET_EXPORTS})

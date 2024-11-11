@@ -5,7 +5,7 @@
 
 namespace quicktools::core {
 
-class QUICKTOOLS_CORE_EXPORT GlobalSettings : public AbstractQuickToolSettings
+class CORE_API GlobalSettings : public AbstractQuickToolSettings
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(GlobalSettings)
