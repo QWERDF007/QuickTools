@@ -4,6 +4,7 @@
 #include "core/Logger.h"
 #include "core/PythonManager.h"
 #include "core/QuickToolManager.h"
+#include "core/Version.h"
 #include "imgproc/ImgprocRegister.h"
 #include "samples/SamplesRegister.h"
 #include "deeplearning/DeepLearningRegister.h"
@@ -33,7 +34,7 @@ int main(int argc, char *argv[])
     crash_handler.setup();
 
     initLog();
-    spdlog::info("欢迎使用 QuickTools!");
+    spdlog::info("欢迎使用 QuickTools! 版本: {}", quicktools::core::GetFullVersionString());
 
     //    QQuickStyle::setStyle("Basic");
     //    qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");

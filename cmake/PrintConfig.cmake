@@ -1,5 +1,6 @@
 message(STATUS "General configuration for ${PROJECT_NAME}")
-message(STATUS "version: ${PROJECT_VERSION}")
+message(STATUS "Version: ${PROJECT_VERSION}")
+message(STATUS "Build suffix: ${QUICKTOOLS_BUILD_SUFFIX}")
 message(STATUS "Build options")
 
 if(WARNINGS_AS_ERRORS)
@@ -7,7 +8,6 @@ if(WARNINGS_AS_ERRORS)
 else()
     message(STATUS "    WARNINGS_AS_ERRORS       : OFF")
 endif()
-
 
 if(QUICKTOOLS_BUILD_TESTS)
     message(STATUS "    QUICKTOOLS_BUILD_TESTS   : ON")
@@ -21,6 +21,11 @@ else()
     message(STATUS "    QUICKTOOLS_BUILD_DOCS    : OFF")
 endif()
 
+if(ENABLE_SANITIZER OR QUICKTOOLS_ENABLE_SANITIZER)
+    message(STATUS "    ENABLE_SANITIZER         : ON")
+else()
+    message(STATUS "    ENABLE_SANITIZER         : OFF")
+endif()
 
 # Compilation
 
@@ -69,7 +74,6 @@ message(STATUS "")
 message(STATUS "    Link-time optim.    : supported ${LTO_SUPPORTED}, enabled ${LTO_ENABLED}")
 message(STATUS "")
 
-
 message(STATUS "3rdparty")
 message(STATUS "OpenCV")
 message(STATUS "    OpenCV version     : ${OpenCV_VERSION}")
@@ -83,7 +87,6 @@ message(STATUS "CUDA")
 message(STATUS "    CUDAToolkit version     : ${CUDAToolkit_VERSION}")
 message(STATUS "    CUDAToolkit root        : ${CUDAToolkit_TARGET_DIR}")
 message(STATUS "    CUDAToolkit bin dir     : ${CUDAToolkit_BIN_DIR}")
-message(STATUS "    CUDAToolkit include dir : ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
 message(STATUS "    CUDAToolkit include dir : ${CUDAToolkit_INCLUDE_DIRS}")
 message(STATUS "    CUDAToolkit lib root    : ${CUDAToolkit_LIBRARY_ROOT}")
 message(STATUS "    CUDAToolkit lib dir     : ${CUDAToolkit_LIBRARY_DIR}")
@@ -94,9 +97,16 @@ message(STATUS "Qt")
 message(STATUS "    Qt version          : ${Qt6Core_VERSION}")
 message(STATUS "    Qt core lib         : ${Qt6Core_LIBRARIES}")
 message(STATUS "    Qt core include dir : ${Qt6Core_INCLUDE_DIRS}")
-message(STATUS "    Qt libs             : ${Qt6Core_LIBRARIES} ${Qt6Gui_LIBRARIES} ${Qt6Quick_LIBRARIES} ${Qt6QuickTest_LIBRARIES}")
+message(STATUS "    Qt libs             : ${Qt6Core_LIBRARIES} ${Qt6Gui_LIBRARIES} ${Qt6Quick_LIBRARIES}")
+message(STATUS "")
+
+message(STATUS "SQLite")
+message(STATUS "    SQLite root         : ${SQLITE_ROOT}")
+message(STATUS "    SQLite include dir  : ${SQLite3_INCLUDE_DIR}")
+message(STATUS "    SQLite library      : ${SQLite3_LIBRARY}")
 message(STATUS "")
 
 message(STATUS "Python")
+message(STATUS "    PYTHON_HOME         : ${PYTHON_HOME}")
 message(STATUS "    PYTHON_EXECUTABLE   : ${PYTHON_EXECUTABLE}")
 message(STATUS "")

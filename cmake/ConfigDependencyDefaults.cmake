@@ -1,0 +1,309 @@
+# Read build-time dependency defaults from the shared runtime manifest.
+# A platform-specific <platform>_default value takes precedence over default.
+# Installed packages may omit the source-tree manifest; callers then continue
+# with environment and CMake prefix discovery.
+function(quicktools_dependency_default dependency_name output_variable)
+    set(_manifest "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../tools/dependencies.yaml")
+    if(DEFINED QUICKTOOLS_DEPENDENCY_MANIFEST AND NOT QUICKTOOLS_DEPENDENCY_MANIFEST STREQUAL "")
+        set(_manifest "${QUICKTOOLS_DEPENDENCY_MANIFEST}")
+    elseif(DEFINED DLT_DEPENDENCY_MANIFEST AND NOT DLT_DEPENDENCY_MANIFEST STREQUAL "")
+        set(_manifest "${DLT_DEPENDENCY_MANIFEST}")
+    elseif(DEFINED INFERRT_DEPENDENCY_MANIFEST AND NOT INFERRT_DEPENDENCY_MANIFEST STREQUAL "")
+        set(_manifest "${INFERRT_DEPENDENCY_MANIFEST}")
+    endif()
+
+    set(_result "")
+    set(_platform_default_key)
+    if(WIN32)
+        set(_platform_default_key "windows_default")
+    elseif(APPLE)
+        set(_platform_default_key "macos_default")
+    elseif(UNIX)
+        set(_platform_default_key "linux_default")
+    endif()
+
+    set(_platform_result "")
+    set(_fallback_result "")
+    if(EXISTS "${_manifest}")
+        file(STRINGS "${_manifest}" _manifest_lines)
+        set(_in_dependency OFF)
+        foreach(_line IN LISTS _manifest_lines)
+            string(REGEX MATCH
+                "^[ ]*-[ ]+name:[ ]*([A-Za-z0-9_.-]+)[ ]*$"
+                _name_match "${_line}")
+            if(_name_match)
+                set(_entry_name "${_name_match}")
+                string(REGEX REPLACE "^[ ]*-[ ]+name:[ ]*"
+                    "" _entry_name "${_entry_name}")
+                if(_entry_name STREQUAL "${dependency_name}")
+                    set(_in_dependency ON)
+                    set(_platform_result "")
+                    set(_fallback_result "")
+                else()
+                    set(_in_dependency OFF)
+                endif()
+                continue()
+            endif()
+
+            if(_in_dependency)
+                if(_platform_default_key)
+                    string(REGEX MATCH
+                        "^[ ]*${_platform_default_key}:[ ]*(.+)[ ]*$"
+                        _platform_default_match "${_line}")
+                    if(_platform_default_match)
+                        set(_platform_result "${_platform_default_match}")
+                        string(REGEX REPLACE
+                            "^[ ]*${_platform_default_key}:[ ]*"
+                            "" _platform_result "${_platform_result}")
+                        string(REGEX REPLACE "^[ ]*[\"'](.*)[\"'][ ]*$"
+                            "\\1" _platform_result "${_platform_result}")
+                    endif()
+                endif()
+
+                string(REGEX MATCH "^[ ]*default:[ ]*(.+)[ ]*$"
+                    _default_match "${_line}")
+                if(_default_match)
+                    set(_fallback_result "${_default_match}")
+                    string(REGEX REPLACE "^[ ]*default:[ ]*"
+                        "" _fallback_result "${_fallback_result}")
+                    string(REGEX REPLACE "^[ ]*[\"'](.*)[\"'][ ]*$"
+                        "\\1" _fallback_result "${_fallback_result}")
+                endif()
+            endif()
+        endforeach()
+    endif()
+
+    if(_platform_result)
+        set(_result "${_platform_result}")
+    else()
+        set(_result "${_fallback_result}")
+    endif()
+
+    set(${output_variable} "${_result}" PARENT_SCOPE)
+endfunction()
+
+# CMake does not expose whether an existing cache entry came from an earlier
+# find_package call or from the current command line.  Keep that provenance in
+# project-owned metadata after the first resolution and use the cache type/help
+# as the compatibility signal for legacy build trees.
+function(quicktools_dependency_variable_is_explicit variable marker output_variable)
+    set(_explicit OFF)
+    set(_origin_key "${marker}_ORIGIN")
+    set(_last_value_key "${marker}_LAST_VALUE")
+
+    get_property(_cache_set CACHE "${variable}" PROPERTY TYPE SET)
+    if(DEFINED ${variable})
+        if(NOT _cache_set)
+            # A normal variable supplied by the parent project is explicit.
+            set(_explicit ON)
+        else()
+            get_property(_cache_value CACHE "${variable}" PROPERTY VALUE)
+            if(NOT "${${variable}}" STREQUAL "${_cache_value}")
+                # A normal variable shadows the cache entry in this scope.
+                set(_explicit ON)
+            elseif(DEFINED ${_origin_key} AND "${${_origin_key}}" STREQUAL "user")
+                set(_explicit ON)
+            elseif(DEFINED ${_last_value_key}
+                   AND NOT "${${variable}}" STREQUAL "${${_last_value_key}}")
+                # The cache was changed before this configure pass, normally
+                # by a new -D value.
+                set(_explicit ON)
+            else()
+                get_property(_cache_type CACHE "${variable}" PROPERTY TYPE)
+                get_property(_cache_help CACHE "${variable}" PROPERTY HELPSTRING)
+                if(_cache_type STREQUAL "UNINITIALIZED" OR _cache_help STREQUAL "")
+                    # Untyped/undocumented cache entries are how command-line
+                    # -D values are represented on a fresh build tree.
+                    set(_explicit ON)
+                endif()
+            endif()
+        endif()
+    endif()
+
+    set(${output_variable} "${_explicit}" PARENT_SCOPE)
+endfunction()
+
+# Resolve a dependency root with one shared precedence rule:
+# 1. Command-line -D / user explicit variable
+# 2. Environment variables
+# 3. CMake prefix paths (if matching required files)
+# 4. Manifest default (tools/dependencies.yaml)
+# 5. Legacy CMake cache
+function(quicktools_dependency_resolve_path output_variable origin_variable dependency_name)
+    set(_options)
+    set(_one_value_args)
+    set(_multi_value_args VARIABLES ENVIRONMENT_VARIABLES PREFIX_PATHS REQUIRED_FILES)
+    cmake_parse_arguments(
+        _resolve
+        "${_options}"
+        "${_one_value_args}"
+        "${_multi_value_args}"
+        ${ARGN}
+    )
+
+    set(_resolved_value)
+    set(_resolved_origin)
+
+    # 1. 命令行 -D 或用户显式变量
+    foreach(_variable IN LISTS _resolve_VARIABLES)
+        if(NOT DEFINED ${_variable} OR "${${_variable}}" STREQUAL ""
+           OR "${${_variable}}" MATCHES "-NOTFOUND$")
+            continue()
+        endif()
+        string(TOUPPER "${_variable}" _variable_key)
+        string(REGEX REPLACE "[^A-Z0-9_]" "_" _variable_key "${_variable_key}")
+        quicktools_dependency_variable_is_explicit(
+            "${_variable}"
+            "QUICKTOOLS_DEPENDENCY_${_variable_key}"
+            _variable_explicit)
+        if(NOT _variable_explicit)
+            quicktools_dependency_variable_is_explicit(
+                "${_variable}"
+                "DLT_DEPENDENCY_${_variable_key}"
+                _variable_explicit)
+        endif()
+        if(_variable_explicit)
+            set(_resolved_value "${${_variable}}")
+            set(_resolved_origin "user")
+            break()
+        endif()
+    endforeach()
+
+    # 2. 环境变量
+    if(NOT _resolved_value)
+        foreach(_environment_variable IN LISTS _resolve_ENVIRONMENT_VARIABLES)
+            if(DEFINED ENV{${_environment_variable}}
+               AND NOT "$ENV{${_environment_variable}}" STREQUAL ""
+               AND NOT "$ENV{${_environment_variable}}" MATCHES "-NOTFOUND$")
+                set(_resolved_value "$ENV{${_environment_variable}}")
+                set(_resolved_origin "environment")
+                break()
+            endif()
+        endforeach()
+    endif()
+
+    # 3. CMake 前缀路径探测 (若指定了 REQUIRED_FILES)
+    if(NOT _resolved_value AND _resolve_PREFIX_PATHS
+       AND _resolve_REQUIRED_FILES)
+        foreach(_prefix IN LISTS _resolve_PREFIX_PATHS)
+            if("${_prefix}" STREQUAL "")
+                continue()
+            endif()
+            set(_prefix_valid ON)
+            foreach(_required_file IN LISTS _resolve_REQUIRED_FILES)
+                if(NOT EXISTS "${_prefix}/${_required_file}")
+                    set(_prefix_valid OFF)
+                    break()
+                endif()
+            endforeach()
+            if(_prefix_valid)
+                get_filename_component(_resolved_value "${_prefix}" ABSOLUTE)
+                set(_resolved_origin "cmake-prefix")
+                break()
+            endif()
+        endforeach()
+    endif()
+
+    # 4. dependencies.yaml 清单默认值
+    if(NOT _resolved_value)
+        quicktools_dependency_default("${dependency_name}" _default_value)
+        if(_default_value AND EXISTS "${_default_value}")
+            get_filename_component(_resolved_value "${_default_value}" ABSOLUTE)
+            set(_resolved_origin "project-default")
+        endif()
+    endif()
+
+    # 5. CMakeCache 遗留缓存值
+    if(NOT _resolved_value)
+        foreach(_variable IN LISTS _resolve_VARIABLES)
+            if(DEFINED ${_variable} AND NOT "${${_variable}}" STREQUAL ""
+               AND NOT "${${_variable}}" MATCHES "-NOTFOUND$")
+                set(_resolved_value "${${_variable}}")
+                set(_resolved_origin "legacy-cache")
+                break()
+            endif()
+        endforeach()
+    endif()
+
+    set(${output_variable} "${_resolved_value}" PARENT_SCOPE)
+    set(${origin_variable} "${_resolved_origin}" PARENT_SCOPE)
+endfunction()
+
+function(quicktools_dependency_set_internal key value description)
+    get_property(_cache_set CACHE "${key}" PROPERTY TYPE SET)
+    if(_cache_set)
+        set_property(CACHE "${key}" PROPERTY VALUE "${value}")
+        set_property(CACHE "${key}" PROPERTY TYPE INTERNAL)
+    else()
+        set("${key}" "${value}" CACHE INTERNAL "${description}")
+    endif()
+    set("${key}" "${value}" PARENT_SCOPE)
+endfunction()
+
+function(quicktools_dependency_record_value marker value origin)
+    quicktools_dependency_set_internal(
+        "${marker}_ORIGIN" "${origin}" "QuickTools dependency value origin")
+    quicktools_dependency_set_internal(
+        "${marker}_LAST_VALUE" "${value}" "Last resolved QuickTools dependency value")
+endfunction()
+
+function(quicktools_dependency_cache_set variable value type description marker origin)
+    get_property(_cache_set CACHE "${variable}" PROPERTY TYPE SET)
+    if(_cache_set)
+        set_property(CACHE "${variable}" PROPERTY VALUE "${value}")
+        set_property(CACHE "${variable}" PROPERTY TYPE "${type}")
+    else()
+        set("${variable}" "${value}" CACHE "${type}" "${description}")
+    endif()
+    set("${variable}" "${value}" PARENT_SCOPE)
+    quicktools_dependency_record_value("${marker}" "${value}" "${origin}")
+endfunction()
+
+# 兼容别名
+macro(dlt_dependency_default)
+    quicktools_dependency_default(${ARGN})
+endmacro()
+
+macro(dlt_dependency_variable_is_explicit)
+    quicktools_dependency_variable_is_explicit(${ARGN})
+endmacro()
+
+macro(dlt_dependency_resolve_path)
+    quicktools_dependency_resolve_path(${ARGN})
+endmacro()
+
+macro(dlt_dependency_set_internal)
+    quicktools_dependency_set_internal(${ARGN})
+endmacro()
+
+macro(dlt_dependency_record_value)
+    quicktools_dependency_record_value(${ARGN})
+endmacro()
+
+macro(dlt_dependency_cache_set)
+    quicktools_dependency_cache_set(${ARGN})
+endmacro()
+
+macro(inferrt_dependency_default)
+    quicktools_dependency_default(${ARGN})
+endmacro()
+
+macro(inferrt_dependency_variable_is_explicit)
+    quicktools_dependency_variable_is_explicit(${ARGN})
+endmacro()
+
+macro(inferrt_dependency_resolve_path)
+    quicktools_dependency_resolve_path(${ARGN})
+endmacro()
+
+macro(inferrt_dependency_set_internal)
+    quicktools_dependency_set_internal(${ARGN})
+endmacro()
+
+macro(inferrt_dependency_record_value)
+    quicktools_dependency_record_value(${ARGN})
+endmacro()
+
+macro(inferrt_dependency_cache_set)
+    quicktools_dependency_cache_set(${ARGN})
+endmacro()

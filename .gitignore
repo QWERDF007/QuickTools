@@ -40,3 +40,10 @@ CMakeLists.txt.user
 
 # python
 __pycache__/
+
+# doxygen
+html/
+
+# runtime logs and database
+logs/
+db/

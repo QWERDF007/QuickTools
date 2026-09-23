@@ -84,3 +84,5 @@ target_include_directories(${PLUGIN_HEADER}
         ${CMAKE_CURRENT_SOURCE_DIR}/include 
         ${CMAKE_CURRENT_BINARY_DIR}/include
 )
+
+configure_version(${TARGET_NAME} QUICKTOOLS core ${PROJECT_VERSION})

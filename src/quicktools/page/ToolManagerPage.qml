@@ -14,8 +14,6 @@ QuickContentPage {
         clip: true
 
         columnWidthProvider: function (column) {
-            console.log("explicit column", column, horizontalHeader.explicitColumnWidth(column), tableView.explicitColumnWidth(column))
-            console.log("implicit column", column, horizontalHeader.implicitColumnWidth(column), tableView.implicitColumnWidth(column))
             let w = Math.max(explicitColumnWidth(column), tableView.explicitColumnWidth(column))
             if (w >= 0)
                 return w > minimalWidth ? w : minimalWidth
@@ -43,17 +41,10 @@ QuickContentPage {
         rowSpacing: 1
         model: QuickToolManager.activatedTools
         columnWidthProvider: function (column) {
-            console.log("explicit column", column, horizontalHeader.explicitColumnWidth(column), tableView.explicitColumnWidth(column))
-            console.log("implicit column", column, horizontalHeader.implicitColumnWidth(column), tableView.implicitColumnWidth(column))
             let w = explicitColumnWidth(column)
             if (w >= 0)
                 return w
             return implicitColumnWidth(column)
-//            let w_h = horizontalHeader.columnWidthProvider(column)
-//            if (w >= 0)
-//                return w > w_h ? w : w_h
-//            w = implicitColumnWidth(column)
-//            return w > w_h ? w : w_h
         }
         delegate: DelegateChooser {
             DelegateChoice {

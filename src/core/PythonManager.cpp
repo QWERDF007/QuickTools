@@ -129,7 +129,7 @@ void PythonManager::setPythonHome(const QString &python_home)
 QString PythonManager::DefaultPythonHome()
 {
     //    QString python_home = QDir::homePath() + QDir::separator() + "test";
-    QString python_home = "D:/Software/anaconda3/envs/AD";
+    QString python_home = "D:/Software/anaconda3/envs/py312";
     return python_home;
 }
 

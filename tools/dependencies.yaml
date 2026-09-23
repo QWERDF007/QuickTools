@@ -1,0 +1,74 @@
+# Runtime dependency manifest used by link_dependencies.py and CMake Config files.
+# root may be a path or a variable read from CMakeCache.txt / the listed CMake file.
+# default defines the local default path (Single Source of Truth).
+dependencies:
+  - name: qt
+    cmake: cmake/ConfigQT.cmake
+    root: Qt6_ROOT
+    default: D:/Software/Qt6/6.6.2/msvc2019_64
+
+  - name: sqlite
+    cmake: cmake/ConfigSQLite.cmake
+    root: SQLITE_ROOT
+    default: D:/Software/dev/sqlite-3.46.0
+    destinations:
+      - build/bin
+    windows:
+      - lib/sqlite3.dll
+      - sqlite3.dll
+    linux:
+      - lib/libsqlite3.so*
+    macos:
+      - lib/libsqlite3.dylib
+
+  - name: opencv
+    cmake: cmake/ConfigOpenCV.cmake
+    root: OpenCV_HOME
+    windows_root: OpenCV_BIN_DIR
+    default: D:/Software/dev/opencv-4.8.0/build/x64/vc16
+    destinations:
+      - build/bin
+    windows:
+      - "*.dll"
+      - bin/*.dll
+    linux:
+      - lib/libopencv*.so*
+    macos:
+      - lib/libopencv*.dylib
+
+  - name: cuda
+    cmake: cmake/ConfigCUDA.cmake
+    env: CUDA_PATH
+    root: CUDAToolkit_ROOT
+    default: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8
+    destinations:
+      - build/bin
+    windows:
+      - bin/cudart64_*.dll
+      - bin/cublas64_*.dll
+      - bin/cublasLt64_*.dll
+      - bin/cufft64_*.dll
+      - bin/cudnn*.dll
+    linux:
+      - lib64/libcudart.so*
+      - lib64/libcublas.so*
+      - lib64/libcublasLt.so*
+      - lib64/libcufft.so*
+      - lib64/libcudnn.so*
+    macos:
+      - lib/libcudart*.dylib
+      - lib/libcublas*.dylib
+      - lib/libcufft*.dylib
+
+  - name: python
+    cmake: cmake/ConfigPython.cmake
+    root: PYTHON_HOME
+    default: D:/Software/anaconda3/envs/py312
+    destinations:
+      - build/bin
+    windows:
+      - python*.dll
+    linux:
+      - lib/libpython*.so*
+    macos:
+      - lib/libpython*.dylib

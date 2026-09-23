@@ -9,6 +9,17 @@ endif()
 # 指定可执行文件和库文件的输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+# MSVC 去掉 Debug Release 文件夹的嵌套
+if (MSVC)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endif()
 
 include(GNUInstallDirs)
 
@@ -18,6 +29,16 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/.git AND EXISTS ${CMAKE_SOURCE_DIR}/.gitmodules)
         message(FATAL_ERROR "git submodules not initialized. Did you forget to run 'git submodule update --init'?")
     endif()
 endif()
+
+if(WIN32)
+    set(SYSTEM_NAME "${CMAKE_SYSTEM_PROCESSOR}-win")
+elseif(UNIX)
+    set(SYSTEM_NAME "${CMAKE_SYSTEM_PROCESSOR}-linux")
+else()
+    message(FATAL_ERROR "Architecture not supported")
+endif()
+
+set(QUICKTOOLS_BUILD_SUFFIX "cuda${CUDAToolkit_VERSION_MAJOR}-${SYSTEM_NAME}")
 
 # 设置动态共享库的版本号和符号可见性，以及优化可执行文件的大小
 # 接受两个参数 target version
