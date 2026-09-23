@@ -14,3 +14,7 @@
 	path = 3rdparty/cpuinfo
 	url = https://github.com/pytorch/cpuinfo.git
 	branch = main
+[submodule "3rdparty/QuickUI"]
+	path = 3rdparty/QuickUI
+	url = https://github.com/QWERDF007/QuickUI.git
+	branch = main
