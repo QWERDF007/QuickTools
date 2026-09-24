@@ -72,4 +72,5 @@ PRIVATE
     QuickTools_ui
     QuickTools_samples QuickTools_samples_header
     QuickTools_deeplearning QuickTools_deeplearning_header
+    quickui
 )

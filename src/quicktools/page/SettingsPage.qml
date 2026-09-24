@@ -4,14 +4,16 @@ import QtQuick.Layouts
 
 import QuickTools.ui
 import QuickTools.core
+import quickui
 
-QuickContentPage {
+QuiPage {
     id: settingsPage
     ToolSettingsView {
         id: settingsView
         anchors.fill: parent
         settingsModel: GlobalSettings
-        buttonFlags: QuickDialogButtonFlag.PositiveButton
+        useNegativeButton: false
+        usePositiveButton: true
     }
     Connections {
         target: GlobalSettings
@@ -24,7 +26,7 @@ QuickContentPage {
             settingsBusyIndicator.close()
         }
     }
-    QuickPopup { // 运行状态指示器
+    QuiPopup { // 运行状态指示器
         id: settingsBusyIndicator
         width: settingsPage.width
         height: settingsPage.height
@@ -34,10 +36,10 @@ QuickContentPage {
         ColumnLayout {
             spacing: 8
             anchors.centerIn: parent
-            QuickProgressRing {
+            QuiProgressRing {
                 Layout.alignment: Qt.AlignHCenter
             }
-            QuickText{
+            QuiText{
                 text: qsTr("修改中...")
                 Layout.alignment: Qt.AlignHCenter
             }

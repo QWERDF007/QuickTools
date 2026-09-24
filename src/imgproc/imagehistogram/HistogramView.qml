@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCharts
 import Qt.labs.platform
-
+import quickui
 import QuickTools.ui
 
 Item {
@@ -21,7 +21,7 @@ Item {
     ListView {
         id: lv
         anchors.fill: parent
-        ScrollBar.vertical: QuickScrollBar{}
+        ScrollBar.vertical: QuiScrollBar{}
         boundsBehavior: Flickable.StopAtBounds
         model: {
             if (histogramsData === undefined || histogramsData === null) {
@@ -33,14 +33,14 @@ Item {
             }
         }
 
-        delegate:  ChartView {
+        delegate: ChartView {
             id: chartview
             width: lv.width - 8
             height: histogram.chartHeight
             legend.visible: false
             antialiasing: true
 
-            QuickToolTip {
+            QuiToolTip {
                 id: tooltip
                 delay: 200
                 visible: false
@@ -54,9 +54,6 @@ Item {
 
             BarSeries {
                 barWidth: histogram.barWidth
-                //                        labelsAngle: 270
-                //                        labelsVisible: true
-                //                        labelsPosition: AbstractBarSeries.LabelsInsideEnd
                 axisX: ValuesAxis {
                     tickCount: histogram.tickCount
                     min: 0

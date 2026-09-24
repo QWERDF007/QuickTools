@@ -1,11 +1,12 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 import QuickTools.core
 import "./settingitem"
 
-QuickFrame {
+QuiFrame {
     id: settingDelegate
 
     property var settingAdditional
@@ -99,13 +100,14 @@ QuickFrame {
             Item {
                 Layout.fillHeight: true
             }
-            QuickText {
-                font: QuickFont.Body
+            QuiText {
+                font: QuiFont.Body
                 text: settingDelegate.settingDisplayName
+                color: QuiColor.FontPrimary
             }
-            QuickText {
-                font: QuickFont.Caption
-                textColor: QuickColor.FontCaption
+            QuiText {
+                font: QuiFont.Caption
+                color: QuiColor.FontCaption
                 text: settingDelegate.settingDesc
                 visible: settingDesc ? true : false
             }
@@ -114,7 +116,7 @@ QuickFrame {
             }
         }
 
-        QuickLoader {
+        Loader {
             id: loader
             anchors{
                 left: desc.right

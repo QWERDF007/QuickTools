@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 
 Item {
@@ -16,10 +17,10 @@ Item {
         contentHeight: text.height
         contentWidth: width
 
-        ScrollBar.vertical: QuickScrollBar {
+        ScrollBar.vertical: QuiScrollBar {
         }
 
-        QuickText {
+        QuiText {
             id: text
 
             anchors.left: parent.left
@@ -28,6 +29,7 @@ Item {
             textFormat: TextEdit.MarkdownText
             width: parent.width
             wrapMode: Text.WrapAnywhere
+            color: QuiColor.FontPrimary
         }
     }
 }

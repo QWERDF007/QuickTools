@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import Qt.labs.platform
+import quickui
 import QuickTools.ui
 import QuickTools.core
 
@@ -19,17 +20,19 @@ T_ParamItem {
         anchors.rightMargin: 0
         spacing: 2
 
-        QuickText {
+        QuiText {
             id: _content
 
             Layout.fillHeight: true
             Layout.fillWidth: true
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
-            text: paramDisplay
+            text: paramDisplay !== undefined && paramDisplay !== null ? String(paramDisplay) : ""
             verticalAlignment: Text.AlignVCenter
+            font: QuiFont.Caption
+            color: QuiColor.FontPrimary
         }
-        QuickToolButton {
+        QuiToolButton {
             id: fileBtn
             icon.source: "/icons/file"
             implicitHeight: Math.min(parent.width, parent.height)
@@ -38,7 +41,7 @@ T_ParamItem {
             onClicked: {
                 fileDialog.open();
             }
-            QuickToolTip{
+            QuiToolTip{
                 text: qsTr("选择文件")
                 visible: fileBtn.hovered
                 delay: 200
@@ -49,7 +52,6 @@ T_ParamItem {
         id: fileDialog
 
         folder: StandardPaths.writableLocation(StandardPaths.HomeLocation)
-        // nameFilters: ["Image files (*.jpg *.jpeg *.png *.bmp)"]
 
         onAccepted: {
             var path = fileDialog.file.toString().toLowerCase().slice(8)

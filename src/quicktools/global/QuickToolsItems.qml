@@ -1,10 +1,11 @@
-﻿pragma Singleton
+pragma Singleton
 
 import QtQuick
 import QtQuick.Controls
 
 import QuickTools.ui
 import QuickTools.core
+import quickui
 
 QuickObject {
 
@@ -17,10 +18,10 @@ QuickObject {
         count: QuickToolManager.getRecentlyChangedToolsCount()
         title: "Home"
         //        menuDelegate: paneItemMenu
-        infoBadge: QuickBadge {
+        infoBadge: QuiBadge {
             count: item_home.count
         }
-        icon: QuickFontIcon.Home
+        icon: QuiFontIcon.Home
         url:"qrc:/qt/qml/QuickTools/page/Home.qml"
         onTap: {
             if(navigationView.getCurrentUrl()){
@@ -34,7 +35,7 @@ QuickObject {
         title: qsTr("图像处理")
         group: QuickToolManager.getGroupUUID(QuickToolGroupType.ImageProcessGroup)
         iconVisible: true
-        icon: QuickFontIcon.QRCode
+        icon: QuiFontIcon.QRCode
         url: "qrc:/qt/qml/QuickTools/page/T_Page.qml"
         onTap: { navigationView.push(url); navigationView.contentLoader.item.model = QuickToolManager.getToolsConfig(group, task); }
     }
@@ -43,7 +44,7 @@ QuickObject {
         id: dlgroup
         title: "深度学习"
         iconVisible: true
-        icon: QuickFontIcon.ReportHacked
+        icon: QuiFontIcon.ReportHacked
         group: QuickToolManager.getGroupUUID(QuickToolGroupType.DeepLearningGroup)
         QuickPaneItem {
             title: qsTr("图像分类")
@@ -70,7 +71,7 @@ QuickObject {
     QuickPaneItem {
         title: qsTr("示例工具")
         iconVisible: true
-        icon: QuickFontIcon.Emoji2
+        icon: QuiFontIcon.Emoji2
         url: "qrc:/qt/qml/QuickTools/page/T_Page.qml"
         group: QuickToolManager.getGroupUUID(QuickToolGroupType.SamplesGroup)
         onTap: { navigationView.push(url); navigationView.contentLoader.item.model = QuickToolManager.getToolsConfig(group, task); }

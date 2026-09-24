@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 
 T_SettingItem {
@@ -13,9 +14,9 @@ T_SettingItem {
         implicitHeight: 32
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
-        text: settingValue
+        text: settingValue !== undefined && settingValue !== null ? String(settingValue) : "0"
         onEditingFinished: {
-            valueChanged(text)
+            valueChanged(Number(text))
         }
     }
 }

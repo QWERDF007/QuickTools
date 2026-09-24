@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCharts
 import Qt.labs.platform
+import quickui
 import QuickTools.core
 import QuickTools.ui
 
@@ -12,7 +13,7 @@ T_CVWindow {
     activateItem: image
     quicktool: QuickToolManager.createQuickTool(QuickToolType.ImageHistogramTool, imageHistogramWin)
 
-    QuickSplitView {
+    QuiSplitView {
         id: sv1
 
         anchors.fill: parent

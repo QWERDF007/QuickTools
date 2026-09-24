@@ -41,7 +41,7 @@ Repeater {
     }
 
     Component {
-        id: cricle_com
+        id: circle_com
         QuickCircle {
             center.x: shapeData[0]
             center.y: shapeData[1]
@@ -67,7 +67,7 @@ Repeater {
 
     property color color: "transparent"
     property color borderColor: "yellow"
-    delegate: QuickLoader {
+    delegate: Loader {
 //        anchors.fill: parent
         property var shapeData: model.shapeData
         property var shapeType: model.shapeType

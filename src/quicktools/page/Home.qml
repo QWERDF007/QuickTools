@@ -3,59 +3,57 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QuickTools.ui
 import QuickTools.core
+import quickui
 
 import "../global"
 
-QuickScrollablePage {
+QuiScrollablePage {
     Component { // 工具卡片
         id:com_item
         Item{
             property string desc: modelData.desc
             width: 320
             height: 120
-            QuickFrame { // 带颜色的卡片区域
-                radius: 8
+            QuiCard {
+                id: card
                 width: 300
                 height: 100
                 anchors.centerIn: parent
-                Rectangle{ // 背景区域, 控制悬浮时的颜色变化
-                    anchors.fill: parent
-                    radius: 8
-                    color: item_mouse.containsMouse ? QuickColor.ItemHover : QuickColor.ItemNormal
-                }
+                hoverEnabled: true
 
-                Image{ // 图标
-                    id:item_icon
+                Image {
+                    id: item_icon
                     height: 40
                     width: 40
                     source: modelData.icon
-                    anchors{
+                    anchors {
                         left: parent.left
                         leftMargin: 20
                         verticalCenter: parent.verticalCenter
                     }
                 }
 
-                QuickText{ // 标题
-                    id:item_title
-                    text:modelData.title
-                    font: QuickFont.BodyStrong
-                    anchors{
+                QuiText {
+                    id: item_title
+                    text: modelData.title
+                    font: QuiFont.BodyStrong
+                    color: QuiColor.FontPrimary
+                    anchors {
                         left: item_icon.right
                         leftMargin: 20
                         top: item_icon.top
                     }
                 }
 
-                QuickText{ // 工具描述
-                    id:item_desc
-                    text:desc
-                    color: QuickColor.Grey120
+                QuiText {
+                    id: item_desc
+                    text: desc
+                    color: QuiColor.FontDark
                     wrapMode: Text.WrapAnywhere
                     elide: Text.ElideRight
-                    font: QuickFont.Caption
+                    font: QuiFont.Caption
                     maximumLineCount: 2
-                    anchors{
+                    anchors {
                         left: item_title.left
                         right: parent.right
                         rightMargin: 20
@@ -64,33 +62,26 @@ QuickScrollablePage {
                     }
                 }
 
-                MouseArea{
-                    id:item_mouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: {
-                    }
-                    onDoubleClicked: {
-                        QuickToolsItems.startPageByItem(modelData)
-                        var args = {icon: modelData.icon}
-                        App.navigate(modelData.url, args)
-                    }
+                onDoubleClicked: {
+                    QuickToolsItems.startPageByItem(modelData)
+                    var args = {icon: modelData.icon}
+                    App.navigate(modelData.url, args)
                 }
 
-                QuickToolTip {
+                QuiToolTip {
                     text: qsTr("双击打开工具")
-                    x: item_mouse.mouseX
-                    y: item_mouse.mouseY + 20
+                    x: card.mouseX
+                    y: card.mouseY + 20
                     delay: 500
-                    visible: item_mouse.containsMouse
+                    visible: card.hovered
                 }
             }
         }
     }
 
-    QuickText{
+    QuiText{
         text: qsTr("最近添加的工具")
-        font: QuickFont.Title
+        font: QuiFont.Title
         // Layout.topMargin: 20
         Layout.leftMargin: 20
     }
@@ -107,9 +98,9 @@ QuickScrollablePage {
         delegate: com_item
     }
 
-    QuickText{
+    QuiText{
         text: qsTr("最近更新的工具")
-        font: QuickFont.Title
+        font: QuiFont.Title
         Layout.topMargin: 20
         Layout.leftMargin: 20
     }

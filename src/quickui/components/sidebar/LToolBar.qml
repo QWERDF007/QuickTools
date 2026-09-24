@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 
 ListView {
@@ -13,18 +14,18 @@ ListView {
     delegate: Rectangle {
         color: {
             if (!ltoolListView.enabled) {
-                return QuickColor.ItemDisabled;
+                return QuiColor.ItemDisabled;
             } else if (mouseArea.pressed) {
-                return QuickColor.ItemPress;
+                return QuiColor.ItemPress;
             } else if (mouseArea.hovered) {
-                return QuickColor.ItemHover;
+                return QuiColor.ItemHover;
             } else if (ltoolListView.currentIndex === model.index) {
-                return QuickColor.ItemCheck;
+                return QuiColor.ItemCheck;
             }
-            return QuickColor.ItemNormal;
+            return QuiColor.ItemNormal;
         }
         height: 64
-        radius: 3
+        radius: 4
         width: 64
 
         Column {
@@ -42,12 +43,13 @@ ListView {
                 implicitWidth: 32
                 rotation: model.rotation
             }
-            QuickText {
-                color: mouseArea.pressed ? QuickColor.Grey120 : QuickColor.Grey220
+            QuiText {
+                color: ltoolListView.currentIndex === model.index ? QuiColor.Highlight : QuiColor.FontPrimary
                 horizontalAlignment: Text.AlignHCenter // 工具标题
                 text: model.text
                 visible: true
                 width: parent.width
+                font: QuiFont.Caption
             }
         }
         MouseArea {

@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import Qt.labs.platform
+import quickui
 import QuickTools.ui
 import QuickTools.core
 
@@ -19,17 +20,19 @@ T_ParamItem {
         anchors.rightMargin: 0
         spacing: 2
 
-        QuickText {
+        QuiText {
             id: _content
 
             Layout.fillHeight: true
             Layout.fillWidth: true
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
-            text: paramDisplay
+            text: paramDisplay !== undefined && paramDisplay !== null ? String(paramDisplay) : ""
             verticalAlignment: Text.AlignVCenter
+            font: QuiFont.Caption
+            color: QuiColor.FontPrimary
         }
-        QuickToolButton {
+        QuiToolButton {
             id: imageBtn
             icon.source: "/icons/image"
             implicitHeight: Math.min(parent.width, parent.height)
@@ -40,13 +43,13 @@ T_ParamItem {
                     fileDialog.folder = "file:///" + UITools.getDirectory(paramDisplay)
                 fileDialog.open()
             }
-            QuickToolTip{
+            QuiToolTip{
                 text: qsTr("打开图像")
                 visible: imageBtn.hovered
                 delay: 200
             }
         }
-        QuickToolButton {
+        QuiToolButton {
             id: folderBtn
             icon.source: "/icons/folder"
             implicitHeight: Math.min(parent.width, parent.height)
@@ -57,7 +60,7 @@ T_ParamItem {
                     fileDialog.folder = "file:///" + UITools.getDirectory(paramDisplay)
                 folderDialog.open()
             }
-            QuickToolTip{
+            QuiToolTip{
                 text: qsTr("打开文件夹")
                 visible: folderBtn.hovered
                 delay: 200

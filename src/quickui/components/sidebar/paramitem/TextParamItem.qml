@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 
 T_ParamItem {
@@ -12,15 +13,17 @@ T_ParamItem {
 
     Component {
         id: text_com
-        QuickText {
+        QuiText {
             id: _content
 
             anchors.fill: parent
 
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
-            text: paramDisplay
+            text: paramDisplay !== undefined && paramDisplay !== null ? String(paramDisplay) : ""
             verticalAlignment: Text.AlignVCenter
+            font: QuiFont.Caption
+            color: QuiColor.FontPrimary
         }
     }
 
@@ -31,8 +34,10 @@ T_ParamItem {
 
             anchors.fill: parent
             horizontalAlignment: Text.AlignHCenter
-            text: paramDisplay
+            text: paramDisplay !== undefined && paramDisplay !== null ? String(paramDisplay) : ""
             verticalAlignment: Text.AlignVCenter
+            color: QuiColor.FontPrimary
+            font: QuiFont.Caption
 
             onEditingFinished: {
                 if (paramDisplay !== textinput.text) {
@@ -42,7 +47,7 @@ T_ParamItem {
         }
     }
 
-    QuickLoader {
+    Loader {
         id: loader
         anchors.leftMargin: 5
         anchors.rightMargin: 5

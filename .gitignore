@@ -47,3 +47,5 @@ html/
 # runtime logs and database
 logs/
 db/
+
+WORKLOG.md

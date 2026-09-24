@@ -1,13 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 
 Item {
     id: paramsListView
 
-    property color delegateBackgroundColor: QuickColor.White
-    property color delegateBorderColor: QuickColor.WindowBackground
+    property color delegateBackgroundColor: QuiColor.White
+    property color delegateBorderColor: QuiColor.Border
     property alias model: _paramsListView.model
     property bool paramItemEnable: true
 
@@ -26,16 +27,15 @@ Item {
         clip: true
         spacing: 10
 
-        // anchors.rightMargin: 5
-        ScrollBar.vertical: QuickScrollBar {
+        ScrollBar.vertical: QuiScrollBar {
         }
         delegate: ParamItemDelegate {
-            // width: _paramsListView.width
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.rightMargin: 5
             border.color: delegateBorderColor
-            border.width: 2
+            border.width: 1
+            radius: 4
             color: delegateBackgroundColor
             enabled: paramsListView.paramItemEnable
             height: 48

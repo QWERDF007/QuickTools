@@ -1,13 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 
 StackLayout {
     property alias helpInfos: _helpInfos.text
     property alias inputParams: inputParamsListView.model
-    property color itemBackgroundColor: QuickColor.White
-    property color itemBorderColor: QuickColor.WindowBackground
+    property color itemBackgroundColor: QuiColor.White
+    property color itemBorderColor: QuiColor.Border
     property bool itemEnable: true
     property alias outputParams: outputParamsListView.model
 

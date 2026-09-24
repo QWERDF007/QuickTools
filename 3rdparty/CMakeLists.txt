@@ -16,3 +16,10 @@ set(CPUINFO_BUILD_TOOLS OFF CACHE BOOL "Not Build cpufino commline tools")
 set(CPUINFO_BUILD_UNIT_TESTS OFF CACHE BOOL "Not Build cpufino unit tests")
 set(CPUINFO_BUILD_MOCK_TESTS OFF CACHE BOOL "Not Build cpufino mock tests")
 add_subdirectory(cpuinfo)
+
+# QuickUI
+if(QUICKTOOLS_BUILD_TESTS)
+    set(QUICKUI_BUILD_TESTS ON CACHE BOOL "" FORCE)
+endif()
+add_subdirectory(QuickUI)
+

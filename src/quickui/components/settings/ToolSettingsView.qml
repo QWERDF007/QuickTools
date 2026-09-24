@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
+import quickui
 import QuickTools.ui
 
 Item {
@@ -14,7 +14,8 @@ Item {
     property var onPositiveClickListener
     signal negativeClicked
     signal positiveClicked
-    property int buttonFlags: QuickDialogButtonFlag.NegativeButton | QuickDialogButtonFlag.PositiveButton
+    property bool useNegativeButton: true
+    property bool usePositiveButton: true
 
     ColumnLayout {
         anchors.fill: parent
@@ -30,7 +31,7 @@ Item {
             clip: true
             spacing: 5
 
-            ScrollBar.vertical: QuickScrollBar {}
+            ScrollBar.vertical: QuiScrollBar {}
 
             delegate: SettingItemDelegate {
                 anchors.left: parent.left
@@ -58,20 +59,21 @@ Item {
                     anchors.rightMargin: 5
                     height: 48
 
-                    QuickText {
-                        font: QuickFont.Title
+                    QuiText {
+                        font: QuiFont.Title
                         text: section
+                        color: QuiColor.FontPrimary
                     }
                 }
             }
         }
 
         Rectangle { // 操作按钮布局
-            id:layout_actions
+            id: layout_actions
             Layout.fillWidth: true
             Layout.preferredHeight: 60
             radius: 5
-            color: Qt.rgba(243/255,243/255,243/255,1)
+            color: QuiColor.WindowBackground
             RowLayout{
                 anchors.margins: spacing
                 anchors.fill: parent
@@ -83,12 +85,12 @@ Item {
                 Item {
                     Layout.fillHeight: true
                     Layout.preferredWidth: 128
-                    QuickButton { // 关闭按钮
+                    QuiButton { // 关闭按钮
                         id: negative_btn
-                        enabled: settingsView.count
+                        enabled: settingsView.count > 0
                         width: parent.width
                         anchors.centerIn: parent
-                        visible: control.buttonFlags&QuickDialogButtonFlag.NegativeButton
+                        visible: control.useNegativeButton
                         text: negativeText
                         onClicked: {
                             if (control.onNegativeClickListener) {
@@ -102,12 +104,12 @@ Item {
                 Item {
                     Layout.fillHeight: true
                     Layout.preferredWidth: 128
-                    QuickFilledButton { // 保存按钮
+                    QuiFilledButton { // 保存按钮
                         id: positive_btn
-                        enabled: settingsView.count
+                        enabled: settingsView.count > 0
                         width: parent.width
                         anchors.centerIn: parent
-                        visible: control.buttonFlags&QuickDialogButtonFlag.PositiveButton
+                        visible: control.usePositiveButton
                         text: positiveText
                         onClicked: {
                             if (control.onPositiveClickListener) {

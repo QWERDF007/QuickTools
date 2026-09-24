@@ -53,6 +53,7 @@ target_link_libraries(${TARGET_NAME}
     PRIVATE
         Qt6::Core Qt6::Gui Qt6::Quick Qt6::Widgets Qt6::Charts
         QuickTools_core QuickTools_core_header QuickTools_ui
+        quickui
         opencv_core
 )
 

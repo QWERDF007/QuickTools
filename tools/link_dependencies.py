@@ -8,7 +8,10 @@
 from __future__ import annotations
 
 import argparse
+import locale
 import os
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -64,6 +67,9 @@ def link_project_outputs(build_dir: Path, config: str) -> None:
     # Windows 下可执行文件是 QuickTools.exe，目录链接到 build/bin/QuickTools 作为 QML 模块目录
     if os.name == "nt":
         link_dir(module_root, bin_dir / PROJECT_NAME)
+        qml_root = build_dir / "qml"
+        if qml_root.is_dir():
+            link_dir(qml_root, bin_dir / "qml")
 
     # 项目 DLL 从模块输出目录链接到 build/bin；release 模式会过滤成对的 *d.dll
     candidates = immediate_project_dlls(module_root)
@@ -142,6 +148,57 @@ def link_docs(build_dir: Path) -> None:
     link_dir(source, build_dir / "bin" / "docs")
 
 
+def deploy_qt_runtime(build_dir: Path, dependency_file: Path, config: str) -> None:
+    """在 Windows 下使用 windeployqt 部署 Qt 运行时插件与 QML 模块。"""
+
+    if platform_key() != "windows":
+        return
+
+    target_exe = build_dir / "bin" / f"{PROJECT_NAME}.exe"
+    if not target_exe.is_file():
+        return
+
+    dependencies = load_dependencies(dependency_file)
+    qt_dep = next((dep for dep in dependencies if dep.get("name") == "qt"), None)
+    if not qt_dep:
+        return
+
+    qt_root = resolve_dependency_root(qt_dep, build_dir)
+    windeployqt = (qt_root / "bin" / "windeployqt.exe") if qt_root else None
+    if not windeployqt or not windeployqt.is_file():
+        which_path = shutil.which("windeployqt")
+        windeployqt = Path(which_path) if which_path else None
+
+    if not windeployqt or not windeployqt.is_file():
+        warn("skip windeployqt: executable not found")
+        return
+
+    cmd = [
+        str(windeployqt),
+        f"--{config}",
+        "--qmldir",
+        str(REPO_ROOT / "src"),
+        "--qmldir",
+        str(REPO_ROOT / "3rdparty" / "QuickUI" / "src"),
+        str(target_exe),
+    ]
+    try:
+        result = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            encoding=locale.getpreferredencoding(False),
+            errors="replace",
+        )
+        if result.returncode == 0:
+            print("deploy Qt runtime success via windeployqt")
+        else:
+            warn(f"windeployqt finished with code {result.returncode}")
+    except Exception as exc:
+        warn(f"failed to run windeployqt: {exc}")
+
+
 def main() -> int:
     """执行依赖链接主流程。"""
 
@@ -163,6 +220,7 @@ def main() -> int:
     elif dependency_file.is_file():
         link_external_dependencies(build_dir, dependency_file, args.config)
         print("link external dependencies success")
+        deploy_qt_runtime(build_dir, dependency_file, args.config)
     else:
         warn(f"skip external dependency links, missing {dependency_file}")
 

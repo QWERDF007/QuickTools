@@ -9,8 +9,34 @@
 #include "samples/SamplesRegister.h"
 #include "deeplearning/DeepLearningRegister.h"
 
+#include "quickui/Color.h"
+
 #include <QApplication>
 #include <QQmlApplicationEngine>
+
+void qtMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    Q_UNUSED(context);
+    QByteArray localMsg = msg.toLocal8Bit();
+    switch (type)
+    {
+    case QtDebugMsg:
+        spdlog::debug("Qt: {}", localMsg.constData());
+        break;
+    case QtInfoMsg:
+        spdlog::info("Qt: {}", localMsg.constData());
+        break;
+    case QtWarningMsg:
+        spdlog::warn("Qt: {}", localMsg.constData());
+        break;
+    case QtCriticalMsg:
+        spdlog::error("Qt: {}", localMsg.constData());
+        break;
+    case QtFatalMsg:
+        spdlog::critical("Qt: {}", localMsg.constData());
+        break;
+    }
+}
 
 void initLog()
 {
@@ -20,6 +46,7 @@ void initLog()
         logger->set_level(spdlog::level::debug);
         logger->set_pattern("[%Y/%m/%d %T.%e] [%n] [%^%L%$] [%t] %v");
         quicktools::core::registerLogger(logger);
+        qInstallMessageHandler(qtMessageHandler);
     }
     catch (const std::exception &e)
     {
@@ -40,12 +67,19 @@ int main(int argc, char *argv[])
     //    qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
 
     QApplication          app(argc, argv);
+    quickui::QuiColor::getInstance()->setThemeMode(quickui::QuiColor::Light);
+
     QQmlApplicationEngine engine;
+    engine.addImportPath(QCoreApplication::applicationDirPath());
+    engine.addImportPath(QCoreApplication::applicationDirPath() + QStringLiteral("/qml"));
+    engine.addImportPath(QCoreApplication::applicationDirPath() + QStringLiteral("/../qml"));
+
     quicktools::core::QuickToolManager::getInstance()->init();
     quicktools::imgproc::registerTools();
     quicktools::samples::registerTools();
     quicktools::dl::registerTools();
     quicktools::core::PythonManager::getInstance()->init();
+
 
     qDebug() << "qml import path list" << engine.importPathList();
     const QUrl url(QStringLiteral("qrc:/qt/qml/QuickTools/App.qml"));

@@ -1,9 +1,11 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Controls.Basic
+import QtQuick.Templates as T
 import QtQuick.Layouts
 
+import quickui
 import QuickTools.ui
 import QuickTools.core
 
@@ -146,15 +148,9 @@ Item {
 
     Component{ // 分割线
         id:com_panel_item_separator
-        QuickDivider{
+        Rectangle {
             width: layout_list.width
-            spacing: {
-                if(model){
-                    return model.spacing
-                }
-                return 1
-            }
-            size: {
+            height: {
                 if(!model){
                     return 1
                 }
@@ -163,6 +159,7 @@ Item {
                 }
                 return model.size
             }
+            color: QuiColor.Divider
         }
     }
     Component{
@@ -181,9 +178,10 @@ Item {
                 }
             }
             width: layout_list.width
-            QuickText{
+            QuiText{
                 text:model.title
-                font: QuickFont.BodyStrong
+                font: QuiFont.BodyStrong
+                color: QuiColor.FontPrimary
                 anchors{
                     bottom: parent.bottom
                     left:parent.left
@@ -197,9 +195,17 @@ Item {
         Item{
             height: control.cellHeight
             width: layout_list.width
-            QuickControl {
+            T.Button {
                 id: item_control
                 enabled: !model.disabled
+                focusPolicy: Qt.TabFocus
+                background: Item {
+                    QuiFocusRectangle {
+                        visible: item_control.activeFocus
+                        radius: 4
+                    }
+                }
+                contentItem: Item {}
                 anchors{
                     top: parent.top
                     bottom: parent.bottom
@@ -210,7 +216,7 @@ Item {
                     leftMargin: 6
                     rightMargin: 6
                 }
-                QuickToolTip {
+                QuiToolTip {
                     text: model.title
                     visible: false // item_control.hovered && model.title && d.isCompactAndNotPanel
                     delay: 800
@@ -269,7 +275,7 @@ Item {
                         width: 3
                         height: 18
                         radius: 1.5
-                        color: QuickColor.Primary
+                        color: QuiColor.Primary
                         visible: {
                             if(!model){
                                 return false
@@ -292,10 +298,10 @@ Item {
                             verticalCenter: parent.verticalCenter
                         }
                     }
-                    QuickTextIcon { // 箭头图标
+                    QuiTextIcon { // 箭头图标
                         id: item_icon_expand
                         rotation: model&&model.isExpand?0:180
-                        iconSource: QuickFontIcon.ChevronUp
+                        iconSource: QuiFontIcon.ChevronUp
                         iconSize: 15
                         anchors{
                             verticalCenter: parent.verticalCenter
@@ -309,28 +315,28 @@ Item {
                                 easing.type: Easing.OutCubic
                             }
                         }
-                        color: {
+                        iconColor: {
                             if(!item_control.enabled){
                                 return d.itemDisableColor
                             }
-                            return "#000000"
+                            return QuiColor.FontPrimary
                         }
                     }
                     color: { // item 不同状态下的背景色
                         if(!item_control.enabled) { // 禁用状态下的颜色
-                            return QuickColor.ItemNormal
+                            return QuiColor.ItemNormal
                         }
                         if(nav_list.currentIndex === _idx && type === 0){
-                            return QuickColor.ItemCheck
+                            return QuiColor.ItemCheck
                         }
                         if(item_control.hovered) { // 鼠标悬浮时的颜色
-                            return QuickColor.ItemHover
+                            return QuiColor.ItemHover
                         }
-                        return QuickColor.ItemNormal
+                        return QuiColor.ItemNormal
                     }
                     Component{ // 图标组件
                         id:com_icon
-                        QuickTextIcon{
+                        QuiTextIcon{
                             iconSource: {
                                 if(model&&model.icon){
                                     return model.icon
@@ -338,11 +344,11 @@ Item {
                                 return 0
                             }
                             iconSize: 15
-                            color: {
+                            iconColor: {
                                 if(!item_control.enabled){
                                     return d.itemDisableColor
                                 }
-                                return "#000000"
+                                return QuiColor.FontPrimary
                             }
                         }
                     }
@@ -361,7 +367,7 @@ Item {
                             verticalCenter: parent.verticalCenter
                             leftMargin: 3
                         }
-                        QuickLoader{
+                        Loader{
                             anchors.centerIn: parent
                             sourceComponent: {
                                 if(model&&model.iconDelegate){
@@ -371,7 +377,7 @@ Item {
                             }
                         }
                     }
-                    QuickText{ // 标题文字
+                    QuiText{ // 标题文字
                         id:item_title
                         text:{
                             if(model){
@@ -393,13 +399,10 @@ Item {
                             if(!item_control.enabled){
                                 return d.itemDisableColor
                             }
-                            if(item_control.pressed){
-                                return QuickColor.Grey120
-                            }
-                            return QuickColor.Grey220
+                            return QuiColor.FontPrimary
                         }
                     }
-                    QuickLoader {
+                    Loader {
                         id: item_edit_loader
                         anchors{
                             top: parent.top
@@ -415,7 +418,7 @@ Item {
                             return model&&model.showEdit ? model.editDelegate : undefined
                         }
                         onStatusChanged: {
-                            if(status === QuickLoader.Ready){
+                            if(status === Loader.Ready){
                                 item.forceActiveFocus()
                                 item_connection_edit_focus.target = item
                             }
@@ -460,10 +463,18 @@ Item {
                 NumberAnimation { duration: 83 }
             }
             width: layout_list.width
-            QuickControl {
+            T.Button {
                 property var modelData: model
                 id:item_control
                 enabled: !model.disabled
+                focusPolicy: Qt.TabFocus
+                background: Item {
+                    QuiFocusRectangle {
+                        visible: item_control.activeFocus
+                        radius: 4
+                    }
+                }
+                contentItem: Item {}
                 anchors{
                     top: parent.top
                     bottom: parent.bottom
@@ -474,7 +485,7 @@ Item {
                     leftMargin: 6
                     rightMargin: 6
                 }
-                QuickToolTip {
+                QuiToolTip {
                     text: model.title
                     visible: false // item_control.hovered && model.title && d.isCompact
                     delay: 800
@@ -521,36 +532,36 @@ Item {
                     anchors.fill: parent
                     color: {
                         if (!item_control.enabled) { // 禁用状态下的颜色
-                            return QuickColor.ItemNormal
+                            return QuiColor.ItemNormal
                         }
                         if(type===0){
                             if(nav_list.currentIndex === _idx) { // 选中颜色
-                                return QuickColor.ItemCheck
+                                return QuiColor.ItemCheck
                             }
                         }else{
                             if(nav_list.currentIndex === (nav_list.count-layout_footer.count+_idx)){
-                                return QuickColor.ItemCheck
+                                return QuiColor.ItemCheck
                             }
                         }
                         if(item_control.hovered) { // 鼠标悬浮时的颜色
-                            return QuickColor.ItemHover
+                            return QuiColor.ItemHover
                         }
-                        return QuickColor.ItemNormal
+                        return QuiColor.ItemNormal
                     }
                     Component { // 图标组件
                         id:com_icon
-                        QuickTextIcon {
+                        QuiTextIcon {
                             iconSource: {
                                 if(model&&model.icon){
                                     return model.icon
                                 }
                                 return 0
                             }
-                            color: {
+                            iconColor: {
                                 if(!item_control.enabled){
                                     return d.itemDisableColor
                                 }
-                                return "#000000"
+                                return QuiColor.FontPrimary
                             }
                             iconSize: 15
                         }
@@ -570,7 +581,7 @@ Item {
                             verticalCenter: parent.verticalCenter
                             leftMargin: 3
                         }
-                        QuickLoader{
+                        Loader{
                             anchors.centerIn: parent
                             sourceComponent: {
                                 if(model&&model.iconDelegate){
@@ -580,7 +591,7 @@ Item {
                             }
                         }
                     }
-                    QuickText { // 标题文字
+                    QuiText { // 标题文字
                         id:item_title
                         text:{
                             if(model){
@@ -597,10 +608,7 @@ Item {
                             if(!item_control.enabled){
                                 return d.itemDisableColor
                             }
-                            if(item_mouse.pressed){
-                                return QuickColor.Grey120
-                            }
-                            return QuickColor.Grey220
+                            return QuiColor.FontPrimary
                         }
                         anchors{
                             verticalCenter: parent.verticalCenter
@@ -608,7 +616,7 @@ Item {
                             right: item_dot_loader.left
                         }
                     }
-                    QuickLoader {
+                    Loader {
                         id:item_edit_loader
                         anchors{
                             top: parent.top
@@ -627,7 +635,7 @@ Item {
                             return model.showEdit ? model.editDelegate : undefined
                         }
                         onStatusChanged: {
-                            if(status === QuickLoader.Ready){
+                            if(status === Loader.Ready){
                                 item.forceActiveFocus()
                                 item_connection_edit_focus.target = item
                             }
@@ -646,9 +654,9 @@ Item {
                             }
                         }
                     }
-                    QuickLoader {
+                    Loader {
                         id:item_dot_loader
-                        property bool isDot: (item_dot_loader.item&&item_dot_loader.item.isDot)
+                        property bool isDot: !!(item_dot_loader.item && item_dot_loader.item.isDot)
                         anchors{
                             right: parent.right
                             verticalCenter: parent.verticalCenter
@@ -827,7 +835,7 @@ Item {
 //        }
 //    }
 
-    QuickLoader { // 导航项具体页面内容加载
+    Loader { // 导航项具体页面内容加载
         id:loader_content
         anchors{
             left: parent.left
@@ -867,7 +875,7 @@ Item {
         border.color: Qt.rgba(226/255,230/255,234/255,1)
         border.width: 0
         color: "transparent"
-        QuickShadow{
+        QuiShadow{
             visible: false // d.isMinimal || d.isCompactAndPanel
             radius: 0
         }
@@ -894,7 +902,7 @@ Item {
             clip: true
             y: control.topPadding // nav_app_bar.height+control.topPadding
             height: autoSuggestBox ? 38 : 0
-            QuickLoader {
+            Loader {
                 id:loader_auto_suggest_box
                 sourceComponent: autoSuggestBox
                 anchors{
@@ -906,7 +914,7 @@ Item {
                 }
                 visible: true
             }
-            QuickTextIconButton{
+            QuiTextIconButton{
                 visible: false
                 anchors{
                     fill: parent
@@ -939,7 +947,7 @@ Item {
             boundsBehavior: ListView.StopAtBounds
             clip: true
             contentHeight: nav_list.contentHeight
-            ScrollBar.vertical: QuickScrollBar {}
+            ScrollBar.vertical: QuiScrollBar {}
             ListView { // 导航项展示列表
                 id:nav_list
                 displaced: Transition {
@@ -958,7 +966,7 @@ Item {
                     Rectangle{
                         height: 18
                         radius: 1.5
-                        color: QuickColor.Primary
+                        color: QuiColor.Primary
                         width: 3
                         anchors{
                             verticalCenter: parent.verticalCenter
@@ -968,7 +976,7 @@ Item {
                     }
                 }
                 currentIndex: -1
-                delegate: QuickLoader{
+                delegate: Loader{
                     property var model: modelData
                     property var _idx: index
                     property int type: 0
@@ -1008,7 +1016,7 @@ Item {
                 Rectangle{
                     height: 18
                     radius: 1.5
-                    color: QuickColor.Primary
+                    color: QuiColor.Primary
                     width: 3
                     anchors{
                         verticalCenter: parent.verticalCenter
@@ -1017,7 +1025,7 @@ Item {
                     }
                 }
             }
-            delegate: QuickLoader {
+            delegate: Loader {
                 property var model: modelData
                 property var _idx: index
                 property int type: 1
@@ -1027,7 +1035,7 @@ Item {
                     } else if(modelData instanceof QuickPaneItemHeader){
                         return com_panel_item_header
                     } else if(modelData instanceof QuickPaneItemSeparator){
-                        return com_panel_item_separatorr
+                        return com_panel_item_separator
                     }
                 }
             }
@@ -1062,7 +1070,7 @@ Item {
                 currentIndex: -1
                 model: control_popup.childModel
                 boundsBehavior: ListView.StopAtBounds
-                ScrollBar.vertical: QuickScrollBar {}
+                ScrollBar.vertical: QuiScrollBar {}
                 delegate:Button{
                     id:item_button
                     width: 180
@@ -1071,16 +1079,16 @@ Item {
                     background: Rectangle{
                         color:  {
                             if(item_button.hovered){
-                                return QuickColor.ItemHover
+                                return QuiColor.ItemHover
                             }
-                            return QuickColor.ItemNormal
+                            return QuiColor.ItemNormal
                         }
-                        QuickFocusRectangle{
+                        QuiFocusRectangle{
                             visible: item_button.activeFocus
                             radius:4
                         }
 
-                        QuickLoader{
+                        Loader{
                             id:item_dot_loader
                             anchors{
                                 right: parent.right
@@ -1096,11 +1104,12 @@ Item {
                         }
 
                     }
-                    contentItem: QuickText{
+                    contentItem: QuiText{
                         text:modelData.title
                         elide: Text.ElideRight
                         rightPadding: item_dot_loader.width
                         verticalAlignment: Qt.AlignVCenter
+                        color: QuiColor.FontPrimary
                         anchors{
                             verticalCenter: parent.verticalCenter
                         }
@@ -1121,10 +1130,10 @@ Item {
         background: Rectangle{
             implicitWidth: 180
             radius: [4,4,4,4]
-            QuickShadow{
+            QuiShadow{
                 radius: 4
             }
-            color: Qt.rgba(248/255,250/255,253/255,1)
+            color: QuiColor.WindowBackground
         }
         function showPopup(pos,height,model){
             background.implicitHeight = height
@@ -1134,7 +1143,7 @@ Item {
             control_popup.open()
         }
     }
-    QuickLoader{
+    Loader{
         property var modelData
         id:loader_item_menu
     }

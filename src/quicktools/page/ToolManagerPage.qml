@@ -3,8 +3,9 @@ import QtQuick.Controls
 import Qt.labs.qmlmodels
 import QuickTools.ui
 import QuickTools.core
+import quickui
 
-QuickContentPage {
+QuiPage {
     HorizontalHeaderView {
         id: horizontalHeader
         property int minimalWidth: 48
@@ -58,13 +59,13 @@ QuickContentPage {
                         radius: width / 2
                         color: running ? "red" : "green"
                     }
-                    QuickText {
+                    QuiText {
                         text: running ? qsTr("运行中") : qsTr("空闲")
                     }
                 }
             }
             DelegateChoice {
-                delegate: QuickText {
+                delegate: QuiText {
                     text: display
                 }
             }

@@ -1,8 +1,9 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
 import QuickTools.ui
+import quickui
 
 import "../global"
 
@@ -11,7 +12,7 @@ Window {
     visible: true
     width: 1920
     height: 1080
-    color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
+    color: active ? QuiColor.WindowActiveBackground : QuiColor.WindowBackground
 
     Flipable {
         id:flipable
@@ -60,13 +61,12 @@ Window {
         exitDialog.open()
     }
 
-    QuickContentDialog {
+    QuiContentDialog {
         id: exitDialog
         title: qsTr("退出")
         message: qsTr("确定要退出程序吗?")
         positiveText: qsTr("退出")
         negativeText: qsTr("取消")
-        buttonFlags: QuickDialogButtonFlag.NegativeButton | QuickDialogButtonFlag.PositiveButton
         onNegativeClicked: {
         }
 

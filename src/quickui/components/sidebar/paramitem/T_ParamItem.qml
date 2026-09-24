@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Qt.labs.platform
+import quickui
 import QuickTools.ui
 import QuickTools.core
 
@@ -38,7 +39,7 @@ Item {
             paramItem.clicked()
         }
     }
-    QuickToolTip {
+    QuiToolTip {
         id: tooltip
 
         delay: 500

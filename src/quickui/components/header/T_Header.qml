@@ -1,14 +1,16 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 
 Rectangle {
     id: header
 
     property bool hasPython: false
-    property color itemDisableColor: QuickColor.ItemDisabled
-    property color toolbarBorderColor: QuickColor.WindowBackground
+    property color itemDisableColor: QuiColor.ItemDisabled
+    property color toolbarBorderColor: QuiColor.WindowBackground
+    property color toolbarColor: QuiColor.CardBackground
     property var toolbarButtons: Component {
         // 默认内容代理为空, 可重载
         Item {
@@ -19,12 +21,12 @@ Rectangle {
         Item {
         }
     }
-    property color toolbarColor: QuickColor.White
 
     signal settingsBtnClicked
     signal startBtnClicked
     signal reloadBtnClicked
 
+    color: QuiColor.WindowBackground
     height: 40
     width: 200
 
@@ -38,13 +40,14 @@ Rectangle {
         color: header.enabled ? toolbarColor : itemDisableColor
         height: 36
         implicitWidth: childrenRect.width
+        width: implicitWidth
         radius: 3
 
         RowLayout {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 1
 
-            QuickToolButton {
+            QuiToolButton {
                 id: playBtn
 
                 disableColor: itemDisableColor
@@ -54,29 +57,30 @@ Rectangle {
 
                 onClicked: startBtnClicked()
 
-                QuickToolTip {
+                QuiToolTip {
                     delay: 500
                     text: qsTr("运行 F5")
                     visible: playBtn.hovered
                 }
             }
             Rectangle {
-                Layout.fillHeight: true // 分割线
+                Layout.fillHeight: true
                 color: toolbarBorderColor
                 width: 3
             }
             RowLayout {
                 spacing: 0
 
-                QuickLoader {
+                Loader {
                     sourceComponent: header.visible ? header.toolbarButtons : undefined
                 }
             }
         }
     }
+
     Component {
         id: reloadComponet
-        QuickToolButton {
+        QuiToolButton {
             id: reloadBtn
             disableColor: itemDisableColor
             icon.source: "/icons/reset"
@@ -85,7 +89,7 @@ Rectangle {
 
             onClicked: reloadBtnClicked()
 
-            QuickToolTip {
+            QuiToolTip {
                 delay: 500
                 text: qsTr("刷新Python")
                 visible: reloadBtn.hovered
@@ -95,26 +99,26 @@ Rectangle {
 
     RowLayout {
         anchors.right: parent.right
-        anchors.rightMargin: 5
+        anchors.rightMargin: 8
         anchors.verticalCenter: parent.verticalCenter
         spacing: 1
 
-        QuickLoader {
+        Loader {
             sourceComponent: header.visible ? header.rightToolBarButtons : undefined
         }
 
-        QuickLoader {
+        Loader {
             sourceComponent: hasPython ? reloadComponet : undefined
         }
 
         Rectangle {
             visible: hasPython
-            Layout.fillHeight: true // 分割线
+            Layout.fillHeight: true
             color: toolbarBorderColor
             width: 3
         }
 
-        QuickToolButton {
+        QuiToolButton {
             id: settingsBtn
             disableColor: itemDisableColor
             icon.source: "/icons/settings"
@@ -123,7 +127,7 @@ Rectangle {
 
             onClicked: settingsBtnClicked()
 
-            QuickToolTip {
+            QuiToolTip {
                 delay: 500
                 text: qsTr("设置")
                 visible: settingsBtn.hovered

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 import QuickTools.core
 import "./paramitem"
@@ -255,13 +256,15 @@ Rectangle {
             height: 20
             width: parent.width
 
-            QuickText {
+            QuiText {
                 anchors.fill: parent
                 horizontalAlignment: Text.AlignHCenter
                 text: paramItemDelegate.paramDisplayName
                 verticalAlignment: Text.AlignVCenter
+                font: QuiFont.Caption
+                color: QuiColor.FontPrimary
             }
-            QuickToolTip {
+            QuiToolTip {
                 delay: 200
                 text: paramItemDelegate.paramDesc ? qsTr("参数类型: ") + paramTypeName + "\n" + paramItemDelegate.paramDesc:
                                                     qsTr("参数类型: ") + paramTypeName
@@ -276,12 +279,12 @@ Rectangle {
         }
         Rectangle {
             color: paramItemDelegate.border.color
-            height: 2
+            height: 1
 
             // 分割线
             width: parent.width
         }
-        QuickLoader {
+        Loader {
             id: loader
 
             height: 24

@@ -4,13 +4,14 @@ import QtQuick.Layouts
 
 import QuickTools.ui
 import QuickTools.core
+import quickui
 
 ApplicationWindow {
     id: window
     width: 1440
     height: 720
     visible: true
-    color: active ? QuickColor.WindowActiveBackground : QuickColor.WindowBackground
+    color: active ? QuiColor.WindowActiveBackground : QuiColor.WindowBackground
 
     default property alias content: container.data
 
@@ -42,7 +43,7 @@ ApplicationWindow {
 
     Item {
         anchors.fill: parent
-        QuickSplitView {
+        QuiSplitView {
             id: splitView
 
             anchors.fill: parent
@@ -67,7 +68,7 @@ ApplicationWindow {
                 enabled: window.enabled
             }
         }
-        QuickProgressBar { // 工具运行进度条, 运行过程中显示, 完成后消失
+        QuiProgressBar { // 工具运行进度条, 运行过程中显示, 完成后消失
             id: progressbar
             visible: false
             anchors.top: parent.top
@@ -106,7 +107,7 @@ ApplicationWindow {
             case QuickTool.Warning: return infobar.showWarning(msg)
             case QuickTool.Error: return infobar.showError(msg)
             case QuickTool.Success: return infobar.showSuccess(msg)
-            case QuickTool.Custom: return infobar.showCustom(msg)
+            case QuickTool.Custom: return infobar.showInfo(msg)
             }
         }
     }
@@ -117,7 +118,7 @@ ApplicationWindow {
         App.closeWindow(window)
     }
 
-    QuickPopup { // 运行状态指示器
+    QuiPopup { // 运行状态指示器
         id: busyIndicator
         width: window.width
         height: window.height
@@ -127,17 +128,17 @@ ApplicationWindow {
         ColumnLayout {
             spacing: 8
             anchors.centerIn: parent
-            QuickProgressRing {
+            QuiProgressRing {
                 Layout.alignment: Qt.AlignHCenter
             }
-            QuickText{
+            QuiText{
                 text: qsTr("运行中...")
                 Layout.alignment: Qt.AlignHCenter
             }
         }
     }
 
-    QuickInfoBar {
+    QuiInfoBar {
         id: infobar
         root: window
     }

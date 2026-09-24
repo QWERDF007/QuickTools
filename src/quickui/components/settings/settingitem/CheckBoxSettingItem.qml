@@ -1,17 +1,18 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 
 T_SettingItem {
     id: checkBoxSettingItem
 
-    CheckBox {
+    QuiCheckBox {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        checked: settingValue
+        checked: settingValue !== undefined && settingValue !== null ? Boolean(settingValue) : false
 
-        onToggled: {
+        onClicked: {
             valueChanged(checked);
         }
     }

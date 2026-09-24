@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 
 T_ParamItem {
@@ -8,20 +9,18 @@ T_ParamItem {
 
     displayText: _content.value
 
-    QuickDoubleSpinBox {
+    QuiSpinEditor {
         id: _content
         anchors.fill: parent
-        editable: paramEditable
-//        normalColor: QuickColor.Primary
-//        hoverColor: Qt.lighter(normalColor, 1.1)
-//        pressedColor: Qt.lighter(normalColor, 1.2)
-        decimals: paramAdditional.decimals
-        realFrom: paramAdditional.from
-        realTo: paramAdditional.to
-        realValue: paramValue
+        enabled: paramEditable
+        decimals: paramAdditional && paramAdditional.decimals !== undefined ? paramAdditional.decimals : 2
+        minValue: paramAdditional && paramAdditional.from !== undefined ? paramAdditional.from : 0.0
+        maxValue: paramAdditional && paramAdditional.to !== undefined ? paramAdditional.to : 10000.0
+        step: paramAdditional && paramAdditional.step !== undefined ? paramAdditional.step : 0.1
+        value: paramValue !== undefined && paramValue !== null ? Number(paramValue) : 0.0
 
-        onValueModified: {
-            doubleSpinBoxItem.valueChanged(_content.realValue)
+        onEditingFinished: {
+            doubleSpinBoxItem.valueChanged(_content.value)
         }
     }
 }

@@ -1,26 +1,26 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import quickui
 import QuickTools.ui
 
 T_ParamItem {
     id: intSpinBoxItem
 
-    displayText: _content.value
+    displayText: Math.round(_content.value)
 
-    QuickSpinBox {
+    QuiSpinEditor {
         id: _content
         anchors.fill: parent
-        editable: paramEditable
-//        normalColor: QuickColor.Primary
-//        hoverColor: Qt.lighter(normalColor, 1.1)
-//        pressedColor: Qt.lighter(normalColor, 1.2)
-        from: paramAdditional.from
-        to: paramAdditional.to
-        value: paramValue
+        enabled: paramEditable
+        decimals: 0
+        minValue: paramAdditional && paramAdditional.from !== undefined ? paramAdditional.from : 0
+        maxValue: paramAdditional && paramAdditional.to !== undefined ? paramAdditional.to : 10000
+        step: paramAdditional && paramAdditional.step !== undefined ? paramAdditional.step : 1
+        value: paramValue !== undefined && paramValue !== null ? Number(paramValue) : 0
 
-        onValueModified: {
-            intSpinBoxItem.valueChanged(_content.value)
+        onEditingFinished: {
+            intSpinBoxItem.valueChanged(Math.round(_content.value))
         }
     }
 }
